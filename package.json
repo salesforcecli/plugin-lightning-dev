@@ -8,7 +8,9 @@
     "@oclif/core": "^3.26.3",
     "@salesforce/core": "^7.2.0",
     "@salesforce/kit": "^3.1.0",
-    "@salesforce/sf-plugins-core": "^9.0.1"
+    "@salesforce/sf-plugins-core": "^9.0.1",
+    "lwr": "0.12.2",
+    "@lwrjs/lambda": "0.12.2"
   },
   "devDependencies": {
     "@oclif/plugin-command-snapshot": "^5.1.5",
