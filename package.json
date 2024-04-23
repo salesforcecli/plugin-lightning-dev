@@ -138,8 +138,7 @@
         "test:command-reference",
         "test:deprecation-policy",
         "lint",
-        "test:json-schema",
-        "link-check"
+        "test:json-schema"
       ]
     },
     "test:only": {
