@@ -9,7 +9,7 @@ import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
-const messages = Messages.loadMessages('@salesforce/plugin-local-dev', 'hello.world');
+const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'hello.world');
 
 export type HelloWorldResult = {
   name: string;

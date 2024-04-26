@@ -1,8 +1,8 @@
 **NOTE: This template for sf plugins is not yet official. Please consult with the Platform CLI team before using this template.**
 
-# plugin-local-dev
+# plugin-lightning-dev
 
-[![NPM](https://img.shields.io/npm/v/@salesforce/plugin-local-dev.svg?label=@salesforce/plugin-local-dev)](https://www.npmjs.com/package/@salesforce/plugin-local-dev) [![Downloads/week](https://img.shields.io/npm/dw/@salesforce/plugin-local-dev.svg)](https://npmjs.org/package/@salesforce/plugin-local-dev) [![License](https://img.shields.io/badge/License-BSD%203--Clause-brightgreen.svg)](https://raw.githubusercontent.com/salesforcecli/plugin-local-dev/main/LICENSE.txt)
+[![NPM](https://img.shields.io/npm/v/@salesforce/plugin-lightning-dev.svg?label=@salesforce/plugin-lightning-dev)](https://www.npmjs.com/package/@salesforce/plugin-lightning-dev) [![Downloads/week](https://img.shields.io/npm/dw/@salesforce/plugin-lightning-dev.svg)](https://npmjs.org/package/@salesforce/plugin-lightning-dev) [![License](https://img.shields.io/badge/License-BSD%203--Clause-brightgreen.svg)](https://raw.githubusercontent.com/salesforcecli/plugin-lightning-dev/main/LICENSE.txt)
 
 ## Using the template
 
@@ -49,7 +49,7 @@ We always recommend using the latest version of these commands bundled with the 
 ## Install
 
 ```bash
-sf plugins install @salesforce/plugin-local-dev@x.y.z
+sf plugins install @salesforce/plugin-lightning-dev@x.y.z
 ```
 
 ## Issues
@@ -81,7 +81,7 @@ To build the plugin locally, make sure to have yarn installed and run the follow
 
 ```bash
 # Clone the repository
-git clone git@github.com:salesforcecli/plugin-local-dev
+git clone git@github.com:salesforcecli/plugin-lightning-dev
 
 # Install the dependencies and compile
 yarn && yarn build
@@ -144,6 +144,6 @@ FLAG DESCRIPTIONS
     This person can be anyone in the world!
 ```
 
-_See code: [src/commands/hello/world.ts](https://github.com/salesforcecli/plugin-local-dev/blob/1.0.25/src/commands/hello/world.ts)_
+_See code: [src/commands/hello/world.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/1.0.25/src/commands/hello/world.ts)_
 
 <!-- commandsstop -->

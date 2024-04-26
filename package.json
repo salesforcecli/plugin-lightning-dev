@@ -1,6 +1,6 @@
 {
-  "name": "@salesforce/plugin-local-dev",
-  "description": "Local development tools for LEX, Mobile, and Experience Sites",
+  "name": "@salesforce/plugin-lightning-dev",
+  "description": "Lightning development tools for LEX, Mobile, and Experience Sites",
   "version": "1.0.25",
   "author": "Salesforce",
   "bugs": "https://github.com/forcedotcom/cli/issues",
@@ -33,7 +33,7 @@
     "/oclif.manifest.json",
     "/schemas"
   ],
-  "homepage": "https://github.com/salesforcecli/plugin-local-dev",
+  "homepage": "https://github.com/salesforcecli/plugin-lightning-dev",
   "keywords": [
     "force",
     "salesforce",
@@ -60,7 +60,7 @@
     },
     "flexibleTaxonomy": true
   },
-  "repository": "salesforcecli/plugin-local-dev",
+  "repository": "salesforcecli/plugin-lightning-dev",
   "scripts": {
     "build": "wireit",
     "clean": "sf-clean",
@@ -138,7 +138,8 @@
         "test:command-reference",
         "test:deprecation-policy",
         "lint",
-        "test:json-schema"
+        "test:json-schema",
+        "link-check"
       ]
     },
     "test:only": {
@@ -186,7 +187,7 @@
       "output": []
     },
     "link-check": {
-      "command": "node -e \"process.exit(process.env.CI ? 0 : 1)\" || linkinator \"**/*.md\" --skip \"CHANGELOG.md|node_modules|test/|confluence.internal.salesforce.com|my.salesforce.com|%s\" --markdown --retry --directory-listing --verbosity error",
+      "command": "node -e \"process.exit(process.env.CI ? 0 : 1)\" || linkinator \"**/*.md\" --skip \"CHANGELOG.md|node_modules|test/|confluence.internal.salesforce.com|world.ts|my.salesforce.com|%s\" --markdown --retry --directory-listing --verbosity error",
       "files": [
         "./*.md",
         "./!(CHANGELOG).md",

@@ -5,6 +5,6 @@
     "flagAliases": [],
     "flagChars": ["n"],
     "flags": ["flags-dir", "json", "name"],
-    "plugin": "@salesforce/plugin-local-dev"
+    "plugin": "@salesforce/plugin-lightning-dev"
   }
 ]
