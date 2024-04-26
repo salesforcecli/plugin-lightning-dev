@@ -1,5 +1,5 @@
 {
-  "name": "@salesforce/plugin-local-dev",
+  "name": "@salesforce/plugin-lightning-dev",
   "description": "Local development tools for LEX, Mobile, and Experience Sites",
   "version": "1.0.25",
   "author": "Salesforce",
@@ -33,7 +33,7 @@
     "/oclif.manifest.json",
     "/schemas"
   ],
-  "homepage": "https://github.com/salesforcecli/plugin-local-dev",
+  "homepage": "https://github.com/salesforcecli/plugin-lightning-dev",
   "keywords": [
     "force",
     "salesforce",
@@ -60,7 +60,7 @@
     },
     "flexibleTaxonomy": true
   },
-  "repository": "salesforcecli/plugin-local-dev",
+  "repository": "salesforcecli/plugin-lightning-dev",
   "scripts": {
     "build": "wireit",
     "clean": "sf-clean",
