@@ -1,11 +1,12 @@
 name: failureNotifications
 on:
-  workflow_run:
-    workflows:
-      - publish
-      - create-github-release
-    types:
-      - completed
+  workflow_dispatch:
+#  workflow_run:
+#    workflows:
+#      - publish
+#      - create-github-release
+#    types:
+#      - completed
 jobs:
   failure-notify:
     runs-on: ubuntu-latest
