@@ -1,6 +1,6 @@
 {
   "name": "@salesforce/plugin-lightning-dev",
-  "description": "Local development tools for LEX, Mobile, and Experience Sites",
+  "description": "Lightning development tools for LEX, Mobile, and Experience Sites",
   "version": "1.0.25",
   "author": "Salesforce",
   "bugs": "https://github.com/forcedotcom/cli/issues",
@@ -138,7 +138,8 @@
         "test:command-reference",
         "test:deprecation-policy",
         "lint",
-        "test:json-schema"
+        "test:json-schema",
+        "link-check"
       ]
     },
     "test:only": {
