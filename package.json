@@ -56,6 +56,14 @@
     "topics": {
       "hello": {
         "description": "Commands to say hello."
+      },
+      "lightning": {
+        "external": true,
+        "subtopics": {
+          "preview": {
+            "description": "Preview components, org, and, sites in real-time."
+          }
+        }
       }
     },
     "flexibleTaxonomy": true
