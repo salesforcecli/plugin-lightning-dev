@@ -7,7 +7,7 @@
   "dependencies": {
     "@oclif/core": "^3.26.4",
     "@salesforce/core": "^7.2.0",
-    "@salesforce/kit": "^3.1.0",
+    "@salesforce/kit": "^3.1.1",
     "@salesforce/sf-plugins-core": "^9.0.4",
     "lwr": "0.12.2",
     "@lwrjs/lambda": "0.12.2"
