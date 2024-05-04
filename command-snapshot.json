@@ -27,8 +27,8 @@
     "alias": [],
     "command": "lightning:preview:site",
     "flagAliases": [],
-    "flagChars": ["n"],
-    "flags": ["flags-dir", "json", "name"],
+    "flagChars": ["n", "o"],
+    "flags": ["debug", "flags-dir", "json", "name", "target-org"],
     "plugin": "@salesforce/plugin-lightning-dev"
   }
 ]

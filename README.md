@@ -34,6 +34,15 @@ NODE_OPTIONS='--inspect-brk' ./bin/dev.js lightning preview site
 
 No need to recompile or watch typescript files as this happens automagically.
 
+## Fix Snapshots
+
+```bash
+node --loader ts-node/esm --no-warnings=ExperimentalWarning ./bin/dev.js snapshot:compare
+node --loader ts-node/esm --no-warnings=ExperimentalWarning ./bin/dev.js schema:compare
+yarn && yarn build
+yarn update-snapshots
+```
+
 ## Using the template
 
 This repository provides a template for creating a plugin for the Salesforce CLI. To convert this template to a working plugin:
