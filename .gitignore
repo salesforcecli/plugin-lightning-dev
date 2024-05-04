@@ -47,3 +47,8 @@ node_modules
 # os specific files
 .DS_Store
 .idea
+
+# lwr
+__lwr_cache__
+app
+bld

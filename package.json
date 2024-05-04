@@ -9,6 +9,7 @@
     "@salesforce/core": "^7.3.2",
     "@salesforce/kit": "^3.1.0",
     "@salesforce/sf-plugins-core": "^9.0.7",
+    "tar": "^7.1.0",
     "lwr": "0.12.2",
     "@lwrjs/lambda": "0.12.2"
   },
@@ -17,6 +18,7 @@
     "@salesforce/cli-plugins-testkit": "^5.2.1",
     "@salesforce/dev-scripts": "^9.0.0",
     "@salesforce/plugin-command-reference": "^3.0.82",
+    "@types/tar": "^6.1.13",
     "eslint-plugin-sf-plugin": "^1.18.3",
     "oclif": "^4.8.8",
     "ts-node": "^10.9.2",
@@ -77,6 +79,7 @@
     "docs": "sf-docs",
     "format": "wireit",
     "link-check": "wireit",
+    "link-lwr": "yarn link @lwrjs/app-service @lwrjs/asset-registry @lwrjs/asset-transformer @lwrjs/auth-middleware @lwrjs/base-view-provider @lwrjs/base-view-transformer @lwrjs/client-modules @lwrjs/config @lwrjs/core @lwrjs/dev-proxy-server @lwrjs/diagnostics @lwrjs/esbuild @lwrjs/everywhere @lwrjs/fs-asset-provider @lwrjs/fs-watch @lwrjs/html-view-provider @lwrjs/instrumentation @lwrjs/label-module-provider @lwrjs/lambda @lwrjs/legacy-npm-module-provider @lwrjs/loader @lwrjs/lwc-module-provider @lwrjs/lwc-ssr @lwrjs/markdown-view-provider @lwrjs/module-bundler @lwrjs/module-registry @lwrjs/npm-module-provider @lwrjs/nunjucks-view-provider @lwrjs/o11y @lwrjs/resource-registry @lwrjs/router @lwrjs/security @lwrjs/server @lwrjs/shared-utils @lwrjs/static @lwrjs/tools @lwrjs/types @lwrjs/view-registry lwr",
     "lint": "wireit",
     "postpack": "sf-clean --ignore-signing-artifacts",
     "prepack": "sf-prepack",
@@ -84,6 +87,7 @@
     "test": "wireit",
     "test:nuts": "nyc mocha \"**/*.nut.ts\" --slow 4500 --timeout 600000 --parallel",
     "test:only": "wireit",
+    "unlink-lwr": "yarn unlink @lwrjs/app-service @lwrjs/asset-registry @lwrjs/asset-transformer @lwrjs/auth-middleware @lwrjs/base-view-provider @lwrjs/base-view-transformer @lwrjs/client-modules @lwrjs/config @lwrjs/core @lwrjs/dev-proxy-server @lwrjs/diagnostics @lwrjs/esbuild @lwrjs/everywhere @lwrjs/fs-asset-provider @lwrjs/fs-watch @lwrjs/html-view-provider @lwrjs/instrumentation @lwrjs/label-module-provider @lwrjs/lambda @lwrjs/legacy-npm-module-provider @lwrjs/loader @lwrjs/lwc-module-provider @lwrjs/lwc-ssr @lwrjs/markdown-view-provider @lwrjs/module-bundler @lwrjs/module-registry @lwrjs/npm-module-provider @lwrjs/nunjucks-view-provider @lwrjs/o11y @lwrjs/resource-registry @lwrjs/router @lwrjs/security @lwrjs/server @lwrjs/shared-utils @lwrjs/static @lwrjs/tools @lwrjs/types @lwrjs/view-registry lwr",
     "version": "oclif readme"
   },
   "publishConfig": {
@@ -195,7 +199,7 @@
       "output": []
     },
     "link-check": {
-      "command": "node -e \"process.exit(process.env.CI ? 0 : 1)\" || linkinator \"**/*.md\" --skip \"CHANGELOG.md|node_modules|test/|confluence.internal.salesforce.com|world.ts|my.salesforce.com|%s\" --markdown --retry --directory-listing --verbosity error",
+      "command": "node -e \"process.exit(process.env.CI ? 0 : 1)\" || linkinator \"**/*.md\" --skip \"CHANGELOG.md|node_modules|test/|confluence.internal.salesforce.com|my.salesforce.com|%s\" --markdown --retry --directory-listing --verbosity error",
       "files": [
         "./*.md",
         "./!(CHANGELOG).md",

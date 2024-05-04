@@ -21,12 +21,24 @@ Use the appropriate topic to preview specific aspects of the development environ
 
 # flags.name.summary
 
-Description of a flag.
+Specify the site name for preview.
 
 # flags.name.description
 
-More information about a flag. Don't repeat the summary.
+The site name needs to match the name of a site on the current org. Example: "B2C CodeCept"
 
 # examples
 
-- <%= config.bin %> <%= command.id %>
+- <%= config.bin %> <%= command.id %> --name MySite
+
+# flags.debug.summary
+
+Debug SSR.
+
+# flags.debug.description
+
+Debug Description.
+
+# flags.target-org.summary
+
+undefined
