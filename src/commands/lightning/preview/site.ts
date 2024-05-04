@@ -13,7 +13,7 @@ import path from 'node:path';
 import * as tar from 'tar';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
-// import { expDev } from '@lwrjs/core/api';
+import { expDev } from '@lwrjs/core/api';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.site');
@@ -126,7 +126,7 @@ export default class LightningPreviewSite extends SfCommand<LightningPreviewSite
     // 6. Start the dev server
     this.log('starting up the dev server');
     // TODO add additional args
-    // await expDev({ open: false, port: 3000 });
+    await expDev({ open: false, port: 3000 });
     const name = flags.name ?? 'world';
     this.log(`hello ${name} from /Users/nkruk/git/plugin-lightning-dev/src/commands/lightning/preview/site.ts`);
     return {
