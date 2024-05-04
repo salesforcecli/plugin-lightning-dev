@@ -4009,13 +4009,13 @@
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
 
-"@salesforce/cli-plugins-testkit@^5.2.1":
-  version "5.2.1"
-  resolved "https://registry.yarnpkg.com/@salesforce/cli-plugins-testkit/-/cli-plugins-testkit-5.2.1.tgz#24c7629057284a74d9f30a4fdc48c31f59d963af"
-  integrity sha512-GjvgJOLt4N/lGEMjdvQdVlJ8XlRfOfeUMisaVM94uTUWmF23u8fcD1H4zw7XvMt43CrNHs5dmBSAN0uk4ZRl5Q==
+"@salesforce/cli-plugins-testkit@^5.3.2":
+  version "5.3.2"
+  resolved "https://registry.yarnpkg.com/@salesforce/cli-plugins-testkit/-/cli-plugins-testkit-5.3.2.tgz#39b12513baf230cbfa2a831d1e1ad567512dcb18"
+  integrity sha512-/0ZR9PrRpmbtYzkGee7Sc8b1qzNyojq1Smk0RY7gM439rDKS90Tqq8W3b9hNXtTzHNe98MxQUGq819mCxok+Mw==
   dependencies:
-    "@salesforce/core" "^7.2.0"
-    "@salesforce/kit" "^3.1.0"
+    "@salesforce/core" "^7.3.3"
+    "@salesforce/kit" "^3.1.1"
     "@salesforce/ts-types" "^2.0.9"
     "@types/shelljs" "^0.8.15"
     debug "^4.3.1"
@@ -4025,7 +4025,7 @@
     strip-ansi "6.0.1"
     ts-retry-promise "^0.8.0"
 
-"@salesforce/core@^7.2.0", "@salesforce/core@^7.3.1", "@salesforce/core@^7.3.2", "@salesforce/core@^7.3.3":
+"@salesforce/core@^7.3.1", "@salesforce/core@^7.3.2", "@salesforce/core@^7.3.3":
   version "7.3.3"
   resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-7.3.3.tgz#4b84aba806264dd13716f4c4774bd5a417259662"
   integrity sha512-THjYnOrfj0vW+qvlm70NDasH3RHD03cm884yi1+1axA4ugS4FFxXrPDPWAEU5ve5B4vnT7CJfuD/Q56l67ug8w==
