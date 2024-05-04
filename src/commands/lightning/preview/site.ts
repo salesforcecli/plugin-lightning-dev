@@ -126,7 +126,8 @@ export default class LightningPreviewSite extends SfCommand<LightningPreviewSite
     // 6. Start the dev server
     this.log('starting up the dev server');
     // TODO add additional args
-    await expDev({ open: false, port: 3000 });
+    // eslint-disable-next-line unicorn/numeric-separators-style
+    await expDev({ open: false, port: 3000, timeout: 30000 });
     const name = flags.name ?? 'world';
     this.log(`hello ${name} from /Users/nkruk/git/plugin-lightning-dev/src/commands/lightning/preview/site.ts`);
     return {
