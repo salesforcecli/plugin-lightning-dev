@@ -4009,32 +4009,32 @@
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
 
-"@salesforce/cli-plugins-testkit@^5.2.1":
-  version "5.2.1"
-  resolved "https://registry.yarnpkg.com/@salesforce/cli-plugins-testkit/-/cli-plugins-testkit-5.2.1.tgz#24c7629057284a74d9f30a4fdc48c31f59d963af"
-  integrity sha512-GjvgJOLt4N/lGEMjdvQdVlJ8XlRfOfeUMisaVM94uTUWmF23u8fcD1H4zw7XvMt43CrNHs5dmBSAN0uk4ZRl5Q==
+"@salesforce/cli-plugins-testkit@^5.3.4":
+  version "5.3.4"
+  resolved "https://registry.yarnpkg.com/@salesforce/cli-plugins-testkit/-/cli-plugins-testkit-5.3.4.tgz#7ada47df669a8f643638e25059af9e34ffc4119a"
+  integrity sha512-VgEIKuf3nr1HKwQ3t+cIoLqe7Xo4TGfzDoqXNdwPyMLneCrrktYZFnZs6sAi4gTQYuXIE4X23tzaEfjqRgwpvA==
   dependencies:
-    "@salesforce/core" "^7.2.0"
-    "@salesforce/kit" "^3.1.0"
+    "@salesforce/core" "^7.3.5"
+    "@salesforce/kit" "^3.1.1"
     "@salesforce/ts-types" "^2.0.9"
     "@types/shelljs" "^0.8.15"
     debug "^4.3.1"
     jszip "^3.10.1"
     shelljs "^0.8.4"
-    sinon "^17.0.1"
+    sinon "^17.0.2"
     strip-ansi "6.0.1"
     ts-retry-promise "^0.8.0"
 
-"@salesforce/core@^7.2.0", "@salesforce/core@^7.3.1", "@salesforce/core@^7.3.2", "@salesforce/core@^7.3.3":
-  version "7.3.3"
-  resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-7.3.3.tgz#4b84aba806264dd13716f4c4774bd5a417259662"
-  integrity sha512-THjYnOrfj0vW+qvlm70NDasH3RHD03cm884yi1+1axA4ugS4FFxXrPDPWAEU5ve5B4vnT7CJfuD/Q56l67ug8w==
+"@salesforce/core@^7.3.1", "@salesforce/core@^7.3.2", "@salesforce/core@^7.3.3", "@salesforce/core@^7.3.5":
+  version "7.3.5"
+  resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-7.3.5.tgz#0dccb4d8ddd36cde449d67a482dfb52e63de1c9f"
+  integrity sha512-9hkK4EyV1Z7T1mDyb/Rj1dO0Owp3f2PNGXSyQhCG2nozSCxAQlPeFFqn2L3d7kJJxdhlr58P4QXiFCoJVVvbLQ==
   dependencies:
     "@jsforce/jsforce-node" "^3.2.0"
     "@salesforce/kit" "^3.1.1"
     "@salesforce/schemas" "^1.7.0"
     "@salesforce/ts-types" "^2.0.9"
-    ajv "^8.12.0"
+    ajv "^8.13.0"
     change-case "^4.1.2"
     faye "^1.4.0"
     form-data "^4.0.0"
@@ -4267,7 +4267,7 @@
   dependencies:
     type-detect "4.0.8"
 
-"@sinonjs/commons@^3.0.0":
+"@sinonjs/commons@^3.0.0", "@sinonjs/commons@^3.0.1":
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-3.0.1.tgz#1029357e44ca901a615585f6d27738dbc89084cd"
   integrity sha512-K3mCHKQ9sVh8o1C9cxkwxaOmXoAMlDxC1mYyHrjqOWEcBjYr76t96zL2zlj5dUGZ3HSw240X1qgH3Mjf1yJWpQ==
@@ -5698,7 +5698,7 @@ ajv@6.12.6, ajv@^6.12.4, ajv@^6.12.5:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-ajv@^8.0.0, ajv@^8.11.0, ajv@^8.12.0, ajv@^8.9.0:
+ajv@^8.0.0, ajv@^8.11.0, ajv@^8.9.0:
   version "8.12.0"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.12.0.tgz#d1a0527323e22f53562c567c00991577dfbe19d1"
   integrity sha512-sRu1kpcO9yLtYxBKvqfTeh9KzZEwO3STyX1HT+4CaDzC6HpTGYhIhPIzj9XuKU7KYDwnaeh5hcOwjy1QuJzBPA==
@@ -5707,6 +5707,16 @@ ajv@^8.0.0, ajv@^8.11.0, ajv@^8.12.0, ajv@^8.9.0:
     json-schema-traverse "^1.0.0"
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
+
+ajv@^8.13.0:
+  version "8.13.0"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.13.0.tgz#a3939eaec9fb80d217ddf0c3376948c023f28c91"
+  integrity sha512-PRA911Blj99jR5RMeTunVbNXMF6Lp4vZXnk5GQjcnUWUTsrXtekg/pnmFFI2u/I36Y/2bITGS30GZCXei6uNkA==
+  dependencies:
+    fast-deep-equal "^3.1.3"
+    json-schema-traverse "^1.0.0"
+    require-from-string "^2.0.2"
+    uri-js "^4.4.1"
 
 ansi-colors@4.1.1:
   version "4.1.1"
@@ -7586,7 +7596,7 @@ diff@^4.0.1, diff@^4.0.2:
   resolved "https://registry.yarnpkg.com/diff/-/diff-4.0.2.tgz#60f3aecb89d5fae520c11aa19efc2bb982aade7d"
   integrity sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A==
 
-diff@^5.1.0:
+diff@^5.2.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/diff/-/diff-5.2.0.tgz#26ded047cd1179b78b9537d5ef725503ce1ae531"
   integrity sha512-uIFDxqpRZGZ6ThOk84hEfqWoHx2devRFvpTZcTHur85vImfaxUbTW9Ryh4CpCuDnToOP1CEtXKIgytHBPVff5A==
@@ -12066,7 +12076,7 @@ nise@^4.1.0:
     just-extend "^4.0.2"
     path-to-regexp "^1.7.0"
 
-nise@^5.1.5:
+nise@^5.1.9:
   version "5.1.9"
   resolved "https://registry.yarnpkg.com/nise/-/nise-5.1.9.tgz#0cb73b5e4499d738231a473cd89bd8afbb618139"
   integrity sha512-qOnoujW4SV6e40dYxJOb3uvuoPHtmLzIk4TFo+j0jPJoC+5Z9xja5qH5JZobEPsa8+YYphMrOSwnrshEhG2qww==
@@ -13997,17 +14007,17 @@ sinon@10.0.0:
     nise "^4.1.0"
     supports-color "^7.1.0"
 
-sinon@^17.0.1:
-  version "17.0.1"
-  resolved "https://registry.yarnpkg.com/sinon/-/sinon-17.0.1.tgz#26b8ef719261bf8df43f925924cccc96748e407a"
-  integrity sha512-wmwE19Lie0MLT+ZYNpDymasPHUKTaZHUH/pKEubRXIzySv9Atnlw+BUMGCzWgV7b7wO+Hw6f1TEOr0IUnmU8/g==
+sinon@^17.0.2:
+  version "17.0.2"
+  resolved "https://registry.yarnpkg.com/sinon/-/sinon-17.0.2.tgz#470894bcc2d24b01bad539722ea46da949892405"
+  integrity sha512-uihLiaB9FhzesElPDFZA7hDcNABzsVHwr3YfmM9sBllVwab3l0ltGlRV1XhpNfIacNDLGD1QRZNLs5nU5+hTuA==
   dependencies:
-    "@sinonjs/commons" "^3.0.0"
+    "@sinonjs/commons" "^3.0.1"
     "@sinonjs/fake-timers" "^11.2.2"
     "@sinonjs/samsam" "^8.0.0"
-    diff "^5.1.0"
-    nise "^5.1.5"
-    supports-color "^7.2.0"
+    diff "^5.2.0"
+    nise "^5.1.9"
+    supports-color "^7"
 
 sirv@^2.0.3:
   version "2.0.4"
@@ -14534,7 +14544,7 @@ supports-color@^5.3.0:
   dependencies:
     has-flag "^3.0.0"
 
-supports-color@^7.0.0, supports-color@^7.1.0, supports-color@^7.2.0:
+supports-color@^7, supports-color@^7.0.0, supports-color@^7.1.0:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-7.2.0.tgz#1b7dcdcb32b8138801b3e478ba6a51caa89648da"
   integrity sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==
@@ -15221,7 +15231,7 @@ upper-case@^2.0.2:
   dependencies:
     tslib "^2.0.3"
 
-uri-js@^4.2.2:
+uri-js@^4.2.2, uri-js@^4.4.1:
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/uri-js/-/uri-js-4.4.1.tgz#9b1a52595225859e55f669d928f88c6c57f2a77e"
   integrity sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==
