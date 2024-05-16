@@ -44,17 +44,17 @@ export default class LightningPreviewSite extends SfCommand<LightningPreviewSite
     const { flags } = await this.parse(LightningPreviewSite);
 
     // 1. Collect Flags
-    const siteName = flags.name ?? 'B2C_CodeCept';
-
+    let siteName = flags.name ?? 'B2C_CodeCept';
+    this.log(`Setting up local development for: ${siteName}`);
+    siteName = siteName.trim().replace(' ', '_');
     // TODO don't redownload the app
     if (!fs.existsSync('app')) {
-      this.log('getting org connection');
+      // this.log('getting org connection');
 
       // 2. Connect to Org
       const connection = flags['target-org'].getConnection();
-
       // 3. Check if the site exists
-      this.log('checking site exists');
+      // this.log('checking site exists');
       // TODO cleanup query
       const result = await connection.query<{ Id: string; Name: string; LastModifiedDate: string }>(
         "SELECT Id, Name, LastModifiedDate FROM StaticResource WHERE Name LIKE 'MRT%" + siteName + "' LIMIT 1"
@@ -63,18 +63,19 @@ export default class LightningPreviewSite extends SfCommand<LightningPreviewSite
       // 4. Download the static resource
       if (result.records[0]) {
         const resourceName = result.records[0].Name;
-        this.log(`Found Site: ${resourceName}`);
+        // this.log(`Found Site: ${resourceName}`);
 
-        this.log('Downloading static resource...');
+        this.log('Downloading Site...');
         const staticresource = await connection.metadata.read('StaticResource', resourceName);
-        this.log('Resource downloaded!');
+
         if (staticresource?.content) {
           // 5a. Save the resource
           // const { contentType } = staticresource;
           const buffer = Buffer.from(staticresource.content, 'base64');
           // // const path = `${resourceName}.${contentType.split('/')[1]}`;
           const resourcePath = `${resourceName}.gz`;
-          this.log(`Writing file to path: ${resourcePath}`);
+          this.log(`Extracting -> '${resourcePath}'`);
+          // this.log(`Writing file to path: ${resourcePath}`);
           fs.writeFileSync(resourcePath, buffer);
 
           // Cleanup old directories
@@ -91,7 +92,6 @@ export default class LightningPreviewSite extends SfCommand<LightningPreviewSite
           });
 
           fs.renameSync('bld', 'app');
-          this.log(`Resource extracted successfully to: ${resourcePath}`);
           // fs.unlinkSync(tempPath); // Clean up the temporary file
 
           // Setup the stream pipeline for unzipping
@@ -109,27 +109,48 @@ export default class LightningPreviewSite extends SfCommand<LightningPreviewSite
 
           // TODO should be included with bundle
           const proxyPath = path.join('app', 'config', '_proxy');
+          // fs.writeFileSync(
+          //   proxyPath,
+          //   '/services https://dsg000007tzqk2ak.test1.my.pc-rnd.site.com' +
+          //     '\n/sfsites https://dsg000007tzqk2ak.test1.my.pc-rnd.site.com' +
+          //     '\n/webruntime https://dsg000007tzqk2ak.test1.my.pc-rnd.site.com'
+          // );
+          // Temp write proxy file
           fs.writeFileSync(
             proxyPath,
-            '/services https://dsg000007tzqk2ak.test1.my.pc-rnd.site.com' +
-              '\n/sfsites https://dsg000007tzqk2ak.test1.my.pc-rnd.site.com' +
-              '\n/webruntime https://dsg000007tzqk2ak.test1.my.pc-rnd.site.com'
+            '/services https://dsg00000ayyw92ap.test1.my.pc-rnd.site.com' +
+              '\n/sfsites https://dsg00000ayyw92ap.test1.my.pc-rnd.site.com' +
+              '\n/webruntime https://dsg00000ayyw92ap.test1.my.pc-rnd.site.com' +
+              '\n/mobify/proxy/core https://dsg00000ayyw92ap.test1.my.pc-rnd.site.com'
           );
         } else {
           this.error(`Static Resource for ${siteName} not found.`);
         }
       } else {
-        this.log('couldnt find your site');
+        throw new Error(`Couldnt find your site: ${siteName}`);
       }
+    } else {
+      // this.log('Site already configured!');
     }
+    // Demo: Temp write Live Reload CSP
+    // const filepath = './app/experience/site-metadata.json';
+    // const csp = fs.readFileSync(filepath, 'utf-8');
+    // if (!csp.includes('ws://127.0.0.1:35729/livereload')) {
+    //   const newContent = csp.replace(
+    //     /https:\/\/js\.stripe\.com;/g,
+    //     'https://js.stripe.com ws://127.0.0.1:35729/livereload;'
+    //   );
+    //   fs.writeFileSync(filepath, newContent);
+    // }
+    this.log('Setup Complete!');
 
     // 6. Start the dev server
-    this.log('starting up the dev server');
+    this.log('Starting local development server...');
     // TODO add additional args
     // eslint-disable-next-line unicorn/numeric-separators-style
-    await expDev({ open: false, port: 3000, timeout: 30000, sandbox: false, logLevel: 'info' });
-    const name = flags.name ?? 'world';
-    this.log(`hello ${name} from /Users/nkruk/git/plugin-lightning-dev/src/commands/lightning/preview/site.ts`);
+    await expDev({ open: false, port: 3000, timeout: 30000, sandbox: false, logLevel: 'error' });
+    // const name = flags.name ?? 'world';
+    // this.log(`hello ${name} from /Users/nkruk/git/plugin-lightning-dev/src/commands/lightning/preview/site.ts`);
     return {
       path: '/Users/nkruk/git/plugin-lightning-dev/src/commands/lightning/preview/site.ts',
     };
