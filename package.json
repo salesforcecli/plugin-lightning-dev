@@ -57,9 +57,6 @@
       "@salesforce/plugin-command-reference"
     ],
     "topics": {
-      "hello": {
-        "description": "Commands to say hello."
-      },
       "lightning": {
         "external": true,
         "subtopics": {
