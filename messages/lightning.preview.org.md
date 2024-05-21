@@ -1,6 +1,6 @@
 # summary
 
-Preview LWC components in context of your Salesforce Org.
+Preview Lightning Experience Applications.
 
 # description
 

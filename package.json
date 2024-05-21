@@ -9,14 +9,17 @@
     "@salesforce/core": "^7.3.2",
     "@salesforce/kit": "^3.1.0",
     "@salesforce/sf-plugins-core": "^9.0.7",
-    "lwr": "0.12.2",
-    "@lwrjs/lambda": "0.12.2"
+    "tar": "^7.1.0",
+    "lwc": "6.6.2",
+    "lwr": "0.13.0-alpha.6",
+    "@lwrjs/api": "0.13.0-alpha.6"
   },
   "devDependencies": {
     "@oclif/plugin-command-snapshot": "^5.1.7",
     "@salesforce/cli-plugins-testkit": "^5.2.1",
     "@salesforce/dev-scripts": "^9.0.0",
     "@salesforce/plugin-command-reference": "^3.0.82",
+    "@types/tar": "^6.1.13",
     "eslint-plugin-sf-plugin": "^1.18.3",
     "oclif": "^4.8.8",
     "ts-node": "^10.9.2",
@@ -54,14 +57,11 @@
       "@salesforce/plugin-command-reference"
     ],
     "topics": {
-      "hello": {
-        "description": "Commands to say hello."
-      },
       "lightning": {
         "external": true,
         "subtopics": {
           "preview": {
-            "description": "Preview components, org, and, sites in real-time."
+            "description": "Preview components, applications, and sites locally without deploy."
           }
         }
       }
@@ -77,6 +77,7 @@
     "docs": "sf-docs",
     "format": "wireit",
     "link-check": "wireit",
+    "link-lwr": "yarn link @lwrjs/api @lwrjs/app-service @lwrjs/asset-registry @lwrjs/asset-transformer @lwrjs/auth-middleware @lwrjs/base-view-provider @lwrjs/base-view-transformer @lwrjs/client-modules @lwrjs/config @lwrjs/core @lwrjs/dev-proxy-server @lwrjs/diagnostics @lwrjs/esbuild @lwrjs/everywhere @lwrjs/fs-asset-provider @lwrjs/fs-watch @lwrjs/html-view-provider @lwrjs/instrumentation @lwrjs/label-module-provider @lwrjs/lambda @lwrjs/legacy-npm-module-provider @lwrjs/loader @lwrjs/lwc-module-provider @lwrjs/lwc-ssr @lwrjs/markdown-view-provider @lwrjs/module-bundler @lwrjs/module-registry @lwrjs/npm-module-provider @lwrjs/nunjucks-view-provider @lwrjs/o11y @lwrjs/resource-registry @lwrjs/router @lwrjs/security @lwrjs/server @lwrjs/shared-utils @lwrjs/static @lwrjs/tools @lwrjs/types @lwrjs/view-registry lwr",
     "lint": "wireit",
     "postpack": "sf-clean --ignore-signing-artifacts",
     "prepack": "sf-prepack",
@@ -84,6 +85,8 @@
     "test": "wireit",
     "test:nuts": "nyc mocha \"**/*.nut.ts\" --slow 4500 --timeout 600000 --parallel",
     "test:only": "wireit",
+    "unlink-lwr": "yarn unlink @lwrjs/api @lwrjs/app-service @lwrjs/asset-registry @lwrjs/asset-transformer @lwrjs/auth-middleware @lwrjs/base-view-provider @lwrjs/base-view-transformer @lwrjs/client-modules @lwrjs/config @lwrjs/core @lwrjs/dev-proxy-server @lwrjs/diagnostics @lwrjs/esbuild @lwrjs/everywhere @lwrjs/fs-asset-provider @lwrjs/fs-watch @lwrjs/html-view-provider @lwrjs/instrumentation @lwrjs/label-module-provider @lwrjs/lambda @lwrjs/legacy-npm-module-provider @lwrjs/loader @lwrjs/lwc-module-provider @lwrjs/lwc-ssr @lwrjs/markdown-view-provider @lwrjs/module-bundler @lwrjs/module-registry @lwrjs/npm-module-provider @lwrjs/nunjucks-view-provider @lwrjs/o11y @lwrjs/resource-registry @lwrjs/router @lwrjs/security @lwrjs/server @lwrjs/shared-utils @lwrjs/static @lwrjs/tools @lwrjs/types @lwrjs/view-registry lwr",
+    "update-snapshots": "node --loader ts-node/esm --no-warnings=ExperimentalWarning \"./bin/dev.js\" snapshot:generate",
     "version": "oclif readme"
   },
   "publishConfig": {

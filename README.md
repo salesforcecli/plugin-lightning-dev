@@ -4,6 +4,45 @@
 
 [![NPM](https://img.shields.io/npm/v/@salesforce/plugin-lightning-dev.svg?label=@salesforce/plugin-lightning-dev)](https://www.npmjs.com/package/@salesforce/plugin-lightning-dev) [![Downloads/week](https://img.shields.io/npm/dw/@salesforce/plugin-lightning-dev.svg)](https://npmjs.org/package/@salesforce/plugin-lightning-dev) [![License](https://img.shields.io/badge/License-BSD%203--Clause-brightgreen.svg)](https://raw.githubusercontent.com/salesforcecli/plugin-lightning-dev/main/LICENSE.txt)
 
+## Setup
+
+Prereqs:
+
+1. Setup an Experience Site and publish it
+
+2. Run the following:
+
+```bash
+yarn && yarn build
+yarn link-lwr
+sf org login web --instance-url ${orgfarmUrl}
+```
+
+## Run the command
+
+Then run the following for your environment:
+
+```bash
+./bin/dev.js lightning preview site
+```
+
+or for debugging:
+
+```bash
+NODE_OPTIONS='--inspect-brk' ./bin/dev.js lightning preview site
+```
+
+No need to recompile or watch typescript files as this happens automagically.
+
+## Fix Snapshots
+
+```bash
+node --loader ts-node/esm --no-warnings=ExperimentalWarning ./bin/dev.js snapshot:compare
+node --loader ts-node/esm --no-warnings=ExperimentalWarning ./bin/dev.js schema:compare
+yarn && yarn build
+yarn update-snapshots
+```
+
 ## Using the template
 
 This repository provides a template for creating a plugin for the Salesforce CLI. To convert this template to a working plugin:
