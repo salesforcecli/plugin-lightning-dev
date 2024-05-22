@@ -9,13 +9,13 @@ import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
-const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.org');
+const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.app');
 
-export type LightningPreviewOrgResult = {
+export type LightningPreviewAppResult = {
   path: string;
 };
 
-export default class LightningPreviewOrg extends SfCommand<LightningPreviewOrgResult> {
+export default class LightningPreviewApp extends SfCommand<LightningPreviewAppResult> {
   public static readonly summary = messages.getMessage('summary');
   public static readonly description = messages.getMessage('description');
   public static readonly examples = messages.getMessages('examples');
@@ -29,8 +29,8 @@ export default class LightningPreviewOrg extends SfCommand<LightningPreviewOrgRe
     }),
   };
 
-  public async run(): Promise<LightningPreviewOrgResult> {
-    const { flags } = await this.parse(LightningPreviewOrg);
+  public async run(): Promise<LightningPreviewAppResult> {
+    const { flags } = await this.parse(LightningPreviewApp);
 
     const name = flags.name ?? 'world';
     this.log(`hello ${name} from /Users/nkruk/git/plugin-lightning-dev/src/commands/lightning/preview/org.ts`);
