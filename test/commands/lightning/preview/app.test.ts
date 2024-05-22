@@ -7,7 +7,7 @@
 import { TestContext } from '@salesforce/core/testSetup';
 import { expect } from 'chai';
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
-import LightningPreviewOrg from '../../../../src/commands/lightning/preview/org.js';
+import LightningPreviewApp from '../../../../src/commands/lightning/preview/app.js';
 
 describe('lightning preview org', () => {
   const $$ = new TestContext();
@@ -22,7 +22,7 @@ describe('lightning preview org', () => {
   });
 
   it('runs hello', async () => {
-    await LightningPreviewOrg.run([]);
+    await LightningPreviewApp.run([]);
     const output = sfCommandStubs.log
       .getCalls()
       .flatMap((c) => c.args)
@@ -31,12 +31,12 @@ describe('lightning preview org', () => {
   });
 
   it('runs hello with --json and no provided name', async () => {
-    const result = await LightningPreviewOrg.run([]);
+    const result = await LightningPreviewApp.run([]);
     expect(result.path).to.equal('/Users/nkruk/git/plugin-lightning-dev/src/commands/lightning/preview/org.ts');
   });
 
   it('runs hello world --name Astro', async () => {
-    await LightningPreviewOrg.run(['--name', 'Astro']);
+    await LightningPreviewApp.run(['--name', 'Astro']);
     const output = sfCommandStubs.log
       .getCalls()
       .flatMap((c) => c.args)

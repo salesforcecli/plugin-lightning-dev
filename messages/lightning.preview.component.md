@@ -4,7 +4,7 @@ Preview LWC component in insolation.
 
 # description
 
-Preview components, org, and sites. If no topic is specified, the default action is to preview the org.
+Preview components, apps, and sites. If no topic is specified, the default action is to preview the org.
 
 In dev preview mode, you can edit local files and see these changes to your Lightning Web Components (LWC) within your {org name} org:
 
