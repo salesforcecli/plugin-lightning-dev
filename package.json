@@ -21,7 +21,7 @@
     "@salesforce/plugin-command-reference": "^3.0.82",
     "@types/tar": "^6.1.13",
     "eslint-plugin-sf-plugin": "^1.18.3",
-    "oclif": "^4.8.8",
+    "oclif": "^4.10.15",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   },
