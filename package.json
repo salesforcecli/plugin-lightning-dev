@@ -8,7 +8,7 @@
     "@oclif/core": "^3.26.6",
     "@salesforce/core": "^7.3.2",
     "@salesforce/kit": "^3.1.0",
-    "@salesforce/sf-plugins-core": "^9.0.7",
+    "@salesforce/sf-plugins-core": "^9.0.12",
     "tar": "^7.1.0",
     "lwc": "6.6.2",
     "lwr": "0.13.0-alpha.6",
