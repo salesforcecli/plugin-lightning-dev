@@ -4,7 +4,7 @@ Preview Lightning Experience Applications.
 
 # description
 
-Preview components, org, and sites. If no topic is specified, the default action is to preview the org.
+Preview components, apps, and sites. If no topic is specified, the default action is to preview the org.
 
 In dev preview mode, you can edit local files and see these changes to your Lightning Web Components (LWC) within your {org name} org:
 
@@ -21,11 +21,23 @@ Use the appropriate topic to preview specific aspects of the development environ
 
 # flags.name.summary
 
-Description of a flag.
+Name of the Lightning Experience application to preview.
 
-# flags.name.description
+# flags.target-org.summary
 
-More information about a flag. Don't repeat the summary.
+Specify the org to preview.
+
+# flags.device-type.summary
+
+Type of device to emulate in preview.
+
+# flags.device-id.summary
+
+For mobile virtual devices, specify the device ID to preview. If omitted, the first available virtual device will be used.
+
+# error.fetching.app-id
+
+Unable to determine App Id for %s
 
 # examples
 
