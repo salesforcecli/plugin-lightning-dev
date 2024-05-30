@@ -4,7 +4,7 @@ Preview Lightning Experience Applications.
 
 # description
 
-Preview components, apps, and sites. If no topic is specified, the default action is to preview the org.
+Preview Lightning Experience Applications in real-time.
 
 In dev preview mode, you can edit local files and see these changes to your Lightning Web Components (LWC) within your {org name} org:
 
