@@ -11,7 +11,7 @@
     "@salesforce/lwc-dev-mobile-core": "4.0.0-alpha.1",
     "@salesforce/sf-plugins-core": "^9.0.14",
     "tar": "^7.2.0",
-    "lwc": "6.6.4",
+    "lwc": "6.6.5",
     "lwr": "0.13.0-alpha.12",
     "@lwrjs/api": "0.13.0-alpha.12"
   },
