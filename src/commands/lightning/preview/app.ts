@@ -6,7 +6,8 @@
  */
 
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
-import { Messages } from '@salesforce/core';
+import { Messages, Logger } from '@salesforce/core';
+import { startLWCServer } from '../../../lwc-dev-server/index.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.app');
@@ -31,6 +32,9 @@ export default class LightningPreviewApp extends SfCommand<LightningPreviewAppRe
 
   public async run(): Promise<LightningPreviewAppResult> {
     const { flags } = await this.parse(LightningPreviewApp);
+    const log = await Logger.child(this.ctor.name);
+
+    await startLWCServer(log);
 
     const name = flags.name ?? 'world';
     this.log(`hello ${name} from /Users/nkruk/git/plugin-lightning-dev/src/commands/lightning/preview/org.ts`);
