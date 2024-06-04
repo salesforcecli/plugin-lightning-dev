@@ -183,6 +183,4 @@ FLAG DESCRIPTIONS
     This person can be anyone in the world!
 ```
 
-_See code: [src/commands/hello/world.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/1.0.25/src/commands/hello/world.ts)_
-
 <!-- commandsstop -->
