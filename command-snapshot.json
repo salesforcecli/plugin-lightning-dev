@@ -1,15 +1,15 @@
 [
   {
     "alias": [],
-    "command": "lightning:preview:component",
+    "command": "lightning:preview:app",
     "flagAliases": [],
-    "flagChars": ["n"],
-    "flags": ["flags-dir", "json", "name"],
+    "flagChars": ["i", "n", "o", "t"],
+    "flags": ["device-id", "device-type", "flags-dir", "json", "name", "target-org"],
     "plugin": "@salesforce/plugin-lightning-dev"
   },
   {
     "alias": [],
-    "command": "lightning:preview:app",
+    "command": "lightning:preview:component",
     "flagAliases": [],
     "flagChars": ["n"],
     "flags": ["flags-dir", "json", "name"],
