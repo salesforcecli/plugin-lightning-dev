@@ -25,7 +25,7 @@ Name of the Lightning Experience application to preview.
 
 # flags.target-org.summary
 
-Specify the org to preview.
+Username or alias of the target org. Not required if the `target-org` configuration variable is already set.
 
 # flags.device-type.summary
 
