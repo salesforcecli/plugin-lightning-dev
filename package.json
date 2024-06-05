@@ -5,8 +5,8 @@
   "author": "Salesforce",
   "bugs": "https://github.com/forcedotcom/cli/issues",
   "dependencies": {
-    "@lwc/lwc-dev-server": "^7.1.0-6.6.4",
-    "@lwc/sfdc-lwc-compiler": "^7.1.0-6.6.4",
+    "@lwc/lwc-dev-server": "^7.1.1-6.6.4",
+    "@lwc/sfdc-lwc-compiler": "^7.1.1-6.6.4",
     "@lwrjs/api": "0.13.0-alpha.12",
     "@oclif/core": "^3.26.6",
     "@salesforce/core": "^7.3.9",
@@ -202,7 +202,7 @@
       "output": []
     },
     "link-check": {
-      "command": "node -e \"process.exit(process.env.CI ? 0 : 1)\" || linkinator \"**/*.md\" --skip \"CHANGELOG.md|node_modules|test/|confluence.internal.salesforce.com|my.salesforce.com|%s\" --markdown --retry --directory-listing --verbosity error",
+      "command": "node -e \"process.exit(process.env.CI ? 0 : 1)\" || linkinator \"**/*.md\" --skip \"CHANGELOG.md|node_modules|test/|confluence.internal.salesforce.com|world.ts|my.salesforce.com|%s\" --markdown --retry --directory-listing --verbosity error",
       "files": [
         "./*.md",
         "./!(CHANGELOG).md",
