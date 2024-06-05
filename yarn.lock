@@ -9214,6 +9214,11 @@ eslint@^8.37.0, eslint@^8.56.0, eslint@~8.57.0:
     strip-ansi "^6.0.1"
     text-table "^0.2.0"
 
+esmock@^2.6.5:
+  version "2.6.5"
+  resolved "https://registry.npmjs.org/esmock/-/esmock-2.6.5.tgz#5113affd22acfe68c0fc347789e38b13afbf50b2"
+  integrity sha512-tvFsbtSI9lCuvufbX+UIDn/MoBjTu6UDvQKR8ZmKWHrK3AkioKD2LuTkM75XSngRki3SsBb4uiO58EydQuFCGg==
+
 espree@^9.6.0, espree@^9.6.1:
   version "9.6.1"
   resolved "https://registry.yarnpkg.com/espree/-/espree-9.6.1.tgz#a2a17b8e434690a5432f2f8018ce71d331a48c6f"

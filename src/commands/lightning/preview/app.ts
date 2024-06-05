@@ -9,6 +9,7 @@ import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages, Logger, Org } from '@salesforce/core';
 import { PreviewUtils } from '@salesforce/lwc-dev-mobile-core';
 import { OrgUtils } from '../../../shared/orgUtils.js';
+import { startLWCServer } from '../../../lwc-dev-server/index.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.app');
@@ -54,6 +55,8 @@ export default class LightningPreviewApp extends SfCommand<void> {
   public async run(): Promise<void> {
     const { flags } = await this.parse(LightningPreviewApp);
     const logger = await Logger.child(this.ctor.name);
+
+    await startLWCServer(logger);
 
     if (flags['device-type'] === Platform.desktop) {
       await this.desktopPreview(logger, flags);
