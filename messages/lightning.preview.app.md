@@ -39,6 +39,88 @@ For mobile virtual devices, specify the device ID to preview. If omitted, the fi
 
 Unable to determine App Id for %s
 
+# error.device.notfound
+
+Unable to find device %s
+
+# certificate.attention
+
+---
+
+** ATTENTION **
+
+---
+
+# certificate.installation.description
+
+If you haven not done so already, please install the self-signed certificate on your device before proceeding. The certificate file is located at
+
+`%s`
+
+Follow the steps below to install the certificate:
+
+%s
+
+# certificate.installation.steps.ios
+
+1. Drag & drop the file on to your booted simulator.
+2. Tap `Allow` to proceed with downloading the configuration file.
+3. Tap `Close` and navigate to `Settings > General > VPN & Device Management > localhost`.
+4. Tap `Install` in the title bar, in the warning window, and on the install button.
+5. In the `Profile Installed` view, confirm that the profile shows as `Verified` and Tap `Done`.
+6. Now navigate to `Settings > General > About > Certificate Trust Settings`.
+7. Toggle full trust for `localhost` to enable full trust.
+8. In the warning dialog, tap `Continue`.
+
+# certificate.installation.steps.android
+
+1. Drag & drop the file on to your booted emulator.
+2. %s
+3. Browse to the certificate file that you transferred from step 1 (usually under `/sdcard/download`).
+4. Follow the on-screen instructions to install it.
+5. Tap on `User credentials` under `Credential storage` and verify that your certificate is listed there.
+6. Tap on `Trusted credentials` under `Credential storage`. Then tap on `USER` and verify that your certificate is listed there.
+
+# certificate.installation.steps.android.nav-target-api-24-25
+
+Navigate to `Settings > Security` and tap on `Install from SD card` under `Credential storage`.
+
+# certificate.installation.steps.android.nav-target-api-26-27
+
+Navigate to `Settings > Security & Location > Encryption & credentials` and tap on `Install from SD card` under `Credential storage`.
+
+# certificate.installation.steps.android.nav-target-api-28
+
+Navigate to `Settings > Security & Location > Advanced > Encryption & credentials` and tap on `Install from SD card` under `Credential storage`.
+
+# certificate.installation.steps.android.nav-target-api-29
+
+Navigate to `Settings > Security > Encryption & credentials` and tap on `Install from SD card` under `Credential storage`.
+
+# certificate.installation.steps.android.nav-target-api-30-32
+
+Navigate to `Settings > Security > Encryption & credentials` and tap on `Install a certificate` under `Credential storage`. Now tap on `CA certificate` and on `Install anyway`.
+
+# certificate.installation.steps.android.nav-target-api-33
+
+Navigate to `Settings > Security > More security settings > Encryption & credentials` and tap on `Install a certificate` under `Credential storage`. Now tap on `CA certificate` and on `Install anyway`.
+
+# certificate.installation.steps.android.nav-target-api-34-up
+
+Navigate to `Settings > Security & Privacy > More security & privacy > Encryption & credentials` and tap on `Install a certificate` under `Credential storage`. Now tap on `CA certificate` and on `Install anyway`.
+
+# certificate.waiting
+
+After installing the certificate, press any key to continue...
+
+# mobileapp.notfound
+
+%s is not installed on your device.
+
+# mobileapp.download
+
+%s is not installed on your device. Do you want to download and install it
+
 # examples
 
 - <%= config.bin %> <%= command.id %>
