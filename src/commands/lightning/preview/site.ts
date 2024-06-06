@@ -6,14 +6,11 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-// import zlib from 'node:zlib';
-// import { pipeline } from 'node:stream';
-// import { promisify } from 'node:util';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import * as tar from 'tar';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
-import { Messages } from '@salesforce/core';
-import { expDev } from '@lwrjs/api';
+import { Messages, SfError } from '@salesforce/core';
+import { expDev, setupDev } from '@lwrjs/api';
+import { PromptUtils } from '../../../shared/prompt.js';
+import { OrgUtils } from '../../../shared/orgUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.site');
@@ -42,113 +39,79 @@ export default class LightningPreviewSite extends SfCommand<LightningPreviewSite
 
   public async run(): Promise<LightningPreviewSiteResult> {
     const { flags } = await this.parse(LightningPreviewSite);
+    // Connect to Org
+    const connection = flags['target-org'].getConnection();
 
-    // 1. Collect Flags
-    let siteName = flags.name ?? 'B2C_CodeCept';
+    // If we don't have a site to use, promp the user for one
+    let siteName = flags.name;
+    if (!siteName) {
+      this.log('No site name was specified, pick one');
+      // Query for the list of possible sites
+      const siteList = await OrgUtils.retrieveSites(connection);
+      siteName = await PromptUtils.promptUserToSelectSite(siteList);
+    }
     this.log(`Setting up local development for: ${siteName}`);
-    siteName = siteName.trim().replace(' ', '_');
-    // TODO don't redownload the app
-    if (!fs.existsSync('app')) {
-      // this.log('getting org connection');
 
-      // 2. Connect to Org
-      const connection = flags['target-org'].getConnection();
-      // 3. Check if the site exists
-      // this.log('checking site exists');
-      // TODO cleanup query
+    siteName = siteName.trim().replace(' ', '_');
+    const siteDir = path.join('__local_dev__', siteName);
+    if (!fs.existsSync(path.join(siteDir, 'ssr.js'))) {
+      // Ensure local dev dir is created
+      fs.mkdirSync('__local_dev__');
+      // 3. Check if the site has been published
       const result = await connection.query<{ Id: string; Name: string; LastModifiedDate: string }>(
-        "SELECT Id, Name, LastModifiedDate FROM StaticResource WHERE Name LIKE 'MRT%" + siteName + "' LIMIT 1"
+        "SELECT Id, Name, LastModifiedDate FROM StaticResource WHERE Name LIKE 'MRT%" + siteName + "'"
       );
 
-      // 4. Download the static resource
-      if (result.records[0]) {
-        const resourceName = result.records[0].Name;
-        // this.log(`Found Site: ${resourceName}`);
-
-        this.log('Downloading Site...');
-        const staticresource = await connection.metadata.read('StaticResource', resourceName);
-
-        if (staticresource?.content) {
-          // 5a. Save the resource
-          // const { contentType } = staticresource;
-          const buffer = Buffer.from(staticresource.content, 'base64');
-          // // const path = `${resourceName}.${contentType.split('/')[1]}`;
-          const resourcePath = `${resourceName}.gz`;
-          this.log(`Extracting -> '${resourcePath}'`);
-          // this.log(`Writing file to path: ${resourcePath}`);
-          fs.writeFileSync(resourcePath, buffer);
-
-          // Cleanup old directories
-          fs.rmSync('app', { recursive: true, force: true });
-          fs.rmSync('bld', { recursive: true, force: true });
-
-          // Extract to specific directory
-          // Ensure output directory exists
-          // fs.mkdirSync('app', { recursive: true });
-
-          // 5b. Extracting static resource
-          await tar.x({
-            file: resourcePath,
-          });
-
-          fs.renameSync('bld', 'app');
-          // fs.unlinkSync(tempPath); // Clean up the temporary file
-
-          // Setup the stream pipeline for unzipping
-          // const pipe = promisify(pipeline);
-          // const gunzip = zlib.createGunzip();
-          // const inputStream = fs.createReadStream(resourcePath);
-          // const output = fs.createWriteStream(path.join('app', 'bld'));
-          // await pipe(inputStream, gunzip, output);
-
-          // 5c. Temp - copy a proxy file
-          // TODO query for the url if we need to
-          // const newResult = await connection.query<{ Name: string; UrlPathPrefix: string }>(
-          //   `SELECT Name, UrlPathPrefix FROM Network WHERE Name = '${siteName}'`
-          // );
-
-          // TODO should be included with bundle
-          const proxyPath = path.join('app', 'config', '_proxy');
-          // fs.writeFileSync(
-          //   proxyPath,
-          //   '/services https://dsg000007tzqk2ak.test1.my.pc-rnd.site.com' +
-          //     '\n/sfsites https://dsg000007tzqk2ak.test1.my.pc-rnd.site.com' +
-          //     '\n/webruntime https://dsg000007tzqk2ak.test1.my.pc-rnd.site.com'
-          // );
-          // Temp write proxy file
-          fs.writeFileSync(
-            proxyPath,
-            '/services https://dsg00000ayyw92ap.test1.my.pc-rnd.site.com' +
-              '\n/sfsites https://dsg00000ayyw92ap.test1.my.pc-rnd.site.com' +
-              '\n/webruntime https://dsg00000ayyw92ap.test1.my.pc-rnd.site.com' +
-              '\n/mobify/proxy/core https://dsg00000ayyw92ap.test1.my.pc-rnd.site.com'
-          );
-        } else {
-          this.error(`Static Resource for ${siteName} not found.`);
-        }
+      let resourceName;
+      // Pick the site you want if there is more than one
+      if (result?.totalSize > 1) {
+        const chooseFromList = result.records.map((record) => record.Name);
+        resourceName = await PromptUtils.promptUserToSelectSite(chooseFromList);
+      } else if (result?.totalSize === 1) {
+        resourceName = result.records[0].Name;
       } else {
-        throw new Error(`Couldnt find your site: ${siteName}`);
+        throw new SfError(
+          `Couldnt find your site: ${siteName}. Please navigate to the builder and publish your site with the Local Development preference enabled in your org.`
+        );
       }
+
+      // Download the static resource
+      this.log('Downloading Site...');
+      const staticresource = await connection.metadata.read('StaticResource', resourceName);
+      const resourcePath = path.join('__local_dev__', `${resourceName}.gz`);
+      if (staticresource?.content) {
+        // Save the static resource
+        const buffer = Buffer.from(staticresource.content, 'base64');
+        this.log(`Writing file to path: ${resourcePath}`);
+        fs.writeFileSync(resourcePath, buffer);
+      } else {
+        throw new SfError(`Error occured downloading your site: ${siteName}`);
+      }
+
+      const domains = await OrgUtils.getDomains(connection);
+      const domain = await PromptUtils.promptUserToSelectDomain(domains);
+      const urlPrefix = await OrgUtils.getSitePathPrefix(connection, siteName);
+      const fullProxyUrl = `https://${domain}${urlPrefix}`;
+
+      // Setup Local Dev
+      await setupDev({ mrtBundle: resourcePath, mrtDir: siteDir, proxyUrl: fullProxyUrl, npmInstall: false });
+      this.log('Setup Complete!');
     } else {
-      // this.log('Site already configured!');
+      // If we do have the site setup already, don't do anything / TODO prompt the user if they want to get latest?
     }
-    // Demo: Temp write Live Reload CSP
-    // const filepath = './app/experience/site-metadata.json';
-    // const csp = fs.readFileSync(filepath, 'utf-8');
-    // if (!csp.includes('ws://127.0.0.1:35729/livereload')) {
-    //   const newContent = csp.replace(
-    //     /https:\/\/js\.stripe\.com;/g,
-    //     'https://js.stripe.com ws://127.0.0.1:35729/livereload;'
-    //   );
-    //   fs.writeFileSync(filepath, newContent);
-    // }
-    this.log('Setup Complete!');
 
     // 6. Start the dev server
     this.log('Starting local development server...');
     // TODO add additional args
     // eslint-disable-next-line unicorn/numeric-separators-style
-    await expDev({ open: false, port: 3000, timeout: 30000, sandbox: false, logLevel: 'error' });
+    await expDev({
+      open: false,
+      port: 3000,
+      timeout: 30000,
+      sandbox: false,
+      logLevel: 'error',
+      mrtBundleRoot: siteDir,
+    });
     // const name = flags.name ?? 'world';
     // this.log(`hello ${name} from /Users/nkruk/git/plugin-lightning-dev/src/commands/lightning/preview/site.ts`);
     return {
