@@ -90,12 +90,11 @@ export async function startLWCServer(rootDir: string, logger: Logger): Promise<L
     }
   };
 
-  // normal exit flow
-  process.on('exit', cleanup);
-  // when a user presses ctrl+c
-  process.on('SIGINT', cleanup);
-  // when a user kills the process
-  process.on('SIGTERM', cleanup);
+  [
+    'exit', // normal exit flow
+    'SIGINT',  // when a user presses ctrl+c
+    'SIGTERM',  // when a user kills the process
+  ].forEach(signal => process.on(signal, cleanup));
 
   return lwcDevServer;
 }
