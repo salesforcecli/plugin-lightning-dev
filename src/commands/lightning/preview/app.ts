@@ -56,7 +56,7 @@ export default class LightningPreviewApp extends SfCommand<void> {
     const { flags } = await this.parse(LightningPreviewApp);
     const logger = await Logger.child(this.ctor.name);
 
-    await startLWCServer(logger);
+    await startLWCServer(process.cwd(), logger);
 
     if (flags['device-type'] === Platform.desktop) {
       await this.desktopPreview(logger, flags);

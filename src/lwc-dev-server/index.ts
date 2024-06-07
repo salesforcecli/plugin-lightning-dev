@@ -5,6 +5,7 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+import { existsSync, lstatSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { LWCServer, LogLevel, ServerConfig, Workspace, startLwcDevServer } from '@lwc/lwc-dev-server';
@@ -38,9 +39,31 @@ function mapLogLevel(cliLogLevel: number): number {
   }
 }
 
-function createLWCServerConfig(source: string, logger: Logger): ServerConfig {
-  const rootDir = path.resolve(source, 'force-app/main/default');
-  const namespacePaths: string[] = [rootDir];
+function createLWCServerConfig(rootDir: string, logger: Logger): ServerConfig {
+  const sfdxConfig = path.resolve(rootDir, 'sfdx-project.json');
+
+  if (!existsSync(sfdxConfig) || !lstatSync(sfdxConfig).isFile()) {
+    throw new Error(`sfdx-project.json not found in ${rootDir}`);
+  }
+
+  const sfdxConfigJson = readFileSync(sfdxConfig, 'utf-8');
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const { packageDirectories } = JSON.parse(sfdxConfigJson);
+  const namespacePaths: string[] = [];
+
+  for (const dir of packageDirectories) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if (dir.path) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
+      const resolvedDir = path.resolve(rootDir, dir.path, 'main', 'default');
+      if (existsSync(resolvedDir) && lstatSync(resolvedDir).isDirectory()) {
+        logger.debug(`Adding ${resolvedDir} to namespace paths`);
+        namespacePaths.push();
+      } else {
+        logger.warn(`Skipping ${resolvedDir} because it does not exist or is not a directory`);
+      }
+    }
+  }
 
   return {
     rootDir,
@@ -54,12 +77,14 @@ function createLWCServerConfig(source: string, logger: Logger): ServerConfig {
   };
 }
 
-export async function startLWCServer(logger: Logger): Promise<LWCServer> {
-  const config = createLWCServerConfig(process.cwd(), logger);
+export async function startLWCServer(rootDir: string, logger: Logger): Promise<LWCServer> {
+  const config = createLWCServerConfig(rootDir, logger);
+  logger.trace(`Starting LWC Dev Server with config: ${JSON.stringify(config)}`);
   let lwcDevServer: LWCServer | null = await startLwcDevServer(config);
 
   const cleanup = (): void => {
     if (lwcDevServer) {
+      logger.trace('Stopping LWC Dev Server');
       lwcDevServer.stopServer();
       lwcDevServer = null;
     }

@@ -5,11 +5,21 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { expect } from 'chai';
 import { Logger } from '@salesforce/core';
 import { LWCServer } from '@lwc/lwc-dev-server';
 import esmock from 'esmock';
 import * as devServer from '../../src/lwc-dev-server/index.js';
+// eslint-disable-next-line no-underscore-dangle
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const logger = {
+  debug: () => {},
+  warn: () => {},
+  trace: () => {},
+  getLevel: () => 10,
+} as Logger;
 
 describe('lwc-dev-server', () => {
   const server = {
@@ -30,7 +40,7 @@ describe('lwc-dev-server', () => {
   });
 
   it('calling startLWCServer returns an LWCServer', async () => {
-    const s = await lwcDevServer.startLWCServer({ getLevel: () => 10 } as Logger);
+    const s = await lwcDevServer.startLWCServer(path.resolve(__dirname, './__mock__'), logger);
     expect(s).to.equal(server);
   });
 });
