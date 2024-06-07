@@ -63,7 +63,7 @@ Follow the steps below to install the certificate:
 
 # certificate.installation.steps.ios
 
-1. Drag & drop the file on to your booted simulator.
+1. Drag and drop the file on to your booted simulator.
 2. Tap `Allow` to proceed with downloading the configuration file.
 3. Tap `Close` and navigate to `Settings > General > VPN & Device Management > localhost`.
 4. Tap `Install` in the title bar, in the warning window, and on the install button.
