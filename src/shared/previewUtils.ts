@@ -10,26 +10,26 @@
 // *       consider moving most of these into PreviewUtils of lwc-dev-mobile-core instead.      *
 // **********************************************************************************************
 
-import path from 'node:path';
 import fs from 'node:fs';
 import https from 'node:https';
 import os from 'node:os';
-import fetch from 'node-fetch';
+import path from 'node:path';
 import { Logger } from '@salesforce/core';
 import {
   AndroidAppPreviewConfig,
-  AndroidVirtualDevice,
   AndroidUtils,
+  AndroidVirtualDevice,
   CommonUtils,
   CryptoUtils,
   IOSAppPreviewConfig,
   IOSSimulatorDevice,
   IOSUtils,
   LaunchArgument,
-  Platform,
   PreviewUtils as LwcDevMobileCorePreviewUtils,
+  Platform,
 } from '@salesforce/lwc-dev-mobile-core';
 import { Progress, Spinner } from '@salesforce/sf-plugins-core';
+import fetch from 'node-fetch';
 
 const DevPreviewAuraMode = 'DEVPREVIEW';
 

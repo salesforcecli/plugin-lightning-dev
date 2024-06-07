@@ -5,19 +5,19 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import * as readline from 'node:readline';
-import path from 'node:path';
 import fs from 'node:fs';
-import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
-import { Messages, Logger } from '@salesforce/core';
+import path from 'node:path';
+import * as readline from 'node:readline';
+import { Logger, Messages } from '@salesforce/core';
 import {
   AndroidAppPreviewConfig,
   AndroidVirtualDevice,
   IOSAppPreviewConfig,
   IOSSimulatorDevice,
-  Platform,
   Setup as LwcDevMobileCoreSetup,
+  Platform,
 } from '@salesforce/lwc-dev-mobile-core';
+import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
 import chalk from 'chalk';
 import { OrgUtils } from '../../../shared/orgUtils.js';
 import { PreviewUtils } from '../../../shared/previewUtils.js';
@@ -25,12 +25,12 @@ import { PreviewUtils } from '../../../shared/previewUtils.js';
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.app');
 
-const iOSSalesforceAppPreviewConfig = {
+export const iOSSalesforceAppPreviewConfig = {
   name: 'Salesforce Mobile App',
   id: 'com.salesforce.chatter',
 } as IOSAppPreviewConfig;
 
-const androidSalesforceAppPreviewConfig = {
+export const androidSalesforceAppPreviewConfig = {
   name: 'Salesforce Mobile App',
   id: 'com.salesforce.chatter',
   activity: 'com.salesforce.chatter.Chatter',
@@ -61,7 +61,7 @@ export default class LightningPreviewApp extends SfCommand<void> {
     }),
   };
 
-  private static async waitForUserToInstallCert(
+  public static async waitForUserToInstallCert(
     platform: Platform.ios | Platform.android,
     device: IOSSimulatorDevice | AndroidVirtualDevice,
     certFilePath: string
@@ -225,6 +225,7 @@ export default class LightningPreviewApp extends SfCommand<void> {
     const emulatorPort = await PreviewUtils.bootMobileDevice(platform, resolvedDeviceId, logger);
 
     // 4. Generate self-signed certificate and wait for user to install it
+    // TODO: update the save location to be the same as server config file path
     const certFilePath = PreviewUtils.generateSelfSignedCert(platform, '~/Desktop/cert');
     await LightningPreviewApp.waitForUserToInstallCert(platform, device, certFilePath);
 
