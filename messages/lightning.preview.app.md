@@ -74,7 +74,7 @@ Follow the steps below to install the certificate:
 
 # certificate.installation.steps.android
 
-1. Drag & drop the file on to your booted emulator.
+1. Drag and drop the file on to your booted emulator.
 2. %s
 3. Browse to the certificate file that you transferred from step 1 (usually under `/sdcard/download`).
 4. Follow the on-screen instructions to install it.
