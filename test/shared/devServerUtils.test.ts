@@ -17,13 +17,13 @@ describe('devServerUtils', () => {
     $$.restore();
   });
 
-  it('getServerConfigFileLocation returns joined path of current working directory and lwr.config.json', async () => {
+  it('getServerConfigFileLocation returns a path joined from current working directory and lwr.config.json', async () => {
     $$.SANDBOX.stub(process, 'cwd').returns('desktop');
     const configFileLocation = DevServerUtils.getServerConfigFileLocation();
     expect(configFileLocation).to.be.equal('desktop/lwr.config.json');
   });
 
-  it('fetchServerConfigFileContent returns expected object', async () => {
+  it('fetchServerConfigFileContent returns an expected object', async () => {
     $$.SANDBOX.stub(DevServerUtils, 'getServerConfigFileLocation').returns('foo');
     $$.SANDBOX.stub(CommonUtils, 'loadJsonFromFile').withArgs('foo').returns({ foo: 'bar' });
     const config = DevServerUtils.fetchServerConfigFileContent();

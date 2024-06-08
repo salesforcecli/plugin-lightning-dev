@@ -16,13 +16,15 @@ class LwrConfigFile {
   public identityToken?: string;
 }
 
+const BYTES_TO_GENERATE = 256;
+
 export class IdentityUtils {
   public static async createIdentityToken(): Promise<void> {
     const lwrConfigFile = DevServerUtils.getServerConfigFileLocation();
     if (fs.existsSync(lwrConfigFile)) {
       const config = DevServerUtils.fetchServerConfigFileContent() as LwrConfigFile;
       if (config?.identityToken == null) {
-        config.identityToken = randomBytes(256).toString();
+        config.identityToken = randomBytes(BYTES_TO_GENERATE).toString();
         try {
           await DevServerUtils.writeServerConfigFileContent(config);
         } catch (err) {
