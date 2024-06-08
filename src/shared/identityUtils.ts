@@ -8,11 +8,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 
-import { randomBytes } from 'node:crypto';
-import path from 'node:path';
 import fs from 'node:fs';
-import process from 'node:process';
-import { CommonUtils } from '@salesforce/lwc-dev-mobile-core';
+import { randomBytes } from 'node:crypto';
+import { DevServerUtils } from './devServerUtils.js';
 
 class LwrConfigFile {
   public identityToken?: string;
@@ -20,25 +18,18 @@ class LwrConfigFile {
 
 export class IdentityUtils {
   public static async createIdentityToken(): Promise<void> {
-    const rootDir = path.resolve(process.cwd());
-    const lwrConfigFile = path.join(rootDir, 'lwr.config.json');
+    const lwrConfigFile = DevServerUtils.getServerConfigFileLocation();
     if (fs.existsSync(lwrConfigFile)) {
-      const config = this.loadConfigFile(lwrConfigFile);
+      const config = DevServerUtils.fetchServerConfigFileContent() as LwrConfigFile;
       if (config?.identityToken == null) {
         config.identityToken = randomBytes(256).toString();
         try {
-          await CommonUtils.createTextFile(lwrConfigFile, JSON.stringify(config));
+          await DevServerUtils.writeServerConfigFileContent(config);
         } catch (err) {
           const error = err as Error;
           throw new Error(`Error thrown while trying to write identity token to lwr.config.js: ${error.message}`);
         }
       }
     }
-  }
-
-  private static loadConfigFile(file: string): LwrConfigFile {
-    const json = CommonUtils.loadJsonFromFile(file);
-    const configFile = Object.assign(new LwrConfigFile(), json);
-    return configFile;
   }
 }
