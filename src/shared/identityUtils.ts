@@ -16,7 +16,7 @@ class LwrConfigFile {
   public identityToken?: string;
 }
 
-const BYTES_TO_GENERATE = 256;
+const BYTES_TO_GENERATE = 32;
 
 export class IdentityUtils {
   public static async createIdentityToken(): Promise<void> {
