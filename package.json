@@ -13,8 +13,8 @@
     "@inquirer/select": "^2.3.5",
     "tar": "^7.2.0",
     "lwc": "6.6.4",
-    "lwr": "0.13.0-alpha.12",
-    "@lwrjs/api": "0.13.0-alpha.12"
+    "lwr": "0.13.0-alpha.19",
+    "@lwrjs/api": "0.13.0-alpha.19"
   },
   "devDependencies": {
     "@oclif/plugin-command-snapshot": "^5.1.9",
