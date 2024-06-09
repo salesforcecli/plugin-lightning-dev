@@ -5,7 +5,7 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Connection } from '@salesforce/core';
+import { Connection, SfError } from '@salesforce/core';
 
 export class OrgUtils {
   /**
@@ -37,5 +37,39 @@ export class OrgUtils {
     }
 
     return undefined;
+  }
+
+  public static async retrieveSites(conn: Connection): Promise<string[]> {
+    const result = await conn.query<{ Name: string; UrlPathPrefix: string; SiteType: string; Status: string }>(
+      'SELECT Name, UrlPathPrefix, SiteType, Status FROM Site'
+    );
+    if (!result.records.length) {
+      throw new SfError('No sites found.');
+    }
+    const siteNames = result.records.map((record) => record.Name).sort();
+    return siteNames;
+  }
+
+  /**
+   * Given a site name, it queries the org to find the matching site.
+   *
+   * @param connection the connection to the org
+   * @param siteName the name of the app
+   * @returns the site prefix or empty string if no match is found
+   */
+  public static async getSitePathPrefix(connection: Connection, siteName: string): Promise<string> {
+    // TODO seems like there are 2 copies of each site? ask about this - as the #1 is apended to our site type
+    const devNameQuery = `SELECT Id, Name, SiteType, UrlPathPrefix FROM Site WHERE Name LIKE '${siteName}1'`;
+    const result = await connection.query<{ UrlPathPrefix: string }>(devNameQuery);
+    if (result.totalSize > 0) {
+      return '/' + result.records[0].UrlPathPrefix;
+    }
+    return '';
+  }
+
+  public static async getDomains(connection: Connection): Promise<string[]> {
+    const devNameQuery = 'SELECT Id, Domain, LastModifiedDate FROM Domain';
+    const results = await connection.query<{ Domain: string }>(devNameQuery);
+    return results.records.map((result) => result.Domain);
   }
 }
