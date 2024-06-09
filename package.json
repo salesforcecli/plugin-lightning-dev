@@ -9,7 +9,7 @@
     "@salesforce/core": "^7.3.9",
     "@salesforce/kit": "^3.1.2",
     "@salesforce/lwc-dev-mobile-core": "4.0.0-alpha.1",
-    "@salesforce/sf-plugins-core": "^9.0.14",
+    "@salesforce/sf-plugins-core": "^9.1.1",
     "@inquirer/select": "^2.3.5",
     "tar": "^7.2.0",
     "lwc": "6.6.4",
