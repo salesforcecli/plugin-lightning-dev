@@ -58,7 +58,8 @@ export class OrgUtils {
    * @returns the site prefix or empty string if no match is found
    */
   public static async getSitePathPrefix(connection: Connection, siteName: string): Promise<string> {
-    const devNameQuery = `SELECT Id, Name, SiteType, UrlPathPrefix FROM Site WHERE Name LIKE '${siteName}'`;
+    // TODO seems like there are 2 copies of each site? ask about this - as the #1 is apended to our site type
+    const devNameQuery = `SELECT Id, Name, SiteType, UrlPathPrefix FROM Site WHERE Name LIKE '${siteName}1'`;
     const result = await connection.query<{ UrlPathPrefix: string }>(devNameQuery);
     if (result.totalSize > 0) {
       return '/' + result.records[0].UrlPathPrefix;
