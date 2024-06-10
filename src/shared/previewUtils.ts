@@ -95,14 +95,10 @@ export class PreviewUtils {
     if (platform === Platform.ios) {
       await IOSUtils.bootDevice(deviceId, true); // will be no-op if already booted
       await IOSUtils.launchSimulatorApp();
+      logger?.debug('Device booted');
     } else {
       emulatorPort = await AndroidUtils.startEmulator(deviceId); // will be no-op if already booted
-    }
-
-    if (emulatorPort) {
       logger?.debug(`Device booted on port ${emulatorPort}`);
-    } else {
-      logger?.debug('Device booted');
     }
 
     return Promise.resolve(emulatorPort);
@@ -265,8 +261,13 @@ export class PreviewUtils {
     try {
       if (platform === Platform.ios) {
         result = CommonUtils.executeCommandSync(`xcrun simctl listapps ${deviceId} | grep "${appConfig.id}"`);
-      } else if (emulatorPort) {
-        result = await AndroidUtils.executeAdbCommand(`shell pm list packages | grep "${appConfig.id}"`, emulatorPort);
+      } else {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const resolvedEmulatorPort = emulatorPort!;
+        result = await AndroidUtils.executeAdbCommand(
+          `shell pm list packages | grep "${appConfig.id}"`,
+          resolvedEmulatorPort
+        );
       }
     } catch {
       /* ignore and continue */
