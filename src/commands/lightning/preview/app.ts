@@ -5,7 +5,6 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import fs from 'node:fs';
 import path from 'node:path';
 import * as readline from 'node:readline';
 import { Logger, Messages } from '@salesforce/core';
@@ -211,70 +210,81 @@ export default class LightningPreviewApp extends SfCommand<void> {
     deviceId?: string,
     logger?: Logger
   ): Promise<void> {
-    // 1. Verify that user environment is set up for mobile (i.e. has right tooling)
-    await this.verifyMobileRequirements(platform, logger);
+    try {
+      // 1. Verify that user environment is set up for mobile (i.e. has right tooling)
+      await this.verifyMobileRequirements(platform, logger);
 
-    // 2. Fetch the target device
-    const device = await PreviewUtils.getMobileDevice(platform, deviceId, logger);
-    if (!device) {
-      return Promise.reject(new Error(messages.getMessage('error.device.notfound', [deviceId ?? ''])));
-    }
-
-    // 3. Boot the device if not already booted
-    const resolvedDeviceId = platform === Platform.ios ? (device as IOSSimulatorDevice).udid : device.name;
-    const emulatorPort = await PreviewUtils.bootMobileDevice(platform, resolvedDeviceId, logger);
-
-    // 4. Generate self-signed certificate and wait for user to install it
-    // TODO: update the save location to be the same as server config file path
-    const certFilePath = PreviewUtils.generateSelfSignedCert(platform, '~/Desktop/cert');
-    await LightningPreviewApp.waitForUserToInstallCert(platform, device, certFilePath);
-
-    // 5. Check if Salesforce Mobile App is installed on the device
-    const appConfig = platform === Platform.ios ? iOSSalesforceAppPreviewConfig : androidSalesforceAppPreviewConfig;
-    const appInstalled = await PreviewUtils.verifyMobileAppInstalled(
-      platform,
-      appConfig,
-      resolvedDeviceId,
-      emulatorPort,
-      logger
-    );
-
-    // 6. If Salesforce Mobile App is not installed, download and install it
-    let bundlePath: string | undefined;
-    if (!appInstalled) {
-      const maxInt32 = 2_147_483_647; // maximum 32-bit signed integer value
-      const proceedWithDownload = await this.confirm({
-        message: messages.getMessage('mobileapp.download', [appConfig.name]),
-        defaultAnswer: false,
-        ms: maxInt32, // simulate no timeout and wait for user to answer
-      });
-
-      if (!proceedWithDownload) {
-        return Promise.reject(new Error(messages.getMessage('mobileapp.notfound', [appConfig.name])));
+      // 2. Fetch the target device
+      const device = await PreviewUtils.getMobileDevice(platform, deviceId, logger);
+      if (!device) {
+        throw new Error(messages.getMessage('error.device.notfound', [deviceId ?? '']));
       }
 
-      bundlePath = await PreviewUtils.downloadSalesforceMobileAppBundle(platform, logger, this.spinner, this.progress);
+      // 3. Boot the device if not already booted
+      this.spinner.start(messages.getMessage('spinner.device.boot', [device.toString()]));
+      const resolvedDeviceId = platform === Platform.ios ? (device as IOSSimulatorDevice).udid : device.name;
+      const emulatorPort = await PreviewUtils.bootMobileDevice(platform, resolvedDeviceId, logger);
+      this.spinner.stop();
 
-      // on iOS the bundle comes as a ZIP archive so we need to extract it first
-      if (platform === Platform.ios) {
-        try {
-          this.spinner.start('Extracting');
+      // 4. Generate self-signed certificate and wait for user to install it
+      // TODO: update the save location to be the same as server config file path
+      this.spinner.start(messages.getMessage('spinner.cert.gen'));
+      const certFilePath = PreviewUtils.generateSelfSignedCert(platform, '~/Desktop/cert');
+      this.spinner.stop();
+      await LightningPreviewApp.waitForUserToInstallCert(platform, device, certFilePath);
+
+      // 5. Check if Salesforce Mobile App is installed on the device
+      const appConfig = platform === Platform.ios ? iOSSalesforceAppPreviewConfig : androidSalesforceAppPreviewConfig;
+      const appInstalled = await PreviewUtils.verifyMobileAppInstalled(
+        platform,
+        appConfig,
+        resolvedDeviceId,
+        emulatorPort,
+        logger
+      );
+
+      // 6. If Salesforce Mobile App is not installed, download and install it
+      let bundlePath: string | undefined;
+      if (!appInstalled) {
+        const maxInt32 = 2_147_483_647; // maximum 32-bit signed integer value
+        const proceedWithDownload = await this.confirm({
+          message: messages.getMessage('mobileapp.download', [appConfig.name]),
+          defaultAnswer: false,
+          ms: maxInt32, // simulate no timeout and wait for user to answer
+        });
+
+        if (!proceedWithDownload) {
+          throw new Error(messages.getMessage('mobileapp.notfound', [appConfig.name]));
+        }
+
+        // downloadSalesforceMobileAppBundle() will show a progress bar
+        bundlePath = await PreviewUtils.downloadSalesforceMobileAppBundle(
+          platform,
+          logger,
+          this.spinner,
+          this.progress
+        );
+
+        // on iOS the bundle comes as a ZIP archive so we need to extract it first
+        if (platform === Platform.ios) {
+          this.spinner.start(messages.getMessage('spinner.extract.archive'));
           const outputDir = path.dirname(bundlePath);
           const finalBundlePath = path.join(outputDir, 'Chatter.app');
-          if (!fs.existsSync(finalBundlePath)) {
-            await PreviewUtils.extractZIPArchive(bundlePath, outputDir, logger);
-          }
-          bundlePath = finalBundlePath;
-        } finally {
+          await PreviewUtils.extractZIPArchive(bundlePath, outputDir, logger);
           this.spinner.stop();
+          bundlePath = finalBundlePath;
         }
       }
-    }
 
-    // 7. Launch the native app for previewing
-    // eslint-disable-next-line camelcase
-    appConfig.launch_arguments = PreviewUtils.generateMobileAppPreviewLaunchArguments(ldpServerUrl, appName, appId);
-    await PreviewUtils.launchMobileApp(platform, appConfig, resolvedDeviceId, emulatorPort, bundlePath, logger);
+      // 7. Launch the native app for previewing (launchMobileApp will show its own spinner)
+      // eslint-disable-next-line camelcase
+      appConfig.launch_arguments = PreviewUtils.generateMobileAppPreviewLaunchArguments(ldpServerUrl, appName, appId);
+      await PreviewUtils.launchMobileApp(platform, appConfig, resolvedDeviceId, emulatorPort, bundlePath, logger);
+    } finally {
+      // stop progress & spinner UX (that may still be running in case of an error)
+      this.progress.stop();
+      this.spinner.stop();
+    }
   }
 
   /**

@@ -43,17 +43,35 @@ Unable to determine App Id for %s
 
 Unable to find device %s
 
+# spinner.device.boot
+
+Booting device %s
+
+# spinner.cert.gen
+
+Generating self-signed certificate
+
+# spinner.extract.archive
+
+Extracting archive
+
+# spinner.download.preparing
+
+Preparing to download
+
+# spinner.downloading
+
+Downloading
+
 # certificate.attention
 
----
-
-** ATTENTION **
-
----
+╔═══════════╗
+║ ATTENTION ║
+╚═══════════╝
 
 # certificate.installation.description
 
-If you haven not done so already, please install the self-signed certificate on your device before proceeding. The certificate file is located at
+If you have not done so already, please install the self-signed certificate on your device before proceeding. The certificate file is located at
 
 `%s`
 

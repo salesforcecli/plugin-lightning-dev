@@ -14,7 +14,7 @@ import fs from 'node:fs';
 import https from 'node:https';
 import os from 'node:os';
 import path from 'node:path';
-import { Logger } from '@salesforce/core';
+import { Logger, Messages } from '@salesforce/core';
 import {
   AndroidAppPreviewConfig,
   AndroidUtils,
@@ -31,6 +31,8 @@ import {
 import { Progress, Spinner } from '@salesforce/sf-plugins-core';
 import fetch from 'node-fetch';
 
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.app');
 const DevPreviewAuraMode = 'DEVPREVIEW';
 
 export class PreviewUtils {
@@ -295,7 +297,7 @@ export class PreviewUtils {
 
     let fullUrl = '';
     try {
-      spinner?.start('Preparing to download');
+      spinner?.start(messages.getMessage('spinner.download.preparing'));
       logger?.debug(`Attempting to resolve full url from ${sfdcUrl}`);
       fullUrl = await this.fetchFullUrlFromSfdc(sfdcUrl);
       logger?.debug(`Full url is ${fullUrl}`);
@@ -328,9 +330,12 @@ export class PreviewUtils {
 
     // If we can determine the expected total size then we can report progress
     if (totalSize) {
-      progress?.start(100, undefined, { title: 'Downloading' });
+      progress?.start(100, undefined, {
+        title: messages.getMessage('spinner.downloading'),
+        format: '%s | {bar} | {percentage}%',
+      });
     } else {
-      spinner?.start('Downloading');
+      spinner?.start(messages.getMessage('spinner.downloading'));
     }
 
     return new Promise((resolve, reject) => {
@@ -352,7 +357,7 @@ export class PreviewUtils {
         } catch {
           /* ignore and continue */
         }
-        progress?.finish();
+        progress?.stop();
         spinner?.stop();
         reject(err);
       });
