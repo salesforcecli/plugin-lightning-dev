@@ -40,7 +40,7 @@ describe('lwc-dev-server', () => {
   });
 
   it('calling startLWCServer returns an LWCServer', async () => {
-    const s = await lwcDevServer.startLWCServer(path.resolve(__dirname, './__mock__'), logger);
+    const s = await lwcDevServer.startLWCServer(path.resolve(__dirname, './__mocks__'), logger);
     expect(s).to.equal(server);
   });
 });

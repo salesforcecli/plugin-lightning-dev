@@ -202,7 +202,10 @@ describe('lightning preview app', () => {
       const expectedCertFilePath = '/path/to/cert.pem';
       $$.SANDBOX.stub(PreviewUtils, 'generateSelfSignedCert').returns(expectedCertFilePath);
 
-      const waitForUserToInstallCertStub = $$.SANDBOX.stub(LightningPreviewApp, 'waitForUserToInstallCert').resolves();
+      const waitForUserToInstallCertStub = $$.SANDBOX.stub(
+        MockedLightningPreviewApp,
+        'waitForUserToInstallCert'
+      ).resolves();
 
       $$.SANDBOX.stub(PreviewUtils, 'verifyMobileAppInstalled').resolves(true);
       $$.SANDBOX.stub(PreviewUtils, 'launchMobileApp').resolves();
@@ -235,10 +238,10 @@ describe('lightning preview app', () => {
       const expectedCertFilePath = '/path/to/cert.pem';
       $$.SANDBOX.stub(PreviewUtils, 'generateSelfSignedCert').returns(expectedCertFilePath);
 
-      $$.SANDBOX.stub(LightningPreviewApp, 'waitForUserToInstallCert').resolves();
+      $$.SANDBOX.stub(MockedLightningPreviewApp, 'waitForUserToInstallCert').resolves();
 
       const verifyMobileAppInstalledStub = $$.SANDBOX.stub(PreviewUtils, 'verifyMobileAppInstalled').resolves(false);
-      $$.SANDBOX.stub(LightningPreviewApp.prototype, 'confirm').resolves(false);
+      $$.SANDBOX.stub(MockedLightningPreviewApp.prototype, 'confirm').resolves(false);
 
       await verifyMobileThrowsWhenUserDeclinesToInstallApp(Platform.ios, verifyMobileAppInstalledStub);
       await verifyMobileThrowsWhenUserDeclinesToInstallApp(Platform.android, verifyMobileAppInstalledStub);
@@ -260,10 +263,10 @@ describe('lightning preview app', () => {
       const expectedCertFilePath = '/path/to/cert.pem';
       $$.SANDBOX.stub(PreviewUtils, 'generateSelfSignedCert').returns(expectedCertFilePath);
 
-      $$.SANDBOX.stub(LightningPreviewApp, 'waitForUserToInstallCert').resolves();
+      $$.SANDBOX.stub(MockedLightningPreviewApp, 'waitForUserToInstallCert').resolves();
 
       $$.SANDBOX.stub(PreviewUtils, 'verifyMobileAppInstalled').resolves(false);
-      $$.SANDBOX.stub(LightningPreviewApp.prototype, 'confirm').resolves(true);
+      $$.SANDBOX.stub(MockedLightningPreviewApp.prototype, 'confirm').resolves(true);
 
       const iosBundlePath = '/path/to/bundle.zip';
       const androidBundlePath = '/path/to/bundle.apk';
@@ -381,9 +384,13 @@ describe('lightning preview app', () => {
       const expectedAppConfig =
         platform === Platform.ios ? iOSSalesforceAppPreviewConfig : androidSalesforceAppPreviewConfig;
       // eslint-disable-next-line camelcase
-      expectedAppConfig.launch_arguments = PreviewUtils.generateMobileAppPreviewLaunchArguments(expectedLdpServerUrl);
+      expectedAppConfig.launch_arguments = PreviewUtils.generateMobileAppPreviewLaunchArguments(
+        expectedLdpServerUrl,
+        'Sales',
+        testAppId
+      );
 
-      await LightningPreviewApp.run(['-n', 'Sales', '-o', testOrgData.username, '-t', platform]);
+      await MockedLightningPreviewApp.run(['-n', 'Sales', '-o', testOrgData.username, '-t', platform]);
       expect(downloadStub.calledOnce).to.be.true;
 
       if (platform === Platform.ios) {

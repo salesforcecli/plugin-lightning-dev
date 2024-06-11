@@ -142,8 +142,6 @@ export default class LightningPreviewApp extends SfCommand<void> {
     const { flags } = await this.parse(LightningPreviewApp);
     const logger = await Logger.child(this.ctor.name);
 
-    await startLWCServer(process.cwd(), logger);
-
     const appName = flags['name'];
     const platform = flags['device-type'];
     const targetOrg = flags['target-org'];
@@ -201,6 +199,8 @@ export default class LightningPreviewApp extends SfCommand<void> {
     }
 
     const launchArguments = PreviewUtils.generateDesktopPreviewLaunchArguments(ldpServerUrl, appId, targetOrg);
+
+    await startLWCServer(process.cwd(), logger ? logger : await Logger.child(this.ctor.name));
 
     await this.config.runCommand('org:open', launchArguments);
   }
@@ -279,6 +279,7 @@ export default class LightningPreviewApp extends SfCommand<void> {
         }
       }
 
+      await startLWCServer(process.cwd(), logger ? logger : await Logger.child(this.ctor.name));
       // 7. Launch the native app for previewing (launchMobileApp will show its own spinner)
       // eslint-disable-next-line camelcase
       appConfig.launch_arguments = PreviewUtils.generateMobileAppPreviewLaunchArguments(ldpServerUrl, appName, appId);
