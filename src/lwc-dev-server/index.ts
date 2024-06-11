@@ -58,7 +58,7 @@ function createLWCServerConfig(rootDir: string, logger: Logger): ServerConfig {
       const resolvedDir = path.resolve(rootDir, dir.path, 'main', 'default');
       if (existsSync(resolvedDir) && lstatSync(resolvedDir).isDirectory()) {
         logger.debug(`Adding ${resolvedDir} to namespace paths`);
-        namespacePaths.push();
+        namespacePaths.push(resolvedDir);
       } else {
         logger.warn(`Skipping ${resolvedDir} because it does not exist or is not a directory`);
       }
@@ -92,9 +92,9 @@ export async function startLWCServer(rootDir: string, logger: Logger): Promise<L
 
   [
     'exit', // normal exit flow
-    'SIGINT',  // when a user presses ctrl+c
-    'SIGTERM',  // when a user kills the process
-  ].forEach(signal => process.on(signal, cleanup));
+    'SIGINT', // when a user presses ctrl+c
+    'SIGTERM', // when a user kills the process
+  ].forEach((signal) => process.on(signal, cleanup));
 
   return lwcDevServer;
 }
