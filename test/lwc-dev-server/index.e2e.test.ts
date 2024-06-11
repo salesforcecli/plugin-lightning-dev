@@ -24,10 +24,10 @@ const logger = {
 
 describe('lwc-dev-server e2e', () => {
   const $$ = new TestContext();
-  let spy: sinon.SinonSpy;
+  let processExitSpy: sinon.SinonSpy;
 
   beforeEach(() => {
-    spy = $$.SANDBOX.stub(process, 'exit');
+    processExitSpy = $$.SANDBOX.stub(process, 'exit');
   });
 
   afterEach(() => {
@@ -40,6 +40,6 @@ describe('lwc-dev-server e2e', () => {
 
     expect(server).to.be.an.instanceOf(LWCServer);
     server.stopServer();
-    expect(spy.calledWith(0)).to.be.true;
+    expect(processExitSpy.calledWith(0)).to.be.true;
   });
 });
