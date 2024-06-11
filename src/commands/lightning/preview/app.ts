@@ -200,6 +200,7 @@ export default class LightningPreviewApp extends SfCommand<void> {
 
     const launchArguments = PreviewUtils.generateDesktopPreviewLaunchArguments(ldpServerUrl, appId, targetOrg);
 
+    // Start the LWC Dev Server
     await startLWCServer(process.cwd(), logger ? logger : await Logger.child(this.ctor.name));
 
     await this.config.runCommand('org:open', launchArguments);
@@ -279,6 +280,7 @@ export default class LightningPreviewApp extends SfCommand<void> {
         }
       }
 
+      // Start the LWC Dev Server
       await startLWCServer(process.cwd(), logger ? logger : await Logger.child(this.ctor.name));
       // 7. Launch the native app for previewing (launchMobileApp will show its own spinner)
       // eslint-disable-next-line camelcase
