@@ -8,7 +8,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 
-import fs from 'node:fs';
 import { randomBytes } from 'node:crypto';
 import { DevServerUtils } from './devServerUtils.js';
 
@@ -16,22 +15,16 @@ class LwrConfigFile {
   public identityToken?: string;
 }
 
-const BYTES_TO_GENERATE = 32;
-
+// **********************************************************************************************
+// * TODO: When we finalize the implementation for the preview commands and things settle down, *
+// *       consider moving this class into CryptoUtils of lwc-dev-mobile-core instead.          *
+// **********************************************************************************************
 export class IdentityUtils {
-  public static async createIdentityToken(): Promise<void> {
-    const lwrConfigFile = DevServerUtils.getServerConfigFileLocation();
-    if (fs.existsSync(lwrConfigFile)) {
-      const config = DevServerUtils.fetchServerConfigFileContent() as LwrConfigFile;
-      if (config?.identityToken == null) {
-        config.identityToken = randomBytes(BYTES_TO_GENERATE).toString();
-        try {
-          await DevServerUtils.writeServerConfigFileContent(config);
-        } catch (err) {
-          const error = err as Error;
-          throw new Error(`Error thrown while trying to write identity token to lwr.config.js: ${error.message}`);
-        }
-      }
+  public static async updateServerConfigFileWithIdentityToken(byteSize = 32): Promise<void> {
+    const config = await DevServerUtils.fetchServerConfigFileContent() as LwrConfigFile;
+    if (config && !config.identityToken) {
+      config.identityToken = randomBytes(byteSize).toString();
+      await DevServerUtils.writeServerConfigFileContent(config);
     }
   }
 }
