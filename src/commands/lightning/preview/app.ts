@@ -19,6 +19,7 @@ import {
 import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
 import chalk from 'chalk';
 import { OrgUtils } from '../../../shared/orgUtils.js';
+import { startLWCServer } from '../../../lwc-dev-server/index.js';
 import { PreviewUtils } from '../../../shared/previewUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
@@ -199,6 +200,9 @@ export default class LightningPreviewApp extends SfCommand<void> {
 
     const launchArguments = PreviewUtils.generateDesktopPreviewLaunchArguments(ldpServerUrl, appId, targetOrg);
 
+    // Start the LWC Dev Server
+    await startLWCServer(process.cwd(), logger ? logger : await Logger.child(this.ctor.name));
+
     await this.config.runCommand('org:open', launchArguments);
   }
 
@@ -276,6 +280,8 @@ export default class LightningPreviewApp extends SfCommand<void> {
         }
       }
 
+      // Start the LWC Dev Server
+      await startLWCServer(process.cwd(), logger ? logger : await Logger.child(this.ctor.name));
       // 7. Launch the native app for previewing (launchMobileApp will show its own spinner)
       // eslint-disable-next-line camelcase
       appConfig.launch_arguments = PreviewUtils.generateMobileAppPreviewLaunchArguments(ldpServerUrl, appName, appId);

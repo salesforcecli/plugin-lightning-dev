@@ -17,6 +17,7 @@ import {
 } from '@salesforce/lwc-dev-mobile-core';
 import { stubSpinner, stubUx } from '@salesforce/sf-plugins-core';
 import { expect } from 'chai';
+import esmock from 'esmock';
 import sinon from 'sinon';
 import LightningPreviewApp, {
   androidSalesforceAppPreviewConfig,
@@ -49,11 +50,20 @@ describe('lightning preview app', () => {
     '34'
   );
   const testEmulatorPort = 1234;
+  let MockedLightningPreviewApp: typeof LightningPreviewApp;
 
   beforeEach(async () => {
     stubUx($$.SANDBOX);
     stubSpinner($$.SANDBOX);
     await $$.stubAuths(testOrgData);
+    MockedLightningPreviewApp = await esmock<typeof LightningPreviewApp>(
+      '../../../../src/commands/lightning/preview/app.js',
+      {
+        '../../../../src/lwc-dev-server/index.js': {
+          startLWCServer: async () => ({ stopServer: () => {} }),
+        },
+      }
+    );
   });
 
   afterEach(() => {
@@ -63,7 +73,7 @@ describe('lightning preview app', () => {
   it('throws when app not found', async () => {
     try {
       $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(undefined);
-      await LightningPreviewApp.run(['--name', 'blah', '-o', testOrgData.username]);
+      await MockedLightningPreviewApp.run(['--name', 'blah', '-o', testOrgData.username]);
     } catch (err) {
       expect(err)
         .to.be.an('error')
@@ -77,7 +87,7 @@ describe('lightning preview app', () => {
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').throws(
         new Error('Cannot determine LDP url.')
       );
-      await LightningPreviewApp.run(['--name', 'Sales', '-o', testOrgData.username]);
+      await MockedLightningPreviewApp.run(['--name', 'Sales', '-o', testOrgData.username]);
     } catch (err) {
       expect(err).to.be.an('error').with.property('message', 'Cannot determine LDP url.');
     }
@@ -97,9 +107,9 @@ describe('lightning preview app', () => {
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
       const runCmdStub = $$.SANDBOX.stub(Config.prototype, 'runCommand').resolves();
       if (appName) {
-        await LightningPreviewApp.run(['--name', appName, '-o', testOrgData.username]);
+        await MockedLightningPreviewApp.run(['--name', appName, '-o', testOrgData.username]);
       } else {
-        await LightningPreviewApp.run(['-o', testOrgData.username]);
+        await MockedLightningPreviewApp.run(['-o', testOrgData.username]);
       }
 
       expect(runCmdStub.calledOnce);
@@ -192,7 +202,10 @@ describe('lightning preview app', () => {
       const expectedCertFilePath = '/path/to/cert.pem';
       $$.SANDBOX.stub(PreviewUtils, 'generateSelfSignedCert').returns(expectedCertFilePath);
 
-      const waitForUserToInstallCertStub = $$.SANDBOX.stub(LightningPreviewApp, 'waitForUserToInstallCert').resolves();
+      const waitForUserToInstallCertStub = $$.SANDBOX.stub(
+        MockedLightningPreviewApp,
+        'waitForUserToInstallCert'
+      ).resolves();
 
       $$.SANDBOX.stub(PreviewUtils, 'verifyMobileAppInstalled').resolves(true);
       $$.SANDBOX.stub(PreviewUtils, 'launchMobileApp').resolves();
@@ -225,10 +238,10 @@ describe('lightning preview app', () => {
       const expectedCertFilePath = '/path/to/cert.pem';
       $$.SANDBOX.stub(PreviewUtils, 'generateSelfSignedCert').returns(expectedCertFilePath);
 
-      $$.SANDBOX.stub(LightningPreviewApp, 'waitForUserToInstallCert').resolves();
+      $$.SANDBOX.stub(MockedLightningPreviewApp, 'waitForUserToInstallCert').resolves();
 
       const verifyMobileAppInstalledStub = $$.SANDBOX.stub(PreviewUtils, 'verifyMobileAppInstalled').resolves(false);
-      $$.SANDBOX.stub(LightningPreviewApp.prototype, 'confirm').resolves(false);
+      $$.SANDBOX.stub(MockedLightningPreviewApp.prototype, 'confirm').resolves(false);
 
       await verifyMobileThrowsWhenUserDeclinesToInstallApp(Platform.ios, verifyMobileAppInstalledStub);
       await verifyMobileThrowsWhenUserDeclinesToInstallApp(Platform.android, verifyMobileAppInstalledStub);
@@ -250,10 +263,10 @@ describe('lightning preview app', () => {
       const expectedCertFilePath = '/path/to/cert.pem';
       $$.SANDBOX.stub(PreviewUtils, 'generateSelfSignedCert').returns(expectedCertFilePath);
 
-      $$.SANDBOX.stub(LightningPreviewApp, 'waitForUserToInstallCert').resolves();
+      $$.SANDBOX.stub(MockedLightningPreviewApp, 'waitForUserToInstallCert').resolves();
 
       $$.SANDBOX.stub(PreviewUtils, 'verifyMobileAppInstalled').resolves(false);
-      $$.SANDBOX.stub(LightningPreviewApp.prototype, 'confirm').resolves(true);
+      $$.SANDBOX.stub(MockedLightningPreviewApp.prototype, 'confirm').resolves(true);
 
       const iosBundlePath = '/path/to/bundle.zip';
       const androidBundlePath = '/path/to/bundle.apk';
@@ -269,7 +282,7 @@ describe('lightning preview app', () => {
 
     async function verifyMobileThrowsWithUnmetRequirements(platform: Platform.ios | Platform.android) {
       try {
-        await LightningPreviewApp.run(['-n', 'Sales', '-o', testOrgData.username, '-t', platform]);
+        await MockedLightningPreviewApp.run(['-n', 'Sales', '-o', testOrgData.username, '-t', platform]);
       } catch (err) {
         expect(err).to.be.an('error').with.property('message').that.contains('Requirement blah not met');
       }
@@ -277,7 +290,16 @@ describe('lightning preview app', () => {
 
     async function verifyMobileThrowsWhenDeviceNotFound(platform: Platform.ios | Platform.android) {
       try {
-        await LightningPreviewApp.run(['-n', 'Sales', '-o', testOrgData.username, '-t', platform, '-i', 'some_device']);
+        await MockedLightningPreviewApp.run([
+          '-n',
+          'Sales',
+          '-o',
+          testOrgData.username,
+          '-t',
+          platform,
+          '-i',
+          'some_device',
+        ]);
       } catch (err) {
         expect(err)
           .to.be.an('error')
@@ -290,7 +312,7 @@ describe('lightning preview app', () => {
       bootStub: sinon.SinonStub
     ) {
       try {
-        await LightningPreviewApp.run(['-n', 'Sales', '-o', testOrgData.username, '-t', platform]);
+        await MockedLightningPreviewApp.run(['-n', 'Sales', '-o', testOrgData.username, '-t', platform]);
       } catch (err) {
         expect(err).to.be.an('error').with.property('message', 'Failed to boot device');
 
@@ -308,7 +330,7 @@ describe('lightning preview app', () => {
 
     async function verifyMobileThrowsWhenFailedToGenerateCert(platform: Platform.ios | Platform.android) {
       try {
-        await LightningPreviewApp.run(['-n', 'Sales', '-o', testOrgData.username, '-t', platform]);
+        await MockedLightningPreviewApp.run(['-n', 'Sales', '-o', testOrgData.username, '-t', platform]);
       } catch (err) {
         expect(err).to.be.an('error').with.property('message', 'Failed to generate certificate');
       }
@@ -320,7 +342,7 @@ describe('lightning preview app', () => {
       waitForUserToInstallCertStub: sinon.SinonStub
     ) {
       const expectedDevice = platform === Platform.ios ? testIOSDevice : testAndroidDevice;
-      await LightningPreviewApp.run(['-n', 'Sales', '-o', testOrgData.username, '-t', platform]);
+      await MockedLightningPreviewApp.run(['-n', 'Sales', '-o', testOrgData.username, '-t', platform]);
       expect(waitForUserToInstallCertStub.calledWith(platform, expectedDevice, expectedCertFilePath)).to.be.true;
       waitForUserToInstallCertStub.resetHistory();
     }
@@ -333,7 +355,7 @@ describe('lightning preview app', () => {
       const deviceId = platform === Platform.ios ? testIOSDevice.udid : testAndroidDevice.name;
 
       try {
-        await LightningPreviewApp.run(['-n', 'Sales', '-o', testOrgData.username, '-t', platform]);
+        await MockedLightningPreviewApp.run(['-n', 'Sales', '-o', testOrgData.username, '-t', platform]);
       } catch (err) {
         expect(err)
           .to.be.an('error')
@@ -362,9 +384,13 @@ describe('lightning preview app', () => {
       const expectedAppConfig =
         platform === Platform.ios ? iOSSalesforceAppPreviewConfig : androidSalesforceAppPreviewConfig;
       // eslint-disable-next-line camelcase
-      expectedAppConfig.launch_arguments = PreviewUtils.generateMobileAppPreviewLaunchArguments(expectedLdpServerUrl);
+      expectedAppConfig.launch_arguments = PreviewUtils.generateMobileAppPreviewLaunchArguments(
+        expectedLdpServerUrl,
+        'Sales',
+        testAppId
+      );
 
-      await LightningPreviewApp.run(['-n', 'Sales', '-o', testOrgData.username, '-t', platform]);
+      await MockedLightningPreviewApp.run(['-n', 'Sales', '-o', testOrgData.username, '-t', platform]);
       expect(downloadStub.calledOnce).to.be.true;
 
       if (platform === Platform.ios) {

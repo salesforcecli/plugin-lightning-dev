@@ -4,5 +4,5 @@
   "recursive": true,
   "reporter": "spec",
   "timeout": 600000,
-  "node-option": ["loader=ts-node/esm"]
+  "node-option": ["loader=ts-node/esm", "loader=esmock"]
 }
