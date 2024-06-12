@@ -21,9 +21,9 @@ class LwrConfigFile {
 // **********************************************************************************************
 export class IdentityUtils {
   public static async updateServerConfigFileWithIdentityToken(byteSize = 32): Promise<void> {
-    const config = await DevServerUtils.fetchServerConfigFileContent() as LwrConfigFile;
+    const config = (await DevServerUtils.fetchServerConfigFileContent()) as LwrConfigFile;
     if (config && !config.identityToken) {
-      config.identityToken = randomBytes(byteSize).toString();
+      config.identityToken = randomBytes(byteSize).toString('hex');
       await DevServerUtils.writeServerConfigFileContent(config);
     }
   }
