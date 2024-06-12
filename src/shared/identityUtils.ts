@@ -16,14 +16,15 @@ class LwrConfigFile {
 }
 
 // **********************************************************************************************
-// * TODO: When we finalize the implementation for the preview commands and things settle down, *
-// *       consider moving this class into CryptoUtils of lwc-dev-mobile-core instead.          *
+// * TODO: Move the functionality of creating the token as a method in CryptoUtils of           *
+// *       lwc-dev-mobile-core instead. Do so when it's finalized where to stash the token:     *
+// *       lwr.config.json vs sfdx-project.json                                                 *
 // **********************************************************************************************
 export class IdentityUtils {
   public static async updateServerConfigFileWithIdentityToken(byteSize = 32): Promise<void> {
     const config = (await DevServerUtils.fetchServerConfigFileContent()) as LwrConfigFile;
     if (config && !config.identityToken) {
-      config.identityToken = randomBytes(byteSize).toString('hex');
+      config.identityToken = randomBytes(byteSize).toString('base64');
       await DevServerUtils.writeServerConfigFileContent(config);
     }
   }
