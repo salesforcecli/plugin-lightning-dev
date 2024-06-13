@@ -10,7 +10,9 @@ import { CommonUtils } from '@salesforce/lwc-dev-mobile-core';
 
 export class DevServerUtils {
   public static getServerConfigFileLocation(): string {
-    // TODO: update this after dev server is integrated into this repo
+    // TODO: When extensibility of sfdx-project.json becomes clear,
+    //       use that as a place for reading and writing this plugin's
+    //       related values instead of lwr.config.json.
     return path.join(process.cwd(), 'lwr.config.json');
   }
 
