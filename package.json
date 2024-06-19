@@ -58,6 +58,7 @@
   "oclif": {
     "commands": "./lib/commands",
     "bin": "sf",
+    "configMeta": "./lib/configMeta",
     "topicSeparator": " ",
     "devPlugins": [
       "@oclif/plugin-help",
