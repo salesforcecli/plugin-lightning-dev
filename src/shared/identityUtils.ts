@@ -5,13 +5,9 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-
 import { CryptoUtils } from '@salesforce/lwc-dev-mobile-core';
-import { LightningDevConfig } from './lightningDevConfig.js';
-import { ConfigVars } from './../configMeta.js';
+import { Config, ConfigAggregator } from '@salesforce/core';
+import configMeta, { ConfigVars } from './../configMeta.js';
 
 export class IdentityUtils {
   public static async updateConfigWithIdentityToken(): Promise<void> {
@@ -25,11 +21,10 @@ export class IdentityUtils {
   }
 
   public static async getIdentityToken(): Promise<string | undefined> {
-    const config = await LightningDevConfig.create({
-      isGlobal: false,
-    });
-    await config.read();
-    const identityToken = config.get(ConfigVars.LOCAL_WEB_SERVER_IDENTITY_TOKEN);
+    const config = await ConfigAggregator.create({ customConfigMeta: configMeta });
+    // Need to reload to make sure the values read are decrypted
+    await config.reload();
+    const identityToken = config.getPropertyValue(ConfigVars.LOCAL_WEB_SERVER_IDENTITY_TOKEN);
 
     if (identityToken) {
       const identityTokenAsString = identityToken as string;
@@ -40,12 +35,10 @@ export class IdentityUtils {
   }
 
   public static async writeIdentityToken(token: string): Promise<void> {
-    const config = await LightningDevConfig.create({
-      isGlobal: false,
-    });
-    await config.read();
+    const config = await Config.create({ isGlobal: false });
+    Config.addAllowedProperties(configMeta);
     config.set(ConfigVars.LOCAL_WEB_SERVER_IDENTITY_TOKEN, token);
-    config.writeSync();
+    await config.write();
     return Promise.resolve();
   }
 }
