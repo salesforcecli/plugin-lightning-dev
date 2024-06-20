@@ -10,13 +10,14 @@ import { Config, ConfigAggregator } from '@salesforce/core';
 import configMeta, { ConfigVars } from './../configMeta.js';
 
 export class IdentityUtils {
-  public static async updateConfigWithIdentityToken(): Promise<void> {
-    const token = await this.getIdentityToken();
+  public static async getOrCreateIdentityToken(): Promise<string> {
+    let token = await this.getIdentityToken();
     if (!token) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
-      const generatedIdentityToken = CryptoUtils.generateIdentityToken();
-      await this.writeIdentityToken(generatedIdentityToken);
+      token = CryptoUtils.generateIdentityToken();
+      await this.writeIdentityToken(token);
     }
+    return token;
   }
 
   public static async getIdentityToken(): Promise<string | undefined> {
