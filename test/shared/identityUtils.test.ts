@@ -11,6 +11,7 @@
 import { expect } from 'chai';
 import { Config, ConfigAggregator } from '@salesforce/core';
 import { TestContext } from '@salesforce/core/testSetup';
+import { CryptoUtils } from '@salesforce/lwc-dev-mobile-core';
 import { IdentityUtils } from '../../src/shared/identityUtils.js';
 import { ConfigVars } from '../../src/configMeta.js';
 
@@ -21,20 +22,23 @@ describe('identityUtils', () => {
     $$.restore();
   });
 
-  it('updateConfigWithIdentityToken resolves if token is found', async () => {
+  it('getOrCreateIdentityToken resolves if token is found', async () => {
     const fakeIdentityToken = 'fake identity token';
     $$.SANDBOX.stub(IdentityUtils, 'getIdentityToken').resolves(fakeIdentityToken);
 
-    const resolved = await IdentityUtils.updateConfigWithIdentityToken();
-    expect(resolved).to.equal(undefined);
+    const resolved = await IdentityUtils.getOrCreateIdentityToken();
+    expect(resolved).to.equal(fakeIdentityToken);
   });
 
-  it('updateConfigWithIdentityToken resolves and writeIdentityToken is called when there is no token', async () => {
+  it('getOrCreateIdentityToken resolves and writeIdentityToken is called when there is no token', async () => {
+    const fakeIdentityToken = 'fake identity token';
     $$.SANDBOX.stub(IdentityUtils, 'getIdentityToken').resolves(undefined);
-    $$.SANDBOX.stub(IdentityUtils, 'writeIdentityToken').resolves();
+    $$.SANDBOX.stub(CryptoUtils, 'generateIdentityToken').resolves(fakeIdentityToken);
+    const writeIdentityTokenStub = $$.SANDBOX.stub(IdentityUtils, 'writeIdentityToken').resolves();
 
-    const resolved = await IdentityUtils.updateConfigWithIdentityToken();
-    expect(resolved).to.equal(undefined);
+    const resolved = await IdentityUtils.getOrCreateIdentityToken();
+    expect(resolved).to.equal(fakeIdentityToken);
+    expect(writeIdentityTokenStub.calledOnce).to.be.true;
   });
 
   it('getIdentityToken resolves to undefined when identity token is not available', async () => {
