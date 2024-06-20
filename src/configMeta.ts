@@ -7,7 +7,7 @@
 
 import type { ConfigPropertyMeta } from '@salesforce/core';
 
-export enum ConfigVars {
+export const enum ConfigVars {
   /**
    * The Base64-encoded identity token of the local web server, used to
    * validate the web server's identity to the hmr-client.

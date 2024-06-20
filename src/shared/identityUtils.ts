@@ -17,7 +17,6 @@ export class IdentityUtils {
       const generatedIdentityToken = CryptoUtils.generateIdentityToken();
       await this.writeIdentityToken(generatedIdentityToken);
     }
-    return Promise.resolve();
   }
 
   public static async getIdentityToken(): Promise<string | undefined> {
@@ -26,12 +25,7 @@ export class IdentityUtils {
     await config.reload();
     const identityToken = config.getPropertyValue(ConfigVars.LOCAL_WEB_SERVER_IDENTITY_TOKEN);
 
-    if (identityToken) {
-      const identityTokenAsString = identityToken as string;
-      return Promise.resolve(identityTokenAsString);
-    }
-
-    return Promise.resolve(undefined);
+    return identityToken as string;
   }
 
   public static async writeIdentityToken(token: string): Promise<void> {
@@ -39,6 +33,5 @@ export class IdentityUtils {
     Config.addAllowedProperties(configMeta);
     config.set(ConfigVars.LOCAL_WEB_SERVER_IDENTITY_TOKEN, token);
     await config.write();
-    return Promise.resolve();
   }
 }
