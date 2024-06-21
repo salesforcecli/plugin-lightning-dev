@@ -13,7 +13,6 @@ export class IdentityUtils {
   public static async getOrCreateIdentityToken(): Promise<string> {
     let token = await this.getIdentityToken();
     if (!token) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
       token = CryptoUtils.generateIdentityToken();
       await this.writeIdentityToken(token);
     }
