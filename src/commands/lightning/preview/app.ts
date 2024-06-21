@@ -152,7 +152,7 @@ export default class LightningPreviewApp extends SfCommand<void> {
     // todo: figure out how to make the port dynamic instead of hard-coded value here
     const ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(
       platform,
-      `${await LwcDevServerUtils.getLocalDevServerPort()}`
+      `${LwcDevServerUtils.getLocalDevServerPort()}`
     );
     logger.debug(`Local Dev Server url is ${ldpServerUrl}`);
 
