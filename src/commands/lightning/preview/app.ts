@@ -21,6 +21,7 @@ import chalk from 'chalk';
 import { OrgUtils } from '../../../shared/orgUtils.js';
 import { startLWCServer } from '../../../lwc-dev-server/index.js';
 import { PreviewUtils } from '../../../shared/previewUtils.js';
+import { LwcDevServerUtils } from '../../../shared/lwcDevServerUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.app');
@@ -149,7 +150,10 @@ export default class LightningPreviewApp extends SfCommand<void> {
 
     logger.debug('Determining Local Dev Server url');
     // todo: figure out how to make the port dynamic instead of hard-coded value here
-    const ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(platform, '8081');
+    const ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(
+      platform,
+      `${await LwcDevServerUtils.getLocalDevServerPort()}`
+    );
     logger.debug(`Local Dev Server url is ${ldpServerUrl}`);
 
     let appId: string | undefined;

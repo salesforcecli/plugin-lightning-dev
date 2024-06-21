@@ -13,7 +13,7 @@ export const LOCAL_DEV_SERVER_DEFAULT_PORT = 8081;
 export class LwcDevServerUtils {
   public static async getLocalDevServerPort(): Promise<number> {
     // Should this be global or local?
-    const config = await Config.create({ isGlobal: true });
+    const config = await Config.create({ isGlobal: false });
     Config.addAllowedProperties(configMeta);
     const configPort = config.get(ConfigVars.LOCAL_DEV_SERVER_PORT) as number;
 

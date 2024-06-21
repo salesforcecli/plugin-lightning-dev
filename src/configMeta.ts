@@ -36,10 +36,7 @@ export default [
         console.log('Validating: ', value, typeof value);
         const parsedPort = parseInt(value as string, 10);
 
-        if (isNaN(parsedPort)) {
-          return false;
-        }
-        if (parsedPort < 1 || parsedPort > 65535) {
+        if (isNaN(parsedPort) || parsedPort < 1 || parsedPort > 65535) {
           return false;
         }
         return true;
