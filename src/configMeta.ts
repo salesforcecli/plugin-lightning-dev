@@ -6,6 +6,7 @@
  */
 
 import type { ConfigPropertyMeta, ConfigValue } from '@salesforce/core';
+import { Workspace } from '@lwc/lwc-dev-server';
 
 export const enum ConfigVars {
   /**
@@ -18,6 +19,11 @@ export const enum ConfigVars {
    * The port number of the local dev server.
    */
   LOCAL_DEV_SERVER_PORT = 'local-dev-server-port',
+
+  /**
+   * The Workspace name of the local dev server.
+   */
+  LOCAL_DEV_SERVER_WORKSPACE = 'local-dev-server-workspace',
 }
 
 export default [
@@ -32,8 +38,10 @@ export default [
     description: 'The port number of the local dev server',
     input: {
       validator: (value: ConfigValue): boolean => {
-        // eslint-disable-next-line no-console
-        console.log('Validating: ', value, typeof value);
+        if (!value) {
+          return false;
+        }
+
         const parsedPort = parseInt(value as string, 10);
 
         if (isNaN(parsedPort) || parsedPort < 1 || parsedPort > 65535) {
@@ -42,6 +50,25 @@ export default [
         return true;
       },
       failedMessage: 'Must be a number between 1 and 65535',
+    },
+  },
+  {
+    key: ConfigVars.LOCAL_DEV_SERVER_WORKSPACE,
+    description: 'The workspace name of the local dev server',
+    input: {
+      validator: (value: ConfigValue): boolean => {
+        if (!value) {
+          return false;
+        }
+
+        const workspace = value as Workspace;
+
+        if (workspace === Workspace.SfCli || workspace === Workspace.Mrt) {
+          return true;
+        }
+        return false;
+      },
+      failedMessage: 'Valid workspace value is "SalesforceCLI" OR "mrt"',
     },
   },
 ] as ConfigPropertyMeta[];
