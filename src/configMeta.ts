@@ -11,7 +11,10 @@ import { Messages } from '@salesforce/core';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'shared.utils');
+const IDENTITY_TOKEN_DESC = messages.getMessage('identity-utils.token-desc');
+const LOCAL_DEV_SERVER_PORT_DESC = messages.getMessage('lwc-dev-server-utils.port-desc');
 const LOCAL_DEV_SERVER_PORT_MESSAGE = messages.getMessage('lwc-dev-server-utils.port-message');
+const LOCAL_DEV_SERVER_WORKSPACE_DESC = messages.getMessage('lwc-dev-server-utils.workspace-desc');
 const LOCAL_DEV_SERVER_WORKSPACE_MESSAGE = messages.getMessage('lwc-dev-server-utils.workspace-message');
 
 export const enum ConfigVars {
@@ -35,13 +38,13 @@ export const enum ConfigVars {
 export default [
   {
     key: ConfigVars.LOCAL_WEB_SERVER_IDENTITY_TOKEN,
-    description: 'The Base64-encoded identity token of the local web server',
+    description: IDENTITY_TOKEN_DESC,
     hidden: true,
     encrypted: true,
   },
   {
     key: ConfigVars.LOCAL_DEV_SERVER_PORT,
-    description: 'The port number of the local dev server',
+    description: LOCAL_DEV_SERVER_PORT_DESC,
     input: {
       validator: (value: ConfigValue): boolean => {
         if (!value) {
@@ -60,7 +63,7 @@ export default [
   },
   {
     key: ConfigVars.LOCAL_DEV_SERVER_WORKSPACE,
-    description: 'The workspace name of the local dev server',
+    description: LOCAL_DEV_SERVER_WORKSPACE_DESC,
     input: {
       validator: (value: ConfigValue): boolean => {
         if (!value) {
