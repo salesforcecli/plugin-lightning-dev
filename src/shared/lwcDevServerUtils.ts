@@ -15,23 +15,26 @@ export const LOCAL_DEV_SERVER_DEFAULT_WORKSPACE = Workspace.SfCli;
 export class LwcDevServerUtils {
   static #config: Config;
 
-  public static async init(): Promise<void> {
-    // Should this be global or local?
+  public static async getConfig(): Promise<Config> {
+    if (this.#config) {
+      return this.#config;
+    }
     this.#config = await Config.create({ isGlobal: false });
     Config.addAllowedProperties(configMeta);
+    return this.#config;
   }
 
-  public static getLocalDevServerPort(): number {
-    const configPort = this.#config.get(ConfigVars.LOCAL_DEV_SERVER_PORT) as number;
+  public static async getLocalDevServerPort(): Promise<number> {
+    const config = await this.getConfig();
+    const configPort = config.get(ConfigVars.LOCAL_DEV_SERVER_PORT) as number;
 
     return configPort || LOCAL_DEV_SERVER_DEFAULT_PORT;
   }
 
-  public static getLocalDevServerWorkspace(): Workspace {
-    const configWorkspace = this.#config.get(ConfigVars.LOCAL_DEV_SERVER_WORKSPACE) as Workspace;
+  public static async getLocalDevServerWorkspace(): Promise<Workspace> {
+    const config = await this.getConfig();
+    const configWorkspace = config.get(ConfigVars.LOCAL_DEV_SERVER_WORKSPACE) as Workspace;
 
     return configWorkspace || LOCAL_DEV_SERVER_DEFAULT_WORKSPACE;
   }
 }
-
-await LwcDevServerUtils.init();

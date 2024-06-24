@@ -38,7 +38,7 @@ function mapLogLevel(cliLogLevel: number): number {
   }
 }
 
-function createLWCServerConfig(rootDir: string, logger: Logger): ServerConfig {
+async function createLWCServerConfig(rootDir: string, logger: Logger): Promise<ServerConfig> {
   const sfdxConfig = path.resolve(rootDir, 'sfdx-project.json');
 
   if (!existsSync(sfdxConfig) || !lstatSync(sfdxConfig).isFile()) {
@@ -66,18 +66,18 @@ function createLWCServerConfig(rootDir: string, logger: Logger): ServerConfig {
 
   return {
     rootDir,
-    port: LwcDevServerUtils.getLocalDevServerPort(),
+    port: await LwcDevServerUtils.getLocalDevServerPort(),
     protocol: 'wss',
     host: 'localhost',
     paths: namespacePaths,
-    workspace: LwcDevServerUtils.getLocalDevServerWorkspace(),
+    workspace: await LwcDevServerUtils.getLocalDevServerWorkspace(),
     targets: ['LEX'], // should this be something else?
     logLevel: mapLogLevel(logger.getLevel()),
   };
 }
 
 export async function startLWCServer(rootDir: string, logger: Logger): Promise<LWCServer> {
-  const config = createLWCServerConfig(rootDir, logger);
+  const config = await createLWCServerConfig(rootDir, logger);
   logger.trace(`Starting LWC Dev Server with config: ${JSON.stringify(config)}`);
   let lwcDevServer: LWCServer | null = await startLwcDevServer(config);
 
