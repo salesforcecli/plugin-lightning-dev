@@ -7,6 +7,12 @@
 
 import type { ConfigPropertyMeta, ConfigValue } from '@salesforce/core';
 import { Workspace } from '@lwc/lwc-dev-server';
+import { Messages } from '@salesforce/core';
+
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'shared.utils');
+const LOCAL_DEV_SERVER_PORT_MESSAGE = messages.getMessage('lwc-dev-server-utils.port-message');
+const LOCAL_DEV_SERVER_WORKSPACE_MESSAGE = messages.getMessage('lwc-dev-server-utils.workspace-message');
 
 export const enum ConfigVars {
   /**
@@ -49,7 +55,7 @@ export default [
         }
         return true;
       },
-      failedMessage: 'Must be a number between 1 and 65535',
+      failedMessage: LOCAL_DEV_SERVER_PORT_MESSAGE,
     },
   },
   {
@@ -68,7 +74,7 @@ export default [
         }
         return false;
       },
-      failedMessage: 'Valid workspace value is "SalesforceCLI" OR "mrt"',
+      failedMessage: LOCAL_DEV_SERVER_WORKSPACE_MESSAGE,
     },
   },
 ] as ConfigPropertyMeta[];
