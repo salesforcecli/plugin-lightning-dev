@@ -11,6 +11,7 @@ import process from 'node:process';
 import { LWCServer, LogLevel, ServerConfig, startLwcDevServer } from '@lwc/lwc-dev-server';
 import { Logger } from '@salesforce/core';
 import { LwcDevServerUtils } from '../shared/lwcDevServerUtils.js';
+import { IdentityUtils } from '../shared/identityUtils.js';
 
 /**
  * Map sf cli log level to lwc dev server log level
@@ -39,6 +40,7 @@ function mapLogLevel(cliLogLevel: number): number {
 }
 
 async function createLWCServerConfig(rootDir: string, logger: Logger): Promise<ServerConfig> {
+  const identityToken = await IdentityUtils.getOrCreateIdentityToken();
   const sfdxConfig = path.resolve(rootDir, 'sfdx-project.json');
 
   if (!existsSync(sfdxConfig) || !lstatSync(sfdxConfig).isFile()) {
@@ -72,6 +74,7 @@ async function createLWCServerConfig(rootDir: string, logger: Logger): Promise<S
     paths: namespacePaths,
     workspace: await LwcDevServerUtils.getLocalDevServerWorkspace(),
     targets: ['LEX'], // should this be something else?
+    identityToken,
     logLevel: mapLogLevel(logger.getLevel()),
   };
 }
