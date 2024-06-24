@@ -8,10 +8,9 @@
 import { existsSync, lstatSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
-import { LWCServer, LogLevel, ServerConfig, Workspace, startLwcDevServer } from '@lwc/lwc-dev-server';
+import { LWCServer, LogLevel, ServerConfig, startLwcDevServer } from '@lwc/lwc-dev-server';
 import { Logger } from '@salesforce/core';
-
-const DEV_SERVER_PORT = 8081;
+import { LwcDevServerUtils } from '../shared/lwcDevServerUtils.js';
 
 /**
  * Map sf cli log level to lwc dev server log level
@@ -39,7 +38,7 @@ function mapLogLevel(cliLogLevel: number): number {
   }
 }
 
-function createLWCServerConfig(rootDir: string, logger: Logger): ServerConfig {
+async function createLWCServerConfig(rootDir: string, logger: Logger): Promise<ServerConfig> {
   const sfdxConfig = path.resolve(rootDir, 'sfdx-project.json');
 
   if (!existsSync(sfdxConfig) || !lstatSync(sfdxConfig).isFile()) {
@@ -67,18 +66,18 @@ function createLWCServerConfig(rootDir: string, logger: Logger): ServerConfig {
 
   return {
     rootDir,
-    port: DEV_SERVER_PORT,
+    port: await LwcDevServerUtils.getLocalDevServerPort(),
     protocol: 'wss',
     host: 'localhost',
     paths: namespacePaths,
-    workspace: Workspace.SfCli,
+    workspace: await LwcDevServerUtils.getLocalDevServerWorkspace(),
     targets: ['LEX'], // should this be something else?
     logLevel: mapLogLevel(logger.getLevel()),
   };
 }
 
 export async function startLWCServer(rootDir: string, logger: Logger): Promise<LWCServer> {
-  const config = createLWCServerConfig(rootDir, logger);
+  const config = await createLWCServerConfig(rootDir, logger);
   logger.trace(`Starting LWC Dev Server with config: ${JSON.stringify(config)}`);
   let lwcDevServer: LWCServer | null = await startLwcDevServer(config);
 

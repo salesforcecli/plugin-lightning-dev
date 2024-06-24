@@ -5,7 +5,17 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import type { ConfigPropertyMeta } from '@salesforce/core';
+import type { ConfigPropertyMeta, ConfigValue } from '@salesforce/core';
+import { Workspace } from '@lwc/lwc-dev-server';
+import { Messages } from '@salesforce/core';
+
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'shared.utils');
+const IDENTITY_TOKEN_DESC = messages.getMessage('identity-utils.token-desc');
+const LOCAL_DEV_SERVER_PORT_DESC = messages.getMessage('lwc-dev-server-utils.port-desc');
+const LOCAL_DEV_SERVER_PORT_MESSAGE = messages.getMessage('lwc-dev-server-utils.port-message');
+const LOCAL_DEV_SERVER_WORKSPACE_DESC = messages.getMessage('lwc-dev-server-utils.workspace-desc');
+const LOCAL_DEV_SERVER_WORKSPACE_MESSAGE = messages.getMessage('lwc-dev-server-utils.workspace-message');
 
 export const enum ConfigVars {
   /**
@@ -13,13 +23,61 @@ export const enum ConfigVars {
    * validate the web server's identity to the hmr-client.
    */
   LOCAL_WEB_SERVER_IDENTITY_TOKEN = 'local-web-server-identity-token',
+
+  /**
+   * The port number of the local dev server.
+   */
+  LOCAL_DEV_SERVER_PORT = 'local-dev-server-port',
+
+  /**
+   * The Workspace name of the local dev server.
+   */
+  LOCAL_DEV_SERVER_WORKSPACE = 'local-dev-server-workspace',
 }
 
 export default [
   {
     key: ConfigVars.LOCAL_WEB_SERVER_IDENTITY_TOKEN,
-    description: 'The Base64-encoded identity token of the local web server',
+    description: IDENTITY_TOKEN_DESC,
     hidden: true,
     encrypted: true,
+  },
+  {
+    key: ConfigVars.LOCAL_DEV_SERVER_PORT,
+    description: LOCAL_DEV_SERVER_PORT_DESC,
+    input: {
+      validator: (value: ConfigValue): boolean => {
+        if (!value) {
+          return false;
+        }
+
+        const parsedPort = parseInt(value as string, 10);
+
+        if (isNaN(parsedPort) || parsedPort < 1 || parsedPort > 65535) {
+          return false;
+        }
+        return true;
+      },
+      failedMessage: LOCAL_DEV_SERVER_PORT_MESSAGE,
+    },
+  },
+  {
+    key: ConfigVars.LOCAL_DEV_SERVER_WORKSPACE,
+    description: LOCAL_DEV_SERVER_WORKSPACE_DESC,
+    input: {
+      validator: (value: ConfigValue): boolean => {
+        if (!value) {
+          return false;
+        }
+
+        const workspace = value as Workspace;
+
+        if (workspace === Workspace.SfCli || workspace === Workspace.Mrt) {
+          return true;
+        }
+        return false;
+      },
+      failedMessage: LOCAL_DEV_SERVER_WORKSPACE_MESSAGE,
+    },
   },
 ] as ConfigPropertyMeta[];

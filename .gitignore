@@ -53,3 +53,7 @@ node_modules
 __lwr_cache__
 app
 bld
+
+# sf cli
+.sf
+.sfdx
