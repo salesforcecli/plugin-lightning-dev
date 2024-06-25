@@ -10,8 +10,7 @@ import path from 'node:path';
 import process from 'node:process';
 import { LWCServer, LogLevel, ServerConfig, startLwcDevServer } from '@lwc/lwc-dev-server';
 import { Logger } from '@salesforce/core';
-import { LwcDevServerUtils } from '../shared/lwcDevServerUtils.js';
-import { IdentityUtils } from '../shared/identityUtils.js';
+import { ConfigUtils } from '../shared/configUtils.js';
 
 /**
  * Map sf cli log level to lwc dev server log level
@@ -40,7 +39,7 @@ function mapLogLevel(cliLogLevel: number): number {
 }
 
 async function createLWCServerConfig(rootDir: string, logger: Logger): Promise<ServerConfig> {
-  const identityToken = await IdentityUtils.getOrCreateIdentityToken();
+  const identityToken = await ConfigUtils.getOrCreateIdentityToken();
   const sfdxConfig = path.resolve(rootDir, 'sfdx-project.json');
 
   if (!existsSync(sfdxConfig) || !lstatSync(sfdxConfig).isFile()) {
@@ -66,17 +65,27 @@ async function createLWCServerConfig(rootDir: string, logger: Logger): Promise<S
     }
   }
 
-  return {
+  const serverConfig: ServerConfig = {
     rootDir,
-    port: await LwcDevServerUtils.getLocalDevServerPort(),
+    port: await ConfigUtils.getLocalDevServerPort(),
     protocol: 'wss',
     host: 'localhost',
     paths: namespacePaths,
-    workspace: await LwcDevServerUtils.getLocalDevServerWorkspace(),
+    workspace: await ConfigUtils.getLocalDevServerWorkspace(),
     targets: ['LEX'], // should this be something else?
     identityToken,
     logLevel: mapLogLevel(logger.getLevel()),
   };
+
+  const secureConnectionFiles = await ConfigUtils.getSecureConnectionFiles();
+  if (secureConnectionFiles?.pemCertFilePath && secureConnectionFiles.pemKeyFilePath) {
+    serverConfig.https = {
+      cert: secureConnectionFiles.pemCertFilePath,
+      key: secureConnectionFiles.pemKeyFilePath,
+    };
+  }
+
+  return serverConfig;
 }
 
 export async function startLWCServer(rootDir: string, logger: Logger): Promise<LWCServer> {
