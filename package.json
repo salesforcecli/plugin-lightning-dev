@@ -6,7 +6,7 @@
   "bugs": "https://github.com/forcedotcom/cli/issues",
   "dependencies": {
     "@lwrjs/api": "0.13.0-alpha.19",
-    "@lwc/lwc-dev-server": "^7.1.3-6.6.7",
+    "@lwc/lwc-dev-server": "^8.1.1",
     "@lwc/sfdc-lwc-compiler": "^7.1.3-6.6.7",
     "@oclif/core": "^3.26.6",
     "@salesforce/core": "^7.3.9",
