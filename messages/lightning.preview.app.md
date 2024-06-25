@@ -4,7 +4,7 @@ Preview a Lightning Experience application locally and in real-time, without dep
 
 # description
 
-With developer preview mode, see local changes to your app in a real-time preview that you don't have to deploy or manually refresh. To let you quickly iterate on your Lightning web components (LWCs) and pages, your app preview automatically refreshes when source code changes are detected.
+In developer preview mode, see local changes to your app in a real-time preview that you don't have to deploy or manually refresh. To let you quickly iterate on your Lightning web components (LWCs) and pages, your app preview automatically refreshes when source code changes are detected.
 
 When you edit local files in developer preview mode, your LWCs reflect these changes within your {org name} org:
 
@@ -13,7 +13,7 @@ When you edit local files in developer preview mode, your LWCs reflect these cha
 - JS edits in-service component library
 - JS method changes that don't affect the LWC's public API
 
-To see any other local changes in your app, you have to deploy to your org. If you make changes directly in your org (e.g., saving new component properties,) they're immediately live on your app. To update your local version of the app with those changes, you have to retrieve them from your org.
+To see any other local changes in your app, you have to deploy to your org. If you make changes directly in your org, (like saving new component properties,) they're immediately live on your app. To update your local version of the app with those changes, you have to retrieve them from your org.
 
 Use the appropriate topic to preview specific aspects of the development environment.
 
