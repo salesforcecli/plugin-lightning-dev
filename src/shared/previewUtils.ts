@@ -30,14 +30,15 @@ import {
 } from '@salesforce/lwc-dev-mobile-core';
 import { Progress, Spinner } from '@salesforce/sf-plugins-core';
 import fetch from 'node-fetch';
+import { SecureConnectionFiles } from '../configMeta.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.app');
 const DevPreviewAuraMode = 'DEVPREVIEW';
 
 export class PreviewUtils {
-  public static generateWebSocketUrlForLocalDevServer(platform: string, port: string): string {
-    return LwcDevMobileCorePreviewUtils.generateWebSocketUrlForLocalDevServer(platform, port);
+  public static generateWebSocketUrlForLocalDevServer(platform: string, port: string | number): string {
+    return LwcDevMobileCorePreviewUtils.generateWebSocketUrlForLocalDevServer(platform, port.toString());
   }
 
   /**
@@ -161,9 +162,9 @@ export class PreviewUtils {
       launchArguments.push({ name: 'LightningExperienceAppID', value: appId });
     }
 
-    launchArguments.push({ name: 'aura.ldpServerUrl', value: ldpServerUrl });
+    launchArguments.push({ name: '0.aura.ldpServerUrl', value: ldpServerUrl });
 
-    launchArguments.push({ name: 'aura.mode', value: auraMode });
+    launchArguments.push({ name: '0.aura.mode', value: auraMode });
 
     return launchArguments;
   }
@@ -171,12 +172,15 @@ export class PreviewUtils {
   /**
    * Generates a self-signed certificate and saves it to a file at the specified location.
    *
-   * @param platform A supported platform (Desktop or iOS or Android)
+   * @param platform A mobile platform (iOS or Android)
    * @param saveLocation Path to a folder where the generated certificated will be saved to (defaults to the current working directory)
-   * @returns Path to the generated certificate file
+   * @returns Path to the generated certificate and private key files
    */
-  public static generateSelfSignedCert(platform: Platform, saveLocation = '.'): string {
-    const cert = CryptoUtils.generateSelfSignedCert('localhost', 2048, 365);
+  public static generateSelfSignedCert(
+    platform: Platform.ios | Platform.android,
+    saveLocation = '.'
+  ): SecureConnectionFiles {
+    const cert = CryptoUtils.generateSelfSignedCert('localhost', 2048, 820);
 
     // Resolve the save location and ensure it exists
     const basePath = path.resolve(CommonUtils.resolveUserHomePath(saveLocation));
@@ -184,18 +188,17 @@ export class PreviewUtils {
       fs.mkdirSync(basePath);
     }
 
-    let fileName = '';
-    if (platform === Platform.ios) {
-      // iOS expects the certificate to be a binary DER file
-      fileName = path.join(basePath, 'certificate.der');
-      fs.writeFileSync(fileName, cert.derCertificate, { encoding: 'binary' });
-    } else {
-      // all other platforms can work with a base64 PEM text file
-      fileName = path.join(basePath, 'certificate.pem');
-      fs.writeFileSync(fileName, cert.pemCertificate);
-    }
+    const secureConnectionFiles: SecureConnectionFiles = {
+      pemKeyFilePath: path.join(basePath, 'localhost-key.pem'),
+      pemCertFilePath: path.join(basePath, 'localhost.pem'),
+      derCertFilePath: path.join(basePath, 'localhost.der'),
+    };
 
-    return fileName;
+    fs.writeFileSync(secureConnectionFiles.derCertFilePath, cert.derCertificate, { encoding: 'binary' });
+    fs.writeFileSync(secureConnectionFiles.pemCertFilePath, cert.pemCertificate);
+    fs.writeFileSync(secureConnectionFiles.pemKeyFilePath, cert.pemPrivateKey);
+
+    return secureConnectionFiles;
   }
 
   /**

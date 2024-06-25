@@ -35,6 +35,10 @@ Type of device to emulate in preview.
 
 For mobile virtual devices, specify the device ID to preview. If omitted, the first available virtual device will be used.
 
+# error.no-project
+
+This command is required to run from within a Salesforce project directory. %s
+
 # error.fetching.app-id
 
 Unable to determine App Id for %s
@@ -63,15 +67,17 @@ Preparing to download
 
 Downloading
 
-# certificate.attention
+# certificate.installation.notice
 
-╔═══════════╗
-║ ATTENTION ║
-╚═══════════╝
+A self-signed certificate needs to be installed on your device before you can use your device for previewing. This is a one-time setup only which you can skip if you have installed the certificate already.
+
+# certificate.installation.skip.message
+
+Do you want to skip this step
 
 # certificate.installation.description
 
-If you have not done so already, please install the self-signed certificate on your device before proceeding. The certificate file is located at
+Please install the self-signed certificate on your device before proceeding. The certificate file is located at
 
 `%s`
 

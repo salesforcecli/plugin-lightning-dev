@@ -6,8 +6,8 @@
  */
 
 import path from 'node:path';
-import { Config } from '@oclif/core';
-import { Messages } from '@salesforce/core';
+import { Config as OclifConfig } from '@oclif/core';
+import { Config as SfConfig, Messages } from '@salesforce/core';
 import { MockTestOrgData, TestContext } from '@salesforce/core/testSetup';
 import {
   AndroidVirtualDevice,
@@ -56,6 +56,13 @@ describe('lightning preview app', () => {
     stubUx($$.SANDBOX);
     stubSpinner($$.SANDBOX);
     await $$.stubAuths(testOrgData);
+
+    $$.SANDBOX.stub(SfConfig, 'create').withArgs($$.SANDBOX.match.any).resolves(SfConfig.prototype);
+    $$.SANDBOX.stub(SfConfig, 'addAllowedProperties').withArgs($$.SANDBOX.match.any);
+    $$.SANDBOX.stub(SfConfig.prototype, 'get').returns(undefined);
+    $$.SANDBOX.stub(SfConfig.prototype, 'set');
+    $$.SANDBOX.stub(SfConfig.prototype, 'write').resolves();
+
     MockedLightningPreviewApp = await esmock<typeof LightningPreviewApp>(
       '../../../../src/commands/lightning/preview/app.js',
       {
@@ -105,7 +112,7 @@ describe('lightning preview app', () => {
     async function verifyOrgOpen(expectedAppPath: string, appName?: string): Promise<void> {
       $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
-      const runCmdStub = $$.SANDBOX.stub(Config.prototype, 'runCommand').resolves();
+      const runCmdStub = $$.SANDBOX.stub(OclifConfig.prototype, 'runCommand').resolves();
       if (appName) {
         await MockedLightningPreviewApp.run(['--name', appName, '-o', testOrgData.username]);
       } else {
@@ -199,11 +206,15 @@ describe('lightning preview app', () => {
 
       $$.SANDBOX.stub(PreviewUtils, 'bootMobileDevice').resolves(testEmulatorPort);
 
-      const expectedCertFilePath = '/path/to/cert.pem';
-      $$.SANDBOX.stub(PreviewUtils, 'generateSelfSignedCert').returns(expectedCertFilePath);
+      const expectedSecureConnectionFiles = {
+        pemKeyFilePath: '/path/to/localhost-key.pem',
+        pemCertFilePath: '/path/to/localhost.pem',
+        derCertFilePath: '/path/to/localhost.der',
+      };
+      $$.SANDBOX.stub(PreviewUtils, 'generateSelfSignedCert').returns(expectedSecureConnectionFiles);
 
       const waitForUserToInstallCertStub = $$.SANDBOX.stub(
-        MockedLightningPreviewApp,
+        MockedLightningPreviewApp.prototype,
         'waitForUserToInstallCert'
       ).resolves();
 
@@ -212,12 +223,12 @@ describe('lightning preview app', () => {
 
       await verifyMobileWaitsForManualCertInstallation(
         Platform.ios,
-        expectedCertFilePath,
+        expectedSecureConnectionFiles.derCertFilePath,
         waitForUserToInstallCertStub
       );
       await verifyMobileWaitsForManualCertInstallation(
         Platform.android,
-        expectedCertFilePath,
+        expectedSecureConnectionFiles.pemCertFilePath,
         waitForUserToInstallCertStub
       );
     });
@@ -235,10 +246,14 @@ describe('lightning preview app', () => {
 
       $$.SANDBOX.stub(PreviewUtils, 'bootMobileDevice').resolves(testEmulatorPort);
 
-      const expectedCertFilePath = '/path/to/cert.pem';
-      $$.SANDBOX.stub(PreviewUtils, 'generateSelfSignedCert').returns(expectedCertFilePath);
+      const expectedSecureConnectionFiles = {
+        pemKeyFilePath: '/path/to/localhost-key.pem',
+        pemCertFilePath: '/path/to/localhost.pem',
+        derCertFilePath: '/path/to/localhost.der',
+      };
+      $$.SANDBOX.stub(PreviewUtils, 'generateSelfSignedCert').returns(expectedSecureConnectionFiles);
 
-      $$.SANDBOX.stub(MockedLightningPreviewApp, 'waitForUserToInstallCert').resolves();
+      $$.SANDBOX.stub(MockedLightningPreviewApp.prototype, 'waitForUserToInstallCert').resolves();
 
       const verifyMobileAppInstalledStub = $$.SANDBOX.stub(PreviewUtils, 'verifyMobileAppInstalled').resolves(false);
       $$.SANDBOX.stub(MockedLightningPreviewApp.prototype, 'confirm').resolves(false);
@@ -260,10 +275,14 @@ describe('lightning preview app', () => {
 
       $$.SANDBOX.stub(PreviewUtils, 'bootMobileDevice').resolves(testEmulatorPort);
 
-      const expectedCertFilePath = '/path/to/cert.pem';
-      $$.SANDBOX.stub(PreviewUtils, 'generateSelfSignedCert').returns(expectedCertFilePath);
+      const expectedSecureConnectionFiles = {
+        pemKeyFilePath: '/path/to/localhost-key.pem',
+        pemCertFilePath: '/path/to/localhost.pem',
+        derCertFilePath: '/path/to/localhost.der',
+      };
+      $$.SANDBOX.stub(PreviewUtils, 'generateSelfSignedCert').returns(expectedSecureConnectionFiles);
 
-      $$.SANDBOX.stub(MockedLightningPreviewApp, 'waitForUserToInstallCert').resolves();
+      $$.SANDBOX.stub(MockedLightningPreviewApp.prototype, 'waitForUserToInstallCert').resolves();
 
       $$.SANDBOX.stub(PreviewUtils, 'verifyMobileAppInstalled').resolves(false);
       $$.SANDBOX.stub(MockedLightningPreviewApp.prototype, 'confirm').resolves(true);
