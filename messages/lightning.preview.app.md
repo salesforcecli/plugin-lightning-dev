@@ -27,7 +27,7 @@ Username or alias of the target org. Not required if the `target-org` configurat
 
 # flags.device-type.summary
 
-Type of device to emulate in the preview.
+Type of device to ren
 
 # flags.device-id.summary
 
@@ -127,7 +127,7 @@ Navigate to `Settings > Security & Privacy > More security & privacy > Encryptio
 
 # certificate.waiting
 
-After you install certificate, press any key to continue...
+After you install the certificate, press any key to continue...
 
 # mobileapp.notfound
 
@@ -144,4 +144,4 @@ After you install certificate, press any key to continue...
 - Preview the application "myApp" for the target org "myOrg" in a desktop environment:
   <%= config.bin %> <%= command.id %> --name MyApp --target-org myOrg --device-type desktop
 - Preview the target org "myOrg" on an iOS device:
-  <%= config.bin %> <%= command.id %> --target-org myOrg --device-type ios --device-id "37C98F87-63C4"
+  <%= config.bin %> <%= command.id %> --target-org myOrg --device-type ios --device-id "iPhone 15 Pro Max"
