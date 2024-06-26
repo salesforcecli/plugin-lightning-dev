@@ -42,12 +42,6 @@ export const enum ConfigVars {
   LOCAL_DEV_SERVER_WORKSPACE = 'local-dev-server-workspace',
 }
 
-export type SecureConnectionFiles = {
-  pemKeyFilePath: string;
-  pemCertFilePath: string;
-  derCertFilePath: string;
-};
-
 export default [
   {
     key: ConfigVars.LOCAL_WEB_SERVER_IDENTITY_TOKEN,
