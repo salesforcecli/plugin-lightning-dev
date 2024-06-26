@@ -10,8 +10,8 @@ import path from 'node:path';
 import process from 'node:process';
 import { LWCServer, LogLevel, ServerConfig, startLwcDevServer, Workspace } from '@lwc/lwc-dev-server';
 import { Logger } from '@salesforce/core';
+import { SSLCertificateData } from '@salesforce/lwc-dev-mobile-core';
 import { ConfigUtils } from '../shared/configUtils.js';
-import { SecureConnectionFiles } from '../configMeta.js';
 
 /**
  * Map sf cli log level to lwc dev server log level
@@ -44,7 +44,7 @@ async function createLWCServerConfig(
   rootDir: string,
   serverPort?: number,
   serverProtocol?: string,
-  secureConnectionFiles?: SecureConnectionFiles,
+  certData?: SSLCertificateData,
   workspace?: Workspace,
   token?: string
 ): Promise<ServerConfig> {
@@ -85,10 +85,10 @@ async function createLWCServerConfig(
     logLevel: mapLogLevel(logger.getLevel()),
   };
 
-  if (secureConnectionFiles?.pemCertFilePath && secureConnectionFiles.pemKeyFilePath) {
+  if (certData?.pemCertificate && certData.pemPrivateKey) {
     serverConfig.https = {
-      cert: secureConnectionFiles.pemCertFilePath,
-      key: secureConnectionFiles.pemKeyFilePath,
+      cert: certData.pemCertificate,
+      key: certData.pemPrivateKey,
     };
   }
 
@@ -100,19 +100,11 @@ export async function startLWCServer(
   rootDir: string,
   serverPort?: number,
   serverProtocol?: string,
-  secureConnectionFiles?: SecureConnectionFiles,
+  certData?: SSLCertificateData,
   workspace?: Workspace,
   token?: string
 ): Promise<LWCServer> {
-  const config = await createLWCServerConfig(
-    logger,
-    rootDir,
-    serverPort,
-    serverProtocol,
-    secureConnectionFiles,
-    workspace,
-    token
-  );
+  const config = await createLWCServerConfig(logger, rootDir, serverPort, serverProtocol, certData, workspace, token);
 
   logger.trace(`Starting LWC Dev Server with config: ${JSON.stringify(config)}`);
   let lwcDevServer: LWCServer | null = await startLwcDevServer(config);

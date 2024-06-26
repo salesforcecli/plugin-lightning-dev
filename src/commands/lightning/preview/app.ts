@@ -268,13 +268,11 @@ export default class LightningPreviewApp extends SfCommand<void> {
 
       // Configure certificates for dev server secure connection
       this.spinner.start(messages.getMessage('spinner.cert.gen'));
-      const secureConnectionFiles = await PreviewUtils.generateSelfSignedCert(sfdxProjectRootPath);
+      const { certData, certFilePath } = await PreviewUtils.generateSelfSignedCert(platform, sfdxProjectRootPath);
       this.spinner.stop();
 
       // Show message and wait for user to install the certificate on their device
-      const targetFile =
-        platform === Platform.ios ? secureConnectionFiles.derCertFilePath : secureConnectionFiles.pemCertFilePath;
-      await this.waitForUserToInstallCert(platform, device, targetFile);
+      await this.waitForUserToInstallCert(platform, device, certFilePath);
 
       // Check if Salesforce Mobile App is installed on the device
       const appConfig = platform === Platform.ios ? iOSSalesforceAppPreviewConfig : androidSalesforceAppPreviewConfig;
@@ -320,7 +318,7 @@ export default class LightningPreviewApp extends SfCommand<void> {
 
       // Start the LWC Dev Server
       const protocol = new URL(ldpServerUrl).protocol.replace(':', '').toLowerCase();
-      await startLWCServer(logger, sfdxProjectRootPath, serverPort, protocol, secureConnectionFiles);
+      await startLWCServer(logger, sfdxProjectRootPath, serverPort, protocol, certData);
 
       // Launch the native app for previewing (launchMobileApp will show its own spinner)
       // eslint-disable-next-line camelcase

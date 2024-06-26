@@ -27,10 +27,10 @@ import {
   LaunchArgument,
   PreviewUtils as LwcDevMobileCorePreviewUtils,
   Platform,
+  SSLCertificateData,
 } from '@salesforce/lwc-dev-mobile-core';
 import { Progress, Spinner } from '@salesforce/sf-plugins-core';
 import fetch from 'node-fetch';
-import { SecureConnectionFiles } from '../configMeta.js';
 import { ConfigUtils, LOCAL_DEV_SERVER_DEFAULT_PORT } from './configUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
@@ -45,7 +45,7 @@ export class PreviewUtils {
   /**
    * Return a port number to be used by the local dev server.
    *
-   * It starts with the default port (8081)) and checks to see if it is in use or not. If
+   * It starts with the default port (8081) and checks to see if it is in use or not. If
    * it is in use then we increment the port number by 2 and check if it is in use or not.
    * This process is repeated until a port that is not in use is found.
    *
@@ -210,37 +210,35 @@ export class PreviewUtils {
    *
    * @param platform A mobile platform (iOS or Android)
    * @param saveLocation Path to a folder where the generated certificated will be saved to (defaults to the current working directory)
-   * @returns Path to the generated certificate and private key files
+   * @returns Path to the generated certificate file and the certificate data
    */
-  public static async generateSelfSignedCert(saveLocation = '.'): Promise<SecureConnectionFiles> {
-    const basePath = path.resolve(CommonUtils.resolveUserHomePath(saveLocation));
-
-    const secureConnectionFiles: SecureConnectionFiles = {
-      pemKeyFilePath: path.join(basePath, 'localhost-key.pem'),
-      pemCertFilePath: path.join(basePath, 'localhost.pem'),
-      derCertFilePath: path.join(basePath, 'localhost.der'),
-    };
-
-    // If we have not previously generated cert files then go ahead and do so
-    if (
-      !fs.existsSync(secureConnectionFiles.derCertFilePath) ||
-      !fs.existsSync(secureConnectionFiles.pemCertFilePath) ||
-      !fs.existsSync(secureConnectionFiles.pemKeyFilePath)
-    ) {
-      // See if we have previously generated cert data which is stored in the global config.
-      // If so then use that data otherwise generate new cert data and store it in the global config.
-      let certData = await ConfigUtils.getCertData();
-      if (!certData) {
-        certData = CryptoUtils.generateSelfSignedCert('localhost', 2048, 820);
-        await ConfigUtils.writeCertData(certData);
-      }
-
-      fs.writeFileSync(secureConnectionFiles.derCertFilePath, certData.derCertificate, { encoding: 'binary' });
-      fs.writeFileSync(secureConnectionFiles.pemCertFilePath, certData.pemCertificate);
-      fs.writeFileSync(secureConnectionFiles.pemKeyFilePath, certData.pemPrivateKey);
+  public static async generateSelfSignedCert(
+    platform: Platform.ios | Platform.android,
+    saveLocation = '.'
+  ): Promise<{ certData: SSLCertificateData; certFilePath: string }> {
+    // See if we have previously generated cert data which is stored in the global config.
+    // If so then use that data otherwise generate new cert data and store it in the global config.
+    let data = await ConfigUtils.getCertData();
+    if (!data) {
+      data = CryptoUtils.generateSelfSignedCert('localhost', 2048, 820);
+      await ConfigUtils.writeCertData(data);
     }
 
-    return secureConnectionFiles;
+    const basePath = path.resolve(CommonUtils.resolveUserHomePath(saveLocation));
+
+    const targetFile =
+      platform === Platform.ios ? path.join(basePath, 'localhost.der') : path.join(basePath, 'localhost.pem');
+
+    // If we have not previously generated the cert files then go ahead and do so
+    if (!fs.existsSync(targetFile)) {
+      if (platform === Platform.ios) {
+        fs.writeFileSync(targetFile, data.derCertificate, { encoding: 'binary' });
+      } else {
+        fs.writeFileSync(targetFile, data.pemCertificate);
+      }
+    }
+
+    return { certData: data, certFilePath: targetFile };
   }
 
   /**
