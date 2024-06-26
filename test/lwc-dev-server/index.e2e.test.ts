@@ -33,7 +33,7 @@ describe('lwc-dev-server e2e', () => {
     $$.SANDBOX.stub(ConfigUtils, 'getOrCreateIdentityToken').resolves('testIdentityToken');
     $$.SANDBOX.stub(ConfigUtils, 'getLocalDevServerPort').resolves(1234);
     $$.SANDBOX.stub(ConfigUtils, 'getLocalDevServerWorkspace').resolves(Workspace.SfCli);
-    $$.SANDBOX.stub(ConfigUtils, 'getSecureConnectionFiles').resolves(undefined);
+    $$.SANDBOX.stub(ConfigUtils, 'getCertData').resolves(undefined);
   });
 
   afterEach(() => {
@@ -42,7 +42,7 @@ describe('lwc-dev-server e2e', () => {
   });
 
   it('e2e', async () => {
-    const server = await devServer.startLWCServer(path.resolve(__dirname, './__mocks__'), logger);
+    const server = await devServer.startLWCServer(logger, path.resolve(__dirname, './__mocks__'));
 
     expect(server).to.be.an.instanceOf(LWCServer);
     server.stopServer();

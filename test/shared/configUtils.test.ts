@@ -76,47 +76,45 @@ describe('configUtils', () => {
     expect(resolved).to.equal(undefined);
   });
 
-  it('getSecureConnectionFiles resolves to undefined when value not found in config', async () => {
+  it('getCertData resolves to undefined when value not found in config', async () => {
     $$.SANDBOX.stub(Config, 'create').withArgs($$.SANDBOX.match.any).resolves(Config.prototype);
     $$.SANDBOX.stub(Config, 'addAllowedProperties').withArgs($$.SANDBOX.match.any);
-    $$.SANDBOX.stub(Config.prototype, 'get')
-      .withArgs(ConfigVars.LOCAL_WEB_SERVER_HTTPS_CERT_AND_KEY_FILES)
-      .returns(undefined);
-    const resolved = await ConfigUtils.getSecureConnectionFiles();
+    $$.SANDBOX.stub(Config.prototype, 'get').withArgs(ConfigVars.LOCAL_DEV_SERVER_HTTPS_CERT_DATA).returns(undefined);
+    const resolved = await ConfigUtils.getCertData();
 
     expect(resolved).to.equal(undefined);
   });
 
-  it('getSecureConnectionFiles resolves to value in config', async () => {
-    const secureConnectionFiles = {
-      pemKeyFilePath: '/path/to/localhost-key.pem',
-      pemCertFilePath: '/path/to/localhost.pem',
-      derCertFilePath: '/path/to/localhost-key.der',
+  it('getCertData resolves to value in config', async () => {
+    const certData = {
+      derCertificate: 'derCertificate',
+      pemCertificate: 'pemCertificate',
+      pemPrivateKey: 'pemPrivateKey',
+      pemPublicKey: 'pemPublicKey',
     };
 
     $$.SANDBOX.stub(Config, 'create').withArgs($$.SANDBOX.match.any).resolves(Config.prototype);
     $$.SANDBOX.stub(Config, 'addAllowedProperties').withArgs($$.SANDBOX.match.any);
-    $$.SANDBOX.stub(Config.prototype, 'get')
-      .withArgs(ConfigVars.LOCAL_WEB_SERVER_HTTPS_CERT_AND_KEY_FILES)
-      .returns(secureConnectionFiles);
-    const resolved = await ConfigUtils.getSecureConnectionFiles();
+    $$.SANDBOX.stub(Config.prototype, 'get').withArgs(ConfigVars.LOCAL_DEV_SERVER_HTTPS_CERT_DATA).returns(certData);
+    const resolved = await ConfigUtils.getCertData();
 
-    expect(resolved).to.deep.equal(secureConnectionFiles);
+    expect(resolved).to.deep.equal(certData);
   });
 
-  it('writeSecureConnectionFiles resolves', async () => {
-    const secureConnectionFiles = {
-      pemKeyFilePath: '/path/to/localhost-key.pem',
-      pemCertFilePath: '/path/to/localhost.pem',
-      derCertFilePath: '/path/to/localhost-key.der',
+  it('writeCertData resolves', async () => {
+    const certData = {
+      derCertificate: 'derCertificate',
+      pemCertificate: 'pemCertificate',
+      pemPrivateKey: 'pemPrivateKey',
+      pemPublicKey: 'pemPublicKey',
     };
 
     $$.SANDBOX.stub(Config, 'create').withArgs($$.SANDBOX.match.any).resolves(Config.prototype);
     $$.SANDBOX.stub(Config, 'addAllowedProperties').withArgs($$.SANDBOX.match.any);
-    $$.SANDBOX.stub(Config.prototype, 'set').withArgs(ConfigVars.LOCAL_WEB_SERVER_HTTPS_CERT_AND_KEY_FILES);
+    $$.SANDBOX.stub(Config.prototype, 'set').withArgs(ConfigVars.LOCAL_DEV_SERVER_HTTPS_CERT_DATA);
     $$.SANDBOX.stub(Config.prototype, 'write').resolves();
 
-    const resolved = await ConfigUtils.writeSecureConnectionFiles(secureConnectionFiles);
+    const resolved = await ConfigUtils.writeCertData(certData);
     expect(resolved).to.equal(undefined);
   });
 

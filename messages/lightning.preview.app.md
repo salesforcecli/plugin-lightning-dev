@@ -67,6 +67,10 @@ Preparing to download
 
 Downloading
 
+# trust.local.dev.server
+
+Note: Your desktop browser requires additional configuration to trust the local development server. See the documentation for more details.
+
 # certificate.installation.notice
 
 A self-signed certificate needs to be installed on your device before you can use your device for previewing. This is a one-time setup only which you can skip if you have installed the certificate already.

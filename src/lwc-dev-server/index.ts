@@ -8,9 +8,10 @@
 import { existsSync, lstatSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
-import { LWCServer, LogLevel, ServerConfig, startLwcDevServer } from '@lwc/lwc-dev-server';
+import { LWCServer, LogLevel, ServerConfig, startLwcDevServer, Workspace } from '@lwc/lwc-dev-server';
 import { Logger } from '@salesforce/core';
 import { ConfigUtils } from '../shared/configUtils.js';
+import { SecureConnectionFiles } from '../configMeta.js';
 
 /**
  * Map sf cli log level to lwc dev server log level
@@ -38,8 +39,15 @@ function mapLogLevel(cliLogLevel: number): number {
   }
 }
 
-async function createLWCServerConfig(rootDir: string, logger: Logger): Promise<ServerConfig> {
-  const identityToken = await ConfigUtils.getOrCreateIdentityToken();
+async function createLWCServerConfig(
+  logger: Logger,
+  rootDir: string,
+  serverPort?: number,
+  serverProtocol?: string,
+  secureConnectionFiles?: SecureConnectionFiles,
+  workspace?: Workspace,
+  token?: string
+): Promise<ServerConfig> {
   const sfdxConfig = path.resolve(rootDir, 'sfdx-project.json');
 
   if (!existsSync(sfdxConfig) || !lstatSync(sfdxConfig).isFile()) {
@@ -67,17 +75,16 @@ async function createLWCServerConfig(rootDir: string, logger: Logger): Promise<S
 
   const serverConfig: ServerConfig = {
     rootDir,
-    port: await ConfigUtils.getLocalDevServerPort(),
-    protocol: 'wss',
+    port: serverPort ?? (await ConfigUtils.getLocalDevServerPort()),
+    protocol: serverProtocol ?? 'ws',
     host: 'localhost',
     paths: namespacePaths,
-    workspace: await ConfigUtils.getLocalDevServerWorkspace(),
+    workspace: workspace ?? (await ConfigUtils.getLocalDevServerWorkspace()),
     targets: ['LEX'], // should this be something else?
-    identityToken,
+    identityToken: token ?? (await ConfigUtils.getOrCreateIdentityToken()),
     logLevel: mapLogLevel(logger.getLevel()),
   };
 
-  const secureConnectionFiles = await ConfigUtils.getSecureConnectionFiles();
   if (secureConnectionFiles?.pemCertFilePath && secureConnectionFiles.pemKeyFilePath) {
     serverConfig.https = {
       cert: secureConnectionFiles.pemCertFilePath,
@@ -88,8 +95,25 @@ async function createLWCServerConfig(rootDir: string, logger: Logger): Promise<S
   return serverConfig;
 }
 
-export async function startLWCServer(rootDir: string, logger: Logger): Promise<LWCServer> {
-  const config = await createLWCServerConfig(rootDir, logger);
+export async function startLWCServer(
+  logger: Logger,
+  rootDir: string,
+  serverPort?: number,
+  serverProtocol?: string,
+  secureConnectionFiles?: SecureConnectionFiles,
+  workspace?: Workspace,
+  token?: string
+): Promise<LWCServer> {
+  const config = await createLWCServerConfig(
+    logger,
+    rootDir,
+    serverPort,
+    serverProtocol,
+    secureConnectionFiles,
+    workspace,
+    token
+  );
+
   logger.trace(`Starting LWC Dev Server with config: ${JSON.stringify(config)}`);
   let lwcDevServer: LWCServer | null = await startLwcDevServer(config);
 

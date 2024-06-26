@@ -18,10 +18,10 @@ Valid workspace value is "SalesforceCLI" OR "mrt"
 
 The Base64-encoded identity token of the local web server
 
-# config-utils.https-desc
+# config-utils.cert-desc
 
-The path to the certificate and private key files to be used by the local dev server for secure connections
+The SSL certificate data to be used by the local dev server for secure connections
 
-# config-utils.https-error-message
+# config-utils.cert-error-message
 
-Must provide a valid path to the certificate and private key files
+You must provide valid SSL certificate data

@@ -6,15 +6,16 @@
  */
 
 import { Workspace } from '@lwc/lwc-dev-server';
-import { CryptoUtils } from '@salesforce/lwc-dev-mobile-core';
+import { CryptoUtils, SSLCertificateData } from '@salesforce/lwc-dev-mobile-core';
 import { Config, ConfigAggregator } from '@salesforce/core';
-import configMeta, { ConfigVars, SecureConnectionFiles } from './../configMeta.js';
+import configMeta, { ConfigVars } from './../configMeta.js';
 
 export const LOCAL_DEV_SERVER_DEFAULT_PORT = 8081;
 export const LOCAL_DEV_SERVER_DEFAULT_WORKSPACE = Workspace.SfCli;
 
 export class ConfigUtils {
   static #config: Config;
+  static #globalConfig: Config;
 
   public static async getConfig(): Promise<Config> {
     if (this.#config) {
@@ -23,6 +24,15 @@ export class ConfigUtils {
     this.#config = await Config.create({ isGlobal: false });
     Config.addAllowedProperties(configMeta);
     return this.#config;
+  }
+
+  public static async getGlobalConfig(): Promise<Config> {
+    if (this.#globalConfig) {
+      return this.#globalConfig;
+    }
+    this.#globalConfig = await Config.create({ isGlobal: true });
+    Config.addAllowedProperties(configMeta);
+    return this.#globalConfig;
   }
 
   public static async getOrCreateIdentityToken(): Promise<string> {
@@ -49,15 +59,24 @@ export class ConfigUtils {
     await config.write();
   }
 
-  public static async getSecureConnectionFiles(): Promise<SecureConnectionFiles | undefined> {
-    const config = await this.getConfig();
-    const files = config.get(ConfigVars.LOCAL_WEB_SERVER_HTTPS_CERT_AND_KEY_FILES) as SecureConnectionFiles;
-    return files;
+  public static async getCertData(): Promise<SSLCertificateData | undefined> {
+    const config = await this.getGlobalConfig();
+    const data = config.get(ConfigVars.LOCAL_DEV_SERVER_HTTPS_CERT_DATA) as SSLCertificateData;
+    // convert base64 to binary DER data
+    if (data?.derCertificate) {
+      data.derCertificate = Buffer.from(data.derCertificate, 'base64').toString('binary');
+    }
+    return data;
   }
 
-  public static async writeSecureConnectionFiles(files: SecureConnectionFiles): Promise<void> {
-    const config = await this.getConfig();
-    config.set(ConfigVars.LOCAL_WEB_SERVER_HTTPS_CERT_AND_KEY_FILES, files);
+  public static async writeCertData(data: SSLCertificateData): Promise<void> {
+    const config = await this.getGlobalConfig();
+    // convert the binary DER data to base64
+    const copy = data;
+    if (copy.derCertificate) {
+      copy.derCertificate = Buffer.from(data.derCertificate, 'binary').toString('base64');
+    }
+    config.set(ConfigVars.LOCAL_DEV_SERVER_HTTPS_CERT_DATA, copy);
     await config.write();
   }
 
