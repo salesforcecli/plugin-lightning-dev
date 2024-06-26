@@ -20,7 +20,6 @@ import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
 import chalk from 'chalk';
 import { OrgUtils } from '../../../shared/orgUtils.js';
 import { startLWCServer } from '../../../lwc-dev-server/index.js';
-import { ConfigUtils, LOCAL_DEV_SERVER_DEFAULT_PORT } from '../../../shared/configUtils.js';
 import { PreviewUtils } from '../../../shared/previewUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
@@ -172,16 +171,39 @@ export default class LightningPreviewApp extends SfCommand<void> {
       logger.debug(`App Id is ${appId}`);
     }
 
+    logger.debug('Determining the next available port for Local Dev Server');
+    const serverPort = PreviewUtils.getNextAvailablePort();
+    logger.debug(`Next available port is ${serverPort}`);
+
+    logger.debug('Determining Local Dev Server url');
+    const ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(platform, serverPort);
+    logger.debug(`Local Dev Server url is ${ldpServerUrl}`);
+
     if (platform === Platform.desktop) {
-      await this.desktopPreview(sfdxProjectRootPath, appId, logger);
+      await this.desktopPreview(sfdxProjectRootPath, serverPort, ldpServerUrl, appId, logger);
     } else {
-      await this.mobilePreview(platform, sfdxProjectRootPath, appName, appId, deviceId, logger);
+      await this.mobilePreview(
+        platform,
+        sfdxProjectRootPath,
+        serverPort,
+        ldpServerUrl,
+        appName,
+        appId,
+        deviceId,
+        logger
+      );
     }
   }
 
-  private async desktopPreview(sfdxProjectRootPath: string, appId: string | undefined, logger: Logger): Promise<void> {
+  private async desktopPreview(
+    sfdxProjectRootPath: string,
+    serverPort: number,
+    ldpServerUrl: string,
+    appId: string | undefined,
+    logger: Logger
+  ): Promise<void> {
     if (!appId) {
-      logger?.debug('No Lightning Experience application name provided.... using the default app instead.');
+      logger.debug('No Lightning Experience application name provided.... using the default app instead.');
     }
 
     // There are various ways to pass in a target org (as an alias, as a username, etc).
@@ -204,29 +226,25 @@ export default class LightningPreviewApp extends SfCommand<void> {
       targetOrg = this.argv[idx + 1];
     }
 
-    // Start the LWC Dev Server
-    const lwcServer = await startLWCServer(sfdxProjectRootPath, logger);
-    const serverPort = lwcServer.context?.config?.port ?? LOCAL_DEV_SERVER_DEFAULT_PORT;
-
-    logger.debug('Determining Local Dev Server url');
-    const ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(Platform.desktop, serverPort);
-    logger.debug(`Local Dev Server url is ${ldpServerUrl}`);
+    const protocol = new URL(ldpServerUrl).protocol.replace(':', '').toLowerCase();
+    if (protocol === 'wss') {
+      this.log(`\n${messages.getMessage('trust.local.dev.server')}`);
+    }
 
     const launchArguments = PreviewUtils.generateDesktopPreviewLaunchArguments(ldpServerUrl, appId, targetOrg);
 
-    // todo: For the desktop scenario, should we print a message to the terminal screen to inform the user
-    // that they should configure their browser to allow-list this connection to localhost, or does it suffice
-    // to just mention that in the documentation?
-    // if (ldpServerUrl.toLowerCase().startsWith('wss://')) {
-    //   print message to screen
-    // }
+    // Start the LWC Dev Server
+    await startLWCServer(logger, sfdxProjectRootPath, serverPort, protocol);
 
+    // Open the browser and navigate to the right page
     await this.config.runCommand('org:open', launchArguments);
   }
 
   private async mobilePreview(
     platform: Platform.ios | Platform.android,
     sfdxProjectRootPath: string,
+    serverPort: number,
+    ldpServerUrl: string,
     appName: string | undefined,
     appId: string | undefined,
     deviceId: string | undefined,
@@ -249,16 +267,9 @@ export default class LightningPreviewApp extends SfCommand<void> {
       this.spinner.stop();
 
       // Configure certificates for dev server secure connection
-      let secureConnectionFiles = await ConfigUtils.getSecureConnectionFiles();
-      if (!secureConnectionFiles?.pemCertFilePath || !secureConnectionFiles.pemKeyFilePath) {
-        this.spinner.start(messages.getMessage('spinner.cert.gen'));
-        // Generate self-signed certificate
-        // todo: should the cert files be saved at the root of sfdx project or inside .sf folder of the project?
-        secureConnectionFiles = PreviewUtils.generateSelfSignedCert(platform, sfdxProjectRootPath);
-        // Configure the local dev server with certFilePath & keyFilePath
-        await ConfigUtils.writeSecureConnectionFiles(secureConnectionFiles);
-        this.spinner.stop();
-      }
+      this.spinner.start(messages.getMessage('spinner.cert.gen'));
+      const secureConnectionFiles = await PreviewUtils.generateSelfSignedCert(sfdxProjectRootPath);
+      this.spinner.stop();
 
       // Show message and wait for user to install the certificate on their device
       const targetFile =
@@ -308,12 +319,8 @@ export default class LightningPreviewApp extends SfCommand<void> {
       }
 
       // Start the LWC Dev Server
-      const lwcServer = await startLWCServer(sfdxProjectRootPath, logger);
-      const serverPort = lwcServer.context?.config?.port ?? LOCAL_DEV_SERVER_DEFAULT_PORT;
-
-      logger.debug('Determining Local Dev Server url');
-      const ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(Platform.desktop, serverPort);
-      logger.debug(`Local Dev Server url is ${ldpServerUrl}`);
+      const protocol = new URL(ldpServerUrl).protocol.replace(':', '').toLowerCase();
+      await startLWCServer(logger, sfdxProjectRootPath, serverPort, protocol, secureConnectionFiles);
 
       // Launch the native app for previewing (launchMobileApp will show its own spinner)
       // eslint-disable-next-line camelcase
@@ -334,13 +341,13 @@ export default class LightningPreviewApp extends SfCommand<void> {
    * @param platform A mobile platform (iOS or Android)
    * @param logger An optional logger to be used for logging
    */
-  private async verifyMobileRequirements(platform: Platform.ios | Platform.android, logger?: Logger): Promise<void> {
-    logger?.debug(`Verifying environment meets requirements for previewing on ${platform}`);
+  private async verifyMobileRequirements(platform: Platform.ios | Platform.android, logger: Logger): Promise<void> {
+    logger.debug(`Verifying environment meets requirements for previewing on ${platform}`);
 
     const setupCommand = new LwcDevMobileCoreSetup(['-p', platform], this.config);
     await setupCommand.init();
     await setupCommand.run();
 
-    logger?.debug('Requirements are met'); // if we make it here then all is good
+    logger.debug('Requirements are met'); // if we make it here then all is good
   }
 }

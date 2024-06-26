@@ -5,15 +5,15 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import type { ConfigPropertyMeta, ConfigValue } from '@salesforce/core';
 import { Workspace } from '@lwc/lwc-dev-server';
-import { Messages } from '@salesforce/core';
+import { ConfigPropertyMeta, ConfigValue, Messages } from '@salesforce/core';
+import type { SSLCertificateData } from '@salesforce/lwc-dev-mobile-core';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'shared.utils');
 const IDENTITY_TOKEN_DESC = messages.getMessage('config-utils.token-desc');
-const HTTPS_FILES_DESC = messages.getMessage('config-utils.https-desc');
-const HTTPS_FILES_ERROR_MESSAGE = messages.getMessage('config-utils.https-error-message');
+const LOCAL_DEV_SERVER_CERT_DESC = messages.getMessage('config-utils.cert-desc');
+const LOCAL_DEV_SERVER_CERT_ERROR_MESSAGE = messages.getMessage('config-utils.cert-error-message');
 const LOCAL_DEV_SERVER_PORT_DESC = messages.getMessage('config-utils.port-desc');
 const LOCAL_DEV_SERVER_PORT_ERROR_MESSAGE = messages.getMessage('config-utils.port-error-message');
 const LOCAL_DEV_SERVER_WORKSPACE_DESC = messages.getMessage('config-utils.workspace-desc');
@@ -27,9 +27,9 @@ export const enum ConfigVars {
   LOCAL_WEB_SERVER_IDENTITY_TOKEN = 'local-web-server-identity-token',
 
   /**
-   * The path to certificate and private key files
+   * The SSL certificate data to be used by local dev server
    */
-  LOCAL_WEB_SERVER_HTTPS_CERT_AND_KEY_FILES = 'https',
+  LOCAL_DEV_SERVER_HTTPS_CERT_DATA = 'local-dev-server-certificate-data',
 
   /**
    * The port number of the local dev server.
@@ -56,18 +56,18 @@ export default [
     encrypted: true,
   },
   {
-    key: ConfigVars.LOCAL_WEB_SERVER_HTTPS_CERT_AND_KEY_FILES,
-    description: HTTPS_FILES_DESC,
+    key: ConfigVars.LOCAL_DEV_SERVER_HTTPS_CERT_DATA,
+    description: LOCAL_DEV_SERVER_CERT_DESC,
     input: {
       validator: (value: ConfigValue): boolean => {
-        const secureConnectionFiles = value as SecureConnectionFiles;
-        if (!secureConnectionFiles?.pemCertFilePath || !secureConnectionFiles?.pemKeyFilePath) {
+        const data = value as SSLCertificateData;
+        if (!data?.derCertificate || !data?.pemCertificate || !data?.pemPrivateKey) {
           return false;
         }
 
         return true;
       },
-      failedMessage: HTTPS_FILES_ERROR_MESSAGE,
+      failedMessage: LOCAL_DEV_SERVER_CERT_ERROR_MESSAGE,
     },
   },
   {

@@ -211,7 +211,7 @@ describe('lightning preview app', () => {
         pemCertFilePath: '/path/to/localhost.pem',
         derCertFilePath: '/path/to/localhost.der',
       };
-      $$.SANDBOX.stub(PreviewUtils, 'generateSelfSignedCert').returns(expectedSecureConnectionFiles);
+      $$.SANDBOX.stub(PreviewUtils, 'generateSelfSignedCert').resolves(expectedSecureConnectionFiles);
 
       const waitForUserToInstallCertStub = $$.SANDBOX.stub(
         MockedLightningPreviewApp.prototype,
@@ -251,7 +251,7 @@ describe('lightning preview app', () => {
         pemCertFilePath: '/path/to/localhost.pem',
         derCertFilePath: '/path/to/localhost.der',
       };
-      $$.SANDBOX.stub(PreviewUtils, 'generateSelfSignedCert').returns(expectedSecureConnectionFiles);
+      $$.SANDBOX.stub(PreviewUtils, 'generateSelfSignedCert').resolves(expectedSecureConnectionFiles);
 
       $$.SANDBOX.stub(MockedLightningPreviewApp.prototype, 'waitForUserToInstallCert').resolves();
 
@@ -280,7 +280,7 @@ describe('lightning preview app', () => {
         pemCertFilePath: '/path/to/localhost.pem',
         derCertFilePath: '/path/to/localhost.der',
       };
-      $$.SANDBOX.stub(PreviewUtils, 'generateSelfSignedCert').returns(expectedSecureConnectionFiles);
+      $$.SANDBOX.stub(PreviewUtils, 'generateSelfSignedCert').resolves(expectedSecureConnectionFiles);
 
       $$.SANDBOX.stub(MockedLightningPreviewApp.prototype, 'waitForUserToInstallCert').resolves();
 

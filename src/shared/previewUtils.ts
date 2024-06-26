@@ -31,6 +31,7 @@ import {
 import { Progress, Spinner } from '@salesforce/sf-plugins-core';
 import fetch from 'node-fetch';
 import { SecureConnectionFiles } from '../configMeta.js';
+import { ConfigUtils, LOCAL_DEV_SERVER_DEFAULT_PORT } from './configUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.app');
@@ -39,6 +40,16 @@ const DevPreviewAuraMode = 'DEVPREVIEW';
 export class PreviewUtils {
   public static generateWebSocketUrlForLocalDevServer(platform: string, port: string | number): string {
     return LwcDevMobileCorePreviewUtils.generateWebSocketUrlForLocalDevServer(platform, port.toString());
+  }
+
+  /**
+   * Determines a valid port to be used by the local dev server.
+   *
+   * @returns a port number to be used by the local dev server.
+   */
+  public static getNextAvailablePort(): number {
+    // todo: implement this further
+    return LOCAL_DEV_SERVER_DEFAULT_PORT;
   }
 
   /**
@@ -176,17 +187,8 @@ export class PreviewUtils {
    * @param saveLocation Path to a folder where the generated certificated will be saved to (defaults to the current working directory)
    * @returns Path to the generated certificate and private key files
    */
-  public static generateSelfSignedCert(
-    platform: Platform.ios | Platform.android,
-    saveLocation = '.'
-  ): SecureConnectionFiles {
-    const cert = CryptoUtils.generateSelfSignedCert('localhost', 2048, 820);
-
-    // Resolve the save location and ensure it exists
+  public static async generateSelfSignedCert(saveLocation = '.'): Promise<SecureConnectionFiles> {
     const basePath = path.resolve(CommonUtils.resolveUserHomePath(saveLocation));
-    if (!fs.existsSync(basePath)) {
-      fs.mkdirSync(basePath);
-    }
 
     const secureConnectionFiles: SecureConnectionFiles = {
       pemKeyFilePath: path.join(basePath, 'localhost-key.pem'),
@@ -194,9 +196,24 @@ export class PreviewUtils {
       derCertFilePath: path.join(basePath, 'localhost.der'),
     };
 
-    fs.writeFileSync(secureConnectionFiles.derCertFilePath, cert.derCertificate, { encoding: 'binary' });
-    fs.writeFileSync(secureConnectionFiles.pemCertFilePath, cert.pemCertificate);
-    fs.writeFileSync(secureConnectionFiles.pemKeyFilePath, cert.pemPrivateKey);
+    // If we have not previously generated cert files then go ahead and do so
+    if (
+      !fs.existsSync(secureConnectionFiles.derCertFilePath) ||
+      !fs.existsSync(secureConnectionFiles.pemCertFilePath) ||
+      !fs.existsSync(secureConnectionFiles.pemKeyFilePath)
+    ) {
+      // See if we have previously generated cert data which is stored in the global config.
+      // If so then use that data otherwise generate new cert data and store it in the global config.
+      let certData = await ConfigUtils.getCertData();
+      if (!certData) {
+        certData = CryptoUtils.generateSelfSignedCert('localhost', 2048, 820);
+        await ConfigUtils.writeCertData(certData);
+      }
+
+      fs.writeFileSync(secureConnectionFiles.derCertFilePath, certData.derCertificate, { encoding: 'binary' });
+      fs.writeFileSync(secureConnectionFiles.pemCertFilePath, certData.pemCertificate);
+      fs.writeFileSync(secureConnectionFiles.pemKeyFilePath, certData.pemPrivateKey);
+    }
 
     return secureConnectionFiles;
   }
