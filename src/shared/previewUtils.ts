@@ -43,13 +43,38 @@ export class PreviewUtils {
   }
 
   /**
-   * Determines a valid port to be used by the local dev server.
+   * Return a port number to be used by the local dev server.
+   *
+   * It starts with the default port (8081)) and checks to see if it is in use or not. If
+   * it is in use then we increment the port number by 2 and check if it is in use or not.
+   * This process is repeated until a port that is not in use is found.
    *
    * @returns a port number to be used by the local dev server.
    */
   public static getNextAvailablePort(): number {
-    // todo: implement this further
-    return LOCAL_DEV_SERVER_DEFAULT_PORT;
+    let port = LOCAL_DEV_SERVER_DEFAULT_PORT;
+    let done = false;
+
+    while (!done) {
+      const cmd =
+        process.platform === 'win32' ? `netstat -an | find "LISTENING" | find ":${port}"` : `lsof -i :${port}`;
+
+      try {
+        const result = CommonUtils.executeCommandSync(cmd);
+        if (result.trim()) {
+          port = port + 2; // that port is in use so try another
+        } else {
+          done = true;
+        }
+      } catch (error) {
+        // On some platforms (like mac) if the command doesn't produce
+        // any results then that is considered an error but in our case
+        // that means the port is not in use and is ready for us to use.
+        done = true;
+      }
+    }
+
+    return port;
   }
 
   /**
