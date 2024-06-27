@@ -3,6 +3,7 @@ on:
   push:
     branches-ignore: [main]
   workflow_dispatch:
+  pull_request:
 
 env:
   UT_DISABLE_NODE_CURRENT: true
