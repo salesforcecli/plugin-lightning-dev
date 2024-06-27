@@ -7,7 +7,7 @@ on:
 
 env:
   UT_DISABLE_NODE_CURRENT: true
-  NODE_VERSION_OVERRIDE: ['lts/*', 'lts/-1']
+  NODE_VERSION_OVERRIDE: [lts/-1, lts/*]
 
 jobs:
   yarn-lockfile-check:
