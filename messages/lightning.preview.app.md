@@ -81,7 +81,7 @@ Do you want to skip this step
 
 # certificate.installation.description
 
-Please install the self-signed certificate on your device before proceeding. The certificate file is located at
+Before proceeding, install the self-signed certificate on your device. The certificate file is located at
 
 `%s`
 
