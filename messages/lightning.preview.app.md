@@ -73,7 +73,7 @@ Note: Your desktop browser requires additional configuration to trust the local 
 
 # certificate.installation.notice
 
-A self-signed certificate needs to be installed on your device before you can use your device for previewing. This is a one-time setup only which you can skip if you have installed the certificate already.
+To use local preview on your device, you have to install a self-signed certificate on it. If you previously set up a certificate for your device, you can skip this step.
 
 # certificate.installation.skip.message
 
