@@ -4,6 +4,9 @@ on:
     branches-ignore: [main]
   workflow_dispatch:
 
+env:
+  UT_DISABLE_NODE_CURRENT: true
+
 jobs:
   yarn-lockfile-check:
     uses: salesforcecli/github-workflows/.github/workflows/lockFileCheck.yml@main
