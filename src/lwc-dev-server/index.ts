@@ -8,10 +8,14 @@
 import { existsSync, lstatSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
-import { LWCServer, LogLevel, ServerConfig, startLwcDevServer } from '@lwc/lwc-dev-server';
+import { LWCServer, LogLevel, ServerConfig, startLwcDevServer, Workspace } from '@lwc/lwc-dev-server';
 import { Logger } from '@salesforce/core';
-import { LwcDevServerUtils } from '../shared/lwcDevServerUtils.js';
-import { IdentityUtils } from '../shared/identityUtils.js';
+import { SSLCertificateData } from '@salesforce/lwc-dev-mobile-core';
+import {
+  ConfigUtils,
+  LOCAL_DEV_SERVER_DEFAULT_PORT,
+  LOCAL_DEV_SERVER_DEFAULT_WORKSPACE,
+} from '../shared/configUtils.js';
 
 /**
  * Map sf cli log level to lwc dev server log level
@@ -39,8 +43,15 @@ function mapLogLevel(cliLogLevel: number): number {
   }
 }
 
-async function createLWCServerConfig(rootDir: string, logger: Logger): Promise<ServerConfig> {
-  const identityToken = await IdentityUtils.getOrCreateIdentityToken();
+async function createLWCServerConfig(
+  logger: Logger,
+  rootDir: string,
+  serverPort?: number,
+  serverProtocol?: string,
+  certData?: SSLCertificateData,
+  workspace?: Workspace,
+  token?: string
+): Promise<ServerConfig> {
   const sfdxConfig = path.resolve(rootDir, 'sfdx-project.json');
 
   if (!existsSync(sfdxConfig) || !lstatSync(sfdxConfig).isFile()) {
@@ -66,21 +77,41 @@ async function createLWCServerConfig(rootDir: string, logger: Logger): Promise<S
     }
   }
 
-  return {
+  const serverConfig: ServerConfig = {
     rootDir,
-    port: await LwcDevServerUtils.getLocalDevServerPort(),
-    protocol: 'wss',
+    // use custom port if any is provided, or fetch from config file (if any), otherwise use the default port
+    port: serverPort ?? (await ConfigUtils.getLocalDevServerPort()) ?? LOCAL_DEV_SERVER_DEFAULT_PORT,
+    protocol: serverProtocol ?? 'ws',
     host: 'localhost',
     paths: namespacePaths,
-    workspace: await LwcDevServerUtils.getLocalDevServerWorkspace(),
+    // use custom workspace if any is provided, or fetch from config file (if any), otherwise use the default workspace
+    workspace: workspace ?? (await ConfigUtils.getLocalDevServerWorkspace()) ?? LOCAL_DEV_SERVER_DEFAULT_WORKSPACE,
     targets: ['LEX'], // should this be something else?
-    identityToken,
+    identityToken: token ?? (await ConfigUtils.getOrCreateIdentityToken()),
     logLevel: mapLogLevel(logger.getLevel()),
   };
+
+  if (certData?.pemCertificate && certData.pemPrivateKey) {
+    serverConfig.https = {
+      cert: certData.pemCertificate,
+      key: certData.pemPrivateKey,
+    };
+  }
+
+  return serverConfig;
 }
 
-export async function startLWCServer(rootDir: string, logger: Logger): Promise<LWCServer> {
-  const config = await createLWCServerConfig(rootDir, logger);
+export async function startLWCServer(
+  logger: Logger,
+  rootDir: string,
+  serverPort?: number,
+  serverProtocol?: string,
+  certData?: SSLCertificateData,
+  workspace?: Workspace,
+  token?: string
+): Promise<LWCServer> {
+  const config = await createLWCServerConfig(logger, rootDir, serverPort, serverProtocol, certData, workspace, token);
+
   logger.trace(`Starting LWC Dev Server with config: ${JSON.stringify(config)}`);
   let lwcDevServer: LWCServer | null = await startLwcDevServer(config);
 

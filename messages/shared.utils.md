@@ -1,19 +1,27 @@
-# lwc-dev-server-utils.port-desc
+# config-utils.port-desc
 
 The port number of the local dev server
 
-# lwc-dev-server-utils.port-message
+# config-utils.port-error-message
 
-Must be a number between 1 and 65535
+The port number must be a number between 1 and 65535
 
-# lwc-dev-server-utils.workspace-desc
+# config-utils.workspace-desc
 
 The workspace name of the local lwc dev server
 
-# lwc-dev-server-utils.workspace-message
+# config-utils.workspace-error-message
 
 Valid workspace value is "SalesforceCLI" OR "mrt"
 
-# identity-utils.token-desc
+# config-utils.token-desc
 
 The Base64-encoded identity token of the local web server
+
+# config-utils.cert-desc
+
+The SSL certificate data to be used by the local dev server for secure connections
+
+# config-utils.cert-error-message
+
+You must provide valid SSL certificate data

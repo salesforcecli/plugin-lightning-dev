@@ -27,17 +27,65 @@ import {
   LaunchArgument,
   PreviewUtils as LwcDevMobileCorePreviewUtils,
   Platform,
+  SSLCertificateData,
 } from '@salesforce/lwc-dev-mobile-core';
 import { Progress, Spinner } from '@salesforce/sf-plugins-core';
 import fetch from 'node-fetch';
+import { ConfigUtils, LOCAL_DEV_SERVER_DEFAULT_PORT } from './configUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.app');
 const DevPreviewAuraMode = 'DEVPREVIEW';
 
 export class PreviewUtils {
-  public static generateWebSocketUrlForLocalDevServer(platform: string, port: string): string {
-    return LwcDevMobileCorePreviewUtils.generateWebSocketUrlForLocalDevServer(platform, port);
+  public static generateWebSocketUrlForLocalDevServer(platform: string, port: string | number): string {
+    return LwcDevMobileCorePreviewUtils.generateWebSocketUrlForLocalDevServer(platform, port.toString());
+  }
+
+  /**
+   * Returns a port number to be used by the local dev server.
+   *
+   * It starts by checking whether the user has configured a port in their config file.
+   * If so then we are only allowed to use that port, regardless of whether it is in use
+   * or not.
+   *
+   * If the user has not configured a port in their config file then we are free to choose
+   * one. We'll start with the default port (8081) and checks to see if it is in use or not.
+   * If it is in use then we increment the port number by 2 and check if it is in use or not.
+   * This process is repeated until a port that is not in use is found.
+   *
+   * @returns a port number to be used by the local dev server.
+   */
+  public static async getNextAvailablePort(): Promise<number> {
+    const userConfiguredPort = await ConfigUtils.getLocalDevServerPort();
+
+    if (userConfiguredPort) {
+      return Promise.resolve(userConfiguredPort);
+    }
+
+    let port = LOCAL_DEV_SERVER_DEFAULT_PORT;
+    let done = false;
+
+    while (!done) {
+      const cmd =
+        process.platform === 'win32' ? `netstat -an | find "LISTENING" | find ":${port}"` : `lsof -i :${port}`;
+
+      try {
+        const result = CommonUtils.executeCommandSync(cmd);
+        if (result.trim()) {
+          port = port + 2; // that port is in use so try another
+        } else {
+          done = true;
+        }
+      } catch (error) {
+        // On some platforms (like mac) if the command doesn't produce
+        // any results then that is considered an error but in our case
+        // that means the port is not in use and is ready for us to use.
+        done = true;
+      }
+    }
+
+    return Promise.resolve(port);
   }
 
   /**
@@ -161,9 +209,9 @@ export class PreviewUtils {
       launchArguments.push({ name: 'LightningExperienceAppID', value: appId });
     }
 
-    launchArguments.push({ name: 'aura.ldpServerUrl', value: ldpServerUrl });
+    launchArguments.push({ name: '0.aura.ldpServerUrl', value: ldpServerUrl });
 
-    launchArguments.push({ name: 'aura.mode', value: auraMode });
+    launchArguments.push({ name: '0.aura.mode', value: auraMode });
 
     return launchArguments;
   }
@@ -171,31 +219,37 @@ export class PreviewUtils {
   /**
    * Generates a self-signed certificate and saves it to a file at the specified location.
    *
-   * @param platform A supported platform (Desktop or iOS or Android)
+   * @param platform A mobile platform (iOS or Android)
    * @param saveLocation Path to a folder where the generated certificated will be saved to (defaults to the current working directory)
-   * @returns Path to the generated certificate file
+   * @returns Path to the generated certificate file and the certificate data
    */
-  public static generateSelfSignedCert(platform: Platform, saveLocation = '.'): string {
-    const cert = CryptoUtils.generateSelfSignedCert('localhost', 2048, 365);
+  public static async generateSelfSignedCert(
+    platform: Platform.ios | Platform.android,
+    saveLocation = '.'
+  ): Promise<{ certData: SSLCertificateData; certFilePath: string }> {
+    // See if we have previously generated cert data which is stored in the global config.
+    // If so then use that data otherwise generate new cert data and store it in the global config.
+    let data = await ConfigUtils.getCertData();
+    if (!data) {
+      data = CryptoUtils.generateSelfSignedCert('localhost', 2048, 820);
+      await ConfigUtils.writeCertData(data);
+    }
 
-    // Resolve the save location and ensure it exists
     const basePath = path.resolve(CommonUtils.resolveUserHomePath(saveLocation));
-    if (!fs.existsSync(basePath)) {
-      fs.mkdirSync(basePath);
+
+    const targetFile =
+      platform === Platform.ios ? path.join(basePath, 'localhost.der') : path.join(basePath, 'localhost.pem');
+
+    // If we have not previously generated the cert files then go ahead and do so
+    if (!fs.existsSync(targetFile)) {
+      if (platform === Platform.ios) {
+        fs.writeFileSync(targetFile, data.derCertificate);
+      } else {
+        fs.writeFileSync(targetFile, data.pemCertificate);
+      }
     }
 
-    let fileName = '';
-    if (platform === Platform.ios) {
-      // iOS expects the certificate to be a binary DER file
-      fileName = path.join(basePath, 'certificate.der');
-      fs.writeFileSync(fileName, cert.derCertificate, { encoding: 'binary' });
-    } else {
-      // all other platforms can work with a base64 PEM text file
-      fileName = path.join(basePath, 'certificate.pem');
-      fs.writeFileSync(fileName, cert.pemCertificate);
-    }
-
-    return fileName;
+    return { certData: data, certFilePath: targetFile };
   }
 
   /**

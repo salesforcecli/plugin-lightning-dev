@@ -5,17 +5,25 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import type { ConfigPropertyMeta, ConfigValue } from '@salesforce/core';
 import { Workspace } from '@lwc/lwc-dev-server';
-import { Messages } from '@salesforce/core';
+import { ConfigPropertyMeta, ConfigValue, Messages } from '@salesforce/core';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'shared.utils');
-const IDENTITY_TOKEN_DESC = messages.getMessage('identity-utils.token-desc');
-const LOCAL_DEV_SERVER_PORT_DESC = messages.getMessage('lwc-dev-server-utils.port-desc');
-const LOCAL_DEV_SERVER_PORT_MESSAGE = messages.getMessage('lwc-dev-server-utils.port-message');
-const LOCAL_DEV_SERVER_WORKSPACE_DESC = messages.getMessage('lwc-dev-server-utils.workspace-desc');
-const LOCAL_DEV_SERVER_WORKSPACE_MESSAGE = messages.getMessage('lwc-dev-server-utils.workspace-message');
+const IDENTITY_TOKEN_DESC = messages.getMessage('config-utils.token-desc');
+const LOCAL_DEV_SERVER_CERT_DESC = messages.getMessage('config-utils.cert-desc');
+const LOCAL_DEV_SERVER_CERT_ERROR_MESSAGE = messages.getMessage('config-utils.cert-error-message');
+const LOCAL_DEV_SERVER_PORT_DESC = messages.getMessage('config-utils.port-desc');
+const LOCAL_DEV_SERVER_PORT_ERROR_MESSAGE = messages.getMessage('config-utils.port-error-message');
+const LOCAL_DEV_SERVER_WORKSPACE_DESC = messages.getMessage('config-utils.workspace-desc');
+const LOCAL_DEV_SERVER_WORKSPACE_ERROR_MESSAGE = messages.getMessage('config-utils.workspace-error-message');
+
+export type SerializedSSLCertificateData = {
+  derCertificate: string;
+  pemCertificate: string;
+  pemPrivateKey: string;
+  pemPublicKey: string;
+};
 
 export const enum ConfigVars {
   /**
@@ -23,6 +31,11 @@ export const enum ConfigVars {
    * validate the web server's identity to the hmr-client.
    */
   LOCAL_WEB_SERVER_IDENTITY_TOKEN = 'local-web-server-identity-token',
+
+  /**
+   * The SSL certificate data to be used by local dev server
+   */
+  LOCAL_DEV_SERVER_HTTPS_CERT_DATA = 'local-dev-server-certificate-data',
 
   /**
    * The port number of the local dev server.
@@ -43,6 +56,21 @@ export default [
     encrypted: true,
   },
   {
+    key: ConfigVars.LOCAL_DEV_SERVER_HTTPS_CERT_DATA,
+    description: LOCAL_DEV_SERVER_CERT_DESC,
+    input: {
+      validator: (value: ConfigValue): boolean => {
+        const data = value as SerializedSSLCertificateData;
+        if (!data?.derCertificate || !data?.pemCertificate || !data?.pemPrivateKey) {
+          return false;
+        }
+
+        return true;
+      },
+      failedMessage: LOCAL_DEV_SERVER_CERT_ERROR_MESSAGE,
+    },
+  },
+  {
     key: ConfigVars.LOCAL_DEV_SERVER_PORT,
     description: LOCAL_DEV_SERVER_PORT_DESC,
     input: {
@@ -53,12 +81,12 @@ export default [
 
         const parsedPort = parseInt(value as string, 10);
 
-        if (isNaN(parsedPort) || parsedPort < 1 || parsedPort > 65535) {
+        if (isNaN(parsedPort) || parsedPort < 1 || parsedPort > 65_535) {
           return false;
         }
         return true;
       },
-      failedMessage: LOCAL_DEV_SERVER_PORT_MESSAGE,
+      failedMessage: LOCAL_DEV_SERVER_PORT_ERROR_MESSAGE,
     },
   },
   {
@@ -77,7 +105,7 @@ export default [
         }
         return false;
       },
-      failedMessage: LOCAL_DEV_SERVER_WORKSPACE_MESSAGE,
+      failedMessage: LOCAL_DEV_SERVER_WORKSPACE_ERROR_MESSAGE,
     },
   },
 ] as ConfigPropertyMeta[];
