@@ -243,7 +243,7 @@ export class PreviewUtils {
     // If we have not previously generated the cert files then go ahead and do so
     if (!fs.existsSync(targetFile)) {
       if (platform === Platform.ios) {
-        fs.writeFileSync(targetFile, data.derCertificate, { encoding: 'binary' });
+        fs.writeFileSync(targetFile, data.derCertificate);
       } else {
         fs.writeFileSync(targetFile, data.pemCertificate);
       }

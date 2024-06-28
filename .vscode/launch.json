@@ -40,47 +40,6 @@
       "smartStep": true,
       "internalConsoleOptions": "openOnSessionStart",
       "preLaunchTask": "Compile tests"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Preview - Desktop",
-      "console": "integratedTerminal",
-      "program": "${workspaceFolder}/bin/run",
-      "cwd": "/Users/maliroteh/Desktop/Meisam",
-      "args": [
-        "lightning:preview:app",
-        "--name",
-        "Sales"
-        // "--target-org",
-        // "maliroteh@brave-moose-6zrvpd.com"
-      ]
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Preview - iOS",
-      "console": "integratedTerminal",
-      "program": "${workspaceFolder}/bin/run",
-      "cwd": "/Users/maliroteh/Desktop/Meisam",
-      "args": [
-        "lightning:preview:app",
-        "--name",
-        "Sales",
-        "-t",
-        "ios",
-        "--device-id",
-        "22144629-9730-4819-969D-D6AE7148CA08"
-      ]
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Preview - Android",
-      "console": "integratedTerminal",
-      "program": "${workspaceFolder}/bin/run",
-      "cwd": "/Users/maliroteh/Desktop/Meisam",
-      "args": ["lightning:preview:app", "--name", "Sales", "-t", "android", "--device-id", "Pixel_5_API_34"]
     }
   ]
 }
