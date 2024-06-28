@@ -172,7 +172,7 @@ export default class LightningPreviewApp extends SfCommand<void> {
     }
 
     logger.debug('Determining the next available port for Local Dev Server');
-    const serverPort = PreviewUtils.getNextAvailablePort();
+    const serverPort = await PreviewUtils.getNextAvailablePort();
     logger.debug(`Next available port is ${serverPort}`);
 
     logger.debug('Determining Local Dev Server url');

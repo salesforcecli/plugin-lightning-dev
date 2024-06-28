@@ -8,7 +8,7 @@
 import { Workspace } from '@lwc/lwc-dev-server';
 import { CryptoUtils, SSLCertificateData } from '@salesforce/lwc-dev-mobile-core';
 import { Config, ConfigAggregator } from '@salesforce/core';
-import configMeta, { ConfigVars } from './../configMeta.js';
+import configMeta, { ConfigVars, SerializedSSLCertificateData } from './../configMeta.js';
 
 export const LOCAL_DEV_SERVER_DEFAULT_PORT = 8081;
 export const LOCAL_DEV_SERVER_DEFAULT_WORKSPACE = Workspace.SfCli;
@@ -61,36 +61,44 @@ export class ConfigUtils {
 
   public static async getCertData(): Promise<SSLCertificateData | undefined> {
     const config = await this.getGlobalConfig();
-    const data = config.get(ConfigVars.LOCAL_DEV_SERVER_HTTPS_CERT_DATA) as SSLCertificateData;
-    // convert base64 to binary DER data
-    if (data?.derCertificate) {
-      data.derCertificate = Buffer.from(data.derCertificate, 'base64').toString('binary');
+    const serializedData = config.get(ConfigVars.LOCAL_DEV_SERVER_HTTPS_CERT_DATA) as SerializedSSLCertificateData;
+    if (serializedData) {
+      const deserializedData: SSLCertificateData = {
+        derCertificate: Buffer.from(serializedData.derCertificate, 'base64'),
+        pemCertificate: serializedData.pemCertificate,
+        pemPrivateKey: serializedData.pemPrivateKey,
+        pemPublicKey: serializedData.pemPublicKey,
+      };
+
+      return deserializedData;
     }
-    return data;
+
+    return undefined;
   }
 
   public static async writeCertData(data: SSLCertificateData): Promise<void> {
     const config = await this.getGlobalConfig();
-    // convert the binary DER data to base64
-    const copy = data;
-    if (copy.derCertificate) {
-      copy.derCertificate = Buffer.from(data.derCertificate, 'binary').toString('base64');
-    }
-    config.set(ConfigVars.LOCAL_DEV_SERVER_HTTPS_CERT_DATA, copy);
+    const serializedData: SerializedSSLCertificateData = {
+      derCertificate: data.derCertificate.toString('base64'),
+      pemCertificate: data.pemCertificate,
+      pemPrivateKey: data.pemPrivateKey,
+      pemPublicKey: data.pemPublicKey,
+    };
+    config.set(ConfigVars.LOCAL_DEV_SERVER_HTTPS_CERT_DATA, serializedData);
     await config.write();
   }
 
-  public static async getLocalDevServerPort(): Promise<number> {
+  public static async getLocalDevServerPort(): Promise<number | undefined> {
     const config = await this.getConfig();
     const configPort = config.get(ConfigVars.LOCAL_DEV_SERVER_PORT) as number;
 
-    return configPort || LOCAL_DEV_SERVER_DEFAULT_PORT;
+    return configPort;
   }
 
-  public static async getLocalDevServerWorkspace(): Promise<Workspace> {
+  public static async getLocalDevServerWorkspace(): Promise<Workspace | undefined> {
     const config = await this.getConfig();
     const configWorkspace = config.get(ConfigVars.LOCAL_DEV_SERVER_WORKSPACE) as Workspace;
 
-    return configWorkspace || LOCAL_DEV_SERVER_DEFAULT_WORKSPACE;
+    return configWorkspace;
   }
 }

@@ -43,15 +43,26 @@ export class PreviewUtils {
   }
 
   /**
-   * Return a port number to be used by the local dev server.
+   * Returns a port number to be used by the local dev server.
    *
-   * It starts with the default port (8081) and checks to see if it is in use or not. If
-   * it is in use then we increment the port number by 2 and check if it is in use or not.
+   * It starts by checking whether the user has configured a port in their config file.
+   * If so then we are only allowed to use that port, regardless of whether it is in use
+   * or not.
+   *
+   * If the user has not configured a port in their config file then we are free to choose
+   * one. We'll start with the default port (8081) and checks to see if it is in use or not.
+   * If it is in use then we increment the port number by 2 and check if it is in use or not.
    * This process is repeated until a port that is not in use is found.
    *
    * @returns a port number to be used by the local dev server.
    */
-  public static getNextAvailablePort(): number {
+  public static async getNextAvailablePort(): Promise<number> {
+    const userConfiguredPort = await ConfigUtils.getLocalDevServerPort();
+
+    if (userConfiguredPort) {
+      return Promise.resolve(userConfiguredPort);
+    }
+
     let port = LOCAL_DEV_SERVER_DEFAULT_PORT;
     let done = false;
 
@@ -74,7 +85,7 @@ export class PreviewUtils {
       }
     }
 
-    return port;
+    return Promise.resolve(port);
   }
 
   /**

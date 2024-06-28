@@ -7,7 +7,6 @@
 
 import { Workspace } from '@lwc/lwc-dev-server';
 import { ConfigPropertyMeta, ConfigValue, Messages } from '@salesforce/core';
-import type { SSLCertificateData } from '@salesforce/lwc-dev-mobile-core';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'shared.utils');
@@ -18,6 +17,13 @@ const LOCAL_DEV_SERVER_PORT_DESC = messages.getMessage('config-utils.port-desc')
 const LOCAL_DEV_SERVER_PORT_ERROR_MESSAGE = messages.getMessage('config-utils.port-error-message');
 const LOCAL_DEV_SERVER_WORKSPACE_DESC = messages.getMessage('config-utils.workspace-desc');
 const LOCAL_DEV_SERVER_WORKSPACE_ERROR_MESSAGE = messages.getMessage('config-utils.workspace-error-message');
+
+export type SerializedSSLCertificateData = {
+  derCertificate: string;
+  pemCertificate: string;
+  pemPrivateKey: string;
+  pemPublicKey: string;
+};
 
 export const enum ConfigVars {
   /**
@@ -54,7 +60,7 @@ export default [
     description: LOCAL_DEV_SERVER_CERT_DESC,
     input: {
       validator: (value: ConfigValue): boolean => {
-        const data = value as SSLCertificateData;
+        const data = value as SerializedSSLCertificateData;
         if (!data?.derCertificate || !data?.pemCertificate || !data?.pemPrivateKey) {
           return false;
         }

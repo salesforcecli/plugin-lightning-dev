@@ -103,7 +103,7 @@ describe('configUtils', () => {
 
   it('writeCertData resolves', async () => {
     const certData = {
-      derCertificate: 'derCertificate',
+      derCertificate: Buffer.from('derCertificate', 'utf-8'),
       pemCertificate: 'pemCertificate',
       pemPrivateKey: 'pemPrivateKey',
       pemPublicKey: 'pemPublicKey',

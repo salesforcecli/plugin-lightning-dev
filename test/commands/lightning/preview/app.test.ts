@@ -207,7 +207,12 @@ describe('lightning preview app', () => {
       $$.SANDBOX.stub(PreviewUtils, 'bootMobileDevice').resolves(testEmulatorPort);
 
       const expectedCert = {
-        certData: { derCertificate: 'A', pemCertificate: 'B', pemPrivateKey: 'C', pemPublicKey: 'D' },
+        certData: {
+          derCertificate: Buffer.from('A', 'utf-8'),
+          pemCertificate: 'B',
+          pemPrivateKey: 'C',
+          pemPublicKey: 'D',
+        },
         certFilePath: '/path/to/localhost.pem',
       };
       $$.SANDBOX.stub(PreviewUtils, 'generateSelfSignedCert').resolves(expectedCert);
@@ -246,7 +251,12 @@ describe('lightning preview app', () => {
       $$.SANDBOX.stub(PreviewUtils, 'bootMobileDevice').resolves(testEmulatorPort);
 
       $$.SANDBOX.stub(PreviewUtils, 'generateSelfSignedCert').resolves({
-        certData: { derCertificate: 'A', pemCertificate: 'B', pemPrivateKey: 'C', pemPublicKey: 'D' },
+        certData: {
+          derCertificate: Buffer.from('A', 'utf-8'),
+          pemCertificate: 'B',
+          pemPrivateKey: 'C',
+          pemPublicKey: 'D',
+        },
         certFilePath: '/path/to/localhost.pem',
       });
 
@@ -273,7 +283,12 @@ describe('lightning preview app', () => {
       $$.SANDBOX.stub(PreviewUtils, 'bootMobileDevice').resolves(testEmulatorPort);
 
       $$.SANDBOX.stub(PreviewUtils, 'generateSelfSignedCert').resolves({
-        certData: { derCertificate: 'A', pemCertificate: 'B', pemPrivateKey: 'C', pemPublicKey: 'D' },
+        certData: {
+          derCertificate: Buffer.from('A', 'utf-8'),
+          pemCertificate: 'B',
+          pemPrivateKey: 'C',
+          pemPublicKey: 'D',
+        },
         certFilePath: '/path/to/localhost.pem',
       });
 

@@ -11,7 +11,11 @@ import process from 'node:process';
 import { LWCServer, LogLevel, ServerConfig, startLwcDevServer, Workspace } from '@lwc/lwc-dev-server';
 import { Logger } from '@salesforce/core';
 import { SSLCertificateData } from '@salesforce/lwc-dev-mobile-core';
-import { ConfigUtils } from '../shared/configUtils.js';
+import {
+  ConfigUtils,
+  LOCAL_DEV_SERVER_DEFAULT_PORT,
+  LOCAL_DEV_SERVER_DEFAULT_WORKSPACE,
+} from '../shared/configUtils.js';
 
 /**
  * Map sf cli log level to lwc dev server log level
@@ -75,11 +79,13 @@ async function createLWCServerConfig(
 
   const serverConfig: ServerConfig = {
     rootDir,
-    port: serverPort ?? (await ConfigUtils.getLocalDevServerPort()),
+    // use custom port if any is provided, or fetch from config file (if any), otherwise use the default port
+    port: serverPort ?? (await ConfigUtils.getLocalDevServerPort()) ?? LOCAL_DEV_SERVER_DEFAULT_PORT,
     protocol: serverProtocol ?? 'ws',
     host: 'localhost',
     paths: namespacePaths,
-    workspace: workspace ?? (await ConfigUtils.getLocalDevServerWorkspace()),
+    // use custom workspace if any is provided, or fetch from config file (if any), otherwise use the default workspace
+    workspace: workspace ?? (await ConfigUtils.getLocalDevServerWorkspace()) ?? LOCAL_DEV_SERVER_DEFAULT_WORKSPACE,
     targets: ['LEX'], // should this be something else?
     identityToken: token ?? (await ConfigUtils.getOrCreateIdentityToken()),
     logLevel: mapLogLevel(logger.getLevel()),
