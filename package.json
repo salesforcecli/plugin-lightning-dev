@@ -15,7 +15,7 @@
     "@salesforce/sf-plugins-core": "^11.1.2",
     "@inquirer/select": "^2.3.7",
     "chalk": "^5.3.0",
-    "lwc": "7.0.0",
+    "lwc": "7.0.1",
     "lwr": "0.13.0-alpha.22",
     "node-fetch": "^3.3.2",
     "tar": "^7.4.0"
