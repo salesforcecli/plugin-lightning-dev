@@ -3822,12 +3822,12 @@
     estree-walker "^2.0.2"
     picomatch "^2.3.1"
 
-"@salesforce/cli-plugins-testkit@^5.3.16":
-  version "5.3.16"
-  resolved "https://registry.yarnpkg.com/@salesforce/cli-plugins-testkit/-/cli-plugins-testkit-5.3.16.tgz#903aeb6b00fbce627652e1f6dc1f5f795386ad55"
-  integrity sha512-Qzhd9dIUlAYPGdAJGmY2GuyMI6HkXPoJHZtumIg436VjWFnZchXJ/O7wipEk2zsqa8RfkZNJyollWd41wxTnHA==
+"@salesforce/cli-plugins-testkit@^5.3.17":
+  version "5.3.17"
+  resolved "https://registry.yarnpkg.com/@salesforce/cli-plugins-testkit/-/cli-plugins-testkit-5.3.17.tgz#b1a66508cf7a5d235d4fe30cf6b0045776ef7a2f"
+  integrity sha512-+cPyjXfuVD3pYjm+EGYC4JowoYq8QXRyTTDlZTVPD8VBe/byyXzxdphjK5gIuKhBYvKwWN1kT3zbno25U49ljQ==
   dependencies:
-    "@salesforce/core" "^8.0.3"
+    "@salesforce/core" "^8.1.0"
     "@salesforce/kit" "^3.1.6"
     "@salesforce/ts-types" "^2.0.10"
     "@types/shelljs" "^0.8.15"
