@@ -7,7 +7,7 @@
 
 import path from 'node:path';
 import * as readline from 'node:readline';
-import { Logger, Messages } from '@salesforce/core';
+import { Logger, Messages, SfProject } from '@salesforce/core';
 import {
   AndroidAppPreviewConfig,
   AndroidVirtualDevice,
@@ -36,6 +36,8 @@ export const androidSalesforceAppPreviewConfig = {
   activity: 'com.salesforce.chatter.Chatter',
 } as AndroidAppPreviewConfig;
 
+const maxInt32 = 2_147_483_647; // maximum 32-bit signed integer value
+
 export default class LightningPreviewApp extends SfCommand<void> {
   public static readonly summary = messages.getMessage('summary');
   public static readonly description = messages.getMessage('description');
@@ -61,15 +63,44 @@ export default class LightningPreviewApp extends SfCommand<void> {
     }),
   };
 
-  public static async waitForUserToInstallCert(
+  private static async waitForKeyPress(): Promise<void> {
+    return new Promise((resolve) => {
+      const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout,
+      });
+
+      // eslint-disable-next-line no-console
+      console.log(`\n${messages.getMessage('certificate.waiting')}\n`);
+
+      process.stdin.setRawMode(true);
+      process.stdin.resume();
+      process.stdin.once('data', () => {
+        process.stdin.setRawMode(false);
+        process.stdin.pause();
+        rl.close();
+        resolve();
+      });
+    });
+  }
+
+  public async waitForUserToInstallCert(
     platform: Platform.ios | Platform.android,
     device: IOSSimulatorDevice | AndroidVirtualDevice,
     certFilePath: string
   ): Promise<void> {
-    let attention = `\n${messages.getMessage('certificate.attention')}`;
-    attention = chalk.red(attention);
     // eslint-disable-next-line no-console
-    console.log(attention);
+    console.log(`\n${messages.getMessage('certificate.installation.notice')}`);
+
+    const skipInstall = await this.confirm({
+      message: messages.getMessage('certificate.installation.skip.message'),
+      defaultAnswer: true,
+      ms: maxInt32, // simulate no timeout and wait for user to answer
+    });
+
+    if (skipInstall) {
+      return;
+    }
 
     let installationSteps = '';
     if (platform === Platform.ios) {
@@ -110,34 +141,6 @@ export default class LightningPreviewApp extends SfCommand<void> {
     return LightningPreviewApp.waitForKeyPress();
   }
 
-  private static async waitForKeyPress(): Promise<void> {
-    return new Promise((resolve) => {
-      // Emit keypress events on stdin
-      readline.emitKeypressEvents(process.stdin);
-      // Set stdin to raw mode
-      if (process.stdin.isTTY) {
-        process.stdin.setRawMode(true);
-      }
-
-      // eslint-disable-next-line no-console
-      console.log(`\n${messages.getMessage('certificate.waiting')}\n`);
-
-      // Function to handle key press
-      function onKeyPress(): void {
-        // Restore stdin settings
-        if (process.stdin.isTTY) {
-          process.stdin.setRawMode(false);
-        }
-        process.stdin.removeListener('keypress', onKeyPress);
-        process.stdin.pause();
-        resolve();
-      }
-
-      // Add keypress listener
-      process.stdin.on('keypress', onKeyPress);
-    });
-  }
-
   public async run(): Promise<void> {
     const { flags } = await this.parse(LightningPreviewApp);
     const logger = await Logger.child(this.ctor.name);
@@ -147,10 +150,12 @@ export default class LightningPreviewApp extends SfCommand<void> {
     const targetOrg = flags['target-org'];
     const deviceId = flags['device-id'];
 
-    logger.debug('Determining Local Dev Server url');
-    // todo: figure out how to make the port dynamic instead of hard-coded value here
-    const ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(platform, '8081');
-    logger.debug(`Local Dev Server url is ${ldpServerUrl}`);
+    let sfdxProjectRootPath = '';
+    try {
+      sfdxProjectRootPath = await SfProject.resolveProjectPath();
+    } catch (error) {
+      return Promise.reject(new Error(messages.getMessage('error.no-project', [(error as Error)?.message ?? ''])));
+    }
 
     let appId: string | undefined;
     if (appName) {
@@ -166,16 +171,39 @@ export default class LightningPreviewApp extends SfCommand<void> {
       logger.debug(`App Id is ${appId}`);
     }
 
+    logger.debug('Determining the next available port for Local Dev Server');
+    const serverPort = await PreviewUtils.getNextAvailablePort();
+    logger.debug(`Next available port is ${serverPort}`);
+
+    logger.debug('Determining Local Dev Server url');
+    const ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(platform, serverPort);
+    logger.debug(`Local Dev Server url is ${ldpServerUrl}`);
+
     if (platform === Platform.desktop) {
-      await this.desktopPreview(ldpServerUrl, appId, logger);
+      await this.desktopPreview(sfdxProjectRootPath, serverPort, ldpServerUrl, appId, logger);
     } else {
-      await this.mobilePreview(platform, ldpServerUrl, appName, appId, deviceId, logger);
+      await this.mobilePreview(
+        platform,
+        sfdxProjectRootPath,
+        serverPort,
+        ldpServerUrl,
+        appName,
+        appId,
+        deviceId,
+        logger
+      );
     }
   }
 
-  private async desktopPreview(ldpServerUrl: string, appId?: string, logger?: Logger): Promise<void> {
+  private async desktopPreview(
+    sfdxProjectRootPath: string,
+    serverPort: number,
+    ldpServerUrl: string,
+    appId: string | undefined,
+    logger: Logger
+  ): Promise<void> {
     if (!appId) {
-      logger?.debug('No Lightning Experience application name provided.... using the default app instead.');
+      logger.debug('No Lightning Experience application name provided.... using the default app instead.');
     }
 
     // There are various ways to pass in a target org (as an alias, as a username, etc).
@@ -198,46 +226,55 @@ export default class LightningPreviewApp extends SfCommand<void> {
       targetOrg = this.argv[idx + 1];
     }
 
+    const protocol = new URL(ldpServerUrl).protocol.replace(':', '').toLowerCase();
+    if (protocol === 'wss') {
+      this.log(`\n${messages.getMessage('trust.local.dev.server')}`);
+    }
+
     const launchArguments = PreviewUtils.generateDesktopPreviewLaunchArguments(ldpServerUrl, appId, targetOrg);
 
     // Start the LWC Dev Server
-    await startLWCServer(process.cwd(), logger ? logger : await Logger.child(this.ctor.name));
+    await startLWCServer(logger, sfdxProjectRootPath, serverPort, protocol);
 
+    // Open the browser and navigate to the right page
     await this.config.runCommand('org:open', launchArguments);
   }
 
   private async mobilePreview(
     platform: Platform.ios | Platform.android,
+    sfdxProjectRootPath: string,
+    serverPort: number,
     ldpServerUrl: string,
-    appName?: string,
-    appId?: string,
-    deviceId?: string,
-    logger?: Logger
+    appName: string | undefined,
+    appId: string | undefined,
+    deviceId: string | undefined,
+    logger: Logger
   ): Promise<void> {
     try {
-      // 1. Verify that user environment is set up for mobile (i.e. has right tooling)
+      // Verify that user environment is set up for mobile (i.e. has right tooling)
       await this.verifyMobileRequirements(platform, logger);
 
-      // 2. Fetch the target device
+      // Fetch the target device
       const device = await PreviewUtils.getMobileDevice(platform, deviceId, logger);
       if (!device) {
         throw new Error(messages.getMessage('error.device.notfound', [deviceId ?? '']));
       }
 
-      // 3. Boot the device if not already booted
+      // Boot the device if not already booted
       this.spinner.start(messages.getMessage('spinner.device.boot', [device.toString()]));
       const resolvedDeviceId = platform === Platform.ios ? (device as IOSSimulatorDevice).udid : device.name;
       const emulatorPort = await PreviewUtils.bootMobileDevice(platform, resolvedDeviceId, logger);
       this.spinner.stop();
 
-      // 4. Generate self-signed certificate and wait for user to install it
-      // TODO: update the save location to be the same as server config file path
+      // Configure certificates for dev server secure connection
       this.spinner.start(messages.getMessage('spinner.cert.gen'));
-      const certFilePath = PreviewUtils.generateSelfSignedCert(platform, '~/Desktop/cert');
+      const { certData, certFilePath } = await PreviewUtils.generateSelfSignedCert(platform, sfdxProjectRootPath);
       this.spinner.stop();
-      await LightningPreviewApp.waitForUserToInstallCert(platform, device, certFilePath);
 
-      // 5. Check if Salesforce Mobile App is installed on the device
+      // Show message and wait for user to install the certificate on their device
+      await this.waitForUserToInstallCert(platform, device, certFilePath);
+
+      // Check if Salesforce Mobile App is installed on the device
       const appConfig = platform === Platform.ios ? iOSSalesforceAppPreviewConfig : androidSalesforceAppPreviewConfig;
       const appInstalled = await PreviewUtils.verifyMobileAppInstalled(
         platform,
@@ -247,10 +284,9 @@ export default class LightningPreviewApp extends SfCommand<void> {
         logger
       );
 
-      // 6. If Salesforce Mobile App is not installed, download and install it
+      // If Salesforce Mobile App is not installed, download and install it
       let bundlePath: string | undefined;
       if (!appInstalled) {
-        const maxInt32 = 2_147_483_647; // maximum 32-bit signed integer value
         const proceedWithDownload = await this.confirm({
           message: messages.getMessage('mobileapp.download', [appConfig.name]),
           defaultAnswer: false,
@@ -281,8 +317,10 @@ export default class LightningPreviewApp extends SfCommand<void> {
       }
 
       // Start the LWC Dev Server
-      await startLWCServer(process.cwd(), logger ? logger : await Logger.child(this.ctor.name));
-      // 7. Launch the native app for previewing (launchMobileApp will show its own spinner)
+      const protocol = new URL(ldpServerUrl).protocol.replace(':', '').toLowerCase();
+      await startLWCServer(logger, sfdxProjectRootPath, serverPort, protocol, certData);
+
+      // Launch the native app for previewing (launchMobileApp will show its own spinner)
       // eslint-disable-next-line camelcase
       appConfig.launch_arguments = PreviewUtils.generateMobileAppPreviewLaunchArguments(ldpServerUrl, appName, appId);
       await PreviewUtils.launchMobileApp(platform, appConfig, resolvedDeviceId, emulatorPort, bundlePath, logger);
@@ -301,13 +339,13 @@ export default class LightningPreviewApp extends SfCommand<void> {
    * @param platform A mobile platform (iOS or Android)
    * @param logger An optional logger to be used for logging
    */
-  private async verifyMobileRequirements(platform: Platform.ios | Platform.android, logger?: Logger): Promise<void> {
-    logger?.debug(`Verifying environment meets requirements for previewing on ${platform}`);
+  private async verifyMobileRequirements(platform: Platform.ios | Platform.android, logger: Logger): Promise<void> {
+    logger.debug(`Verifying environment meets requirements for previewing on ${platform}`);
 
     const setupCommand = new LwcDevMobileCoreSetup(['-p', platform], this.config);
     await setupCommand.init();
     await setupCommand.run();
 
-    logger?.debug('Requirements are met'); // if we make it here then all is good
+    logger.debug('Requirements are met'); // if we make it here then all is good
   }
 }

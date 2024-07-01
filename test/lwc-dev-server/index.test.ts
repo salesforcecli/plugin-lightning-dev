@@ -9,9 +9,12 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect } from 'chai';
 import { Logger } from '@salesforce/core';
-import { LWCServer } from '@lwc/lwc-dev-server';
+import { LWCServer, Workspace } from '@lwc/lwc-dev-server';
 import esmock from 'esmock';
+import { TestContext } from '@salesforce/core/testSetup';
 import * as devServer from '../../src/lwc-dev-server/index.js';
+import { ConfigUtils } from '../../src/shared/configUtils.js';
+
 // eslint-disable-next-line no-underscore-dangle
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const logger = {
@@ -22,6 +25,7 @@ const logger = {
 } as Logger;
 
 describe('lwc-dev-server', () => {
+  const $$ = new TestContext();
   const server = {
     stopServer: () => {},
   } as LWCServer;
@@ -35,12 +39,23 @@ describe('lwc-dev-server', () => {
     });
   });
 
+  beforeEach(async () => {
+    $$.SANDBOX.stub(ConfigUtils, 'getOrCreateIdentityToken').resolves('testIdentityToken');
+    $$.SANDBOX.stub(ConfigUtils, 'getLocalDevServerPort').resolves(1234);
+    $$.SANDBOX.stub(ConfigUtils, 'getLocalDevServerWorkspace').resolves(Workspace.SfCli);
+    $$.SANDBOX.stub(ConfigUtils, 'getCertData').resolves(undefined);
+  });
+
+  afterEach(() => {
+    $$.restore();
+  });
+
   it('exports a startLWCServer function', () => {
     expect(lwcDevServer.startLWCServer).to.be.a('function');
   });
 
   it('calling startLWCServer returns an LWCServer', async () => {
-    const s = await lwcDevServer.startLWCServer(path.resolve(__dirname, './__mocks__'), logger);
+    const s = await lwcDevServer.startLWCServer(logger, path.resolve(__dirname, './__mocks__'));
     expect(s).to.equal(server);
   });
 });
