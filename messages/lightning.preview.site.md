@@ -35,7 +35,7 @@ Enable Node Inspect to debug server-side rendering.
 
 # examples
 
-- Preview the site "Partner Central" from the org "myOrg".
+- Preview the site "Partner Central" from the org "myOrg":
   <%= config.bin %> <%= command.id %> --name "Partner Central" --target-org myOrg
-- Preview the site "Partner Central" from the org "myOrg" with Node Inspector enabled.
+- Preview the site "Partner Central" from the org "myOrg" with Node Inspector enabled:
   <%= config.bin %> <%= command.id %> --name "Partner Central" --target-org myOrg --debug

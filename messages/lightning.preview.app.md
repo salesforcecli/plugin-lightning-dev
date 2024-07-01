@@ -149,7 +149,7 @@ After you install the certificate, press any key to continue...
 
 # examples
 
-- Preview the target org "myOrg" in a desktop environment.
+- Preview the target org "myOrg" in a desktop environment:
   <%= config.bin %> <%= command.id %> --target-org myOrg
 - Preview the application "myApp" for the target org "myOrg" in a desktop environment:
   <%= config.bin %> <%= command.id %> --name MyApp --target-org myOrg --device-type desktop
