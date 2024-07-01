@@ -19,7 +19,7 @@ Use the appropriate topic to preview specific aspects of the development environ
 
 # flags.name.summary
 
-Name of the Experience Cloud site to preview. It has to match the name of a site on the current org.
+Name of the Experience Cloud site to preview. It has to match a site name from the current org.
 
 # flags.name.description
 
@@ -31,11 +31,11 @@ Username or alias of the target org. Not required if the `target-org` configurat
 
 # flags.debug.summary
 
-Debug SSR.
+Enable Node Inspect to debug server-side rendering.
 
 # examples
 
 - Preview the site "Partner Central" from the org "myOrg".
   <%= config.bin %> <%= command.id %> --name "Partner Central" --target-org myOrg
-- Preview the site "Partner Central" from the org "myOrg" with Node Inspector enabled for debugging.
+- Preview the site "Partner Central" from the org "myOrg" with Node Inspector enabled.
   <%= config.bin %> <%= command.id %> --name "Partner Central" --target-org myOrg --debug

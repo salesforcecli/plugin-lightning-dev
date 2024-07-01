@@ -27,11 +27,11 @@ Username or alias of the target org. Not required if the `target-org` configurat
 
 # flags.device-type.summary
 
-Type of device to ren
+Type of device to display the app preview.
 
 # flags.device-id.summary
 
-ID of the mobile device to emulate the preview when device type is set to `mobile`. The default value is the ID of the first available mobile device.
+ID of the mobile device to display the preview if device type is set to `mobile`. The default value is the ID of the first available mobile device.
 
 # error.no-project
 
