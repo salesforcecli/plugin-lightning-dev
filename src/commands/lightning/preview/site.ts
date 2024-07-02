@@ -21,13 +21,11 @@ export type LightningPreviewSiteResult = {
 
 export default class LightningPreviewSite extends SfCommand<LightningPreviewSiteResult> {
   public static readonly summary = messages.getMessage('summary');
-  public static readonly description = messages.getMessage('description');
   public static readonly examples = messages.getMessages('examples');
 
   public static readonly flags = {
     name: Flags.string({
       summary: messages.getMessage('flags.name.summary'),
-      description: messages.getMessage('flags.name.description'),
       char: 'n',
       required: false,
     }),

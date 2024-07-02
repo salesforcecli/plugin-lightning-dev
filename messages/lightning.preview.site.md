@@ -21,10 +21,6 @@ Use the appropriate topic to preview specific aspects of the development environ
 
 Name of the Experience Cloud site to preview. It has to match a site name from the current org.
 
-# flags.name.description
-
-More information about a flag. Don't repeat the summary.
-
 # flags.target-org.summary
 
 Username or alias of the target org. Not required if the `target-org` configuration variable is already set.
