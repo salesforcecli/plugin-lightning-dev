@@ -47,7 +47,6 @@ async function createLWCServerConfig(
   logger: Logger,
   rootDir: string,
   serverPort?: number,
-  serverProtocol?: string,
   certData?: SSLCertificateData,
   workspace?: Workspace,
   token?: string
@@ -81,12 +80,9 @@ async function createLWCServerConfig(
     rootDir,
     // use custom port if any is provided, or fetch from config file (if any), otherwise use the default port
     port: serverPort ?? (await ConfigUtils.getLocalDevServerPort()) ?? LOCAL_DEV_SERVER_DEFAULT_PORT,
-    protocol: serverProtocol ?? 'ws',
-    host: 'localhost',
     paths: namespacePaths,
     // use custom workspace if any is provided, or fetch from config file (if any), otherwise use the default workspace
     workspace: workspace ?? (await ConfigUtils.getLocalDevServerWorkspace()) ?? LOCAL_DEV_SERVER_DEFAULT_WORKSPACE,
-    targets: ['LEX'], // should this be something else?
     identityToken: token ?? (await ConfigUtils.getOrCreateIdentityToken()),
     logLevel: mapLogLevel(logger.getLevel()),
   };
@@ -105,12 +101,11 @@ export async function startLWCServer(
   logger: Logger,
   rootDir: string,
   serverPort?: number,
-  serverProtocol?: string,
   certData?: SSLCertificateData,
   workspace?: Workspace,
   token?: string
 ): Promise<LWCServer> {
-  const config = await createLWCServerConfig(logger, rootDir, serverPort, serverProtocol, certData, workspace, token);
+  const config = await createLWCServerConfig(logger, rootDir, serverPort, certData, workspace, token);
 
   logger.trace(`Starting LWC Dev Server with config: ${JSON.stringify(config)}`);
   let lwcDevServer: LWCServer | null = await startLwcDevServer(config);
