@@ -4,18 +4,16 @@ Preview an Experience Cloud site locally and in real-time, without deploying it.
 
 # description
 
-In developer preview mode, see local changes to your site in a real-time preview that you don't have to deploy or manually refresh. To let you quickly iterate on your Lightning web components (LWCs) and pages, your site preview automatically refreshes when source code changes are detected.
+Enable Lightning Preview to see local changes to your site in a real-time preview that you don't have to deploy or manually refresh. To let you quickly iterate on your Lightning web components (LWCs) and pages, your site preview automatically refreshes when Lightning Preview detects source code changes.
 
-When you edit local files in developer preview mode, your LWCs reflect these changes within your {org name} org:
+When you edit local files with Lightning Preview enabled, your LWCs reflect the following changes in your org. To apply any other local changes not listed here, you have to deploy them to your org using the `project deploy start` command.
 
 - Basic HTML and CSS edits
 - Importing new CSS-only LWCs
 - JS edits in-service component library
 - JS method changes that don't affect the LWC's public API
 
-To see any other local changes in your site, you have to deploy to your org. If you make changes directly in your org, (like saving new component properties,) they're immediately live on your site. To update your local version of the site with those changes, you have to retrieve them from your org.
-
-Use the appropriate topic to preview specific aspects of the development environment.
+When you make changes directly in your org, (like saving new component properties,) they're automatically deployed to your live site. To update your local version of the site with those changes, you have to retrieve them from your org using the `project retrieve start` command.
 
 # flags.name.summary
 
@@ -27,7 +25,7 @@ Username or alias of the target org. Not required if the `target-org` configurat
 
 # flags.debug.summary
 
-Enable Node Inspect to debug server-side rendering.
+Enable Node Inspector to debug server-side rendering.
 
 # examples
 

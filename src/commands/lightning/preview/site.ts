@@ -32,7 +32,7 @@ export default class LightningPreviewSite extends SfCommand<LightningPreviewSite
     debug: Flags.boolean({
       summary: messages.getMessage('flags.debug.summary'),
     }),
-    'target-org': Flags.optionalOrg(),
+    'target-org': Flags.optionalOrg({ summary: messages.getMessage('flags.target-org.summary') }),
   };
 
   public async run(): Promise<LightningPreviewSiteResult> {

@@ -1,25 +1,23 @@
 # summary
 
-Preview a Lightning Experience application locally and in real-time, without deploying it.
+Preview a Lightning Experience app locally and in real-time, without deploying it.
 
 # description
 
-In developer preview mode, see local changes to your app in a real-time preview that you don't have to deploy or manually refresh. To let you quickly iterate on your Lightning web components (LWCs) and pages, your app preview automatically refreshes when source code changes are detected.
+Enable Lightning Preview to see local changes to your app in a real-time preview that you don't have to deploy or manually refresh. To let you quickly iterate on your Lightning web components (LWCs) and pages, your app preview automatically refreshes when Lightning Preview detects source code changes.
 
-When you edit local files in developer preview mode, your LWCs reflect these changes within your {org name} org:
+When you edit local files with Lightning Preview enabled, your LWCs reflect the following changes in your org. To apply any other local changes not listed here, you have to deploy them to your org using the `project deploy start` command.
 
 - Basic HTML and CSS edits
 - Importing new CSS-only LWCs
 - JS edits in-service component library
 - JS method changes that don't affect the LWC's public API
 
-To see any other local changes in your app, you have to deploy to your org. If you make changes directly in your org, (like saving new component properties,) they're immediately live on your app. To update your local version of the app with those changes, you have to retrieve them from your org.
-
-Use the appropriate topic to preview specific aspects of the development environment.
+When you make changes directly in your org, (like saving new component properties,) they're automatically deployed to your live app. To update your local version of the app with those changes, you have to retrieve them from your org using the `project retrieve start` command.
 
 # flags.name.summary
 
-Name of the Lightning Experience application to preview.
+Name of the Lightning Experience app to preview.
 
 # flags.target-org.summary
 
@@ -31,7 +29,7 @@ Type of device to display the app preview.
 
 # flags.device-id.summary
 
-ID of the mobile device to display the preview if device type is set to `mobile`. The default value is the ID of the first available mobile device.
+ID of the mobile device to display the preview if device type is set to `ios` or `android`. The default value is the ID of the first available mobile device.
 
 # error.no-project
 
@@ -151,7 +149,7 @@ After you install the certificate, press any key to continue...
 
 - Preview the target org "myOrg" in a desktop environment:
   <%= config.bin %> <%= command.id %> --target-org myOrg
-- Preview the application "myApp" for the target org "myOrg" in a desktop environment:
+- Preview the app "myApp" for the target org "myOrg" in a desktop environment:
   <%= config.bin %> <%= command.id %> --name MyApp --target-org myOrg --device-type desktop
 - Preview the target org "myOrg" on an iOS device:
   <%= config.bin %> <%= command.id %> --target-org myOrg --device-type ios --device-id "iPhone 15 Pro Max"
