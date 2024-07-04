@@ -226,15 +226,14 @@ export default class LightningPreviewApp extends SfCommand<void> {
       targetOrg = this.argv[idx + 1];
     }
 
-    const protocol = new URL(ldpServerUrl).protocol.replace(':', '').toLowerCase();
-    if (protocol === 'wss') {
+    if (ldpServerUrl.startsWith('wss')) {
       this.log(`\n${messages.getMessage('trust.local.dev.server')}`);
     }
 
     const launchArguments = PreviewUtils.generateDesktopPreviewLaunchArguments(ldpServerUrl, appId, targetOrg);
 
     // Start the LWC Dev Server
-    await startLWCServer(logger, sfdxProjectRootPath, serverPort, protocol);
+    await startLWCServer(logger, sfdxProjectRootPath, serverPort);
 
     // Open the browser and navigate to the right page
     await this.config.runCommand('org:open', launchArguments);
@@ -317,8 +316,7 @@ export default class LightningPreviewApp extends SfCommand<void> {
       }
 
       // Start the LWC Dev Server
-      const protocol = new URL(ldpServerUrl).protocol.replace(':', '').toLowerCase();
-      await startLWCServer(logger, sfdxProjectRootPath, serverPort, protocol, certData);
+      await startLWCServer(logger, sfdxProjectRootPath, serverPort, certData);
 
       // Launch the native app for previewing (launchMobileApp will show its own spinner)
       // eslint-disable-next-line camelcase
