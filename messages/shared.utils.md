@@ -16,7 +16,7 @@ Valid workspace value is "SalesforceCLI" OR "mrt"
 
 # config-utils.token-desc
 
-The identity data is a data structure that ties together a single local web server identity token to multiple orgs.
+The identity data is a data structure that links the local web server's identity token to the user's configured Salesforce orgs.
 
 # config-utils.cert-desc
 
