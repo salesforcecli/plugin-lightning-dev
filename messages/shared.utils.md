@@ -16,7 +16,7 @@ Valid workspace value is "SalesforceCLI" OR "mrt"
 
 # config-utils.token-desc
 
-The Base64-encoded identity token of the local web server
+The identity data is a data structure that ties together a single local web server identity token to multiple orgs.
 
 # config-utils.cert-desc
 

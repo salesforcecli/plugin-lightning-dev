@@ -5,13 +5,26 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
 import { Workspace } from '@lwc/lwc-dev-server';
 import { CryptoUtils, SSLCertificateData } from '@salesforce/lwc-dev-mobile-core';
-import { Config, ConfigAggregator } from '@salesforce/core';
+import { Config, ConfigAggregator, Connection } from '@salesforce/core';
 import configMeta, { ConfigVars, SerializedSSLCertificateData } from './../configMeta.js';
 
 export const LOCAL_DEV_SERVER_DEFAULT_PORT = 8081;
 export const LOCAL_DEV_SERVER_DEFAULT_WORKSPACE = Workspace.SfCli;
+
+export class LocalWebServerIdentityData {
+  public identityToken: string;
+  public usernameToServerEntityIdMap: Record<string, string> = {};
+
+  public constructor(token: string) {
+    this.identityToken = token;
+  }
+}
 
 export class ConfigUtils {
   static #config: Config;
@@ -35,27 +48,29 @@ export class ConfigUtils {
     return this.#globalConfig;
   }
 
-  public static async getOrCreateIdentityToken(): Promise<string> {
-    let token = await this.getIdentityToken();
-    if (!token) {
-      token = CryptoUtils.generateIdentityToken();
-      await this.writeIdentityToken(token);
+  public static async getOrCreateIdentityToken(username: string, connection: Connection): Promise<string> {
+    let identityData = await this.getIdentityData();
+    if (!identityData) {
+      const token = CryptoUtils.generateIdentityToken();
+      const entityId = await this.saveIdentityTokenToServer(token, connection);
+      identityData = new LocalWebServerIdentityData(token);
+      identityData.usernameToServerEntityIdMap[username] = entityId;
+      await this.writeIdentityData(identityData);
+      return token;
+    } else {
+      let entityId = identityData.usernameToServerEntityIdMap[username];
+      if (!entityId) {
+        entityId = await this.saveIdentityTokenToServer(identityData.identityToken, connection);
+        identityData.usernameToServerEntityIdMap[username] = entityId;
+        await this.writeIdentityData(identityData);
+      }
+      return identityData.identityToken;
     }
-    return token;
   }
 
-  public static async getIdentityToken(): Promise<string | undefined> {
-    const config = await ConfigAggregator.create({ customConfigMeta: configMeta });
-    // Need to reload to make sure the values read are decrypted
-    await config.reload();
-    const identityToken = config.getPropertyValue(ConfigVars.LOCAL_WEB_SERVER_IDENTITY_TOKEN);
-
-    return identityToken as string;
-  }
-
-  public static async writeIdentityToken(token: string): Promise<void> {
-    const config = await this.getConfig();
-    config.set(ConfigVars.LOCAL_WEB_SERVER_IDENTITY_TOKEN, token);
+  public static async writeIdentityData(identityData: LocalWebServerIdentityData): Promise<void> {
+    const config = await this.getGlobalConfig();
+    config.set(ConfigVars.LOCAL_WEB_SERVER_IDENTITY_DATA, JSON.stringify(identityData));
     await config.write();
   }
 
@@ -100,5 +115,26 @@ export class ConfigUtils {
     const configWorkspace = config.get(ConfigVars.LOCAL_DEV_SERVER_WORKSPACE) as Workspace;
 
     return configWorkspace;
+  }
+
+  public static async getIdentityData(): Promise<LocalWebServerIdentityData | undefined> {
+    const config = await ConfigAggregator.create({ customConfigMeta: configMeta });
+    // Need to reload to make sure the values read are decrypted
+    await config.reload();
+    const identityJson = config.getPropertyValue(ConfigVars.LOCAL_WEB_SERVER_IDENTITY_DATA) as string;
+
+    if (identityJson) {
+      return JSON.parse(identityJson) as LocalWebServerIdentityData;
+    }
+    return undefined;
+  }
+
+  private static async saveIdentityTokenToServer(token: string, connection: Connection): Promise<string> {
+    const sobject = connection.sobject('UserLocalWebServerIdentity');
+    const result = await sobject.insert({ LocalWebServerIdentityToken: token });
+    if (result.success) {
+      return result.id;
+    }
+    throw new Error('Could not save the token to the server');
   }
 }

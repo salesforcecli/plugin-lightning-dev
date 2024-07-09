@@ -27,10 +27,10 @@ export type SerializedSSLCertificateData = {
 
 export const enum ConfigVars {
   /**
-   * The Base64-encoded identity token of the local web server, used to
-   * validate the web server's identity to the hmr-client.
+   * The identity data is a data structure that ties together a single
+   * local web server identity token to multiple orgs.
    */
-  LOCAL_WEB_SERVER_IDENTITY_TOKEN = 'local-web-server-identity-token',
+  LOCAL_WEB_SERVER_IDENTITY_DATA = 'local-web-server-identity-data',
 
   /**
    * The SSL certificate data to be used by local dev server
@@ -50,7 +50,7 @@ export const enum ConfigVars {
 
 export default [
   {
-    key: ConfigVars.LOCAL_WEB_SERVER_IDENTITY_TOKEN,
+    key: ConfigVars.LOCAL_WEB_SERVER_IDENTITY_DATA,
     description: IDENTITY_TOKEN_DESC,
     hidden: true,
     encrypted: true,

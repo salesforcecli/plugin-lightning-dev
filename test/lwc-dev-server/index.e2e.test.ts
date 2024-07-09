@@ -46,8 +46,9 @@
 //     $$.SANDBOX.resetHistory();
 //   });
 
-//   it('e2e', async () => {
-//     const server = await devServer.startLWCServer(logger, path.resolve(__dirname, './__mocks__'));
+  it('e2e', async () => {
+//    const fakeIdentityToken = 'PFT1vw8v65aXd2b9HFvZ3Zu4OcKZwjI60bq7BEjj5k4=';
+//    const server = await devServer.startLWCServer(logger, path.resolve(__dirname, './__mocks__'), fakeIdentityToken);
 
 //     expect(server).to.be.an.instanceOf(LWCServer);
 //     server.stopServer();

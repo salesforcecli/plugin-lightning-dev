@@ -46,10 +46,10 @@ function mapLogLevel(cliLogLevel: number): number {
 async function createLWCServerConfig(
   logger: Logger,
   rootDir: string,
+  token: string,
   serverPort?: number,
   certData?: SSLCertificateData,
-  workspace?: Workspace,
-  token?: string
+  workspace?: Workspace
 ): Promise<ServerConfig> {
   const sfdxConfig = path.resolve(rootDir, 'sfdx-project.json');
 
@@ -83,7 +83,7 @@ async function createLWCServerConfig(
     paths: namespacePaths,
     // use custom workspace if any is provided, or fetch from config file (if any), otherwise use the default workspace
     workspace: workspace ?? (await ConfigUtils.getLocalDevServerWorkspace()) ?? LOCAL_DEV_SERVER_DEFAULT_WORKSPACE,
-    identityToken: token ?? (await ConfigUtils.getOrCreateIdentityToken()),
+    identityToken: token,
     logLevel: mapLogLevel(logger.getLevel()),
   };
 
@@ -100,12 +100,12 @@ async function createLWCServerConfig(
 export async function startLWCServer(
   logger: Logger,
   rootDir: string,
+  token: string,
   serverPort?: number,
   certData?: SSLCertificateData,
-  workspace?: Workspace,
-  token?: string
+  workspace?: Workspace
 ): Promise<LWCServer> {
-  const config = await createLWCServerConfig(logger, rootDir, serverPort, certData, workspace, token);
+  const config = await createLWCServerConfig(logger, rootDir, token, serverPort, certData, workspace);
 
   logger.trace(`Starting LWC Dev Server with config: ${JSON.stringify(config)}`);
   let lwcDevServer: LWCServer | null = await startLwcDevServer(config);

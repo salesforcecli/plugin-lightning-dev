@@ -21,6 +21,7 @@ import chalk from 'chalk';
 import { OrgUtils } from '../../../shared/orgUtils.js';
 import { startLWCServer } from '../../../lwc-dev-server/index.js';
 import { PreviewUtils } from '../../../shared/previewUtils.js';
+import { ConfigUtils } from '../../../shared/configUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.app');
@@ -157,13 +158,18 @@ export default class LightningPreviewApp extends SfCommand<void> {
       return Promise.reject(new Error(messages.getMessage('error.no-project', [(error as Error)?.message ?? ''])));
     }
 
+    logger.debug('Configuring local web server identity');
+    const connection = targetOrg.getConnection(undefined);
+    const username = connection.getUsername() as string;
+    const token = await ConfigUtils.getOrCreateIdentityToken(username, connection);
+
     let appId: string | undefined;
     if (appName) {
       logger.debug(`Determining App Id for ${appName}`);
 
       // The appName is optional but if the user did provide an appName then it must be
       // a valid one.... meaning that it should resolve to a valid appId.
-      appId = await OrgUtils.getAppId(targetOrg.getConnection(undefined), appName);
+      appId = await OrgUtils.getAppId(connection, appName);
       if (!appId) {
         return Promise.reject(new Error(messages.getMessage('error.fetching.app-id', [appName])));
       }
@@ -180,12 +186,13 @@ export default class LightningPreviewApp extends SfCommand<void> {
     logger.debug(`Local Dev Server url is ${ldpServerUrl}`);
 
     if (platform === Platform.desktop) {
-      await this.desktopPreview(sfdxProjectRootPath, serverPort, ldpServerUrl, appId, logger);
+      await this.desktopPreview(sfdxProjectRootPath, serverPort, token, ldpServerUrl, appId, logger);
     } else {
       await this.mobilePreview(
         platform,
         sfdxProjectRootPath,
         serverPort,
+        token,
         ldpServerUrl,
         appName,
         appId,
@@ -198,6 +205,7 @@ export default class LightningPreviewApp extends SfCommand<void> {
   private async desktopPreview(
     sfdxProjectRootPath: string,
     serverPort: number,
+    token: string,
     ldpServerUrl: string,
     appId: string | undefined,
     logger: Logger
@@ -233,7 +241,7 @@ export default class LightningPreviewApp extends SfCommand<void> {
     const launchArguments = PreviewUtils.generateDesktopPreviewLaunchArguments(ldpServerUrl, appId, targetOrg);
 
     // Start the LWC Dev Server
-    await startLWCServer(logger, sfdxProjectRootPath, serverPort);
+    await startLWCServer(logger, sfdxProjectRootPath, token, serverPort);
 
     // Open the browser and navigate to the right page
     await this.config.runCommand('org:open', launchArguments);
@@ -243,6 +251,7 @@ export default class LightningPreviewApp extends SfCommand<void> {
     platform: Platform.ios | Platform.android,
     sfdxProjectRootPath: string,
     serverPort: number,
+    token: string,
     ldpServerUrl: string,
     appName: string | undefined,
     appId: string | undefined,
@@ -316,7 +325,8 @@ export default class LightningPreviewApp extends SfCommand<void> {
       }
 
       // Start the LWC Dev Server
-      await startLWCServer(logger, sfdxProjectRootPath, serverPort, certData);
+
+      await startLWCServer(logger, sfdxProjectRootPath, token, serverPort, certData);
 
       // Launch the native app for previewing (launchMobileApp will show its own spinner)
       // eslint-disable-next-line camelcase
