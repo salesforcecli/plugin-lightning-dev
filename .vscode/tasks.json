@@ -14,7 +14,7 @@
         "focus": false,
         "panel": "dedicated"
       },
-      "args": ["run", "pretest"],
+      "args": ["test:compile"],
       "isBackground": false
     }
   ]
