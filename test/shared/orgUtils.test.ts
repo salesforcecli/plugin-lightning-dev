@@ -10,7 +10,7 @@ import { expect } from 'chai';
 import { AuthInfo, Connection } from '@salesforce/core';
 import { OrgUtils } from '../../src/shared/orgUtils.js';
 
-describe('lightning preview app', () => {
+describe('orgUtils', () => {
   const $$ = new TestContext();
 
   afterEach(() => {
