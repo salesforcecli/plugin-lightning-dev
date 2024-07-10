@@ -162,19 +162,19 @@ export class PreviewUtils {
    * Generates the proper set of arguments to be used for launching desktop browser and navigating to the right location.
    *
    * @param ldpServerUrl The URL for the local dev server
-   * @param token The identity token used for web socket handshake
+   * @param username User that is initiating the local preview
    * @param appId An optional app id for a targeted LEX app
    * @param targetOrg An optional org id
    * @param auraMode An optional Aura Mode (defaults to DEVPREVIEW)
    * @returns Array of arguments to be used by Org:Open command for launching desktop browser
    */
-  public static generateDesktopPreviewLaunchArguments(
+  public static async generateDesktopPreviewLaunchArguments(
     ldpServerUrl: string,
-    token: string,
+    username: string,
     appId?: string,
     targetOrg?: string,
     auraMode = DevPreviewAuraMode
-  ): string[] {
+  ): Promise<string[]> {
     // appPath will resolve to one of the following:
     //
     //   lightning/app/<appId> => when the user is targeting a specific LEX app
@@ -182,10 +182,12 @@ export class PreviewUtils {
     //
     const appPath = appId ? `lightning/app/${appId}` : 'lightning';
 
+    const entityId = await this.getEntityId(username);
+
     // we prepend a '0.' to all of the params to ensure they will persist across browser redirects
     const launchArguments = [
       '--path',
-      `${appPath}?0.aura.ldpServerUrl=${ldpServerUrl}&0.aura.ldpServerId=${token}&0.aura.mode=${auraMode}`,
+      `${appPath}?0.aura.ldpServerUrl=${ldpServerUrl}&0.aura.ldpServerId=${entityId}&0.aura.mode=${auraMode}`,
     ];
 
     if (targetOrg) {
@@ -199,19 +201,19 @@ export class PreviewUtils {
    * Generates the proper set of arguments to be used for launching a mobile app with custom launch arguments.
    *
    * @param ldpServerUrl The URL for the local dev server
-   * @param token The identity token used for web socket handshake
+   * @param username User that is initiating the local preview
    * @param appName An optional app name for a targeted LEX app
    * @param appId An optional app id for a targeted LEX app
    * @param auraMode An optional Aura Mode (defaults to DEVPREVIEW)
    * @returns Array of arguments to be used as custom launch arguments when launching a mobile app.
    */
-  public static generateMobileAppPreviewLaunchArguments(
+  public static async generateMobileAppPreviewLaunchArguments(
     ldpServerUrl: string,
-    token: string,
+    username: string,
     appName?: string,
     appId?: string,
     auraMode = DevPreviewAuraMode
-  ): LaunchArgument[] {
+  ): Promise<LaunchArgument[]> {
     const launchArguments: LaunchArgument[] = [];
 
     if (appName) {
@@ -226,7 +228,9 @@ export class PreviewUtils {
 
     launchArguments.push({ name: '0.aura.mode', value: auraMode });
 
-    launchArguments.push({ name: '0.aura.ldpServerId', value: token });
+    const entityId = await this.getEntityId(username);
+
+    launchArguments.push({ name: '0.aura.ldpServerId', value: entityId });
 
     return launchArguments;
   }
@@ -503,5 +507,19 @@ export class PreviewUtils {
 
     logger?.debug(`Extracting archive ${zipFilePath}`);
     await CommonUtils.executeCommandAsync(cmd, logger);
+  }
+
+  private static async getEntityId(username: string): Promise<string> {
+    const identityData = await ConfigUtils.getIdentityData();
+    let entityId: string | undefined;
+    if (!identityData) {
+      throw new Error(messages.getMessage('error.identitydata'));
+    } else {
+      entityId = identityData.usernameToServerEntityIdMap[username];
+      if (!entityId) {
+        throw new Error(messages.getMessage('error.identitydata.entityid'));
+      }
+      return entityId;
+    }
   }
 }

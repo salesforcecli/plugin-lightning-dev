@@ -25,6 +25,7 @@ import LightningPreviewApp, {
 } from '../../../../src/commands/lightning/preview/app.js';
 import { OrgUtils } from '../../../../src/shared/orgUtils.js';
 import { PreviewUtils } from '../../../../src/shared/previewUtils.js';
+import { ConfigUtils, LocalWebServerIdentityData } from '../../../../src/shared/configUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 
@@ -52,6 +53,14 @@ describe('lightning preview app', () => {
   const testEmulatorPort = 1234;
   let MockedLightningPreviewApp: typeof LightningPreviewApp;
 
+  const fakeIdentityToken = 'PFT1vw8v65aXd2b9HFvZ3Zu4OcKZwjI60bq7BEjj5k4=';
+  const fakeEntityId = '1I9xx0000004ClkCAE';
+  const fakeIdentityData: LocalWebServerIdentityData = {
+    identityToken: `${fakeIdentityToken}`,
+    usernameToServerEntityIdMap: {},
+  };
+  fakeIdentityData.usernameToServerEntityIdMap[testOrgData.username] = fakeEntityId;
+
   beforeEach(async () => {
     stubUx($$.SANDBOX);
     stubSpinner($$.SANDBOX);
@@ -62,6 +71,7 @@ describe('lightning preview app', () => {
     $$.SANDBOX.stub(SfConfig.prototype, 'get').returns(undefined);
     $$.SANDBOX.stub(SfConfig.prototype, 'set');
     $$.SANDBOX.stub(SfConfig.prototype, 'write').resolves();
+    $$.SANDBOX.stub(ConfigUtils, 'getOrCreateIdentityToken').resolves(fakeIdentityToken);
 
     MockedLightningPreviewApp = await esmock<typeof LightningPreviewApp>(
       '../../../../src/commands/lightning/preview/app.js',
@@ -112,6 +122,8 @@ describe('lightning preview app', () => {
     async function verifyOrgOpen(expectedAppPath: string, appName?: string): Promise<void> {
       $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
+      $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(fakeIdentityData);
+
       const runCmdStub = $$.SANDBOX.stub(OclifConfig.prototype, 'runCommand').resolves();
       if (appName) {
         await MockedLightningPreviewApp.run(['--name', appName, '-o', testOrgData.username]);
@@ -124,7 +136,7 @@ describe('lightning preview app', () => {
         'org:open',
         [
           '--path',
-          `${expectedAppPath}?0.aura.ldpServerUrl=${testServerUrl}&0.aura.mode=DEVPREVIEW`,
+          `${expectedAppPath}?0.aura.ldpServerUrl=${testServerUrl}&0.aura.ldpServerId=${fakeEntityId}&0.aura.mode=DEVPREVIEW`,
           '--target-org',
           testOrgData.username,
         ],
@@ -196,6 +208,7 @@ describe('lightning preview app', () => {
     it('waits for user to manually install the certificate', async () => {
       $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
+      $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(fakeIdentityData);
 
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'init').resolves();
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'run').resolves();
@@ -272,6 +285,7 @@ describe('lightning preview app', () => {
     it('installs and launched app on mobile device', async () => {
       $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
+      $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(fakeIdentityData);
 
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'init').resolves();
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'run').resolves();
@@ -413,8 +427,9 @@ describe('lightning preview app', () => {
       const expectedAppConfig =
         platform === Platform.ios ? iOSSalesforceAppPreviewConfig : androidSalesforceAppPreviewConfig;
       // eslint-disable-next-line camelcase
-      expectedAppConfig.launch_arguments = PreviewUtils.generateMobileAppPreviewLaunchArguments(
+      expectedAppConfig.launch_arguments = await PreviewUtils.generateMobileAppPreviewLaunchArguments(
         expectedLdpServerUrl,
+        testOrgData.username,
         'Sales',
         testAppId
       );

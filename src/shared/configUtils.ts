@@ -53,8 +53,7 @@ export class ConfigUtils {
       await this.writeIdentityData(identityData);
       return token;
     } else {
-      const existingEntityId = identityData.usernameToServerEntityIdMap[username];
-      const entityId = await this.saveIdentityTokenToServer(identityData.identityToken, connection, existingEntityId);
+      const entityId = await this.saveIdentityTokenToServer(identityData.identityToken, connection);
       identityData.usernameToServerEntityIdMap[username] = entityId;
       await this.writeIdentityData(identityData);
       return identityData.identityToken;
@@ -122,13 +121,9 @@ export class ConfigUtils {
     return undefined;
   }
 
-  private static async saveIdentityTokenToServer(
-    token: string,
-    connection: Connection,
-    entityId: string = ''
-  ): Promise<string> {
+  private static async saveIdentityTokenToServer(token: string, connection: Connection): Promise<string> {
     const sobject = connection.sobject('UserLocalWebServerIdentity');
-    const result = await sobject.upsert({ LocalWebServerIdentityToken: token, Id: `${entityId}` }, 'ID');
+    const result = await sobject.insert({ LocalWebServerIdentityToken: token });
     if (result.success) {
       return result.id;
     }
