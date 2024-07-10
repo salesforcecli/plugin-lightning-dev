@@ -6,6 +6,7 @@
  */
 
 import fs from 'node:fs';
+import path from 'node:path';
 import { TestContext } from '@salesforce/core/testSetup';
 import { expect } from 'chai';
 import {
@@ -149,15 +150,16 @@ describe('previewUtils', () => {
     $$.SANDBOX.stub(fs, 'existsSync').returns(false);
     $$.SANDBOX.stub(fs, 'writeFileSync').returns();
 
-    let result = await PreviewUtils.generateSelfSignedCert(Platform.ios, '/path/to/dir');
-    expect(result.certFilePath).to.be.equal('/path/to/dir/localhost.der');
+    const certDirPath = '/path/to/dir';
+    let result = await PreviewUtils.generateSelfSignedCert(Platform.ios, certDirPath);
+    expect(result.certFilePath).to.be.equal(path.join(path.resolve(certDirPath), 'localhost.der'));
     expect(result.certData.derCertificate.toString('utf8')).to.be.equal('testDERCert');
     expect(result.certData.pemCertificate).to.be.equal('testPEMCert');
     expect(result.certData.pemPrivateKey).to.be.equal('testPrivateKey');
     expect(result.certData.pemPublicKey).to.be.equal('testPublicKey');
 
-    result = await PreviewUtils.generateSelfSignedCert(Platform.android, '/path/to/dir');
-    expect(result.certFilePath).to.be.equal('/path/to/dir/localhost.pem');
+    result = await PreviewUtils.generateSelfSignedCert(Platform.android, certDirPath);
+    expect(result.certFilePath).to.be.equal(path.join(path.resolve(certDirPath), 'localhost.pem'));
     expect(result.certData.derCertificate.toString('utf8')).to.be.equal('testDERCert');
     expect(result.certData.pemCertificate).to.be.equal('testPEMCert');
     expect(result.certData.pemPrivateKey).to.be.equal('testPrivateKey');
