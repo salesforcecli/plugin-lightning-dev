@@ -5,8 +5,6 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-
-
 import { expect } from 'chai';
 import { Workspace } from '@lwc/lwc-dev-server';
 import { Config, ConfigAggregator, Connection } from '@salesforce/core';
@@ -30,7 +28,10 @@ describe('configUtils', () => {
   });
 
   it('getOrCreateIdentityToken resolves if identity data is found', async () => {
-    const identityData = new LocalWebServerIdentityData(fakeIdentityToken);
+    const identityData: LocalWebServerIdentityData = {
+      identityToken: fakeIdentityToken,
+      usernameToServerEntityIdMap: {},
+    };
     identityData.usernameToServerEntityIdMap[username] = 'entityId';
     const stubConnection = $$.SANDBOX.createStubInstance(Connection);
     $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(identityData);
@@ -83,7 +84,11 @@ describe('configUtils', () => {
       $$.SANDBOX.match.string
     );
     $$.SANDBOX.stub(Config.prototype, 'write').resolves();
-    const identityData = new LocalWebServerIdentityData(fakeIdentityToken);
+    const identityData: LocalWebServerIdentityData = {
+      identityToken: fakeIdentityToken,
+      usernameToServerEntityIdMap: {},
+    };
+    identityData.usernameToServerEntityIdMap[username] = 'entityId';
 
     const resolved = await ConfigUtils.writeIdentityData(identityData);
     expect(resolved).to.equal(undefined);

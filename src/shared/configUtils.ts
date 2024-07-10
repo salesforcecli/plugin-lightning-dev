@@ -5,10 +5,6 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-
 import { Workspace } from '@lwc/lwc-dev-server';
 import { CryptoUtils, SSLCertificateData } from '@salesforce/lwc-dev-mobile-core';
 import { Config, ConfigAggregator, Connection } from '@salesforce/core';
@@ -17,14 +13,10 @@ import configMeta, { ConfigVars, SerializedSSLCertificateData } from './../confi
 export const LOCAL_DEV_SERVER_DEFAULT_PORT = 8081;
 export const LOCAL_DEV_SERVER_DEFAULT_WORKSPACE = Workspace.SfCli;
 
-export class LocalWebServerIdentityData {
-  public identityToken: string;
-  public usernameToServerEntityIdMap: Record<string, string> = {};
-
-  public constructor(token: string) {
-    this.identityToken = token;
-  }
-}
+export type LocalWebServerIdentityData = {
+  identityToken: string;
+  usernameToServerEntityIdMap: Record<string, string>;
+};
 
 export class ConfigUtils {
   static #config: Config;
@@ -53,29 +45,30 @@ export class ConfigUtils {
     if (!identityData) {
       const token = CryptoUtils.generateIdentityToken();
       const entityId = await this.saveIdentityTokenToServer(token, connection);
-      identityData = new LocalWebServerIdentityData(token);
+      identityData = {
+        identityToken: token,
+        usernameToServerEntityIdMap: {},
+      };
       identityData.usernameToServerEntityIdMap[username] = entityId;
       await this.writeIdentityData(identityData);
       return token;
     } else {
-      let entityId = identityData.usernameToServerEntityIdMap[username];
-      if (!entityId) {
-        entityId = await this.saveIdentityTokenToServer(identityData.identityToken, connection);
-        identityData.usernameToServerEntityIdMap[username] = entityId;
-        await this.writeIdentityData(identityData);
-      }
+      const existingEntityId = identityData.usernameToServerEntityIdMap[username];
+      const entityId = await this.saveIdentityTokenToServer(identityData.identityToken, connection, existingEntityId);
+      identityData.usernameToServerEntityIdMap[username] = entityId;
+      await this.writeIdentityData(identityData);
       return identityData.identityToken;
     }
   }
 
   public static async writeIdentityData(identityData: LocalWebServerIdentityData): Promise<void> {
-    const config = await this.getGlobalConfig();
-    config.set(ConfigVars.LOCAL_WEB_SERVER_IDENTITY_DATA, JSON.stringify(identityData));
+    const config = await this.getConfig();
+    config.set(ConfigVars.LOCAL_WEB_SERVER_IDENTITY_DATA, identityData);
     await config.write();
   }
 
   public static async getCertData(): Promise<SSLCertificateData | undefined> {
-    const config = await this.getGlobalConfig();
+    const config = await this.getConfig();
     const serializedData = config.get(ConfigVars.LOCAL_DEV_SERVER_HTTPS_CERT_DATA) as SerializedSSLCertificateData;
     if (serializedData) {
       const deserializedData: SSLCertificateData = {
@@ -121,17 +114,21 @@ export class ConfigUtils {
     const config = await ConfigAggregator.create({ customConfigMeta: configMeta });
     // Need to reload to make sure the values read are decrypted
     await config.reload();
-    const identityJson = config.getPropertyValue(ConfigVars.LOCAL_WEB_SERVER_IDENTITY_DATA) as string;
+    const identityJson = config.getPropertyValue(ConfigVars.LOCAL_WEB_SERVER_IDENTITY_DATA);
 
     if (identityJson) {
-      return JSON.parse(identityJson) as LocalWebServerIdentityData;
+      return identityJson as LocalWebServerIdentityData;
     }
     return undefined;
   }
 
-  private static async saveIdentityTokenToServer(token: string, connection: Connection): Promise<string> {
+  private static async saveIdentityTokenToServer(
+    token: string,
+    connection: Connection,
+    entityId: string = ''
+  ): Promise<string> {
     const sobject = connection.sobject('UserLocalWebServerIdentity');
-    const result = await sobject.insert({ LocalWebServerIdentityToken: token });
+    const result = await sobject.upsert({ LocalWebServerIdentityToken: token, Id: `${entityId}` }, 'ID');
     if (result.success) {
       return result.id;
     }

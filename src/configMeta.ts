@@ -10,7 +10,7 @@ import { ConfigPropertyMeta, ConfigValue, Messages } from '@salesforce/core';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'shared.utils');
-const IDENTITY_TOKEN_DESC = messages.getMessage('config-utils.token-desc');
+const IDENTITY_DATA_DESC = messages.getMessage('config-utils.data-desc');
 const LOCAL_DEV_SERVER_CERT_DESC = messages.getMessage('config-utils.cert-desc');
 const LOCAL_DEV_SERVER_CERT_ERROR_MESSAGE = messages.getMessage('config-utils.cert-error-message');
 const LOCAL_DEV_SERVER_PORT_DESC = messages.getMessage('config-utils.port-desc');
@@ -27,8 +27,8 @@ export type SerializedSSLCertificateData = {
 
 export const enum ConfigVars {
   /**
-   * The identity data is a data structure that ties together a single
-   * local web server identity token to multiple orgs.
+   * The identity data is a data structure that links the local web server's
+   * identity token to the user's configured Salesforce orgs.
    */
   LOCAL_WEB_SERVER_IDENTITY_DATA = 'local-web-server-identity-data',
 
@@ -51,7 +51,7 @@ export const enum ConfigVars {
 export default [
   {
     key: ConfigVars.LOCAL_WEB_SERVER_IDENTITY_DATA,
-    description: IDENTITY_TOKEN_DESC,
+    description: IDENTITY_DATA_DESC,
     hidden: true,
     encrypted: true,
   },

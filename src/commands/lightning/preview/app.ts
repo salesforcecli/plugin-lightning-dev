@@ -160,7 +160,11 @@ export default class LightningPreviewApp extends SfCommand<void> {
 
     logger.debug('Configuring local web server identity');
     const connection = targetOrg.getConnection(undefined);
-    const username = connection.getUsername() as string;
+    const username = connection.getUsername();
+    if (!username) {
+      return Promise.reject(new Error(messages.getMessage('error.username')));
+    }
+
     const token = await ConfigUtils.getOrCreateIdentityToken(username, connection);
 
     let appId: string | undefined;
@@ -238,7 +242,7 @@ export default class LightningPreviewApp extends SfCommand<void> {
       this.log(`\n${messages.getMessage('trust.local.dev.server')}`);
     }
 
-    const launchArguments = PreviewUtils.generateDesktopPreviewLaunchArguments(ldpServerUrl, appId, targetOrg);
+    const launchArguments = PreviewUtils.generateDesktopPreviewLaunchArguments(ldpServerUrl, token, appId, targetOrg);
 
     // Start the LWC Dev Server
     await startLWCServer(logger, sfdxProjectRootPath, token, serverPort);
@@ -330,7 +334,12 @@ export default class LightningPreviewApp extends SfCommand<void> {
 
       // Launch the native app for previewing (launchMobileApp will show its own spinner)
       // eslint-disable-next-line camelcase
-      appConfig.launch_arguments = PreviewUtils.generateMobileAppPreviewLaunchArguments(ldpServerUrl, appName, appId);
+      appConfig.launch_arguments = PreviewUtils.generateMobileAppPreviewLaunchArguments(
+        ldpServerUrl,
+        token,
+        appName,
+        appId
+      );
       await PreviewUtils.launchMobileApp(platform, appConfig, resolvedDeviceId, emulatorPort, bundlePath, logger);
     } finally {
       // stop progress & spinner UX (that may still be running in case of an error)

@@ -162,6 +162,7 @@ export class PreviewUtils {
    * Generates the proper set of arguments to be used for launching desktop browser and navigating to the right location.
    *
    * @param ldpServerUrl The URL for the local dev server
+   * @param token The identity token used for web socket handshake
    * @param appId An optional app id for a targeted LEX app
    * @param targetOrg An optional org id
    * @param auraMode An optional Aura Mode (defaults to DEVPREVIEW)
@@ -169,6 +170,7 @@ export class PreviewUtils {
    */
   public static generateDesktopPreviewLaunchArguments(
     ldpServerUrl: string,
+    token: string,
     appId?: string,
     targetOrg?: string,
     auraMode = DevPreviewAuraMode
@@ -181,7 +183,10 @@ export class PreviewUtils {
     const appPath = appId ? `lightning/app/${appId}` : 'lightning';
 
     // we prepend a '0.' to all of the params to ensure they will persist across browser redirects
-    const launchArguments = ['--path', `${appPath}?0.aura.ldpServerUrl=${ldpServerUrl}&0.aura.mode=${auraMode}`];
+    const launchArguments = [
+      '--path',
+      `${appPath}?0.aura.ldpServerUrl=${ldpServerUrl}&0.aura.ldpServerId=${token}&0.aura.mode=${auraMode}`,
+    ];
 
     if (targetOrg) {
       launchArguments.push('--target-org', targetOrg);
@@ -194,6 +199,7 @@ export class PreviewUtils {
    * Generates the proper set of arguments to be used for launching a mobile app with custom launch arguments.
    *
    * @param ldpServerUrl The URL for the local dev server
+   * @param token The identity token used for web socket handshake
    * @param appName An optional app name for a targeted LEX app
    * @param appId An optional app id for a targeted LEX app
    * @param auraMode An optional Aura Mode (defaults to DEVPREVIEW)
@@ -201,6 +207,7 @@ export class PreviewUtils {
    */
   public static generateMobileAppPreviewLaunchArguments(
     ldpServerUrl: string,
+    token: string,
     appName?: string,
     appId?: string,
     auraMode = DevPreviewAuraMode
@@ -218,6 +225,8 @@ export class PreviewUtils {
     launchArguments.push({ name: '0.aura.ldpServerUrl', value: ldpServerUrl });
 
     launchArguments.push({ name: '0.aura.mode', value: auraMode });
+
+    launchArguments.push({ name: '0.aura.ldpServerId', value: token });
 
     return launchArguments;
   }

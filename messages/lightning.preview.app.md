@@ -35,6 +35,10 @@ Type of device to emulate in preview.
 
 For mobile virtual devices, specify the device ID to preview. If omitted, the first available virtual device will be used.
 
+# error.username
+
+Org must have a valid user
+
 # error.no-project
 
 This command is required to run from within a Salesforce project directory. %s
