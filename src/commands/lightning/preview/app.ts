@@ -176,7 +176,7 @@ export default class LightningPreviewApp extends SfCommand<void> {
     logger.debug(`Next available port is ${serverPort}`);
 
     logger.debug('Determining Local Dev Server url');
-    const ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(platform, serverPort);
+    const ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(platform, serverPort, logger);
     logger.debug(`Local Dev Server url is ${ldpServerUrl}`);
 
     if (platform === Platform.desktop) {

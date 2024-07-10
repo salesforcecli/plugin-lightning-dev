@@ -38,8 +38,12 @@ const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'ligh
 const DevPreviewAuraMode = 'DEVPREVIEW';
 
 export class PreviewUtils {
-  public static generateWebSocketUrlForLocalDevServer(platform: string, port: string | number): string {
-    return LwcDevMobileCorePreviewUtils.generateWebSocketUrlForLocalDevServer(platform, port.toString());
+  public static generateWebSocketUrlForLocalDevServer(
+    platform: string,
+    port: string | number,
+    logger?: Logger
+  ): string {
+    return LwcDevMobileCorePreviewUtils.generateWebSocketUrlForLocalDevServer(platform, port.toString(), logger);
   }
 
   /**
@@ -109,12 +113,14 @@ export class PreviewUtils {
       logger?.debug(`Attempting to get device ${deviceId}`);
       device =
         platform === Platform.ios
-          ? (await IOSUtils.getSimulator(deviceId)) ?? undefined
-          : await AndroidUtils.fetchEmulator(deviceId);
+          ? (await IOSUtils.getSimulator(deviceId, logger)) ?? undefined
+          : await AndroidUtils.fetchEmulator(deviceId, logger);
     } else {
       logger?.debug('No particular device was targeted by the user...  fetching the first available device.');
       const devices =
-        platform === Platform.ios ? await IOSUtils.getSupportedSimulators() : await AndroidUtils.fetchEmulators();
+        platform === Platform.ios
+          ? await IOSUtils.getSupportedSimulators(logger)
+          : await AndroidUtils.fetchEmulators(logger);
       if (devices && devices.length > 0) {
         device = devices[0];
       }
@@ -141,11 +147,11 @@ export class PreviewUtils {
     let emulatorPort: number | undefined;
 
     if (platform === Platform.ios) {
-      await IOSUtils.bootDevice(deviceId, true); // will be no-op if already booted
-      await IOSUtils.launchSimulatorApp();
+      await IOSUtils.bootDevice(deviceId, true, logger); // will be no-op if already booted
+      await IOSUtils.launchSimulatorApp(logger);
       logger?.debug('Device booted');
     } else {
-      emulatorPort = await AndroidUtils.startEmulator(deviceId); // will be no-op if already booted
+      emulatorPort = await AndroidUtils.startEmulator(deviceId, false, true, logger); // will be no-op if already booted
       logger?.debug(`Device booted on port ${emulatorPort}`);
     }
 
@@ -279,7 +285,8 @@ export class PreviewUtils {
         deviceId,
         appBundlePath,
         appConfig.id,
-        appConfig.launch_arguments ?? []
+        appConfig.launch_arguments ?? [],
+        logger
       );
     } else if (emulatorPort) {
       // for Android, emulatorPort is required
@@ -288,7 +295,8 @@ export class PreviewUtils {
         appConfig.id,
         appConfig.launch_arguments ?? [],
         (appConfig as AndroidAppPreviewConfig).activity,
-        emulatorPort
+        emulatorPort,
+        logger
       );
     }
   }
@@ -314,13 +322,18 @@ export class PreviewUtils {
     let result = '';
     try {
       if (platform === Platform.ios) {
-        result = CommonUtils.executeCommandSync(`xcrun simctl listapps ${deviceId} | grep "${appConfig.id}"`);
+        result = CommonUtils.executeCommandSync(
+          `xcrun simctl listapps ${deviceId} | grep "${appConfig.id}"`,
+          undefined,
+          logger
+        );
       } else {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const resolvedEmulatorPort = emulatorPort!;
         result = await AndroidUtils.executeAdbCommand(
           `shell pm list packages | grep "${appConfig.id}"`,
-          resolvedEmulatorPort
+          resolvedEmulatorPort,
+          logger
         );
       }
     } catch {
@@ -480,6 +493,6 @@ export class PreviewUtils {
         : `unzip -o -qq ${archive} -d ${outDir}`;
 
     logger?.debug(`Extracting archive ${zipFilePath}`);
-    await CommonUtils.executeCommandAsync(cmd);
+    await CommonUtils.executeCommandAsync(cmd, logger);
   }
 }

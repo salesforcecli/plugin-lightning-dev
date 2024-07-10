@@ -10,11 +10,7 @@ import { Workspace } from '@lwc/lwc-dev-server';
 import { Config, ConfigAggregator } from '@salesforce/core';
 import { TestContext } from '@salesforce/core/testSetup';
 import { CryptoUtils } from '@salesforce/lwc-dev-mobile-core';
-import {
-  ConfigUtils,
-  LOCAL_DEV_SERVER_DEFAULT_PORT,
-  LOCAL_DEV_SERVER_DEFAULT_WORKSPACE,
-} from '../../src/shared/configUtils.js';
+import { ConfigUtils } from '../../src/shared/configUtils.js';
 import { ConfigVars } from '../../src/configMeta.js';
 
 describe('configUtils', () => {
@@ -87,7 +83,7 @@ describe('configUtils', () => {
 
   it('getCertData resolves to value in config', async () => {
     const certData = {
-      derCertificate: 'derCertificate',
+      derCertificate: Buffer.from(Buffer.from('derCertificate').toString('base64'), 'base64'),
       pemCertificate: 'pemCertificate',
       pemPrivateKey: 'pemPrivateKey',
       pemPublicKey: 'pemPublicKey',
@@ -118,13 +114,13 @@ describe('configUtils', () => {
     expect(resolved).to.equal(undefined);
   });
 
-  it('getLocalDevServerPort resolves to default port when value not found in config', async () => {
+  it('getLocalDevServerPort returns undefined when value not found in config', async () => {
     $$.SANDBOX.stub(Config, 'create').withArgs($$.SANDBOX.match.any).resolves(Config.prototype);
     $$.SANDBOX.stub(Config, 'addAllowedProperties').withArgs($$.SANDBOX.match.any);
     $$.SANDBOX.stub(Config.prototype, 'get').withArgs(ConfigVars.LOCAL_DEV_SERVER_PORT).returns(undefined);
     const resolved = await ConfigUtils.getLocalDevServerPort();
 
-    expect(resolved).to.equal(LOCAL_DEV_SERVER_DEFAULT_PORT);
+    expect(resolved).to.be.undefined;
   });
 
   it('getLocalDevServerPort resolves to port value in config', async () => {
@@ -136,13 +132,13 @@ describe('configUtils', () => {
     expect(resolved).to.equal(123);
   });
 
-  it('getLocalDevServerWorkspace resolves to default workspace when value not found in config', async () => {
+  it('getLocalDevServerWorkspace returns undefined when value not found in config', async () => {
     $$.SANDBOX.stub(Config, 'create').withArgs($$.SANDBOX.match.any).resolves(Config.prototype);
     $$.SANDBOX.stub(Config, 'addAllowedProperties').withArgs($$.SANDBOX.match.any);
     $$.SANDBOX.stub(Config.prototype, 'get').withArgs(ConfigVars.LOCAL_DEV_SERVER_WORKSPACE).returns(undefined);
     const resolved = await ConfigUtils.getLocalDevServerWorkspace();
 
-    expect(resolved).to.equal(LOCAL_DEV_SERVER_DEFAULT_WORKSPACE);
+    expect(resolved).to.be.undefined;
   });
 
   it('getLocalDevServerWorkspace resolves to workspace value in config', async () => {
