@@ -7,7 +7,7 @@
 
 import path from 'node:path';
 import * as readline from 'node:readline';
-import { Logger, Messages, SfProject } from '@salesforce/core';
+import { Connection, Logger, Messages, SfProject } from '@salesforce/core';
 import {
   AndroidAppPreviewConfig,
   AndroidVirtualDevice,
@@ -21,7 +21,7 @@ import chalk from 'chalk';
 import { OrgUtils } from '../../../shared/orgUtils.js';
 import { startLWCServer } from '../../../lwc-dev-server/index.js';
 import { PreviewUtils } from '../../../shared/previewUtils.js';
-import { AppServerIdentityTokenService, ConfigUtils } from '../../../shared/configUtils.js';
+import { ConfigUtils, IdentityTokenService } from '../../../shared/configUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.app');
@@ -38,6 +38,22 @@ export const androidSalesforceAppPreviewConfig = {
 } as AndroidAppPreviewConfig;
 
 const maxInt32 = 2_147_483_647; // maximum 32-bit signed integer value
+
+class AppServerIdentityTokenService implements IdentityTokenService {
+  private connection: Connection;
+  public constructor(connection: Connection) {
+    this.connection = connection;
+  }
+
+  public async saveTokenToServer(token: string): Promise<string> {
+    const sobject = this.connection.sobject('UserLocalWebServerIdentity');
+    const result = await sobject.insert({ LocalWebServerIdentityToken: token });
+    if (result.success) {
+      return result.id;
+    }
+    throw new Error('Could not save the token to the server');
+  }
+}
 
 export default class LightningPreviewApp extends SfCommand<void> {
   public static readonly summary = messages.getMessage('summary');

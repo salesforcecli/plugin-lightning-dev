@@ -7,29 +7,12 @@
 
 import { Workspace } from '@lwc/lwc-dev-server';
 import { CryptoUtils, SSLCertificateData } from '@salesforce/lwc-dev-mobile-core';
-import { Config, ConfigAggregator, Connection } from '@salesforce/core';
+import { Config, ConfigAggregator } from '@salesforce/core';
 import configMeta, { ConfigVars, SerializedSSLCertificateData } from './../configMeta.js';
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface IdentityTokenService {
+export type IdentityTokenService = {
   saveTokenToServer(token: string): Promise<string>;
-}
-
-export class AppServerIdentityTokenService implements IdentityTokenService {
-  private connection: Connection;
-  public constructor(connection: Connection) {
-    this.connection = connection;
-  }
-
-  public async saveTokenToServer(token: string): Promise<string> {
-    const sobject = this.connection.sobject('UserLocalWebServerIdentity');
-    const result = await sobject.insert({ LocalWebServerIdentityToken: token });
-    if (result.success) {
-      return result.id;
-    }
-    throw new Error('Could not save the token to the server');
-  }
-}
+};
 
 export const LOCAL_DEV_SERVER_DEFAULT_PORT = 8081;
 export const LOCAL_DEV_SERVER_DEFAULT_WORKSPACE = Workspace.SfCli;
