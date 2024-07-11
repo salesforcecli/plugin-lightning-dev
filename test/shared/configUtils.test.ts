@@ -10,12 +10,7 @@ import { Workspace } from '@lwc/lwc-dev-server';
 import { Config, ConfigAggregator, Connection } from '@salesforce/core';
 import { TestContext } from '@salesforce/core/testSetup';
 import { CryptoUtils } from '@salesforce/lwc-dev-mobile-core';
-import {
-  ConfigUtils,
-  LOCAL_DEV_SERVER_DEFAULT_PORT,
-  LOCAL_DEV_SERVER_DEFAULT_WORKSPACE,
-  LocalWebServerIdentityData,
-} from '../../src/shared/configUtils.js';
+import { ConfigUtils, LocalWebServerIdentityData } from '../../src/shared/configUtils.js';
 import { ConfigVars } from '../../src/configMeta.js';
 
 describe('configUtils', () => {

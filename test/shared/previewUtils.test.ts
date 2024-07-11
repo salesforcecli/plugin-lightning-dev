@@ -44,6 +44,9 @@ describe('previewUtils', () => {
     '34'
   );
 
+  const username = 'SalesforceDeveloper';
+  const entityId = '1I9xx0000004ClkCAE';
+
   afterEach(() => {
     $$.restore();
   });
@@ -107,22 +110,38 @@ describe('previewUtils', () => {
   });
 
   it('generateDesktopPreviewLaunchArguments', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    $$.SANDBOX.stub(PreviewUtils as any, 'getEntityId')
+      .withArgs([username])
+      .resolves(entityId);
+
     expect(
-      PreviewUtils.generateDesktopPreviewLaunchArguments('MyLdpServerUrl', 'MyAppId', 'MyTargetOrg', 'MyAuraMode')
+      PreviewUtils.generateDesktopPreviewLaunchArguments(
+        'MyLdpServerUrl',
+        username,
+        'MyAppId',
+        'MyTargetOrg',
+        'MyAuraMode'
+      )
     ).to.deep.equal([
       '--path',
-      'lightning/app/MyAppId?0.aura.ldpServerUrl=MyLdpServerUrl&0.aura.mode=MyAuraMode',
+      `lightning/app/MyAppId?0.aura.ldpServerUrl=MyLdpServerUrl&0.aura.ldpServerId=${entityId}&0.aura.mode=MyAuraMode`,
       '--target-org',
       'MyTargetOrg',
     ]);
 
-    expect(PreviewUtils.generateDesktopPreviewLaunchArguments('MyLdpServerUrl')).to.deep.equal([
+    expect(PreviewUtils.generateDesktopPreviewLaunchArguments('MyLdpServerUrl', username)).to.deep.equal([
       '--path',
-      'lightning?0.aura.ldpServerUrl=MyLdpServerUrl&0.aura.mode=DEVPREVIEW',
+      `lightning?0.aura.ldpServerUrl=MyLdpServerUrl&0.aura.ldpServerId=${entityId}&0.aura.mode=DEVPREVIEW`,
     ]);
   });
 
   it('generateMobileAppPreviewLaunchArguments', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    $$.SANDBOX.stub(PreviewUtils as any, 'getEntityId')
+      .withArgs([username])
+      .resolves(entityId);
+
     expect(
       PreviewUtils.generateMobileAppPreviewLaunchArguments('MyLdpServerUrl', 'MyAppName', 'MyAppId', 'MyAuraMode')
     ).to.deep.equal([
@@ -132,9 +151,10 @@ describe('previewUtils', () => {
       { name: '0.aura.mode', value: 'MyAuraMode' },
     ]);
 
-    expect(PreviewUtils.generateMobileAppPreviewLaunchArguments('MyLdpServerUrl')).to.deep.equal([
+    expect(PreviewUtils.generateMobileAppPreviewLaunchArguments('MyLdpServerUrl', username)).to.deep.equal([
       { name: '0.aura.ldpServerUrl', value: 'MyLdpServerUrl' },
       { name: '0.aura.mode', value: 'DEVPREVIEW' },
+      { name: '0.aura.ldpServerId', value: entityId },
     ]);
   });
 
