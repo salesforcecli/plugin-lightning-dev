@@ -21,7 +21,7 @@ import chalk from 'chalk';
 import { OrgUtils } from '../../../shared/orgUtils.js';
 import { startLWCServer } from '../../../lwc-dev-server/index.js';
 import { PreviewUtils } from '../../../shared/previewUtils.js';
-import { ConfigUtils } from '../../../shared/configUtils.js';
+import { AppServerIdentityTokenService, ConfigUtils } from '../../../shared/configUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.app');
@@ -165,7 +165,8 @@ export default class LightningPreviewApp extends SfCommand<void> {
       return Promise.reject(new Error(messages.getMessage('error.username')));
     }
 
-    const token = await ConfigUtils.getOrCreateIdentityToken(username, connection);
+    const tokenService = new AppServerIdentityTokenService(connection);
+    const token = await ConfigUtils.getOrCreateIdentityToken(username, tokenService);
 
     let appId: string | undefined;
     if (appName) {

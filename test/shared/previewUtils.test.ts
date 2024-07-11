@@ -112,11 +112,11 @@ describe('previewUtils', () => {
   it('generateDesktopPreviewLaunchArguments', async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     $$.SANDBOX.stub(PreviewUtils as any, 'getEntityId')
-      .withArgs([username])
+      .withArgs(username)
       .resolves(entityId);
 
     expect(
-      PreviewUtils.generateDesktopPreviewLaunchArguments(
+      await PreviewUtils.generateDesktopPreviewLaunchArguments(
         'MyLdpServerUrl',
         username,
         'MyAppId',
@@ -130,7 +130,7 @@ describe('previewUtils', () => {
       'MyTargetOrg',
     ]);
 
-    expect(PreviewUtils.generateDesktopPreviewLaunchArguments('MyLdpServerUrl', username)).to.deep.equal([
+    expect(await PreviewUtils.generateDesktopPreviewLaunchArguments('MyLdpServerUrl', username)).to.deep.equal([
       '--path',
       `lightning?0.aura.ldpServerUrl=MyLdpServerUrl&0.aura.ldpServerId=${entityId}&0.aura.mode=DEVPREVIEW`,
     ]);
@@ -139,19 +139,26 @@ describe('previewUtils', () => {
   it('generateMobileAppPreviewLaunchArguments', async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     $$.SANDBOX.stub(PreviewUtils as any, 'getEntityId')
-      .withArgs([username])
+      .withArgs(username)
       .resolves(entityId);
 
     expect(
-      PreviewUtils.generateMobileAppPreviewLaunchArguments('MyLdpServerUrl', 'MyAppName', 'MyAppId', 'MyAuraMode')
+      await PreviewUtils.generateMobileAppPreviewLaunchArguments(
+        'MyLdpServerUrl',
+        username,
+        'MyAppName',
+        'MyAppId',
+        'MyAuraMode'
+      )
     ).to.deep.equal([
       { name: 'LightningExperienceAppName', value: 'MyAppName' },
       { name: 'LightningExperienceAppID', value: 'MyAppId' },
       { name: '0.aura.ldpServerUrl', value: 'MyLdpServerUrl' },
       { name: '0.aura.mode', value: 'MyAuraMode' },
+      { name: '0.aura.ldpServerId', value: entityId },
     ]);
 
-    expect(PreviewUtils.generateMobileAppPreviewLaunchArguments('MyLdpServerUrl', username)).to.deep.equal([
+    expect(await PreviewUtils.generateMobileAppPreviewLaunchArguments('MyLdpServerUrl', username)).to.deep.equal([
       { name: '0.aura.ldpServerUrl', value: 'MyLdpServerUrl' },
       { name: '0.aura.mode', value: 'DEVPREVIEW' },
       { name: '0.aura.ldpServerId', value: entityId },

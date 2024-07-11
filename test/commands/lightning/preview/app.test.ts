@@ -7,7 +7,7 @@
 
 import path from 'node:path';
 import { Config as OclifConfig } from '@oclif/core';
-import { Config as SfConfig, Messages } from '@salesforce/core';
+import { Config as SfConfig, Messages, Connection } from '@salesforce/core';
 import { MockTestOrgData, TestContext } from '@salesforce/core/testSetup';
 import {
   AndroidVirtualDevice,
@@ -95,6 +95,16 @@ describe('lightning preview app', () => {
       expect(err)
         .to.be.an('error')
         .with.property('message', messages.getMessage('error.fetching.app-id', ['blah']));
+    }
+  });
+
+  it('throws when username not found', async () => {
+    try {
+      $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(undefined);
+      $$.SANDBOX.stub(Connection.prototype, 'getUsername').returns(undefined);
+      await MockedLightningPreviewApp.run(['--name', 'blah', '-o', testOrgData.username]);
+    } catch (err) {
+      expect(err).to.be.an('error').with.property('message', messages.getMessage('error.username'));
     }
   });
 

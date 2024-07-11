@@ -10,13 +10,22 @@ import { Workspace } from '@lwc/lwc-dev-server';
 import { Config, ConfigAggregator, Connection } from '@salesforce/core';
 import { TestContext } from '@salesforce/core/testSetup';
 import { CryptoUtils } from '@salesforce/lwc-dev-mobile-core';
-import { ConfigUtils, LocalWebServerIdentityData } from '../../src/shared/configUtils.js';
+import { ConfigUtils, LocalWebServerIdentityData, IdentityTokenService } from '../../src/shared/configUtils.js';
 import { ConfigVars } from '../../src/configMeta.js';
 
 describe('configUtils', () => {
   const $$ = new TestContext();
   const fakeIdentityToken = 'PFT1vw8v65aXd2b9HFvZ3Zu4OcKZwjI60bq7BEjj5k4=';
   const username = 'SalesforceDeveloper';
+  const fakeEntityId = 'entityId';
+
+  class TestIdentityTokenService implements IdentityTokenService {
+    // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
+    public saveTokenToServer(token: string): Promise<string> {
+      return Promise.resolve(fakeEntityId);
+    }
+  }
+  const testTokenService = new TestIdentityTokenService();
 
   afterEach(() => {
     $$.restore();
@@ -27,27 +36,22 @@ describe('configUtils', () => {
       identityToken: fakeIdentityToken,
       usernameToServerEntityIdMap: {},
     };
-    identityData.usernameToServerEntityIdMap[username] = 'entityId';
-    const stubConnection = $$.SANDBOX.createStubInstance(Connection);
+    identityData.usernameToServerEntityIdMap[username] = fakeEntityId;
     $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(identityData);
     $$.SANDBOX.stub(Connection, 'create').resolves(Connection.prototype);
+    $$.SANDBOX.stub(ConfigUtils, 'writeIdentityData').resolves();
 
-    const resolved = await ConfigUtils.getOrCreateIdentityToken(username, stubConnection);
+    const resolved = await ConfigUtils.getOrCreateIdentityToken(username, testTokenService);
 
     expect(resolved).to.equal(fakeIdentityToken);
   });
 
   it('getOrCreateIdentityToken resolves and writeIdentityData is called when there is no identity data', async () => {
-    const stubConnection = $$.SANDBOX.createStubInstance(Connection);
     $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(undefined);
     $$.SANDBOX.stub(CryptoUtils, 'generateIdentityToken').resolves(fakeIdentityToken);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    $$.SANDBOX.stub(ConfigUtils as any, 'saveIdentityTokenToServer')
-      .withArgs(fakeIdentityToken, stubConnection)
-      .resolves('entityId');
     const writeIdentityTokenStub = $$.SANDBOX.stub(ConfigUtils, 'writeIdentityData').resolves();
 
-    const resolved = await ConfigUtils.getOrCreateIdentityToken(username, stubConnection);
+    const resolved = await ConfigUtils.getOrCreateIdentityToken(username, testTokenService);
 
     expect(resolved).to.equal(fakeIdentityToken);
     expect(writeIdentityTokenStub.calledOnce).to.be.true;
@@ -63,12 +67,17 @@ describe('configUtils', () => {
   });
 
   it('getIdentityData resolves when identity data is available', async () => {
+    const identityData: LocalWebServerIdentityData = {
+      identityToken: fakeIdentityToken,
+      usernameToServerEntityIdMap: {},
+    };
+    const stringifiedData = JSON.stringify(identityData);
     $$.SANDBOX.stub(ConfigAggregator, 'create').resolves(ConfigAggregator.prototype);
     $$.SANDBOX.stub(ConfigAggregator.prototype, 'reload').resolves();
-    $$.SANDBOX.stub(ConfigAggregator.prototype, 'getPropertyValue').returns(fakeIdentityToken);
+    $$.SANDBOX.stub(ConfigAggregator.prototype, 'getPropertyValue').returns(stringifiedData);
 
     const resolved = await ConfigUtils.getIdentityData();
-    expect(resolved).to.equal(fakeIdentityToken);
+    expect(resolved).to.deep.equal(identityData);
   });
 
   it('writeIdentityData resolves', async () => {
