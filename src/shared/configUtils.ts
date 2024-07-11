@@ -23,16 +23,16 @@ export type LocalWebServerIdentityData = {
 };
 
 export class ConfigUtils {
-  static #config: Config;
+  static #localConfig: Config;
   static #globalConfig: Config;
 
-  public static async getConfig(): Promise<Config> {
-    if (this.#config) {
-      return this.#config;
+  public static async getLocalConfig(): Promise<Config> {
+    if (this.#localConfig) {
+      return this.#localConfig;
     }
-    this.#config = await Config.create({ isGlobal: false });
+    this.#localConfig = await Config.create({ isGlobal: false });
     Config.addAllowedProperties(configMeta);
-    return this.#config;
+    return this.#localConfig;
   }
 
   public static async getGlobalConfig(): Promise<Config> {
@@ -65,7 +65,7 @@ export class ConfigUtils {
   }
 
   public static async writeIdentityData(identityData: LocalWebServerIdentityData): Promise<void> {
-    const config = await this.getConfig();
+    const config = await this.getLocalConfig();
     // TODO: JSON needs to be stringified in order for config.write to encrypt. When config.write()
     //       can encrypt JSON data to write it into config we shall remove stringify().
     config.set(ConfigVars.LOCAL_WEB_SERVER_IDENTITY_DATA, JSON.stringify(identityData));
@@ -73,7 +73,7 @@ export class ConfigUtils {
   }
 
   public static async getCertData(): Promise<SSLCertificateData | undefined> {
-    const config = await this.getConfig();
+    const config = await this.getLocalConfig();
     const serializedData = config.get(ConfigVars.LOCAL_DEV_SERVER_HTTPS_CERT_DATA) as SerializedSSLCertificateData;
     if (serializedData) {
       const deserializedData: SSLCertificateData = {
@@ -102,14 +102,14 @@ export class ConfigUtils {
   }
 
   public static async getLocalDevServerPort(): Promise<number | undefined> {
-    const config = await this.getConfig();
+    const config = await this.getLocalConfig();
     const configPort = config.get(ConfigVars.LOCAL_DEV_SERVER_PORT) as number;
 
     return configPort;
   }
 
   public static async getLocalDevServerWorkspace(): Promise<Workspace | undefined> {
-    const config = await this.getConfig();
+    const config = await this.getLocalConfig();
     const configWorkspace = config.get(ConfigVars.LOCAL_DEV_SERVER_WORKSPACE) as Workspace;
 
     return configWorkspace;

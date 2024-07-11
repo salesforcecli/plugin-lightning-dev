@@ -513,11 +513,11 @@ export class PreviewUtils {
     const identityData = await ConfigUtils.getIdentityData();
     let entityId: string | undefined;
     if (!identityData) {
-      throw new Error(messages.getMessage('error.identitydata'));
+      return Promise.reject(new Error(messages.getMessage('error.identitydata')));
     } else {
       entityId = identityData.usernameToServerEntityIdMap[username];
       if (!entityId) {
-        throw new Error(messages.getMessage('error.identitydata.entityid'));
+        return Promise.reject(messages.getMessage('error.identitydata.entityid'));
       }
       return entityId;
     }
