@@ -57,9 +57,12 @@ export class ConfigUtils {
       await this.writeIdentityData(identityData);
       return token;
     } else {
-      const entityId = await tokenService.saveTokenToServer(identityData.identityToken);
-      identityData.usernameToServerEntityIdMap[username] = entityId;
-      await this.writeIdentityData(identityData);
+      let entityId = identityData.usernameToServerEntityIdMap[username];
+      if (!entityId) {
+        entityId = await tokenService.saveTokenToServer(identityData.identityToken);
+        identityData.usernameToServerEntityIdMap[username] = entityId;
+        await this.writeIdentityData(identityData);
+      }
       return identityData.identityToken;
     }
   }

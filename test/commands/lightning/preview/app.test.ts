@@ -158,6 +158,7 @@ describe('lightning preview app', () => {
     it('throws when environment setup requirements are not met', async () => {
       $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
+      $$.SANDBOX.stub(PreviewUtils, 'getEntityId').resolves(fakeEntityId);
 
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'init').resolves();
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'run').rejects(new Error('Requirement blah not met'));
@@ -169,6 +170,7 @@ describe('lightning preview app', () => {
     it('throws when unable to fetch mobile device', async () => {
       $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
+      $$.SANDBOX.stub(PreviewUtils, 'getEntityId').resolves(fakeEntityId);
 
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'init').resolves();
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'run').resolves();
@@ -182,6 +184,7 @@ describe('lightning preview app', () => {
     it('throws when device fails to boot', async () => {
       $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
+      $$.SANDBOX.stub(PreviewUtils, 'getEntityId').resolves(fakeEntityId);
 
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'init').resolves();
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'run').resolves();
@@ -199,6 +202,7 @@ describe('lightning preview app', () => {
     it('throws when cannot generate certificate', async () => {
       $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
+      $$.SANDBOX.stub(PreviewUtils, 'getEntityId').resolves(fakeEntityId);
 
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'init').resolves();
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'run').resolves();
@@ -263,6 +267,7 @@ describe('lightning preview app', () => {
     it('throws if user chooses not to install app on mobile device', async () => {
       $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
+      $$.SANDBOX.stub(PreviewUtils, 'getEntityId').resolves(fakeEntityId);
 
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'init').resolves();
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'run').resolves();
@@ -296,6 +301,7 @@ describe('lightning preview app', () => {
       $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
       $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(fakeIdentityData);
+      $$.SANDBOX.stub(PreviewUtils, 'getEntityId').resolves(fakeEntityId);
 
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'init').resolves();
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'run').resolves();
@@ -437,9 +443,9 @@ describe('lightning preview app', () => {
       const expectedAppConfig =
         platform === Platform.ios ? iOSSalesforceAppPreviewConfig : androidSalesforceAppPreviewConfig;
       // eslint-disable-next-line camelcase
-      expectedAppConfig.launch_arguments = await PreviewUtils.generateMobileAppPreviewLaunchArguments(
+      expectedAppConfig.launch_arguments = PreviewUtils.generateMobileAppPreviewLaunchArguments(
         expectedLdpServerUrl,
-        testOrgData.username,
+        fakeEntityId,
         'Sales',
         testAppId
       );

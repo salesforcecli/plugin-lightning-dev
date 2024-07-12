@@ -206,15 +206,17 @@ export default class LightningPreviewApp extends SfCommand<void> {
     const ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(platform, serverPort, logger);
     logger.debug(`Local Dev Server url is ${ldpServerUrl}`);
 
+    const entityId = await PreviewUtils.getEntityId(username);
+
     if (platform === Platform.desktop) {
-      await this.desktopPreview(sfdxProjectRootPath, serverPort, token, username, ldpServerUrl, appId, logger);
+      await this.desktopPreview(sfdxProjectRootPath, serverPort, token, entityId, ldpServerUrl, appId, logger);
     } else {
       await this.mobilePreview(
         platform,
         sfdxProjectRootPath,
         serverPort,
         token,
-        username,
+        entityId,
         ldpServerUrl,
         appName,
         appId,
@@ -228,7 +230,7 @@ export default class LightningPreviewApp extends SfCommand<void> {
     sfdxProjectRootPath: string,
     serverPort: number,
     token: string,
-    username: string,
+    entityId: string,
     ldpServerUrl: string,
     appId: string | undefined,
     logger: Logger
@@ -261,9 +263,9 @@ export default class LightningPreviewApp extends SfCommand<void> {
       this.log(`\n${messages.getMessage('trust.local.dev.server')}`);
     }
 
-    const launchArguments = await PreviewUtils.generateDesktopPreviewLaunchArguments(
+    const launchArguments = PreviewUtils.generateDesktopPreviewLaunchArguments(
       ldpServerUrl,
-      username,
+      entityId,
       appId,
       targetOrg
     );
@@ -280,7 +282,7 @@ export default class LightningPreviewApp extends SfCommand<void> {
     sfdxProjectRootPath: string,
     serverPort: number,
     token: string,
-    username: string,
+    entityId: string,
     ldpServerUrl: string,
     appName: string | undefined,
     appId: string | undefined,
@@ -359,9 +361,9 @@ export default class LightningPreviewApp extends SfCommand<void> {
 
       // Launch the native app for previewing (launchMobileApp will show its own spinner)
       // eslint-disable-next-line camelcase
-      appConfig.launch_arguments = await PreviewUtils.generateMobileAppPreviewLaunchArguments(
+      appConfig.launch_arguments = PreviewUtils.generateMobileAppPreviewLaunchArguments(
         ldpServerUrl,
-        username,
+        entityId,
         appName,
         appId
       );
