@@ -7,7 +7,7 @@
 
 import path from 'node:path';
 import * as readline from 'node:readline';
-import { Logger, Messages, SfProject } from '@salesforce/core';
+import { Connection, Logger, Messages, SfProject } from '@salesforce/core';
 import {
   AndroidAppPreviewConfig,
   AndroidVirtualDevice,
@@ -21,6 +21,7 @@ import chalk from 'chalk';
 import { OrgUtils } from '../../../shared/orgUtils.js';
 import { startLWCServer } from '../../../lwc-dev-server/index.js';
 import { PreviewUtils } from '../../../shared/previewUtils.js';
+import { ConfigUtils, IdentityTokenService } from '../../../shared/configUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.app');
@@ -37,6 +38,22 @@ export const androidSalesforceAppPreviewConfig = {
 } as AndroidAppPreviewConfig;
 
 const maxInt32 = 2_147_483_647; // maximum 32-bit signed integer value
+
+class AppServerIdentityTokenService implements IdentityTokenService {
+  private connection: Connection;
+  public constructor(connection: Connection) {
+    this.connection = connection;
+  }
+
+  public async saveTokenToServer(token: string): Promise<string> {
+    const sobject = this.connection.sobject('UserLocalWebServerIdentity');
+    const result = await sobject.insert({ LocalWebServerIdentityToken: token });
+    if (result.success) {
+      return result.id;
+    }
+    throw new Error('Could not save the token to the server');
+  }
+}
 
 export default class LightningPreviewApp extends SfCommand<void> {
   public static readonly summary = messages.getMessage('summary');
@@ -157,13 +174,23 @@ export default class LightningPreviewApp extends SfCommand<void> {
       return Promise.reject(new Error(messages.getMessage('error.no-project', [(error as Error)?.message ?? ''])));
     }
 
+    logger.debug('Configuring local web server identity');
+    const connection = targetOrg.getConnection(undefined);
+    const username = connection.getUsername();
+    if (!username) {
+      return Promise.reject(new Error(messages.getMessage('error.username')));
+    }
+
+    const tokenService = new AppServerIdentityTokenService(connection);
+    const token = await ConfigUtils.getOrCreateIdentityToken(username, tokenService);
+
     let appId: string | undefined;
     if (appName) {
       logger.debug(`Determining App Id for ${appName}`);
 
       // The appName is optional but if the user did provide an appName then it must be
       // a valid one.... meaning that it should resolve to a valid appId.
-      appId = await OrgUtils.getAppId(targetOrg.getConnection(undefined), appName);
+      appId = await OrgUtils.getAppId(connection, appName);
       if (!appId) {
         return Promise.reject(new Error(messages.getMessage('error.fetching.app-id', [appName])));
       }
@@ -179,13 +206,17 @@ export default class LightningPreviewApp extends SfCommand<void> {
     const ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(platform, serverPort, logger);
     logger.debug(`Local Dev Server url is ${ldpServerUrl}`);
 
+    const entityId = await PreviewUtils.getEntityId(username);
+
     if (platform === Platform.desktop) {
-      await this.desktopPreview(sfdxProjectRootPath, serverPort, ldpServerUrl, appId, logger);
+      await this.desktopPreview(sfdxProjectRootPath, serverPort, token, entityId, ldpServerUrl, appId, logger);
     } else {
       await this.mobilePreview(
         platform,
         sfdxProjectRootPath,
         serverPort,
+        token,
+        entityId,
         ldpServerUrl,
         appName,
         appId,
@@ -198,6 +229,8 @@ export default class LightningPreviewApp extends SfCommand<void> {
   private async desktopPreview(
     sfdxProjectRootPath: string,
     serverPort: number,
+    token: string,
+    entityId: string,
     ldpServerUrl: string,
     appId: string | undefined,
     logger: Logger
@@ -230,10 +263,15 @@ export default class LightningPreviewApp extends SfCommand<void> {
       this.log(`\n${messages.getMessage('trust.local.dev.server')}`);
     }
 
-    const launchArguments = PreviewUtils.generateDesktopPreviewLaunchArguments(ldpServerUrl, appId, targetOrg);
+    const launchArguments = PreviewUtils.generateDesktopPreviewLaunchArguments(
+      ldpServerUrl,
+      entityId,
+      appId,
+      targetOrg
+    );
 
     // Start the LWC Dev Server
-    await startLWCServer(logger, sfdxProjectRootPath, serverPort);
+    await startLWCServer(logger, sfdxProjectRootPath, token, serverPort);
 
     // Open the browser and navigate to the right page
     await this.config.runCommand('org:open', launchArguments);
@@ -243,6 +281,8 @@ export default class LightningPreviewApp extends SfCommand<void> {
     platform: Platform.ios | Platform.android,
     sfdxProjectRootPath: string,
     serverPort: number,
+    token: string,
+    entityId: string,
     ldpServerUrl: string,
     appName: string | undefined,
     appId: string | undefined,
@@ -316,11 +356,17 @@ export default class LightningPreviewApp extends SfCommand<void> {
       }
 
       // Start the LWC Dev Server
-      await startLWCServer(logger, sfdxProjectRootPath, serverPort, certData);
+
+      await startLWCServer(logger, sfdxProjectRootPath, token, serverPort, certData);
 
       // Launch the native app for previewing (launchMobileApp will show its own spinner)
       // eslint-disable-next-line camelcase
-      appConfig.launch_arguments = PreviewUtils.generateMobileAppPreviewLaunchArguments(ldpServerUrl, appName, appId);
+      appConfig.launch_arguments = PreviewUtils.generateMobileAppPreviewLaunchArguments(
+        ldpServerUrl,
+        entityId,
+        appName,
+        appId
+      );
       await PreviewUtils.launchMobileApp(platform, appConfig, resolvedDeviceId, emulatorPort, bundlePath, logger);
     } finally {
       // stop progress & spinner UX (that may still be running in case of an error)

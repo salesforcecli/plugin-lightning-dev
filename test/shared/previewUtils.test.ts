@@ -18,7 +18,12 @@ import {
   Platform,
   SSLCertificateData,
 } from '@salesforce/lwc-dev-mobile-core';
-import { ConfigUtils, LOCAL_DEV_SERVER_DEFAULT_PORT } from '../../src/shared/configUtils.js';
+import { Messages } from '@salesforce/core';
+import {
+  ConfigUtils,
+  LOCAL_DEV_SERVER_DEFAULT_PORT,
+  LocalWebServerIdentityData,
+} from '../../src/shared/configUtils.js';
 import { PreviewUtils } from '../../src/shared/previewUtils.js';
 import {
   iOSSalesforceAppPreviewConfig,
@@ -26,6 +31,7 @@ import {
 } from '../../src/commands/lightning/preview/app.js';
 
 describe('previewUtils', () => {
+  const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.app');
   const $$ = new TestContext();
 
   const testIOSDevice = new IOSSimulatorDevice(
@@ -43,6 +49,10 @@ describe('previewUtils', () => {
     'Android 14.0',
     '34'
   );
+
+  const username = 'SalesforceDeveloper';
+  const fakeEntityId = '1I9xx0000004ClkCAE';
+  const fakeIdentityToken = 'PFT1vw8v65aXd2b9HFvZ3Zu4OcKZwjI60bq7BEjj5k4=';
 
   afterEach(() => {
     $$.restore();
@@ -107,34 +117,58 @@ describe('previewUtils', () => {
   });
 
   it('generateDesktopPreviewLaunchArguments', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    $$.SANDBOX.stub(PreviewUtils as any, 'getEntityId')
+      .withArgs(username)
+      .resolves(fakeEntityId);
+
     expect(
-      PreviewUtils.generateDesktopPreviewLaunchArguments('MyLdpServerUrl', 'MyAppId', 'MyTargetOrg', 'MyAuraMode')
+      PreviewUtils.generateDesktopPreviewLaunchArguments(
+        'MyLdpServerUrl',
+        fakeEntityId,
+        'MyAppId',
+        'MyTargetOrg',
+        'MyAuraMode'
+      )
     ).to.deep.equal([
       '--path',
-      'lightning/app/MyAppId?0.aura.ldpServerUrl=MyLdpServerUrl&0.aura.mode=MyAuraMode',
+      `lightning/app/MyAppId?0.aura.ldpServerUrl=MyLdpServerUrl&0.aura.ldpServerId=${fakeEntityId}&0.aura.mode=MyAuraMode`,
       '--target-org',
       'MyTargetOrg',
     ]);
 
-    expect(PreviewUtils.generateDesktopPreviewLaunchArguments('MyLdpServerUrl')).to.deep.equal([
+    expect(PreviewUtils.generateDesktopPreviewLaunchArguments('MyLdpServerUrl', fakeEntityId)).to.deep.equal([
       '--path',
-      'lightning?0.aura.ldpServerUrl=MyLdpServerUrl&0.aura.mode=DEVPREVIEW',
+      `lightning?0.aura.ldpServerUrl=MyLdpServerUrl&0.aura.ldpServerId=${fakeEntityId}&0.aura.mode=DEVPREVIEW`,
     ]);
   });
 
   it('generateMobileAppPreviewLaunchArguments', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    $$.SANDBOX.stub(PreviewUtils as any, 'getEntityId')
+      .withArgs(username)
+      .resolves(fakeEntityId);
+
     expect(
-      PreviewUtils.generateMobileAppPreviewLaunchArguments('MyLdpServerUrl', 'MyAppName', 'MyAppId', 'MyAuraMode')
+      PreviewUtils.generateMobileAppPreviewLaunchArguments(
+        'MyLdpServerUrl',
+        fakeEntityId,
+        'MyAppName',
+        'MyAppId',
+        'MyAuraMode'
+      )
     ).to.deep.equal([
       { name: 'LightningExperienceAppName', value: 'MyAppName' },
       { name: 'LightningExperienceAppID', value: 'MyAppId' },
       { name: '0.aura.ldpServerUrl', value: 'MyLdpServerUrl' },
       { name: '0.aura.mode', value: 'MyAuraMode' },
+      { name: '0.aura.ldpServerId', value: fakeEntityId },
     ]);
 
-    expect(PreviewUtils.generateMobileAppPreviewLaunchArguments('MyLdpServerUrl')).to.deep.equal([
+    expect(PreviewUtils.generateMobileAppPreviewLaunchArguments('MyLdpServerUrl', fakeEntityId)).to.deep.equal([
       { name: '0.aura.ldpServerUrl', value: 'MyLdpServerUrl' },
       { name: '0.aura.mode', value: 'DEVPREVIEW' },
+      { name: '0.aura.ldpServerId', value: fakeEntityId },
     ]);
   });
 
@@ -211,5 +245,42 @@ describe('previewUtils', () => {
         1234
       )
     ).to.be.false;
+  });
+
+  it('getEntityId returns valid entity ID', async () => {
+    const identityData: LocalWebServerIdentityData = {
+      identityToken: fakeIdentityToken,
+      usernameToServerEntityIdMap: {},
+    };
+    identityData.usernameToServerEntityIdMap[username] = fakeEntityId;
+    $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(identityData);
+
+    const entityId = await PreviewUtils.getEntityId(username);
+
+    expect(entityId).to.equal(fakeEntityId);
+  });
+
+  it('getEntityId throws when valid data does not exist', async () => {
+    $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(undefined);
+
+    try {
+      await PreviewUtils.getEntityId(username);
+    } catch (err) {
+      expect(err).to.be.an('error').with.property('message', messages.getMessage('error.identitydata'));
+    }
+  });
+
+  it('getEntityId throws when entity ID does not exist', async () => {
+    const identityData: LocalWebServerIdentityData = {
+      identityToken: fakeIdentityToken,
+      usernameToServerEntityIdMap: {},
+    };
+    $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(identityData);
+
+    try {
+      await PreviewUtils.getEntityId(username);
+    } catch (err) {
+      expect(err).to.be.an('error').with.property('message', messages.getMessage('error.identitydata.entityid'));
+    }
   });
 });
