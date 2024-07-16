@@ -15,7 +15,7 @@ When you edit local files with Lightning Preview enabled, your LWCs reflect thes
 
 To apply any other local changes not listed here, you have to deploy them to your org using the `project deploy start` command. Then, republish your site and restart the Lightning Preview server.
 
-For more considerations and limitations, see https://developer.salesforce.com/docs/platform/lwc/guide/get-started-test-components.html.
+For more considerations and limitations, see Salesforce Developers.
 
 # flags.name.summary
 
