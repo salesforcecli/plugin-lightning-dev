@@ -161,7 +161,7 @@ FLAGS
 
 GLOBAL FLAGS
   --flags-dir=<value>  Import flag values from a directory.
-  --json               Format output as json.
+  --json               Format output as JSON.
 
 DESCRIPTION
   Say hello.

@@ -6,14 +6,16 @@ Preview an Experience Cloud site locally and in real-time, without deploying it.
 
 Enable Lightning Preview to see local changes to your site in a real-time preview that you don't have to deploy or manually refresh. To let you quickly iterate on your Lightning web components (LWCs) and pages, your site preview automatically refreshes when Lightning Preview detects source code changes.
 
-When you edit local files with Lightning Preview enabled, your LWCs reflect the following changes in your org. To apply any other local changes not listed here, you have to deploy them to your org using the `project deploy start` command.
+When you edit local files with Lightning Preview enabled, your LWCs reflect these changes in your org.
 
 - Basic HTML and CSS edits
 - Importing new CSS-only LWCs
 - JS edits in-service component library
 - JS method changes that don't affect the LWC's public API
 
-When you make changes directly in your org, (like saving new component properties,) they're automatically deployed to your live site. To update your local version of the site with those changes, you have to retrieve them from your org using the `project retrieve start` command.
+To apply any other local changes not listed here, you have to deploy them to your org using the `project deploy start` command. Then, republish your site and restart the Lightning Preview server.
+
+For more considerations and limitations, see https://developer.salesforce.com/docs/platform/lwc/guide/get-started-test-components.html.
 
 # flags.name.summary
 
