@@ -8179,10 +8179,10 @@ eslint@^8.37.0, eslint@^8.56.0, eslint@~8.57.0:
     strip-ansi "^6.0.1"
     text-table "^0.2.0"
 
-esmock@^2.6.6:
-  version "2.6.6"
-  resolved "https://registry.yarnpkg.com/esmock/-/esmock-2.6.6.tgz#4102016b74c04d231e8ca805ed2bbf7b80d677df"
-  integrity sha512-Ay1IQ/qbZV1j8IqRY5o4GYNyX8Y6qDJVVYRZtQ0WFOqUPf26++qW/LyNaHrxz79QGB4F1xuDTCPRYA5XRNuqZg==
+esmock@^2.6.7:
+  version "2.6.7"
+  resolved "https://registry.yarnpkg.com/esmock/-/esmock-2.6.7.tgz#e6d737de83d9b895958640cc60a4ff28112b30a8"
+  integrity sha512-4DmjZ0qQIG+NQV1njHvWrua/cZEuJq56A3pSELT2BjNuol1aads7BluofCbLErdO41Ic1XCd2UMepVLpjL64YQ==
 
 espree@^9.6.0, espree@^9.6.1:
   version "9.6.1"
