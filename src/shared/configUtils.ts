@@ -76,7 +76,7 @@ export class ConfigUtils {
   }
 
   public static async getCertData(): Promise<SSLCertificateData | undefined> {
-    const config = await this.getLocalConfig();
+    const config = await this.getGlobalConfig();
     const serializedData = config.get(ConfigVars.LOCAL_DEV_SERVER_HTTPS_CERT_DATA) as SerializedSSLCertificateData;
     if (serializedData) {
       const deserializedData: SSLCertificateData = {
