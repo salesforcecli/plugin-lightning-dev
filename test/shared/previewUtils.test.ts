@@ -160,15 +160,15 @@ describe('previewUtils', () => {
     ).to.deep.equal([
       { name: 'LightningExperienceAppName', value: 'MyAppName' },
       { name: 'LightningExperienceAppID', value: 'MyAppId' },
-      { name: '0.aura.ldpServerUrl', value: 'MyLdpServerUrl' },
-      { name: '0.aura.mode', value: 'MyAuraMode' },
-      { name: '0.aura.ldpServerId', value: fakeEntityId },
+      { name: 'aura.ldpServerUrl', value: 'MyLdpServerUrl' },
+      { name: 'aura.mode', value: 'MyAuraMode' },
+      { name: 'aura.ldpServerId', value: fakeEntityId },
     ]);
 
     expect(PreviewUtils.generateMobileAppPreviewLaunchArguments('MyLdpServerUrl', fakeEntityId)).to.deep.equal([
-      { name: '0.aura.ldpServerUrl', value: 'MyLdpServerUrl' },
-      { name: '0.aura.mode', value: 'DEVPREVIEW' },
-      { name: '0.aura.ldpServerId', value: fakeEntityId },
+      { name: 'aura.ldpServerUrl', value: 'MyLdpServerUrl' },
+      { name: 'aura.mode', value: 'DEVPREVIEW' },
+      { name: 'aura.ldpServerId', value: fakeEntityId },
     ]);
   });
 

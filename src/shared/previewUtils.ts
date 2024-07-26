@@ -222,11 +222,11 @@ export class PreviewUtils {
       launchArguments.push({ name: 'LightningExperienceAppID', value: appId });
     }
 
-    launchArguments.push({ name: '0.aura.ldpServerUrl', value: ldpServerUrl });
+    launchArguments.push({ name: 'aura.ldpServerUrl', value: ldpServerUrl });
 
-    launchArguments.push({ name: '0.aura.mode', value: auraMode });
+    launchArguments.push({ name: 'aura.mode', value: auraMode });
 
-    launchArguments.push({ name: '0.aura.ldpServerId', value: entityId });
+    launchArguments.push({ name: 'aura.ldpServerId', value: entityId });
 
     return launchArguments;
   }
@@ -255,13 +255,11 @@ export class PreviewUtils {
     const targetFile =
       platform === Platform.ios ? path.join(basePath, 'localhost.der') : path.join(basePath, 'localhost.pem');
 
-    // If we have not previously generated the cert files then go ahead and do so
-    if (!fs.existsSync(targetFile)) {
-      if (platform === Platform.ios) {
-        fs.writeFileSync(targetFile, data.derCertificate);
-      } else {
-        fs.writeFileSync(targetFile, data.pemCertificate);
-      }
+    // save to file
+    if (platform === Platform.ios) {
+      fs.writeFileSync(targetFile, data.derCertificate);
+    } else {
+      fs.writeFileSync(targetFile, data.pemCertificate);
     }
 
     return { certData: data, certFilePath: targetFile };
