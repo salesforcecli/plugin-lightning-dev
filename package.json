@@ -7,7 +7,7 @@
   "dependencies": {
     "@lwrjs/api": "0.13.1",
     "@lwc/lwc-dev-server": "^9.3.0",
-    "@lwc/sfdc-lwc-compiler": "^9.3.0",
+    "@lwc/sfdc-lwc-compiler": "^9.4.0",
     "@oclif/core": "^4.0.12",
     "@salesforce/core": "^8.2.3",
     "@salesforce/kit": "^3.1.6",
