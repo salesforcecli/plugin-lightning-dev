@@ -18,7 +18,7 @@
     "lwc": "7.1.2",
     "lwr": "0.13.3",
     "node-fetch": "^3.3.2",
-    "tar": "^7.4.0"
+    "tar": "^7.4.3"
   },
   "devDependencies": {
     "@oclif/plugin-command-snapshot": "^5.2.9",
