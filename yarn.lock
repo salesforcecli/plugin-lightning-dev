@@ -4014,10 +4014,10 @@
     wordwrap "^1.0.0"
     wrap-ansi "^7.0.0"
 
-"@oclif/plugin-command-snapshot@^5.2.9":
-  version "5.2.9"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-command-snapshot/-/plugin-command-snapshot-5.2.9.tgz#622ebaf87ebb5b8f217e04a06cb680e14e475b47"
-  integrity sha512-CyUSYqHkN3YyPI582N5wvxZGn8J0ZlVx38fOxW7ManpsrGg+5Q32k0QOW2vCfGZkAAI3B2mSG3flU/34IJujTw==
+"@oclif/plugin-command-snapshot@^5.2.10":
+  version "5.2.10"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-command-snapshot/-/plugin-command-snapshot-5.2.10.tgz#48f46f341daa21fc28bd67b58420d5d9910cd237"
+  integrity sha512-Nc7xMdkvQxYfbqfA+UDSFV6SsVzbITVsJXQYPaM9QrlsbgUhzcdMHDX8kvqZV01OcK6Zr7lJ5XksY62lKbtS/A==
   dependencies:
     "@oclif/core" "^4"
     ansis "^3.3.1"
