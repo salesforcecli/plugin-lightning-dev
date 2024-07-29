@@ -14,7 +14,7 @@ export type IdentityTokenService = {
   saveTokenToServer(token: string): Promise<string>;
 };
 
-export const LOCAL_DEV_SERVER_DEFAULT_PORT = 8081;
+export const LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT = 8081;
 export const LOCAL_DEV_SERVER_DEFAULT_WORKSPACE = Workspace.SfCli;
 
 export type LocalWebServerIdentityData = {
@@ -104,11 +104,11 @@ export class ConfigUtils {
     await config.write();
   }
 
-  public static async getLocalDevServerPort(): Promise<number | undefined> {
+  public static async getLocalDevServerPorts(): Promise<{ httpPort: number; httpsPort: number } | undefined> {
     const config = await this.getLocalConfig();
-    const configPort = config.get(ConfigVars.LOCAL_DEV_SERVER_PORT) as number;
+    const ports = config.get(ConfigVars.LOCAL_DEV_SERVER_PORT) as { httpPort: number; httpsPort: number };
 
-    return configPort;
+    return ports;
   }
 
   public static async getLocalDevServerWorkspace(): Promise<Workspace | undefined> {

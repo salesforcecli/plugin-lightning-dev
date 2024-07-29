@@ -41,7 +41,7 @@ describe('lwc-dev-server', () => {
 
   beforeEach(async () => {
     $$.SANDBOX.stub(ConfigUtils, 'getOrCreateIdentityToken').resolves('testIdentityToken');
-    $$.SANDBOX.stub(ConfigUtils, 'getLocalDevServerPort').resolves(1234);
+    $$.SANDBOX.stub(ConfigUtils, 'getLocalDevServerPorts').resolves({ httpPort: 1234, httpsPort: 5678 });
     $$.SANDBOX.stub(ConfigUtils, 'getLocalDevServerWorkspace').resolves(Workspace.SfCli);
     $$.SANDBOX.stub(ConfigUtils, 'getCertData').resolves(undefined);
   });

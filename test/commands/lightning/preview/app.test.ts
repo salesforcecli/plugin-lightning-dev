@@ -438,7 +438,10 @@ describe('lightning preview app', () => {
       const expectedOutputDir = path.dirname(testBundleArchive);
       const expectedFinalBundlePath =
         platform === Platform.ios ? path.join(expectedOutputDir, 'Chatter.app') : testBundleArchive;
-      const expectedLdpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(platform, '8081');
+      const expectedLdpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(platform, {
+        httpPort: 8081,
+        httpsPort: 8082,
+      });
       const expectedDeviceId = platform === Platform.ios ? testIOSDevice.udid : testAndroidDevice.name;
       const expectedAppConfig =
         platform === Platform.ios ? iOSSalesforceAppPreviewConfig : androidSalesforceAppPreviewConfig;
