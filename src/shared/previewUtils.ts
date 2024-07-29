@@ -67,42 +67,8 @@ export class PreviewUtils {
       return Promise.resolve(userConfiguredPorts);
     }
 
-    let httpPort = LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT;
-    let httpsPort = httpPort + 1;
-    let done = false;
-
-    while (!done) {
-      const httpCmd =
-        process.platform === 'win32' ? `netstat -an | find "LISTENING" | find ":${httpPort}"` : `lsof -i :${httpPort}`;
-
-      const httpsCmd =
-        process.platform === 'win32'
-          ? `netstat -an | find "LISTENING" | find ":${httpsPort}"`
-          : `lsof -i :${httpsPort}`;
-
-      let httpResult = '';
-      let httpsResult = '';
-
-      try {
-        httpResult = CommonUtils.executeCommandSync(httpCmd)?.trim();
-      } catch {
-        // ignore and continue
-      }
-
-      try {
-        httpsResult = CommonUtils.executeCommandSync(httpsCmd)?.trim();
-      } catch {
-        // ignore and continue
-      }
-
-      if (httpResult || httpsResult) {
-        // port is in use so try another
-        httpPort = httpPort + 2;
-        httpsPort = httpPort + 1;
-      } else {
-        done = true;
-      }
-    }
+    const httpPort = await this.doGetNextAvailablePort(LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT);
+    const httpsPort = await this.doGetNextAvailablePort(httpPort + 1);
 
     return Promise.resolve({ httpPort, httpsPort });
   }
@@ -530,5 +496,31 @@ export class PreviewUtils {
       }
       return entityId;
     }
+  }
+
+  private static async doGetNextAvailablePort(startingPort: number): Promise<number> {
+    let port = startingPort;
+    let done = false;
+
+    while (!done) {
+      const cmd =
+        process.platform === 'win32' ? `netstat -an | find "LISTENING" | find ":${port}"` : `lsof -i :${port}`;
+
+      try {
+        const result = CommonUtils.executeCommandSync(cmd);
+        if (result.trim()) {
+          port = port + 2; // that port is in use so try another
+        } else {
+          done = true;
+        }
+      } catch (error) {
+        // On some platforms (like mac) if the command doesn't produce
+        // any results then that is considered an error but in our case
+        // that means the port is not in use and is ready for us to use.
+        done = true;
+      }
+    }
+
+    return Promise.resolve(port);
   }
 }
