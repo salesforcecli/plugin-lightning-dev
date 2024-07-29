@@ -21,7 +21,7 @@ import {
 import { Messages } from '@salesforce/core';
 import {
   ConfigUtils,
-  LOCAL_DEV_SERVER_DEFAULT_PORT,
+  LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT,
   LocalWebServerIdentityData,
 } from '../../src/shared/configUtils.js';
 import { PreviewUtils } from '../../src/shared/previewUtils.js';
@@ -59,27 +59,33 @@ describe('previewUtils', () => {
   });
 
   it('getNextAvailablePort returns previously saved port', async () => {
-    $$.SANDBOX.stub(ConfigUtils, 'getLocalDevServerPort').resolves(1234);
-    const port = await PreviewUtils.getNextAvailablePort();
-    expect(port).to.be.equal(1234);
+    $$.SANDBOX.stub(ConfigUtils, 'getLocalDevServerPorts').resolves({ httpPort: 1111, httpsPort: 1112 });
+    const ports = await PreviewUtils.getNextAvailablePorts();
+    expect(ports).to.deep.equal({ httpPort: 1111, httpsPort: 1112 });
   });
 
   it('getNextAvailablePort returns default port when available', async () => {
-    $$.SANDBOX.stub(ConfigUtils, 'getLocalDevServerPort').resolves(undefined);
+    $$.SANDBOX.stub(ConfigUtils, 'getLocalDevServerPorts').resolves(undefined);
     $$.SANDBOX.stub(CommonUtils, 'executeCommandSync').returns('');
-    const port = await PreviewUtils.getNextAvailablePort();
-    expect(port).to.be.equal(LOCAL_DEV_SERVER_DEFAULT_PORT);
+    const ports = await PreviewUtils.getNextAvailablePorts();
+    expect(ports).to.deep.equal({
+      httpPort: LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT,
+      httpsPort: LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT + 1,
+    });
   });
 
   it('getNextAvailablePort returns next port when default is not available', async () => {
-    $$.SANDBOX.stub(ConfigUtils, 'getLocalDevServerPort').resolves(undefined);
+    $$.SANDBOX.stub(ConfigUtils, 'getLocalDevServerPorts').resolves(undefined);
     const mock = $$.SANDBOX.stub(CommonUtils, 'executeCommandSync');
     mock
       .onFirstCall()
       .returns('node    97740 maliroteh   30u  IPv6 0x6edda1e7c018338b      0t0  TCP *:sunproxyadmin (LISTEN)');
     mock.onSecondCall().returns('');
-    const port = await PreviewUtils.getNextAvailablePort();
-    expect(port).to.be.equal(LOCAL_DEV_SERVER_DEFAULT_PORT + 2);
+    const ports = await PreviewUtils.getNextAvailablePorts();
+    expect(ports).to.deep.equal({
+      httpPort: LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT + 2,
+      httpsPort: LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT + 3,
+    });
   });
 
   it('getMobileDevice finds device', async () => {

@@ -199,22 +199,22 @@ export default class LightningPreviewApp extends SfCommand<void> {
     }
 
     logger.debug('Determining the next available port for Local Dev Server');
-    const serverPort = await PreviewUtils.getNextAvailablePort();
-    logger.debug(`Next available port is ${serverPort}`);
+    const serverPorts = await PreviewUtils.getNextAvailablePorts();
+    logger.debug(`Next available ports are http=${serverPorts.httpPort} , https=${serverPorts.httpsPort}`);
 
     logger.debug('Determining Local Dev Server url');
-    const ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(platform, serverPort, logger);
+    const ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(platform, serverPorts, logger);
     logger.debug(`Local Dev Server url is ${ldpServerUrl}`);
 
     const entityId = await PreviewUtils.getEntityId(username);
 
     if (platform === Platform.desktop) {
-      await this.desktopPreview(sfdxProjectRootPath, serverPort, token, entityId, ldpServerUrl, appId, logger);
+      await this.desktopPreview(sfdxProjectRootPath, serverPorts, token, entityId, ldpServerUrl, appId, logger);
     } else {
       await this.mobilePreview(
         platform,
         sfdxProjectRootPath,
-        serverPort,
+        serverPorts,
         token,
         entityId,
         ldpServerUrl,
@@ -228,7 +228,7 @@ export default class LightningPreviewApp extends SfCommand<void> {
 
   private async desktopPreview(
     sfdxProjectRootPath: string,
-    serverPort: number,
+    serverPorts: { httpPort: number; httpsPort: number },
     token: string,
     entityId: string,
     ldpServerUrl: string,
@@ -271,7 +271,7 @@ export default class LightningPreviewApp extends SfCommand<void> {
     );
 
     // Start the LWC Dev Server
-    await startLWCServer(logger, sfdxProjectRootPath, token, serverPort);
+    await startLWCServer(logger, sfdxProjectRootPath, token, serverPorts);
 
     // Open the browser and navigate to the right page
     await this.config.runCommand('org:open', launchArguments);
@@ -280,7 +280,7 @@ export default class LightningPreviewApp extends SfCommand<void> {
   private async mobilePreview(
     platform: Platform.ios | Platform.android,
     sfdxProjectRootPath: string,
-    serverPort: number,
+    serverPorts: { httpPort: number; httpsPort: number },
     token: string,
     entityId: string,
     ldpServerUrl: string,
@@ -357,7 +357,7 @@ export default class LightningPreviewApp extends SfCommand<void> {
 
       // Start the LWC Dev Server
 
-      await startLWCServer(logger, sfdxProjectRootPath, token, serverPort, certData);
+      await startLWCServer(logger, sfdxProjectRootPath, token, serverPorts, certData);
 
       // Launch the native app for previewing (launchMobileApp will show its own spinner)
       // eslint-disable-next-line camelcase

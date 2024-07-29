@@ -31,7 +31,7 @@ import {
 } from '@salesforce/lwc-dev-mobile-core';
 import { Progress, Spinner } from '@salesforce/sf-plugins-core';
 import fetch from 'node-fetch';
-import { ConfigUtils, LOCAL_DEV_SERVER_DEFAULT_PORT } from './configUtils.js';
+import { ConfigUtils, LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT } from './configUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.app');
@@ -40,14 +40,14 @@ const DevPreviewAuraMode = 'DEVPREVIEW';
 export class PreviewUtils {
   public static generateWebSocketUrlForLocalDevServer(
     platform: string,
-    port: string | number,
+    ports: { httpPort: number; httpsPort: number },
     logger?: Logger
   ): string {
-    return LwcDevMobileCorePreviewUtils.generateWebSocketUrlForLocalDevServer(platform, port.toString(), logger);
+    return LwcDevMobileCorePreviewUtils.generateWebSocketUrlForLocalDevServer(platform, ports, logger);
   }
 
   /**
-   * Returns a port number to be used by the local dev server.
+   * Returns a pair of port numbers to be used by the local dev server for http and https.
    *
    * It starts by checking whether the user has configured a port in their config file.
    * If so then we are only allowed to use that port, regardless of whether it is in use
@@ -58,38 +58,19 @@ export class PreviewUtils {
    * If it is in use then we increment the port number by 2 and check if it is in use or not.
    * This process is repeated until a port that is not in use is found.
    *
-   * @returns a port number to be used by the local dev server.
+   * @returns a pair of port numbers to be used by the local dev server for http and https.
    */
-  public static async getNextAvailablePort(): Promise<number> {
-    const userConfiguredPort = await ConfigUtils.getLocalDevServerPort();
+  public static async getNextAvailablePorts(): Promise<{ httpPort: number; httpsPort: number }> {
+    const userConfiguredPorts = await ConfigUtils.getLocalDevServerPorts();
 
-    if (userConfiguredPort) {
-      return Promise.resolve(userConfiguredPort);
+    if (userConfiguredPorts) {
+      return Promise.resolve(userConfiguredPorts);
     }
 
-    let port = LOCAL_DEV_SERVER_DEFAULT_PORT;
-    let done = false;
+    const httpPort = await this.doGetNextAvailablePort(LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT);
+    const httpsPort = await this.doGetNextAvailablePort(httpPort + 1);
 
-    while (!done) {
-      const cmd =
-        process.platform === 'win32' ? `netstat -an | find "LISTENING" | find ":${port}"` : `lsof -i :${port}`;
-
-      try {
-        const result = CommonUtils.executeCommandSync(cmd);
-        if (result.trim()) {
-          port = port + 2; // that port is in use so try another
-        } else {
-          done = true;
-        }
-      } catch (error) {
-        // On some platforms (like mac) if the command doesn't produce
-        // any results then that is considered an error but in our case
-        // that means the port is not in use and is ready for us to use.
-        done = true;
-      }
-    }
-
-    return Promise.resolve(port);
+    return Promise.resolve({ httpPort, httpsPort });
   }
 
   /**
@@ -515,5 +496,31 @@ export class PreviewUtils {
       }
       return entityId;
     }
+  }
+
+  private static async doGetNextAvailablePort(startingPort: number): Promise<number> {
+    let port = startingPort;
+    let done = false;
+
+    while (!done) {
+      const cmd =
+        process.platform === 'win32' ? `netstat -an | find "LISTENING" | find ":${port}"` : `lsof -i :${port}`;
+
+      try {
+        const result = CommonUtils.executeCommandSync(cmd);
+        if (result.trim()) {
+          port = port + 2; // that port is in use so try another
+        } else {
+          done = true;
+        }
+      } catch (error) {
+        // On some platforms (like mac) if the command doesn't produce
+        // any results then that is considered an error but in our case
+        // that means the port is not in use and is ready for us to use.
+        done = true;
+      }
+    }
+
+    return Promise.resolve(port);
   }
 }

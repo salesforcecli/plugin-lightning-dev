@@ -140,22 +140,24 @@ describe('configUtils', () => {
     expect(resolved).to.equal(undefined);
   });
 
-  it('getLocalDevServerPort returns undefined when value not found in config', async () => {
+  it('getLocalDevServerPorts returns undefined when value not found in config', async () => {
     $$.SANDBOX.stub(Config, 'create').withArgs($$.SANDBOX.match.any).resolves(Config.prototype);
     $$.SANDBOX.stub(Config, 'addAllowedProperties').withArgs($$.SANDBOX.match.any);
     $$.SANDBOX.stub(Config.prototype, 'get').withArgs(ConfigVars.LOCAL_DEV_SERVER_PORT).returns(undefined);
-    const resolved = await ConfigUtils.getLocalDevServerPort();
+    const resolved = await ConfigUtils.getLocalDevServerPorts();
 
     expect(resolved).to.be.undefined;
   });
 
-  it('getLocalDevServerPort resolves to port value in config', async () => {
+  it('getLocalDevServerPorts resolves to port values in config', async () => {
     $$.SANDBOX.stub(Config, 'create').withArgs($$.SANDBOX.match.any).resolves(Config.prototype);
     $$.SANDBOX.stub(Config, 'addAllowedProperties').withArgs($$.SANDBOX.match.any);
-    $$.SANDBOX.stub(Config.prototype, 'get').withArgs(ConfigVars.LOCAL_DEV_SERVER_PORT).returns(123);
-    const resolved = await ConfigUtils.getLocalDevServerPort();
+    $$.SANDBOX.stub(Config.prototype, 'get')
+      .withArgs(ConfigVars.LOCAL_DEV_SERVER_PORT)
+      .returns({ httpPort: 123, httpsPort: 456 });
+    const resolved = await ConfigUtils.getLocalDevServerPorts();
 
-    expect(resolved).to.equal(123);
+    expect(resolved).to.deep.equal({ httpPort: 123, httpsPort: 456 });
   });
 
   it('getLocalDevServerWorkspace returns undefined when value not found in config', async () => {
