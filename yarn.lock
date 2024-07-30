@@ -3922,10 +3922,10 @@
   dependencies:
     "@salesforce/ts-types" "^2.0.10"
 
-"@salesforce/lwc-dev-mobile-core@4.0.0-alpha.6":
-  version "4.0.0-alpha.6"
-  resolved "https://registry.yarnpkg.com/@salesforce/lwc-dev-mobile-core/-/lwc-dev-mobile-core-4.0.0-alpha.6.tgz#b2fc6fb1c89cb67e6e9d80030146baf04848f60d"
-  integrity sha512-mrgcJaBIpkF+QJ3Xwmd4bXzMxDqkl7pZw4ivYYAZ1Jl1QB6cM855sU26XciC55EAc+lY+ltleAiBgTDW82GDqw==
+"@salesforce/lwc-dev-mobile-core@4.0.0-alpha.7":
+  version "4.0.0-alpha.7"
+  resolved "https://nexus-proxy.repo.local.sfdc.net/nexus/content/groups/npm-all/@salesforce/lwc-dev-mobile-core/-/lwc-dev-mobile-core-4.0.0-alpha.7.tgz#cfc00c6a2f5d0f369cf3c4820dadb03d4c97a942"
+  integrity sha512-EtHFpASvPvgeibMFDfA6hgXJIIJFk2UDnjZLBtVJhz0kCExyDFtRcEq7hrCILfQAXVCgcYUcTZrfy5O/iWNtnQ==
   dependencies:
     "@oclif/core" "^4.0.17"
     "@salesforce/core" "^8.2.7"
