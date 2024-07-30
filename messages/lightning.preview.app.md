@@ -4,16 +4,18 @@ Preview a Lightning Experience app locally and in real-time, without deploying i
 
 # description
 
-Enable Lightning Preview to see local changes to your app in a real-time preview that you don't have to deploy or manually refresh. To let you quickly iterate on your Lightning web components (LWCs) and pages, your app preview automatically refreshes when Lightning Preview detects source code changes.
+Enable Local Dev to see local changes to your app in a real-time preview that you don't have to deploy or manually refresh. To let you quickly iterate on your Lightning web components (LWCs) and pages, your app preview automatically refreshes when Local Dev detects source code changes.
 
-When you edit local files with Lightning Preview enabled, your LWCs reflect the following changes in your org. To apply any other local changes not listed here, you have to deploy them to your org using the `project deploy start` command.
+When you edit local files with Local Dev enabled, your org automatically reflects these changes.
 
-- Basic HTML and CSS edits
-- Importing new CSS-only LWCs
-- JS edits in-service component library
-- JS method changes that don't affect the LWC's public API
+- Basic HTML and CSS edits to LWCs
+- JavaScript changes to LWCs that don't affect the component's public API
+- Importing new custom LWCs
+- Importing another instance of an existing LWC
 
-When you make changes directly in your org, (like saving new component properties,) they're automatically deployed to your live app. To update your local version of the app with those changes, you have to retrieve them from your org using the `project retrieve start` command.
+To apply any other local changes not listed above, you must deploy them to your org using the `sf project deploy start` command.
+
+When you make changes directly in your org, (like saving new component properties,) they're automatically deployed to your live app. To update your local version of the app with those changes, you have to retrieve them from your org using the `sf project retrieve start` command.
 
 # flags.name.summary
 
