@@ -149,9 +149,9 @@ After you install the certificate, press any key to continue...
 
 # examples
 
-- Preview the target org "myOrg" in a desktop environment:
+- Preview the default app for the target org "myOrg" in a desktop environment:
   <%= config.bin %> <%= command.id %> --target-org myOrg
 - Preview the app "myApp" for the target org "myOrg" in a desktop environment:
   <%= config.bin %> <%= command.id %> --name MyApp --target-org myOrg --device-type desktop
-- Preview the target org "myOrg" on an iOS device:
+- Preview the default app for target org "myOrg" on an iOS device:
   <%= config.bin %> <%= command.id %> --target-org myOrg --device-type ios --device-id "iPhone 15 Pro Max"
