@@ -15,7 +15,7 @@ When you edit local files with Local Dev enabled, your org automatically reflect
 
 To apply any other local changes not listed above, you must deploy them to your org using the `sf project deploy start` command. Then, republish your site and restart the server for the Local Dev experience.
 
-For more considerations and limitations, see Salesforce Developers.
+For more considerations and limitations, see the Lightning Web Components Developer Guide.
 
 # flags.name.summary
 

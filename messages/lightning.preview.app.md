@@ -17,6 +17,8 @@ To apply any other local changes not listed above, you must deploy them to your 
 
 When you make changes directly in your org, (like saving new component properties,) they're automatically deployed to your live app. To update your local version of the app with those changes, you have to retrieve them from your org using the `sf project retrieve start` command.
 
+For more considerations and limitations, see the Lightning Web Components Developer Guide.
+
 # flags.name.summary
 
 Name of the Lightning Experience app to preview.
