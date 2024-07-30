@@ -10,20 +10,29 @@ import { CryptoUtils, SSLCertificateData } from '@salesforce/lwc-dev-mobile-core
 import { Config, ConfigAggregator } from '@salesforce/core';
 import configMeta, { ConfigVars, SerializedSSLCertificateData } from './../configMeta.js';
 
-export const LOCAL_DEV_SERVER_DEFAULT_PORT = 8081;
+export type IdentityTokenService = {
+  saveTokenToServer(token: string): Promise<string>;
+};
+
+export const LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT = 8081;
 export const LOCAL_DEV_SERVER_DEFAULT_WORKSPACE = Workspace.SfCli;
 
+export type LocalWebServerIdentityData = {
+  identityToken: string;
+  usernameToServerEntityIdMap: Record<string, string>;
+};
+
 export class ConfigUtils {
-  static #config: Config;
+  static #localConfig: Config;
   static #globalConfig: Config;
 
-  public static async getConfig(): Promise<Config> {
-    if (this.#config) {
-      return this.#config;
+  public static async getLocalConfig(): Promise<Config> {
+    if (this.#localConfig) {
+      return this.#localConfig;
     }
-    this.#config = await Config.create({ isGlobal: false });
+    this.#localConfig = await Config.create({ isGlobal: false });
     Config.addAllowedProperties(configMeta);
-    return this.#config;
+    return this.#localConfig;
   }
 
   public static async getGlobalConfig(): Promise<Config> {
@@ -35,27 +44,34 @@ export class ConfigUtils {
     return this.#globalConfig;
   }
 
-  public static async getOrCreateIdentityToken(): Promise<string> {
-    let token = await this.getIdentityToken();
-    if (!token) {
-      token = CryptoUtils.generateIdentityToken();
-      await this.writeIdentityToken(token);
+  public static async getOrCreateIdentityToken(username: string, tokenService: IdentityTokenService): Promise<string> {
+    let identityData = await this.getIdentityData();
+    if (!identityData) {
+      const token = CryptoUtils.generateIdentityToken();
+      const entityId = await tokenService.saveTokenToServer(token);
+      identityData = {
+        identityToken: token,
+        usernameToServerEntityIdMap: {},
+      };
+      identityData.usernameToServerEntityIdMap[username] = entityId;
+      await this.writeIdentityData(identityData);
+      return token;
+    } else {
+      let entityId = identityData.usernameToServerEntityIdMap[username];
+      if (!entityId) {
+        entityId = await tokenService.saveTokenToServer(identityData.identityToken);
+        identityData.usernameToServerEntityIdMap[username] = entityId;
+        await this.writeIdentityData(identityData);
+      }
+      return identityData.identityToken;
     }
-    return token;
   }
 
-  public static async getIdentityToken(): Promise<string | undefined> {
-    const config = await ConfigAggregator.create({ customConfigMeta: configMeta });
-    // Need to reload to make sure the values read are decrypted
-    await config.reload();
-    const identityToken = config.getPropertyValue(ConfigVars.LOCAL_WEB_SERVER_IDENTITY_TOKEN);
-
-    return identityToken as string;
-  }
-
-  public static async writeIdentityToken(token: string): Promise<void> {
-    const config = await this.getConfig();
-    config.set(ConfigVars.LOCAL_WEB_SERVER_IDENTITY_TOKEN, token);
+  public static async writeIdentityData(identityData: LocalWebServerIdentityData): Promise<void> {
+    const config = await this.getLocalConfig();
+    // TODO: JSON needs to be stringified in order for config.write to encrypt. When config.write()
+    //       can encrypt JSON data to write it into config we shall remove stringify().
+    config.set(ConfigVars.LOCAL_WEB_SERVER_IDENTITY_DATA, JSON.stringify(identityData));
     await config.write();
   }
 
@@ -88,17 +104,29 @@ export class ConfigUtils {
     await config.write();
   }
 
-  public static async getLocalDevServerPort(): Promise<number | undefined> {
-    const config = await this.getConfig();
-    const configPort = config.get(ConfigVars.LOCAL_DEV_SERVER_PORT) as number;
+  public static async getLocalDevServerPorts(): Promise<{ httpPort: number; httpsPort: number } | undefined> {
+    const config = await this.getLocalConfig();
+    const ports = config.get(ConfigVars.LOCAL_DEV_SERVER_PORT) as { httpPort: number; httpsPort: number };
 
-    return configPort;
+    return ports;
   }
 
   public static async getLocalDevServerWorkspace(): Promise<Workspace | undefined> {
-    const config = await this.getConfig();
+    const config = await this.getLocalConfig();
     const configWorkspace = config.get(ConfigVars.LOCAL_DEV_SERVER_WORKSPACE) as Workspace;
 
     return configWorkspace;
+  }
+
+  public static async getIdentityData(): Promise<LocalWebServerIdentityData | undefined> {
+    const config = await ConfigAggregator.create({ customConfigMeta: configMeta });
+    // Need to reload to make sure the values read are decrypted
+    await config.reload();
+    const identityJson = config.getPropertyValue(ConfigVars.LOCAL_WEB_SERVER_IDENTITY_DATA);
+
+    if (identityJson) {
+      return JSON.parse(identityJson as string) as LocalWebServerIdentityData;
+    }
+    return undefined;
   }
 }

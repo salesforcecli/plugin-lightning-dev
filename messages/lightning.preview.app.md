@@ -35,6 +35,18 @@ Type of device to display the app preview.
 
 ID of the mobile device to display the preview if device type is set to `ios` or `android`. The default value is the ID of the first available mobile device.
 
+# error.username
+
+Org must have a valid user
+
+# error.identitydata
+
+Couldn't find identity data while generating preview arguments
+
+# error.identitydata.entityid
+
+Couldn't find entity ID while generating preview arguments
+
 # error.no-project
 
 This command is required to run from within a Salesforce project directory. %s

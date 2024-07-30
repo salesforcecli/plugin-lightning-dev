@@ -31,19 +31,23 @@ import {
 } from '@salesforce/lwc-dev-mobile-core';
 import { Progress, Spinner } from '@salesforce/sf-plugins-core';
 import fetch from 'node-fetch';
-import { ConfigUtils, LOCAL_DEV_SERVER_DEFAULT_PORT } from './configUtils.js';
+import { ConfigUtils, LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT } from './configUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.app');
 const DevPreviewAuraMode = 'DEVPREVIEW';
 
 export class PreviewUtils {
-  public static generateWebSocketUrlForLocalDevServer(platform: string, port: string | number): string {
-    return LwcDevMobileCorePreviewUtils.generateWebSocketUrlForLocalDevServer(platform, port.toString());
+  public static generateWebSocketUrlForLocalDevServer(
+    platform: string,
+    ports: { httpPort: number; httpsPort: number },
+    logger?: Logger
+  ): string {
+    return LwcDevMobileCorePreviewUtils.generateWebSocketUrlForLocalDevServer(platform, ports, logger);
   }
 
   /**
-   * Returns a port number to be used by the local dev server.
+   * Returns a pair of port numbers to be used by the local dev server for http and https.
    *
    * It starts by checking whether the user has configured a port in their config file.
    * If so then we are only allowed to use that port, regardless of whether it is in use
@@ -54,38 +58,19 @@ export class PreviewUtils {
    * If it is in use then we increment the port number by 2 and check if it is in use or not.
    * This process is repeated until a port that is not in use is found.
    *
-   * @returns a port number to be used by the local dev server.
+   * @returns a pair of port numbers to be used by the local dev server for http and https.
    */
-  public static async getNextAvailablePort(): Promise<number> {
-    const userConfiguredPort = await ConfigUtils.getLocalDevServerPort();
+  public static async getNextAvailablePorts(): Promise<{ httpPort: number; httpsPort: number }> {
+    const userConfiguredPorts = await ConfigUtils.getLocalDevServerPorts();
 
-    if (userConfiguredPort) {
-      return Promise.resolve(userConfiguredPort);
+    if (userConfiguredPorts) {
+      return Promise.resolve(userConfiguredPorts);
     }
 
-    let port = LOCAL_DEV_SERVER_DEFAULT_PORT;
-    let done = false;
+    const httpPort = await this.doGetNextAvailablePort(LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT);
+    const httpsPort = await this.doGetNextAvailablePort(httpPort + 1);
 
-    while (!done) {
-      const cmd =
-        process.platform === 'win32' ? `netstat -an | find "LISTENING" | find ":${port}"` : `lsof -i :${port}`;
-
-      try {
-        const result = CommonUtils.executeCommandSync(cmd);
-        if (result.trim()) {
-          port = port + 2; // that port is in use so try another
-        } else {
-          done = true;
-        }
-      } catch (error) {
-        // On some platforms (like mac) if the command doesn't produce
-        // any results then that is considered an error but in our case
-        // that means the port is not in use and is ready for us to use.
-        done = true;
-      }
-    }
-
-    return Promise.resolve(port);
+    return Promise.resolve({ httpPort, httpsPort });
   }
 
   /**
@@ -109,12 +94,14 @@ export class PreviewUtils {
       logger?.debug(`Attempting to get device ${deviceId}`);
       device =
         platform === Platform.ios
-          ? (await IOSUtils.getSimulator(deviceId)) ?? undefined
-          : await AndroidUtils.fetchEmulator(deviceId);
+          ? (await IOSUtils.getSimulator(deviceId, logger)) ?? undefined
+          : await AndroidUtils.fetchEmulator(deviceId, logger);
     } else {
       logger?.debug('No particular device was targeted by the user...  fetching the first available device.');
       const devices =
-        platform === Platform.ios ? await IOSUtils.getSupportedSimulators() : await AndroidUtils.fetchEmulators();
+        platform === Platform.ios
+          ? await IOSUtils.getSupportedSimulators(logger)
+          : await AndroidUtils.fetchEmulators(logger);
       if (devices && devices.length > 0) {
         device = devices[0];
       }
@@ -141,11 +128,11 @@ export class PreviewUtils {
     let emulatorPort: number | undefined;
 
     if (platform === Platform.ios) {
-      await IOSUtils.bootDevice(deviceId, true); // will be no-op if already booted
-      await IOSUtils.launchSimulatorApp();
+      await IOSUtils.bootDevice(deviceId, true, logger); // will be no-op if already booted
+      await IOSUtils.launchSimulatorApp(logger);
       logger?.debug('Device booted');
     } else {
-      emulatorPort = await AndroidUtils.startEmulator(deviceId); // will be no-op if already booted
+      emulatorPort = await AndroidUtils.startEmulator(deviceId, false, true, logger); // will be no-op if already booted
       logger?.debug(`Device booted on port ${emulatorPort}`);
     }
 
@@ -156,6 +143,7 @@ export class PreviewUtils {
    * Generates the proper set of arguments to be used for launching desktop browser and navigating to the right location.
    *
    * @param ldpServerUrl The URL for the local dev server
+   * @param entityId Record ID for the identity token
    * @param appId An optional app id for a targeted LEX app
    * @param targetOrg An optional org id
    * @param auraMode An optional Aura Mode (defaults to DEVPREVIEW)
@@ -163,6 +151,7 @@ export class PreviewUtils {
    */
   public static generateDesktopPreviewLaunchArguments(
     ldpServerUrl: string,
+    entityId: string,
     appId?: string,
     targetOrg?: string,
     auraMode = DevPreviewAuraMode
@@ -175,7 +164,10 @@ export class PreviewUtils {
     const appPath = appId ? `lightning/app/${appId}` : 'lightning';
 
     // we prepend a '0.' to all of the params to ensure they will persist across browser redirects
-    const launchArguments = ['--path', `${appPath}?0.aura.ldpServerUrl=${ldpServerUrl}&0.aura.mode=${auraMode}`];
+    const launchArguments = [
+      '--path',
+      `${appPath}?0.aura.ldpServerUrl=${ldpServerUrl}&0.aura.ldpServerId=${entityId}&0.aura.mode=${auraMode}`,
+    ];
 
     if (targetOrg) {
       launchArguments.push('--target-org', targetOrg);
@@ -188,6 +180,7 @@ export class PreviewUtils {
    * Generates the proper set of arguments to be used for launching a mobile app with custom launch arguments.
    *
    * @param ldpServerUrl The URL for the local dev server
+   * @param entityId Record ID for the identity token
    * @param appName An optional app name for a targeted LEX app
    * @param appId An optional app id for a targeted LEX app
    * @param auraMode An optional Aura Mode (defaults to DEVPREVIEW)
@@ -195,6 +188,7 @@ export class PreviewUtils {
    */
   public static generateMobileAppPreviewLaunchArguments(
     ldpServerUrl: string,
+    entityId: string,
     appName?: string,
     appId?: string,
     auraMode = DevPreviewAuraMode
@@ -209,9 +203,11 @@ export class PreviewUtils {
       launchArguments.push({ name: 'LightningExperienceAppID', value: appId });
     }
 
-    launchArguments.push({ name: '0.aura.ldpServerUrl', value: ldpServerUrl });
+    launchArguments.push({ name: 'aura.ldpServerUrl', value: ldpServerUrl });
 
-    launchArguments.push({ name: '0.aura.mode', value: auraMode });
+    launchArguments.push({ name: 'aura.mode', value: auraMode });
+
+    launchArguments.push({ name: 'aura.ldpServerId', value: entityId });
 
     return launchArguments;
   }
@@ -240,13 +236,11 @@ export class PreviewUtils {
     const targetFile =
       platform === Platform.ios ? path.join(basePath, 'localhost.der') : path.join(basePath, 'localhost.pem');
 
-    // If we have not previously generated the cert files then go ahead and do so
-    if (!fs.existsSync(targetFile)) {
-      if (platform === Platform.ios) {
-        fs.writeFileSync(targetFile, data.derCertificate);
-      } else {
-        fs.writeFileSync(targetFile, data.pemCertificate);
-      }
+    // save to file
+    if (platform === Platform.ios) {
+      fs.writeFileSync(targetFile, data.derCertificate);
+    } else {
+      fs.writeFileSync(targetFile, data.pemCertificate);
     }
 
     return { certData: data, certFilePath: targetFile };
@@ -279,7 +273,8 @@ export class PreviewUtils {
         deviceId,
         appBundlePath,
         appConfig.id,
-        appConfig.launch_arguments ?? []
+        appConfig.launch_arguments ?? [],
+        logger
       );
     } else if (emulatorPort) {
       // for Android, emulatorPort is required
@@ -288,7 +283,8 @@ export class PreviewUtils {
         appConfig.id,
         appConfig.launch_arguments ?? [],
         (appConfig as AndroidAppPreviewConfig).activity,
-        emulatorPort
+        emulatorPort,
+        logger
       );
     }
   }
@@ -314,13 +310,18 @@ export class PreviewUtils {
     let result = '';
     try {
       if (platform === Platform.ios) {
-        result = CommonUtils.executeCommandSync(`xcrun simctl listapps ${deviceId} | grep "${appConfig.id}"`);
+        result = CommonUtils.executeCommandSync(
+          `xcrun simctl listapps ${deviceId} | grep "${appConfig.id}"`,
+          undefined,
+          logger
+        );
       } else {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const resolvedEmulatorPort = emulatorPort!;
         result = await AndroidUtils.executeAdbCommand(
           `shell pm list packages | grep "${appConfig.id}"`,
-          resolvedEmulatorPort
+          resolvedEmulatorPort,
+          logger
         );
       }
     } catch {
@@ -480,6 +481,46 @@ export class PreviewUtils {
         : `unzip -o -qq ${archive} -d ${outDir}`;
 
     logger?.debug(`Extracting archive ${zipFilePath}`);
-    await CommonUtils.executeCommandAsync(cmd);
+    await CommonUtils.executeCommandAsync(cmd, logger);
+  }
+
+  public static async getEntityId(username: string): Promise<string> {
+    const identityData = await ConfigUtils.getIdentityData();
+    let entityId: string | undefined;
+    if (!identityData) {
+      return Promise.reject(new Error(messages.getMessage('error.identitydata')));
+    } else {
+      entityId = identityData.usernameToServerEntityIdMap[username];
+      if (!entityId) {
+        return Promise.reject(new Error(messages.getMessage('error.identitydata.entityid')));
+      }
+      return entityId;
+    }
+  }
+
+  private static async doGetNextAvailablePort(startingPort: number): Promise<number> {
+    let port = startingPort;
+    let done = false;
+
+    while (!done) {
+      const cmd =
+        process.platform === 'win32' ? `netstat -an | find "LISTENING" | find ":${port}"` : `lsof -i :${port}`;
+
+      try {
+        const result = CommonUtils.executeCommandSync(cmd);
+        if (result.trim()) {
+          port = port + 2; // that port is in use so try another
+        } else {
+          done = true;
+        }
+      } catch (error) {
+        // On some platforms (like mac) if the command doesn't produce
+        // any results then that is considered an error but in our case
+        // that means the port is not in use and is ready for us to use.
+        done = true;
+      }
+    }
+
+    return Promise.resolve(port);
   }
 }

@@ -41,7 +41,7 @@ describe('lwc-dev-server', () => {
 
   beforeEach(async () => {
     $$.SANDBOX.stub(ConfigUtils, 'getOrCreateIdentityToken').resolves('testIdentityToken');
-    $$.SANDBOX.stub(ConfigUtils, 'getLocalDevServerPort').resolves(1234);
+    $$.SANDBOX.stub(ConfigUtils, 'getLocalDevServerPorts').resolves({ httpPort: 1234, httpsPort: 5678 });
     $$.SANDBOX.stub(ConfigUtils, 'getLocalDevServerWorkspace').resolves(Workspace.SfCli);
     $$.SANDBOX.stub(ConfigUtils, 'getCertData').resolves(undefined);
   });
@@ -55,7 +55,8 @@ describe('lwc-dev-server', () => {
   });
 
   it('calling startLWCServer returns an LWCServer', async () => {
-    const s = await lwcDevServer.startLWCServer(logger, path.resolve(__dirname, './__mocks__'));
+    const fakeIdentityToken = 'PFT1vw8v65aXd2b9HFvZ3Zu4OcKZwjI60bq7BEjj5k4=';
+    const s = await lwcDevServer.startLWCServer(logger, path.resolve(__dirname, './__mocks__'), fakeIdentityToken);
     expect(s).to.equal(server);
   });
 });

@@ -4,9 +4,6 @@ on:
     branches-ignore: [main]
   workflow_dispatch:
 
-env:
-  UT_DISABLE_NODE_CURRENT: true
-
 jobs:
   yarn-lockfile-check:
     uses: salesforcecli/github-workflows/.github/workflows/lockFileCheck.yml@main
@@ -14,6 +11,8 @@ jobs:
   linux-unit-tests:
     needs: yarn-lockfile-check
     uses: salesforcecli/github-workflows/.github/workflows/unitTestsLinux.yml@main
+    with:
+      skipTsDepCheck: true
   windows-unit-tests:
     needs: linux-unit-tests
     uses: salesforcecli/github-workflows/.github/workflows/unitTestsWindows.yml@main

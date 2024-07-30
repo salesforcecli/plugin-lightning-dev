@@ -14,9 +14,9 @@ The workspace name of the local lwc dev server
 
 Valid workspace value is "SalesforceCLI" OR "mrt"
 
-# config-utils.token-desc
+# config-utils.data-desc
 
-The Base64-encoded identity token of the local web server
+The identity data is a data structure that links the local web server's identity token to the user's configured Salesforce orgs.
 
 # config-utils.cert-desc
 

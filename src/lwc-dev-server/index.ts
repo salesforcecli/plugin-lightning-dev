@@ -13,7 +13,7 @@ import { Logger } from '@salesforce/core';
 import { SSLCertificateData } from '@salesforce/lwc-dev-mobile-core';
 import {
   ConfigUtils,
-  LOCAL_DEV_SERVER_DEFAULT_PORT,
+  LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT,
   LOCAL_DEV_SERVER_DEFAULT_WORKSPACE,
 } from '../shared/configUtils.js';
 
@@ -46,11 +46,10 @@ function mapLogLevel(cliLogLevel: number): number {
 async function createLWCServerConfig(
   logger: Logger,
   rootDir: string,
-  serverPort?: number,
-  serverProtocol?: string,
+  token: string,
+  serverPorts?: { httpPort: number; httpsPort: number },
   certData?: SSLCertificateData,
-  workspace?: Workspace,
-  token?: string
+  workspace?: Workspace
 ): Promise<ServerConfig> {
   const sfdxConfig = path.resolve(rootDir, 'sfdx-project.json');
 
@@ -77,17 +76,20 @@ async function createLWCServerConfig(
     }
   }
 
+  const ports = serverPorts ??
+    (await ConfigUtils.getLocalDevServerPorts()) ?? {
+      httpPort: LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT,
+      httpsPort: LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT + 1,
+    };
+
   const serverConfig: ServerConfig = {
     rootDir,
     // use custom port if any is provided, or fetch from config file (if any), otherwise use the default port
-    port: serverPort ?? (await ConfigUtils.getLocalDevServerPort()) ?? LOCAL_DEV_SERVER_DEFAULT_PORT,
-    protocol: serverProtocol ?? 'ws',
-    host: 'localhost',
+    port: ports.httpPort,
     paths: namespacePaths,
     // use custom workspace if any is provided, or fetch from config file (if any), otherwise use the default workspace
     workspace: workspace ?? (await ConfigUtils.getLocalDevServerWorkspace()) ?? LOCAL_DEV_SERVER_DEFAULT_WORKSPACE,
-    targets: ['LEX'], // should this be something else?
-    identityToken: token ?? (await ConfigUtils.getOrCreateIdentityToken()),
+    identityToken: token,
     logLevel: mapLogLevel(logger.getLevel()),
   };
 
@@ -95,6 +97,7 @@ async function createLWCServerConfig(
     serverConfig.https = {
       cert: certData.pemCertificate,
       key: certData.pemPrivateKey,
+      port: ports.httpsPort,
     };
   }
 
@@ -104,13 +107,12 @@ async function createLWCServerConfig(
 export async function startLWCServer(
   logger: Logger,
   rootDir: string,
-  serverPort?: number,
-  serverProtocol?: string,
+  token: string,
+  serverPorts?: { httpPort: number; httpsPort: number },
   certData?: SSLCertificateData,
-  workspace?: Workspace,
-  token?: string
+  workspace?: Workspace
 ): Promise<LWCServer> {
-  const config = await createLWCServerConfig(logger, rootDir, serverPort, serverProtocol, certData, workspace, token);
+  const config = await createLWCServerConfig(logger, rootDir, token, serverPorts, certData, workspace);
 
   logger.trace(`Starting LWC Dev Server with config: ${JSON.stringify(config)}`);
   let lwcDevServer: LWCServer | null = await startLwcDevServer(config);
