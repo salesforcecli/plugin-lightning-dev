@@ -1,6 +1,6 @@
 # summary
 
-Preview an Experience Cloud site locally and in real-time, without deploying it.
+Preview an Experience Builder site locally and in real-time, without deploying it.
 
 # description
 
@@ -19,7 +19,7 @@ For more considerations and limitations, see the Lightning Web Components Develo
 
 # flags.name.summary
 
-Name of the Experience Cloud site to preview. It has to match a site name from the current org.
+Name of the Experience Builder site to preview. It has to match a site name from the current org.
 
 # flags.target-org.summary
 
