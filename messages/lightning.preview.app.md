@@ -4,9 +4,9 @@ Preview a Lightning Experience app locally and in real-time, without deploying i
 
 # description
 
-Enable Local Dev to see local changes to your app in a real-time preview that you don't have to deploy or manually refresh. To let you quickly iterate on your Lightning web components (LWCs) and pages, your app preview automatically refreshes when Local Dev detects source code changes.
+Use Local Dev (Beta) to see local changes to your app in a real-time preview that you don't have to deploy or manually refresh. To let you quickly iterate on your Lightning web components (LWCs) and pages, your app preview automatically refreshes when Local Dev detects source code changes.
 
-When you edit local files with Local Dev enabled, your org automatically reflects these changes.
+When you edit these local files with Local Dev enabled, your org automatically reflects these changes.
 
 - Basic HTML and CSS edits to LWCs
 - JavaScript changes to LWCs that don't affect the component's public API
@@ -15,9 +15,9 @@ When you edit local files with Local Dev enabled, your org automatically reflect
 
 To apply any other local changes not listed above, you must deploy them to your org using the `sf project deploy start` command.
 
-When you make changes directly in your org, (like saving new component properties,) they're automatically deployed to your live app. To update your local version of the app with those changes, you have to retrieve them from your org using the `sf project retrieve start` command.
+When you make changes directly in your org (like saving new component properties), they're automatically deployed to your live app. To update your local version of the app with those changes, you must retrieve them from your org using the `sf project retrieve start` command.
 
-For more considerations and limitations, see the Lightning Web Components Developer Guide.
+To learn more about Local Dev enablement, considerations, and limitations, see the Lightning Web Components Developer Guide.
 
 # flags.name.summary
 
