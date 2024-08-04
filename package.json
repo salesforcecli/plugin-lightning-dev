@@ -10,7 +10,7 @@
     "@lwc/sfdc-lwc-compiler": "^9.4.0",
     "@oclif/core": "^4.0.17",
     "@salesforce/core": "^8.2.7",
-    "@salesforce/kit": "^3.1.6",
+    "@salesforce/kit": "^3.2.0",
     "@salesforce/lwc-dev-mobile-core": "4.0.0-alpha.7",
     "@salesforce/sf-plugins-core": "^11.2.4",
     "@inquirer/select": "^2.4.3",
