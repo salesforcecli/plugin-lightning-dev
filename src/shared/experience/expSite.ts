@@ -46,7 +46,7 @@ export class ExperienceSite {
    */
   public static getLocalExpSite(siteName: string): ExperienceSite {
     // TODO cleanup
-    const siteJsonPath = path.join('__local_dev__', siteName.trim().replace(' ', '_'), 'site.json');
+    const siteJsonPath = path.join('.localdev', siteName.trim().replace(' ', '_'), 'site.json');
     const siteJson = fs.readFileSync(siteJsonPath, 'utf8');
     const site = JSON.parse(siteJson) as ExperienceSite;
     return site;
@@ -99,12 +99,12 @@ export class ExperienceSite {
   }
 
   public isSiteSetup(): boolean {
-    return fs.existsSync(path.join(this.getSiteDirectory(), 'ssr.js'));
+    return fs.existsSync(path.join(this.getExtractDirectory(), 'ssr.js'));
   }
 
   public isSitePublished(): boolean {
     // TODO
-    return fs.existsSync(path.join(this.getSiteDirectory(), 'ssr.js'));
+    return fs.existsSync(path.join(this.getExtractDirectory(), 'ssr.js'));
   }
 
   public async getBundleName(): Promise<string> {
@@ -140,11 +140,11 @@ export class ExperienceSite {
    * @returns the path to the site
    */
   public getSiteDirectory(): string {
-    return path.join('__local_dev__', this.siteName);
+    return path.join('.localdev', this.siteName);
   }
 
   public getExtractDirectory(): string {
-    return path.join('__local_dev__', this.siteName, 'app');
+    return path.join('.localdev', this.siteName, 'app');
   }
 
   /**

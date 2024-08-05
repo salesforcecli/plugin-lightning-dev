@@ -8,7 +8,7 @@
 // import path from 'node:path';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
-import { expDev, setupDev } from '@lwrjs/api';
+import { expDev } from '@lwrjs/api';
 import { PromptUtils } from '../../../shared/prompt.js';
 // import { OrgUtils } from '../../../shared/orgUtils.js';
 import { ExperienceSite } from '../../../shared/experience/expSite.js';
@@ -56,17 +56,14 @@ export default class LightningPreviewSite extends SfCommand<void> {
         siteName = await PromptUtils.promptUserToSelectSite(siteList);
       }
 
-      // 3. Setup local dev directory structure: '__local_dev__/${site}'
+      // 3. Setup local dev directory structure: '.localdev/${site}'
       this.log(`Setting up Local Development for: ${siteName}`);
       const selectedSite = new ExperienceSite(org, siteName);
+      let siteZip;
       if (!selectedSite.isSiteSetup()) {
         // TODO Verify the bundle has been published and download
         this.log('Downloading Site...');
-        const siteZip = await selectedSite.downloadSite();
-
-        // Setup Local Dev
-        await setupDev({ mrtBundle: siteZip, mrtDir: selectedSite.getExtractDirectory() });
-        this.log('Setup Complete!');
+        siteZip = await selectedSite.downloadSite();
       } else {
         // If we do have the site setup already, don't do anything / TODO prompt the user if they want to get latest?
 
@@ -83,7 +80,9 @@ export default class LightningPreviewSite extends SfCommand<void> {
         open: false,
         port: 3000,
         logLevel: 'error',
-        siteDir: selectedSite.getExtractDirectory(),
+        mode: 'dev',
+        siteZip,
+        siteDir: selectedSite.getSiteDirectory(),
       });
     } catch (e) {
       // this.error(e);
