@@ -28,14 +28,13 @@ export default class LightningPreviewSite extends SfCommand<void> {
   public static readonly flags = {
     name: Flags.string({
       summary: messages.getMessage('flags.name.summary'),
-      description: messages.getMessage('flags.name.description'),
       char: 'n',
       required: false,
     }),
     debug: Flags.boolean({
       summary: messages.getMessage('flags.debug.summary'),
     }),
-    'target-org': Flags.optionalOrg(),
+    'target-org': Flags.optionalOrg({ summary: messages.getMessage('flags.target-org.summary') }),
   };
 
   public async run(): Promise<void> {

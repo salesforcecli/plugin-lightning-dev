@@ -1,27 +1,27 @@
 # summary
 
-Preview Lightning Experience Applications.
+Preview a Lightning Experience app locally and in real-time, without deploying it.
 
 # description
 
-Preview Lightning Experience Applications in real-time.
+Use Local Dev (Beta) to see local changes to your app in a real-time preview that you don't have to deploy or manually refresh. To let you quickly iterate on your Lightning web components (LWCs) and pages, your app preview automatically refreshes when Local Dev detects source code changes.
 
-In dev preview mode, you can edit local files and see these changes to your Lightning Web Components (LWC) within your {org name} org:
+When you edit these local files with Local Dev enabled, your org automatically reflects these changes.
 
-- Basic HTML and CSS edits
-- Importing new CSS-only LWC
-- JS edits in-service component library
-- JS method changes in the LWC component that don't alter its public API.
+- Basic HTML and CSS edits to LWCs
+- JavaScript changes to LWCs that don't affect the component's public API
+- Importing new custom LWCs
+- Importing another instance of an existing LWC
 
-Other local changes require deployment to your org. However, changes made directly in your org (like modifying component properties and saving) are immediately live and won't show in your local files until you retrieve them from the org.
+To apply any other local changes not listed above, you must deploy them to your org using the `sf project deploy start` command.
 
-This feature enables developers to quickly iterate on their components and pages, seeing the impact of changes in real-time without needing to deploy or refresh manually. Live reload is enabled by default to automatically refresh the preview when source code changes are detected.
+When you make changes directly in your org (like saving new component properties), they're automatically deployed to your live app. To update your local version of the app with those changes, you must retrieve them from your org using the `sf project retrieve start` command.
 
-Use the appropriate topic to preview specific aspects of the development environment.
+To learn more about Local Dev enablement, considerations, and limitations, see the Lightning Web Components Developer Guide.
 
 # flags.name.summary
 
-Name of the Lightning Experience application to preview.
+Name of the Lightning Experience app to preview.
 
 # flags.target-org.summary
 
@@ -29,11 +29,11 @@ Username or alias of the target org. Not required if the `target-org` configurat
 
 # flags.device-type.summary
 
-Type of device to emulate in preview.
+Type of device to display the app preview.
 
 # flags.device-id.summary
 
-For mobile virtual devices, specify the device ID to preview. If omitted, the first available virtual device will be used.
+ID of the mobile device to display the preview if device type is set to `ios` or `android`. The default value is the ID of the first available mobile device.
 
 # error.username
 
@@ -97,70 +97,75 @@ Before proceeding, install the self-signed certificate on your device. The certi
 
 `%s`
 
-Follow the steps below to install the certificate:
+To install the certificate, follow these steps:
 
 %s
 
 # certificate.installation.steps.ios
 
-1. Drag and drop the file on to your booted simulator.
-2. Tap `Allow` to proceed with downloading the configuration file.
-3. Tap `Close` and navigate to `Settings > General > VPN & Device Management > localhost`.
-4. Tap `Install` in the title bar, in the warning window, and on the install button.
-5. In the `Profile Installed` view, confirm that the profile shows as `Verified` and Tap `Done`.
-6. Now navigate to `Settings > General > About > Certificate Trust Settings`.
-7. Toggle full trust for `localhost` to enable full trust.
-8. In the warning dialog, tap `Continue`.
+1. Drag and drop the file onto your booted simulator.
+2. Click `Allow` to proceed with downloading the configuration file.
+3. Click `Close` and navigate to `Settings > General > VPN & Device Management > localhost`.
+4. Click `Install` in the title bar, in the warning window, and on the install button.
+5. In the `Profile Installed` view, confirm that the profile displays `Verified` and then click `Done`.
+6. Navigate to `Settings > General > About > Certificate Trust Settings`.
+7. Enable full trust for `localhost`.
+8. In the resulting warning pop-up, click `Continue`.
 
 # certificate.installation.steps.android
 
-1. Drag and drop the file on to your booted emulator.
+1. Drag and drop the file onto your booted emulator.
 2. %s
-3. Browse to the certificate file that you transferred from step 1 (usually under `/sdcard/download`).
+3. Navigate to the certificate file from step 1. (It's usually located in `/sdcard/download`).
 4. Follow the on-screen instructions to install it.
-5. Tap on `User credentials` under `Credential storage` and verify that your certificate is listed there.
-6. Tap on `Trusted credentials` under `Credential storage`. Then tap on `USER` and verify that your certificate is listed there.
+5. Click `User credentials` under `Credential storage` and verify that your certificate is listed there.
+6. Click `Trusted credentials` under `Credential storage`. Then click `USER` and verify that page lists your certificate.
 
 # certificate.installation.steps.android.nav-target-api-24-25
 
-Navigate to `Settings > Security` and tap on `Install from SD card` under `Credential storage`.
+Navigate to `Settings > Security` and click `Install from SD card` under `Credential storage`.
 
 # certificate.installation.steps.android.nav-target-api-26-27
 
-Navigate to `Settings > Security & Location > Encryption & credentials` and tap on `Install from SD card` under `Credential storage`.
+Navigate to `Settings > Security & Location > Encryption & credentials` and click `Install from SD card` under `Credential storage`.
 
 # certificate.installation.steps.android.nav-target-api-28
 
-Navigate to `Settings > Security & Location > Advanced > Encryption & credentials` and tap on `Install from SD card` under `Credential storage`.
+Navigate to `Settings > Security & Location > Advanced > Encryption & credentials` and click `Install from SD card` under `Credential storage`.
 
 # certificate.installation.steps.android.nav-target-api-29
 
-Navigate to `Settings > Security > Encryption & credentials` and tap on `Install from SD card` under `Credential storage`.
+Navigate to `Settings > Security > Encryption & credentials` and click `Install from SD card` under `Credential storage`.
 
 # certificate.installation.steps.android.nav-target-api-30-32
 
-Navigate to `Settings > Security > Encryption & credentials` and tap on `Install a certificate` under `Credential storage`. Now tap on `CA certificate` and on `Install anyway`.
+Navigate to `Settings > Security > Encryption & credentials` and click `Install a certificate` under `Credential storage`. Click `CA certificate`, and then click `Install anyway`.
 
 # certificate.installation.steps.android.nav-target-api-33
 
-Navigate to `Settings > Security > More security settings > Encryption & credentials` and tap on `Install a certificate` under `Credential storage`. Now tap on `CA certificate` and on `Install anyway`.
+Navigate to `Settings > Security > More security settings > Encryption & credentials` and click `Install a certificate` under `Credential storage`. Click `CA certificate`, and then click `Install anyway`.
 
 # certificate.installation.steps.android.nav-target-api-34-up
 
-Navigate to `Settings > Security & Privacy > More security & privacy > Encryption & credentials` and tap on `Install a certificate` under `Credential storage`. Now tap on `CA certificate` and on `Install anyway`.
+Navigate to `Settings > Security & Privacy > More security & privacy > Encryption & credentials` and click `Install a certificate` under `Credential storage`. Click `CA certificate`, and then click `Install anyway`.
 
 # certificate.waiting
 
-After installing the certificate, press any key to continue...
+After you install the certificate, press any key to continue...
 
 # mobileapp.notfound
 
-%s is not installed on your device.
+%s isn't installed on your device.
 
 # mobileapp.download
 
-%s is not installed on your device. Do you want to download and install it
+%s isn't installed on your device. Do you want to download and install it?
 
 # examples
 
-- <%= config.bin %> <%= command.id %>
+- Preview the default app for the target org "myOrg" in a desktop environment:
+  <%= config.bin %> <%= command.id %> --target-org myOrg
+- Preview the app "myApp" for the target org "myOrg" in a desktop environment:
+  <%= config.bin %> <%= command.id %> --name MyApp --target-org myOrg --device-type desktop
+- Preview the default app for target org "myOrg" on an iOS device:
+  <%= config.bin %> <%= command.id %> --target-org myOrg --device-type ios --device-id "iPhone 15 Pro Max"
