@@ -3483,13 +3483,13 @@
     wordwrap "^1.0.0"
     wrap-ansi "^7.0.0"
 
-"@oclif/plugin-command-snapshot@^5.2.10":
-  version "5.2.10"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-command-snapshot/-/plugin-command-snapshot-5.2.10.tgz#48f46f341daa21fc28bd67b58420d5d9910cd237"
-  integrity sha512-Nc7xMdkvQxYfbqfA+UDSFV6SsVzbITVsJXQYPaM9QrlsbgUhzcdMHDX8kvqZV01OcK6Zr7lJ5XksY62lKbtS/A==
+"@oclif/plugin-command-snapshot@^5.2.11":
+  version "5.2.11"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-command-snapshot/-/plugin-command-snapshot-5.2.11.tgz#b4914c0465af849510d3cff5aa7c9fedea009ff9"
+  integrity sha512-klL8lGY5Ef+EJZ7ftGChvMCPspXXYCyAsyEJILZRd4gf1bIYzS9ooKZuClGa1RbGTleJjZQxvCEiItrRrH72oQ==
   dependencies:
     "@oclif/core" "^4"
-    ansis "^3.3.1"
+    ansis "^3.3.2"
     globby "^14.0.2"
     just-diff "^5.2.0"
     lodash.difference "^4.5.0"
