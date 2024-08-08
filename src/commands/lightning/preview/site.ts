@@ -66,12 +66,11 @@ export default class LightningPreviewSite extends SfCommand<void> {
         siteZip = await selectedSite.downloadSite();
       } else {
         // If we do have the site setup already, don't do anything / TODO prompt the user if they want to get latest?
-
         // Check if the site has been published
         // const result = await connection.query<{ Id: string; Name: string; LastModifiedDate: string }>(
         //   "SELECT Id, Name, LastModifiedDate FROM StaticResource WHERE Name LIKE 'MRT%" + siteName + "'"
         // );
-        this.log('Setup already complete!');
+        // this.log('Setup already complete!');
       }
 
       // 6. Start the dev server
