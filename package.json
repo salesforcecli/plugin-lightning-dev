@@ -5,7 +5,7 @@
   "author": "Salesforce",
   "bugs": "https://github.com/forcedotcom/cli/issues",
   "dependencies": {
-    "@lwrjs/api": "0.13.3",
+    "@lwrjs/api": "0.13.6",
     "@lwc/lwc-dev-server": "^9.4.0",
     "@lwc/sfdc-lwc-compiler": "^9.4.0",
     "@oclif/core": "^4.0.17",
@@ -15,8 +15,8 @@
     "@salesforce/sf-plugins-core": "^11.2.4",
     "@inquirer/select": "^2.4.3",
     "chalk": "^5.3.0",
-    "lwc": "7.2.0",
-    "lwr": "0.13.3",
+    "lwc": "7.2.1",
+    "lwr": "0.13.6",
     "node-fetch": "^3.3.2",
     "tar": "^7.4.3"
   },
@@ -92,7 +92,6 @@
     "prepack": "sf-prepack",
     "prepare": "sf-install",
     "test": "wireit",
-    "test:compile": "wireit",
     "test:nuts": "nyc mocha \"**/*.nut.ts\" --slow 4500 --timeout 600000 --parallel",
     "test:only": "wireit",
     "unlink-lwr": "yarn unlink @lwrjs/api @lwrjs/app-service @lwrjs/asset-registry @lwrjs/asset-transformer @lwrjs/auth-middleware @lwrjs/base-view-provider @lwrjs/base-view-transformer @lwrjs/client-modules @lwrjs/config @lwrjs/core @lwrjs/dev-proxy-server @lwrjs/diagnostics @lwrjs/esbuild @lwrjs/everywhere @lwrjs/fs-asset-provider @lwrjs/fs-watch @lwrjs/html-view-provider @lwrjs/instrumentation @lwrjs/label-module-provider @lwrjs/lambda @lwrjs/legacy-npm-module-provider @lwrjs/loader @lwrjs/lwc-module-provider @lwrjs/lwc-ssr @lwrjs/markdown-view-provider @lwrjs/module-bundler @lwrjs/module-registry @lwrjs/npm-module-provider @lwrjs/nunjucks-view-provider @lwrjs/o11y @lwrjs/resource-registry @lwrjs/router @lwrjs/security @lwrjs/server @lwrjs/shared-utils @lwrjs/static @lwrjs/tools @lwrjs/types @lwrjs/view-registry lwr",
