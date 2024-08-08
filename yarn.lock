@@ -3915,12 +3915,12 @@
   resolved "https://registry.yarnpkg.com/@salesforce/eslint-plugin-lightning/-/eslint-plugin-lightning-1.0.0.tgz#9ecf80527d83394960ef3c358c790cdfde44f578"
   integrity sha512-zk0PKXAcHKHepAG2EOSWlkOTxQM0Aw1CT6+MUxJcM42fCDwH/yPPpGkG3CWtRfmVViODGOwU9ywU2wlkAYcvUQ==
 
-"@salesforce/kit@^3.1.6":
-  version "3.1.6"
-  resolved "https://registry.yarnpkg.com/@salesforce/kit/-/kit-3.1.6.tgz#aefb39c0e0f325e11f80551ff92cf6979dd74070"
-  integrity sha512-zAYPmCSAvdonDOnL5AzuVRVv0sRMlQd6gi12HDE1964VqSjt5pzlLU90thh3Qq4A1Wxbdu0FbHYx9BvZ4fWPvQ==
+"@salesforce/kit@^3.1.6", "@salesforce/kit@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@salesforce/kit/-/kit-3.2.0.tgz#49207c8a5faeb4504e43efb290df84dda137bb0c"
+  integrity sha512-j9wZr9Pv+kuclMU34z0Jyu0sB6/wEhv5H6l5fwl+cXD18xmruy/Gftfv64LwdUlOxIZDFRISDqfEZ+UfE3dB+A==
   dependencies:
-    "@salesforce/ts-types" "^2.0.10"
+    "@salesforce/ts-types" "^2.0.11"
 
 "@salesforce/lwc-dev-mobile-core@4.0.0-alpha.7":
   version "4.0.0-alpha.7"
