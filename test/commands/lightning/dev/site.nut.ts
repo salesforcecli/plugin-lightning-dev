@@ -9,7 +9,7 @@
 import { TestSession } from '@salesforce/cli-plugins-testkit';
 import { expect } from 'chai';
 
-describe('lightning preview site NUTs', () => {
+describe('lightning dev site NUTs', () => {
   let session: TestSession;
 
   before(async () => {
@@ -22,7 +22,7 @@ describe('lightning preview site NUTs', () => {
 
   it('should display provided name', () => {
     const name = 'World';
-    const command = `lightning preview site --name ${name}`;
+    const command = `lightning dev site --name ${name}`;
     const output = execCmd(command, { ensureExitCode: 0 }).shellOutput.stdout;
     expect(output).to.contain(name);
   });

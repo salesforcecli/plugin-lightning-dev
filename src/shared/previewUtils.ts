@@ -6,7 +6,7 @@
  */
 
 // **********************************************************************************************
-// * TODO: When we finalize the implementation for the preview commands and things settle down, *
+// * TODO: When we finalize the implementation for the dev commands and things settle down, *
 // *       consider moving most of these into PreviewUtils of lwc-dev-mobile-core instead.      *
 // **********************************************************************************************
 
@@ -34,7 +34,7 @@ import fetch from 'node-fetch';
 import { ConfigUtils, LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT } from './configUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
-const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.app');
+const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.app');
 const DevPreviewAuraMode = 'DEVPREVIEW';
 
 export class PreviewUtils {

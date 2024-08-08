@@ -1,7 +1,7 @@
 [
   {
     "alias": [],
-    "command": "lightning:preview:app",
+    "command": "lightning:dev:app",
     "flagAliases": [],
     "flagChars": ["i", "n", "o", "t"],
     "flags": ["device-id", "device-type", "flags-dir", "json", "name", "target-org"],
@@ -9,7 +9,7 @@
   },
   {
     "alias": [],
-    "command": "lightning:preview:site",
+    "command": "lightning:dev:site",
     "flagAliases": [],
     "flagChars": ["n", "o"],
     "flags": ["debug", "flags-dir", "json", "name", "target-org"],

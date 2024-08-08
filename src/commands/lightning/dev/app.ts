@@ -24,7 +24,7 @@ import { PreviewUtils } from '../../../shared/previewUtils.js';
 import { ConfigUtils, IdentityTokenService } from '../../../shared/configUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
-const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.app');
+const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.app');
 
 export const iOSSalesforceAppPreviewConfig = {
   name: 'Salesforce Mobile App',
@@ -55,7 +55,7 @@ class AppServerIdentityTokenService implements IdentityTokenService {
   }
 }
 
-export default class LightningPreviewApp extends SfCommand<void> {
+export default class LightningDevApp extends SfCommand<void> {
   public static readonly summary = messages.getMessage('summary');
   public static readonly description = messages.getMessage('description');
   public static readonly examples = messages.getMessages('examples');
@@ -155,11 +155,11 @@ export default class LightningPreviewApp extends SfCommand<void> {
     // eslint-disable-next-line no-console
     console.log(message);
 
-    return LightningPreviewApp.waitForKeyPress();
+    return LightningDevApp.waitForKeyPress();
   }
 
   public async run(): Promise<void> {
-    const { flags } = await this.parse(LightningPreviewApp);
+    const { flags } = await this.parse(LightningDevApp);
     const logger = await Logger.child(this.ctor.name);
 
     const appName = flags['name'];

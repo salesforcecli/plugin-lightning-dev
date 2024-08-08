@@ -13,13 +13,13 @@ import { PromptUtils } from '../../../shared/prompt.js';
 import { OrgUtils } from '../../../shared/orgUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
-const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.site');
+const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.site');
 
-export type LightningPreviewSiteResult = {
+export type LightningDevSiteResult = {
   path: string;
 };
 
-export default class LightningPreviewSite extends SfCommand<LightningPreviewSiteResult> {
+export default class LightningDevSite extends SfCommand<LightningDevSiteResult> {
   public static readonly summary = messages.getMessage('summary');
   public static readonly description = messages.getMessage('description');
   public static readonly examples = messages.getMessages('examples');
@@ -36,8 +36,8 @@ export default class LightningPreviewSite extends SfCommand<LightningPreviewSite
     'target-org': Flags.optionalOrg({ summary: messages.getMessage('flags.target-org.summary') }),
   };
 
-  public async run(): Promise<LightningPreviewSiteResult> {
-    const { flags } = await this.parse(LightningPreviewSite);
+  public async run(): Promise<LightningDevSiteResult> {
+    const { flags } = await this.parse(LightningDevSite);
     // Connect to Org
     const connection = flags['target-org'].getConnection();
 
@@ -112,9 +112,9 @@ export default class LightningPreviewSite extends SfCommand<LightningPreviewSite
       mrtBundleRoot: siteDir,
     });
     // const name = flags.name ?? 'world';
-    // this.log(`hello ${name} from /Users/nkruk/git/plugin-lightning-dev/src/commands/lightning/preview/site.ts`);
+    // this.log(`hello ${name} from /Users/nkruk/git/plugin-lightning-dev/src/commands/lightning/dev/site.ts`);
     return {
-      path: '/Users/nkruk/git/plugin-lightning-dev/src/commands/lightning/preview/site.ts',
+      path: '/Users/nkruk/git/plugin-lightning-dev/src/commands/lightning/dev/site.ts',
     };
   }
 }

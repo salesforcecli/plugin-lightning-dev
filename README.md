@@ -23,13 +23,13 @@ sf org login web --instance-url ${orgfarmUrl}
 Then run the following for your environment:
 
 ```bash
-./bin/dev.js lightning preview site
+./bin/dev.js lightning dev site
 ```
 
 or for debugging:
 
 ```bash
-NODE_OPTIONS='--inspect-brk' ./bin/dev.js lightning preview site
+NODE_OPTIONS='--inspect-brk' ./bin/dev.js lightning dev site
 ```
 
 No need to recompile or watch typescript files as this happens automagically.
