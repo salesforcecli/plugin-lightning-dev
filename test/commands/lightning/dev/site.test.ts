@@ -7,10 +7,10 @@
 import { TestContext } from '@salesforce/core/testSetup';
 // import { expect } from 'chai';
 // import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
-// import LightningPreviewSite from '../../../../src/commands/lightning/preview/site.js';
+// import LightningDevSite from '../../../../src/commands/lightning/dev/site.js';
 
 // TODO fix me once we have a fully working command
-describe('lightning preview site', () => {
+describe('lightning dev site', () => {
   const $$ = new TestContext();
   // let sfCommandStubs: ReturnType<typeof stubSfCommandUx>;
 
@@ -23,7 +23,7 @@ describe('lightning preview site', () => {
   });
 
   it('runs hello', async () => {
-    // await LightningPreviewSite.run([]);
+    // await LightningDevSite.run([]);
     // const output = sfCommandStubs.log
     //   .getCalls()
     //   .flatMap((c) => c.args)
@@ -32,12 +32,12 @@ describe('lightning preview site', () => {
   });
 
   it('runs hello with --json and no provided name', async () => {
-    // const result = await LightningPreviewSite.run([]);
-    // expect(result.path).to.equal('/Users/nkruk/git/plugin-lightning-dev/src/commands/lightning/preview/site.ts');
+    // const result = await LightningDevSite.run([]);
+    // expect(result.path).to.equal('/Users/nkruk/git/plugin-lightning-dev/src/commands/lightning/dev/site.ts');
   });
 
   it('runs hello world --name Astro', async () => {
-    // await LightningPreviewSite.run(['--name', 'Astro']);
+    // await LightningDevSite.run(['--name', 'Astro']);
     // const output = sfCommandStubs.log
     //   .getCalls()
     //   .flatMap((c) => c.args)
