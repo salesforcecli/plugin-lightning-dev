@@ -1,38 +1,37 @@
 # summary
 
-Preview Experience Cloud Sites.
+Preview an Experience Builder site locally and in real-time, without deploying it.
 
 # description
 
-In dev preview mode, you can edit local files and see these changes to your Lightning Web Components (LWC) within your site:
+Enable Local Dev to see local changes to your site in a real-time preview that you don't have to deploy or manually refresh. To let you quickly iterate on your Lightning web components (LWCs) and pages, your site preview automatically refreshes when Local Dev detects source code changes.
 
-- Basic HTML and CSS edits
-- Importing new CSS
-- Javascript edits in-service component library
-- Javascript method changes in the LWC component that don't alter its public API.
+When you edit these local files with Local Dev enabled, your org automatically reflects these changes.
 
-Other local changes may require deployment to your org. However, changes made directly in your org (like modifying component properties) are immediately live and won't show in your local files until you retrieve them from the org.
+- Basic HTML and CSS edits to LWCs
+- JavaScript changes to LWCs that don't affect the component's public API
+- Importing new custom LWCs
+- Importing another instance of an existing LWC
+
+To apply any other local changes not listed above, you must deploy them to your org using the `sf project deploy start` command. Then republish your site and restart the server for the Local Dev experience.
+
+For more considerations and limitations, see the Lightning Web Components Developer Guide.
 
 # flags.name.summary
 
-Specify the site name for preview.
-
-# flags.name.description
-
-The site name needs to match the name of a site on the current org. Example: "B2C CodeCept"
-
-# examples
-
-- <%= config.bin %> <%= command.id %> --name MySite
-
-# flags.debug.summary
-
-Debug SSR.
-
-# flags.debug.description
-
-Debug Description.
+Name of the Experience Builder site to preview. It has to match a site name from the current org.
 
 # flags.target-org.summary
 
-undefined
+Username or alias of the target org. Not required if the `target-org` configuration variable is already set.
+
+# flags.debug.summary
+
+Enable Node Inspector to debug server-side rendering.
+
+# examples
+
+- Preview the site "Partner Central" from the org "myOrg":
+  <%= config.bin %> <%= command.id %> --name "Partner Central" --target-org myOrg
+- Preview the site "Partner Central" from the org "myOrg" with Node Inspector enabled:
+  <%= config.bin %> <%= command.id %> --name "Partner Central" --target-org myOrg --debug
