@@ -19,18 +19,18 @@ import { stubSpinner, stubUx } from '@salesforce/sf-plugins-core';
 import { expect } from 'chai';
 import esmock from 'esmock';
 import sinon from 'sinon';
-import LightningPreviewApp, {
+import LightningDevApp, {
   androidSalesforceAppPreviewConfig,
   iOSSalesforceAppPreviewConfig,
-} from '../../../../src/commands/lightning/preview/app.js';
+} from '../../../../src/commands/lightning/dev/app.js';
 import { OrgUtils } from '../../../../src/shared/orgUtils.js';
 import { PreviewUtils } from '../../../../src/shared/previewUtils.js';
 import { ConfigUtils, LocalWebServerIdentityData } from '../../../../src/shared/configUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 
-describe('lightning preview app', () => {
-  const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.app');
+describe('lightning dev app', () => {
+  const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.app');
   const $$ = new TestContext();
   const testOrgData = new MockTestOrgData();
   const testAppId = '06m8b000002vpFSAAY';
@@ -51,7 +51,7 @@ describe('lightning preview app', () => {
     '34'
   );
   const testEmulatorPort = 1234;
-  let MockedLightningPreviewApp: typeof LightningPreviewApp;
+  let MockedLightningPreviewApp: typeof LightningDevApp;
 
   const fakeIdentityToken = 'PFT1vw8v65aXd2b9HFvZ3Zu4OcKZwjI60bq7BEjj5k4=';
   const fakeEntityId = '1I9xx0000004ClkCAE';
@@ -73,14 +73,11 @@ describe('lightning preview app', () => {
     $$.SANDBOX.stub(SfConfig.prototype, 'write').resolves();
     $$.SANDBOX.stub(ConfigUtils, 'getOrCreateIdentityToken').resolves(fakeIdentityToken);
 
-    MockedLightningPreviewApp = await esmock<typeof LightningPreviewApp>(
-      '../../../../src/commands/lightning/preview/app.js',
-      {
-        '../../../../src/lwc-dev-server/index.js': {
-          startLWCServer: async () => ({ stopServer: () => {} }),
-        },
-      }
-    );
+    MockedLightningPreviewApp = await esmock<typeof LightningDevApp>('../../../../src/commands/lightning/dev/app.js', {
+      '../../../../src/lwc-dev-server/index.js': {
+        startLWCServer: async () => ({ stopServer: () => {} }),
+      },
+    });
   });
 
   afterEach(() => {
@@ -120,7 +117,7 @@ describe('lightning preview app', () => {
     }
   });
 
-  describe('desktop preview', () => {
+  describe('desktop dev', () => {
     it('runs org:open with proper flags when app name provided', async () => {
       await verifyOrgOpen(`lightning/app/${testAppId}`, 'Sales');
     });
@@ -154,7 +151,7 @@ describe('lightning preview app', () => {
     }
   });
 
-  describe('mobile preview', () => {
+  describe('mobile dev', () => {
     it('throws when environment setup requirements are not met', async () => {
       $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);

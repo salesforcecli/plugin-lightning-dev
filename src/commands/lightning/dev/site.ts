@@ -14,13 +14,13 @@ import { PromptUtils } from '../../../shared/prompt.js';
 import { ExperienceSite } from '../../../shared/experience/expSite.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
-const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.site');
+const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.site');
 
-export type LightningPreviewSiteResult = {
+export type LightningDevSiteResult = {
   path: string;
 };
 
-export default class LightningPreviewSite extends SfCommand<void> {
+export default class LightningDevSite extends SfCommand<void> {
   public static readonly summary = messages.getMessage('summary');
   public static readonly description = messages.getMessage('description');
   public static readonly examples = messages.getMessages('examples');
@@ -38,7 +38,7 @@ export default class LightningPreviewSite extends SfCommand<void> {
   };
 
   public async run(): Promise<void> {
-    const { flags } = await this.parse(LightningPreviewSite);
+    const { flags } = await this.parse(LightningDevSite);
 
     // TODO short circuit all this if user specifies a site name and it exists locally
 

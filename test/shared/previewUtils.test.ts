@@ -28,10 +28,10 @@ import { PreviewUtils } from '../../src/shared/previewUtils.js';
 import {
   iOSSalesforceAppPreviewConfig,
   androidSalesforceAppPreviewConfig,
-} from '../../src/commands/lightning/preview/app.js';
+} from '../../src/commands/lightning/dev/app.js';
 
 describe('previewUtils', () => {
-  const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.app');
+  const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.app');
   const $$ = new TestContext();
 
   const testIOSDevice = new IOSSimulatorDevice(

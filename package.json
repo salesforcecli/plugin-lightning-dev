@@ -69,7 +69,7 @@
       "lightning": {
         "external": true,
         "subtopics": {
-          "preview": {
+          "dev": {
             "description": "Preview applications and sites locally and in real-time, without deploying them."
           }
         }
