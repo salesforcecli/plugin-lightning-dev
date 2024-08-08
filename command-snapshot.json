@@ -9,14 +9,6 @@
   },
   {
     "alias": [],
-    "command": "lightning:preview:component",
-    "flagAliases": [],
-    "flagChars": ["n"],
-    "flags": ["flags-dir", "json", "name"],
-    "plugin": "@salesforce/plugin-lightning-dev"
-  },
-  {
-    "alias": [],
     "command": "lightning:preview:site",
     "flagAliases": [],
     "flagChars": ["n", "o"],
