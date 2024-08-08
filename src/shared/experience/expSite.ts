@@ -36,13 +36,13 @@ export class ExperienceSite {
 
   /**
    * Get an experience site bundle by site name.
-   * 
+   *
    * @param conn - Salesforce connection object.
    * @param siteName - The name of the experience site.
    * @returns - The experience site.
-   
-   * @param siteName 
-   * @returns 
+   *
+   * @param siteName
+   * @returns
    */
   public static getLocalExpSite(siteName: string): ExperienceSite {
     // TODO cleanup
