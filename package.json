@@ -13,7 +13,7 @@
     "@salesforce/kit": "^3.1.6",
     "@salesforce/lwc-dev-mobile-core": "4.0.0-alpha.7",
     "@salesforce/sf-plugins-core": "^11.2.4",
-    "@inquirer/select": "^2.4.3",
+    "@inquirer/select": "^2.4.7",
     "chalk": "^5.3.0",
     "lwc": "7.2.1",
     "lwr": "0.13.6",
