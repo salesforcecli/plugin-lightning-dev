@@ -1,12 +1,12 @@
 name: create-github-release
 
 on:
-  push:
-    branches:
-      - main
-      - prerelease/**
-    tags-ignore:
-      - '*'
+#  push:
+#    branches:
+#      - main
+#      - prerelease/**
+#    tags-ignore:
+#      - '*'
   workflow_dispatch:
     inputs:
       prerelease:
