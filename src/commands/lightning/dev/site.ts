@@ -16,6 +16,7 @@ import { ExperienceSite } from '../../../shared/experience/expSite.js';
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.site');
 
+// looks like this might have meant to be a return type?
 export type LightningDevSiteResult = {
   path: string;
 };
@@ -24,17 +25,20 @@ export default class LightningDevSite extends SfCommand<void> {
   public static readonly summary = messages.getMessage('summary');
   public static readonly description = messages.getMessage('description');
   public static readonly examples = messages.getMessages('examples');
+  // if this isn't ready for public use, you can mark it hidden like public static hidden = true;
 
   public static readonly flags = {
     name: Flags.string({
       summary: messages.getMessage('flags.name.summary'),
       char: 'n',
-      required: false,
+      required: false, // can be omitted
     }),
     debug: Flags.boolean({
+      // doesn't appear to be used.  Remove?
       summary: messages.getMessage('flags.debug.summary'),
     }),
-    'target-org': Flags.optionalOrg({ summary: messages.getMessage('flags.target-org.summary') }),
+    // again, you probably want api-version flag and have it depend on target-org being present
+    'target-org': Flags.optionalOrg({ summary: messages.getMessage('flags.target-org.summary') }), // the summary isn't adding anything.  I'd remove it so the standard on appears
   };
 
   public async run(): Promise<void> {
@@ -78,7 +82,7 @@ export default class LightningDevSite extends SfCommand<void> {
         open: false,
         port: 3000,
         logLevel: 'error',
-        mode: 'dev',
+        mode: 'dev', // doesn't match the type
         siteZip,
         siteDir: selectedSite.getSiteDirectory(),
       });

@@ -9,7 +9,7 @@ import { existsSync, lstatSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { LWCServer, LogLevel, ServerConfig, startLwcDevServer, Workspace } from '@lwc/lwc-dev-server';
-import { Logger } from '@salesforce/core';
+import { Logger, SfProject } from '@salesforce/core';
 import { SSLCertificateData } from '@salesforce/lwc-dev-mobile-core';
 import {
   ConfigUtils,
@@ -44,6 +44,7 @@ function mapLogLevel(cliLogLevel: number): number {
 }
 
 async function createLWCServerConfig(
+  // I see y'all doing this a lot.  It's easy/performant to construct child loggers like Logger.childFromRoot('createLWCServerConfig') to make it easier to trace which function is logging
   logger: Logger,
   rootDir: string,
   token: string,
@@ -51,7 +52,7 @@ async function createLWCServerConfig(
   certData?: SSLCertificateData,
   workspace?: Workspace
 ): Promise<ServerConfig> {
-  const sfdxConfig = path.resolve(rootDir, 'sfdx-project.json');
+  const sfdxConfig = path.resolve(rootDir, 'sfdx-project.json'); // you shouldn't do this.  use SfProject.getInstance(rootDir)
 
   if (!existsSync(sfdxConfig) || !lstatSync(sfdxConfig).isFile()) {
     throw new Error(`sfdx-project.json not found in ${rootDir}`);
@@ -66,7 +67,7 @@ async function createLWCServerConfig(
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (dir.path) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
-      const resolvedDir = path.resolve(rootDir, dir.path, 'main', 'default');
+      const resolvedDir = path.resolve(rootDir, dir.path, 'main', 'default'); // main/default is a convention.  It's not always present
       if (existsSync(resolvedDir) && lstatSync(resolvedDir).isDirectory()) {
         logger.debug(`Adding ${resolvedDir} to namespace paths`);
         namespacePaths.push(resolvedDir);

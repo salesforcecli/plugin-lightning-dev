@@ -51,31 +51,35 @@ class AppServerIdentityTokenService implements IdentityTokenService {
     if (result.success) {
       return result.id;
     }
+    // you might want SfError.wrap(result) here to get a more detailed error message
+    // for example, the server error might include more information about why the insert failed
     throw new Error('Could not save the token to the server');
   }
 }
+
+// since your commands don't return anything, you can set public static enableJsonFlag = false to keep people from using `--json`
 
 export default class LightningDevApp extends SfCommand<void> {
   public static readonly summary = messages.getMessage('summary');
   public static readonly description = messages.getMessage('description');
   public static readonly examples = messages.getMessages('examples');
-
   public static readonly flags = {
     name: Flags.string({
       summary: messages.getMessage('flags.name.summary'),
       char: 'n',
     }),
     'target-org': Flags.requiredOrg({
-      summary: messages.getMessage('flags.target-org.summary'),
+      // if you use target-org, you probably want to use the api-version flag as well
+      summary: messages.getMessage('flags.target-org.summary'), // the summary isn't adding anything.  I'd remove it so the standard on appears
     }),
     'device-type': Flags.option({
       summary: messages.getMessage('flags.device-type.summary'),
       char: 't',
-      options: [Platform.desktop, Platform.ios, Platform.android] as const,
+      options: [Platform.desktop, Platform.ios, Platform.android] as const, // enums are considered "bad" TS.  Prefer a union type
       default: Platform.desktop,
     })(),
     'device-id': Flags.string({
-      summary: messages.getMessage('flags.device-id.summary'),
+      summary: messages.getMessage('flags.device-id.summary'), // are there any validations that might help people not enter these wrong if they enter them manually?
       char: 'i',
     }),
   };
@@ -169,14 +173,19 @@ export default class LightningDevApp extends SfCommand<void> {
 
     let sfdxProjectRootPath = '';
     try {
-      sfdxProjectRootPath = await SfProject.resolveProjectPath();
+      sfdxProjectRootPath = await SfProject.resolveProjectPath(); // that should throw a fine error message if no project is found, no try/catch required.
+      // then you could just have `const sfdxProjectRootPath = await SfProject.resolveProjectPath();` and let the error bubble.
+      // that also ensures all the functions you pass it to don't have to re-validate that it exists, isDirectory, etc.
     } catch (error) {
-      return Promise.reject(new Error(messages.getMessage('error.no-project', [(error as Error)?.message ?? ''])));
+      return Promise.reject(new Error(messages.getMessage('error.no-project', [(error as Error)?.message ?? '']))); // you can throw an error without the promise wrapper
     }
 
     logger.debug('Configuring local web server identity');
     const connection = targetOrg.getConnection(undefined);
     const username = connection.getUsername();
+    // in reality, there will always be a username.  It's typed as a ? because you can create a connection as part of saving an Org/AuthInfo.  But a connection from a targetOrg will always have a username.
+    // for other validation scenarios, can I introduce you to `@salesforce/ts-types`?  which provides handy things like
+    // `const username = ensureString(connection.getUsername(), messages.getMessage('error.username')`
     if (!username) {
       return Promise.reject(new Error(messages.getMessage('error.username')));
     }
@@ -190,6 +199,9 @@ export default class LightningDevApp extends SfCommand<void> {
 
       // The appName is optional but if the user did provide an appName then it must be
       // a valid one.... meaning that it should resolve to a valid appId.
+      // this looks like the only consume for getAppId, so maybe that method should throw an error if no appId is found
+      // that would simplify your command ex: const appId = appName ? await OrgUtils.getAppId(connection, appName) : undefined;
+      // ensureString is also an option here
       appId = await OrgUtils.getAppId(connection, appName);
       if (!appId) {
         return Promise.reject(new Error(messages.getMessage('error.fetching.app-id', [appName])));
@@ -209,6 +221,7 @@ export default class LightningDevApp extends SfCommand<void> {
     const entityId = await PreviewUtils.getEntityId(username);
 
     if (platform === Platform.desktop) {
+      // maybe these methods should take objects instead of huge # of params
       await this.desktopPreview(sfdxProjectRootPath, serverPorts, token, entityId, ldpServerUrl, appId, logger);
     } else {
       await this.mobilePreview(
@@ -253,6 +266,7 @@ export default class LightningDevApp extends SfCommand<void> {
     // OrgOpenCommand simply throws an error which will get bubbled up to LightningPreviewApp.
     //
     // Here we've chosen the second approach
+    // a simpler alternative would be to use the Org.getUsername() and just use the `target-org ${username}` in all 3 scenarios.
     const idx = this.argv.findIndex((item) => item.toLowerCase() === '-o' || item.toLowerCase() === '--target-org');
     let targetOrg: string | undefined;
     if (idx >= 0 && idx < this.argv.length - 1) {
@@ -301,12 +315,13 @@ export default class LightningDevApp extends SfCommand<void> {
 
       // Boot the device if not already booted
       this.spinner.start(messages.getMessage('spinner.device.boot', [device.toString()]));
+      // if you overload getMobileDevice, TS could know the type of `device` based on which platform you passed in
       const resolvedDeviceId = platform === Platform.ios ? (device as IOSSimulatorDevice).udid : device.name;
       const emulatorPort = await PreviewUtils.bootMobileDevice(platform, resolvedDeviceId, logger);
       this.spinner.stop();
 
       // Configure certificates for dev server secure connection
-      this.spinner.start(messages.getMessage('spinner.cert.gen'));
+      this.spinner.start(messages.getMessage('spinner.cert.gen')); // alternatively, you can use this.spinner.status = 'foo' to change what it says instead of having multiple spinners
       const { certData, certFilePath } = await PreviewUtils.generateSelfSignedCert(platform, sfdxProjectRootPath);
       this.spinner.stop();
 
