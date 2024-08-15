@@ -70,7 +70,7 @@ export default class LightningDevApp extends SfCommand<void> {
     }),
     'target-org': Flags.requiredOrg({
       // if you use target-org, you probably want to use the api-version flag as well
-      summary: messages.getMessage('flags.target-org.summary'),
+      summary: messages.getMessage('flags.target-org.summary'), // the summary isn't adding anything.  I'd remove it so the standard on appears
     }),
     'device-type': Flags.option({
       summary: messages.getMessage('flags.device-type.summary'),
@@ -79,7 +79,7 @@ export default class LightningDevApp extends SfCommand<void> {
       default: Platform.desktop,
     })(),
     'device-id': Flags.string({
-      summary: messages.getMessage('flags.device-id.summary'), // you could get fancy
+      summary: messages.getMessage('flags.device-id.summary'), // are there any validations that might help people not enter these wrong if they enter them manually?
       char: 'i',
     }),
   };

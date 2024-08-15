@@ -38,7 +38,7 @@ export default class LightningDevSite extends SfCommand<void> {
       summary: messages.getMessage('flags.debug.summary'),
     }),
     // again, you probably want api-version flag and have it depend on target-org being present
-    'target-org': Flags.optionalOrg({ summary: messages.getMessage('flags.target-org.summary') }),
+    'target-org': Flags.optionalOrg({ summary: messages.getMessage('flags.target-org.summary') }), // the summary isn't adding anything.  I'd remove it so the standard on appears
   };
 
   public async run(): Promise<void> {
