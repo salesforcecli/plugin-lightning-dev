@@ -5,6 +5,7 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import select from '@inquirer/select';
+import { confirm } from '@inquirer/prompts';
 
 export class PromptUtils {
   public static async promptUserToSelectSite(sites: string[]): Promise<string> {
@@ -17,13 +18,10 @@ export class PromptUtils {
     return response;
   }
 
-  public static async promptUserToSelectDomain(domains: string[]): Promise<string> {
-    const choices = domains.map((domain) => ({ value: domain }));
-    const response = await select({
-      message: 'Select a Domain:',
-      choices,
+  public static async promptUserToConfirmUpdate(siteName: string): Promise<boolean> {
+    return confirm({
+      message: `An updated site bundle is available for "${siteName}". Would you like to download and apply the update?`,
+      default: true,
     });
-
-    return response;
   }
 }
