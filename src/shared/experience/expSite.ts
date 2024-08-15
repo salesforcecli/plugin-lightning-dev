@@ -6,10 +6,20 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import { Connection, Org, SfError } from '@salesforce/core';
+import { Org, SfError } from '@salesforce/core';
+
+export type SiteMetadata = {
+  bundleName: string;
+  bundleLastModified: string;
+};
+
+export type SiteMetadataCache = {
+  [key: string]: SiteMetadata;
+};
 
 /**
  * Experience Site class.
+ * https://developer.salesforce.com/docs/platform/lwc/guide/get-started-test-components.html#enable-local-dev
  *
  * @param {string} siteName - The name of the experience site.
  * @param {string} status - The status of the experience site.
@@ -19,19 +29,13 @@ import { Connection, Org, SfError } from '@salesforce/core';
 export class ExperienceSite {
   public siteDisplayName: string;
   public siteName: string;
-  public status: string;
-
   private org: Org;
-  private bundleName: string;
-  private bundleLastModified: string;
+  private metadataCache: SiteMetadataCache = {};
 
-  public constructor(org: Org, siteName: string, status?: string, bundleName?: string, bundleLastModified?: string) {
+  public constructor(org: Org, siteName: string) {
     this.org = org;
     this.siteDisplayName = siteName.trim();
     this.siteName = this.siteDisplayName.replace(' ', '_');
-    this.status = status ?? '';
-    this.bundleName = bundleName ?? '';
-    this.bundleLastModified = bundleLastModified ?? '';
   }
 
   /**
@@ -45,7 +49,6 @@ export class ExperienceSite {
    * @returns
    */
   public static getLocalExpSite(siteName: string): ExperienceSite {
-    // TODO cleanup
     const siteJsonPath = path.join('.localdev', siteName.trim().replace(' ', '_'), 'site.json');
     const siteJson = fs.readFileSync(siteJsonPath, 'utf8');
     const site = JSON.parse(siteJson) as ExperienceSite;
@@ -67,14 +70,7 @@ export class ExperienceSite {
 
     // Example of creating ExperienceSite instances
     const experienceSites: ExperienceSite[] = result.records.map(
-      (record) =>
-        new ExperienceSite(
-          org,
-          getSiteNameFromStaticResource(record.Name),
-          'live',
-          record.Name,
-          record.LastModifiedDate
-        )
+      (record) => new ExperienceSite(org, getSiteNameFromStaticResource(record.Name))
     );
 
     return experienceSites;
@@ -86,8 +82,8 @@ export class ExperienceSite {
    * @param {Connection} conn - Salesforce connection object.
    * @returns {Promise<string[]>} - List of experience sites.
    */
-  public static async getAllExpSites(conn: Connection): Promise<string[]> {
-    const result = await conn.query<{
+  public static async getAllExpSites(org: Org): Promise<string[]> {
+    const result = await org.getConnection().query<{
       Id: string;
       Name: string;
       LastModifiedDate: string;
@@ -98,40 +94,82 @@ export class ExperienceSite {
     return experienceSites;
   }
 
+  public async isUpdateAvailable(): Promise<boolean> {
+    const localMetadata = this.getLocalMetadata();
+    if (!localMetadata) {
+      return true; // If no local metadata, assume update is available
+    }
+
+    const remoteMetadata = await this.getRemoteMetadata();
+    if (!remoteMetadata) {
+      return false; // If no org bundle found, no update available
+    }
+
+    return new Date(remoteMetadata.bundleLastModified) > new Date(localMetadata.bundleLastModified);
+  }
+
+  // Is the site extracted locally
   public isSiteSetup(): boolean {
     return fs.existsSync(path.join(this.getExtractDirectory(), 'ssr.js'));
   }
 
-  public isSitePublished(): boolean {
-    // TODO
-    return fs.existsSync(path.join(this.getExtractDirectory(), 'ssr.js'));
-  }
-
-  public async getBundleName(): Promise<string> {
-    if (!this.bundleName) {
-      await this.initBundle();
+  // Is the static resource available on the server
+  public async isSitePublished(): Promise<boolean> {
+    const remoteMetadata = await this.getRemoteMetadata();
+    if (!remoteMetadata) {
+      return false;
     }
-
-    return this.bundleName;
+    return true;
   }
 
-  public async getBundleLastModified(): Promise<string> {
-    if (!this.bundleLastModified) {
-      await this.initBundle();
+  // Is there a local gz file of the site
+  public isSiteDownloaded(): boolean {
+    const metadata = this.getLocalMetadata();
+    if (!metadata) {
+      return false;
     }
-    return this.bundleLastModified;
+    return fs.existsSync(this.getSiteZipPath(metadata));
   }
 
-  /**
-   * Save the site metadata to the file system.
-   */
-  public save(): void {
+  public saveMetadata(metadata: SiteMetadata): void {
     const siteJsonPath = path.join(this.getSiteDirectory(), 'site.json');
-    const siteJson = JSON.stringify(this, null, 4);
-
-    // write out the site metadata
-    fs.mkdirSync(this.getSiteDirectory(), { recursive: true });
+    const siteJson = JSON.stringify(metadata, null, 2);
     fs.writeFileSync(siteJsonPath, siteJson);
+  }
+
+  public getLocalMetadata(): SiteMetadata | undefined {
+    if (this.metadataCache.localMetadata) return this.metadataCache.localMetadata;
+    const siteJsonPath = path.join(this.getSiteDirectory(), 'site.json');
+    let siteJson;
+    if (fs.existsSync(siteJsonPath)) {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        siteJson = JSON.parse(fs.readFileSync(siteJsonPath, 'utf-8')) as SiteMetadata;
+        this.metadataCache.localMetadata = siteJson;
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Error reading site.json file', error);
+      }
+    }
+    return siteJson;
+  }
+
+  public async getRemoteMetadata(): Promise<SiteMetadata | undefined> {
+    if (this.metadataCache.remoteMetadata) return this.metadataCache.remoteMetadata;
+    const result = await this.org
+      .getConnection()
+      .query<{ Name: string; LastModifiedDate: string }>(
+        `SELECT Name, LastModifiedDate FROM StaticResource WHERE Name LIKE 'MRT_experience_%_${this.siteName}'`
+      );
+    if (result.records.length === 0) {
+      return undefined;
+    }
+    const staticResource = result.records[0];
+    this.metadataCache.remoteMetadata = {
+      bundleName: staticResource.Name,
+      bundleLastModified: staticResource.LastModifiedDate,
+    };
+    return this.metadataCache.remoteMetadata;
   }
 
   /**
@@ -147,47 +185,45 @@ export class ExperienceSite {
     return path.join('.localdev', this.siteName, 'app');
   }
 
+  public getSiteZipPath(metadata: SiteMetadata): string {
+    const lastModifiedDate = new Date(metadata.bundleLastModified);
+    const timestamp = `${
+      lastModifiedDate.getMonth() + 1
+    }-${lastModifiedDate.getDate()}_${lastModifiedDate.getHours()}-${lastModifiedDate.getMinutes()}`;
+    const fileName = `${metadata.bundleName}_${timestamp}.gz`;
+    const resourcePath = path.join(this.getSiteDirectory(), fileName);
+    return resourcePath;
+  }
+
   /**
    * Download and return the site resource bundle
    *
    * @returns path of downloaded site zip
    */
   public async downloadSite(): Promise<string> {
-    // 3a. Locate the site bundle
-    const bundleName = await this.getBundleName();
-
-    // 3b. Download the site from static resources
-    const resourcePath = path.join(this.getSiteDirectory(), `${bundleName}.gz`);
-
-    // TODO configure redownloading
-    if (!fs.existsSync(resourcePath)) {
-      const staticresource = await this.org.getConnection().metadata.read('StaticResource', bundleName);
-      if (staticresource?.content) {
-        fs.mkdirSync(this.getSiteDirectory(), { recursive: true });
-        // Save the static resource
-        const buffer = Buffer.from(staticresource.content, 'base64');
-        // this.log(`Writing file to path: ${resourcePath}`);
-        fs.writeFileSync(resourcePath, buffer);
-      } else {
-        throw new SfError(`Error occured downloading your site: ${this.siteDisplayName}`);
-      }
+    const remoteMetadata = await this.getRemoteMetadata();
+    if (!remoteMetadata) {
+      throw new SfError(`No published site found for: ${this.siteDisplayName}`);
     }
+
+    // Download the site from static resources
+    // eslint-disable-next-line no-console
+    console.log('[local-dev] Downloading site...'); // TODO spinner
+    const resourcePath = this.getSiteZipPath(remoteMetadata);
+    const staticresource = await this.org.getConnection().metadata.read('StaticResource', remoteMetadata.bundleName);
+    if (staticresource?.content) {
+      // Save the static resource
+      fs.mkdirSync(this.getSiteDirectory(), { recursive: true });
+      const buffer = Buffer.from(staticresource.content, 'base64');
+      fs.writeFileSync(resourcePath, buffer);
+
+      // Save the site's metadata
+      this.saveMetadata(remoteMetadata);
+    } else {
+      throw new SfError(`Error occurred downloading your site: ${this.siteDisplayName}`);
+    }
+
     return resourcePath;
-  }
-
-  private async initBundle(): Promise<void> {
-    const result = await this.org
-      .getConnection()
-      .query<{ Id: string; Name: string; LastModifiedDate: string }>(
-        "SELECT Id, Name, LastModifiedDate FROM StaticResource WHERE Name LIKE 'MRT_experience_%_" + this.siteName + "'"
-      );
-    if (result.records.length === 0) {
-      throw new Error(`No experience site found for siteName: ${this.siteDisplayName}`);
-    }
-
-    const staticResource = result.records[0];
-    this.bundleName = staticResource.Name;
-    this.bundleLastModified = staticResource.LastModifiedDate;
   }
 }
 

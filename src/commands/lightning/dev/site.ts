@@ -4,21 +4,15 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-// import fs from 'node:fs';
-// import path from 'node:path';
+import fs from 'node:fs';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import { expDev } from '@lwrjs/api';
 import { PromptUtils } from '../../../shared/prompt.js';
-// import { OrgUtils } from '../../../shared/orgUtils.js';
 import { ExperienceSite } from '../../../shared/experience/expSite.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.site');
-
-export type LightningDevSiteResult = {
-  path: string;
-};
 
 export default class LightningDevSite extends SfCommand<void> {
   public static readonly summary = messages.getMessage('summary');
@@ -40,42 +34,42 @@ export default class LightningDevSite extends SfCommand<void> {
   public async run(): Promise<void> {
     const { flags } = await this.parse(LightningDevSite);
 
-    // TODO short circuit all this if user specifies a site name and it exists locally
-
     try {
-      // 1. Connect to Org
       const org = flags['target-org'];
       let siteName = flags.name;
 
-      // 2. If we don't have a site to use, prompt the user for one
+      // If user doesn't specify a site, prompt the user for one
       if (!siteName) {
-        this.log('No site was specified');
-        // Allow user to pick a site
-        const siteList = await ExperienceSite.getAllExpSites(org.getConnection());
-        siteName = await PromptUtils.promptUserToSelectSite(siteList);
+        const allSites = await ExperienceSite.getAllExpSites(org);
+        siteName = await PromptUtils.promptUserToSelectSite(allSites);
       }
 
-      // 3. Setup local dev directory structure: '.localdev/${site}'
-      this.log(`Setting up Local Development for: ${siteName}`);
       const selectedSite = new ExperienceSite(org, siteName);
-      let siteZip;
+      let siteZip: string | undefined;
+
       if (!selectedSite.isSiteSetup()) {
-        // TODO Verify the bundle has been published and download
-        this.log('Downloading Site...');
+        this.log(`[local-dev] initializing: ${siteName}`);
         siteZip = await selectedSite.downloadSite();
       } else {
-        // If we do have the site setup already, don't do anything / TODO prompt the user if they want to get latest?
-        // Check if the site has been published
-        // const result = await connection.query<{ Id: string; Name: string; LastModifiedDate: string }>(
-        //   "SELECT Id, Name, LastModifiedDate FROM StaticResource WHERE Name LIKE 'MRT%" + siteName + "'"
-        // );
-        // this.log('Setup already complete!');
+        // If local-dev is already setup, check if an updated site has been published to download
+        const updateAvailable = await selectedSite.isUpdateAvailable();
+        if (updateAvailable) {
+          const shouldUpdate = await PromptUtils.promptUserToConfirmUpdate(siteName);
+          if (shouldUpdate) {
+            this.log(`[local-dev] updating: ${siteName}`);
+            siteZip = await selectedSite.downloadSite();
+            // delete oldSitePath recursive
+            const oldSitePath = selectedSite.getExtractDirectory();
+            if (fs.existsSync(oldSitePath)) {
+              fs.rmdirSync(oldSitePath, { recursive: true });
+            }
+          }
+        }
       }
 
-      // 6. Start the dev server
-      this.log('Starting local development server...');
+      // Start the dev server
       await expDev({
-        open: false,
+        open: true,
         port: 3000,
         logLevel: 'error',
         mode: 'dev',
@@ -83,7 +77,6 @@ export default class LightningDevSite extends SfCommand<void> {
         siteDir: selectedSite.getSiteDirectory(),
       });
     } catch (e) {
-      // this.error(e);
       this.log('Local Development setup failed', e);
     }
   }
