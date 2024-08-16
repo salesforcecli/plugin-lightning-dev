@@ -108,41 +108,118 @@ sf plugins
 
 <!-- commands -->
 
-- [`sf hello world`](#sf-hello-world)
+- [`sf lightning dev app`](#sf-lightning-dev-app)
+- [`sf lightning dev site`](#sf-lightning-dev-site)
 
-## `sf hello world`
+## `sf lightning dev app`
 
-Say hello.
+Preview a Lightning Experience app locally and in real-time, without deploying it.
 
 ```
 USAGE
-  $ sf hello world [--json] [--flags-dir <value>] [-n <value>]
+  $ sf lightning dev app -o <value> [--json] [--flags-dir <value>] [-n <value>] [-t desktop|ios|android] [-i <value>]
 
 FLAGS
-  -n, --name=<value>  [default: World] The name of the person you'd like to say hello to.
+  -i, --device-id=<value>     ID of the mobile device to display the preview if device type is set to `ios` or
+                              `android`. The default value is the ID of the first available mobile device.
+  -n, --name=<value>          Name of the Lightning Experience app to preview.
+  -o, --target-org=<value>    (required) Username or alias of the target org. Not required if the `target-org`
+                              configuration variable is already set.
+  -t, --device-type=<option>  [default: desktop] Type of device to display the app preview.
+                              <options: desktop|ios|android>
 
 GLOBAL FLAGS
   --flags-dir=<value>  Import flag values from a directory.
-  --json               Format output as JSON.
+  --json               Format output as json.
 
 DESCRIPTION
-  Say hello.
+  Preview a Lightning Experience app locally and in real-time, without deploying it.
 
-  Say hello either to the world or someone you know.
+  Use Local Dev (Beta) to see local changes to your app in a real-time preview that you don't have to deploy or manually
+  refresh. To let you quickly iterate on your Lightning web components (LWCs) and pages, your app preview automatically
+  refreshes when Local Dev detects source code changes.
+
+  When you edit these local files with Local Dev enabled, your org automatically reflects these changes.
+
+  - Basic HTML and CSS edits to LWCs
+  - JavaScript changes to LWCs that don't affect the component's public API
+  - Importing new custom LWCs
+  - Importing another instance of an existing LWC
+
+  To apply any other local changes not listed above, you must deploy them to your org using the `sf project deploy
+  start` command.
+
+  When you make changes directly in your org (like saving new component properties), they're automatically deployed to
+  your live app. To update your local version of the app with those changes, you must retrieve them from your org using
+  the `sf project retrieve start` command.
+
+  To learn more about Local Dev enablement, considerations, and limitations, see the Lightning Web Components Developer
+  Guide.
 
 EXAMPLES
-  Say hello to the world:
+  Preview the default app for the target org "myOrg" in a desktop environment:
 
-    $ sf hello world
+    $ sf lightning dev app --target-org myOrg
 
-  Say hello to someone you know:
+  Preview the app "myApp" for the target org "myOrg" in a desktop environment:
 
-    $ sf hello world --name Astro
+    $ sf lightning dev app --name MyApp --target-org myOrg --device-type desktop
 
-FLAG DESCRIPTIONS
-  -n, --name=<value>  The name of the person you'd like to say hello to.
+  Preview the default app for target org "myOrg" on an iOS device:
 
-    This person can be anyone in the world!
+    $ sf lightning dev app --target-org myOrg --device-type ios --device-id "iPhone 15 Pro Max"
 ```
+
+_See code: [src/commands/lightning/dev/app.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/0.1.0-alpha.0/src/commands/lightning/dev/app.ts)_
+
+## `sf lightning dev site`
+
+Preview an Experience Builder site locally and in real-time, without deploying it.
+
+```
+USAGE
+  $ sf lightning dev site [--json] [--flags-dir <value>] [-n <value>] [--debug] [-o <value>]
+
+FLAGS
+  -n, --name=<value>        Name of the Experience Builder site to preview. It has to match a site name from the current
+                            org.
+  -o, --target-org=<value>  Username or alias of the target org. Not required if the `target-org` configuration variable
+                            is already set.
+      --debug               Enable Node Inspector to debug server-side rendering.
+
+GLOBAL FLAGS
+  --flags-dir=<value>  Import flag values from a directory.
+  --json               Format output as json.
+
+DESCRIPTION
+  Preview an Experience Builder site locally and in real-time, without deploying it.
+
+  Enable Local Dev to see local changes to your site in a real-time preview that you don't have to deploy or manually
+  refresh. To let you quickly iterate on your Lightning web components (LWCs) and pages, your site preview automatically
+  refreshes when Local Dev detects source code changes.
+
+  When you edit these local files with Local Dev enabled, your org automatically reflects these changes.
+
+  - Basic HTML and CSS edits to LWCs
+  - JavaScript changes to LWCs that don't affect the component's public API
+  - Importing new custom LWCs
+  - Importing another instance of an existing LWC
+
+  To apply any other local changes not listed above, you must deploy them to your org using the `sf project deploy
+  start` command. Then republish your site and restart the server for the Local Dev experience.
+
+  For more considerations and limitations, see the Lightning Web Components Developer Guide.
+
+EXAMPLES
+  Preview the site "Partner Central" from the org "myOrg":
+
+    $ sf lightning dev site --name "Partner Central" --target-org myOrg
+
+  Preview the site "Partner Central" from the org "myOrg" with Node Inspector enabled:
+
+    $ sf lightning dev site --name "Partner Central" --target-org myOrg --debug
+```
+
+_See code: [src/commands/lightning/dev/site.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/0.1.0-alpha.0/src/commands/lightning/dev/site.ts)_
 
 <!-- commandsstop -->
