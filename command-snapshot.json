@@ -12,7 +12,7 @@
     "command": "lightning:dev:site",
     "flagAliases": [],
     "flagChars": ["n", "o"],
-    "flags": ["debug", "flags-dir", "json", "name", "target-org"],
+    "flags": ["flags-dir", "json", "name", "target-org"],
     "plugin": "@salesforce/plugin-lightning-dev"
   }
 ]
