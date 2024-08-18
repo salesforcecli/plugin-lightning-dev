@@ -177,14 +177,13 @@ Preview an Experience Builder site locally and in real-time, without deploying i
 
 ```
 USAGE
-  $ sf lightning dev site [--flags-dir <value>] [-n <value>] [--debug] [-o <value>]
+  $ sf lightning dev site [--flags-dir <value>] [-n <value>] [-o <value>]
 
 FLAGS
   -n, --name=<value>        Name of the Experience Builder site to preview. It has to match a site name from the current
                             org.
   -o, --target-org=<value>  Username or alias of the target org. Not required if the `target-org` configuration variable
                             is already set.
-      --debug               Enable Node Inspector to debug server-side rendering.
 
 GLOBAL FLAGS
   --flags-dir=<value>  Import flag values from a directory.
@@ -212,10 +211,6 @@ EXAMPLES
   Preview the site "Partner Central" from the org "myOrg":
 
     $ sf lightning dev site --name "Partner Central" --target-org myOrg
-
-  Preview the site "Partner Central" from the org "myOrg" with Node Inspector enabled:
-
-    $ sf lightning dev site --name "Partner Central" --target-org myOrg --debug
 ```
 
 _See code: [src/commands/lightning/dev/site.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/0.1.0-alpha.0/src/commands/lightning/dev/site.ts)_

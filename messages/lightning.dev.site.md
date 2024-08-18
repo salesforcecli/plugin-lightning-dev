@@ -25,5 +25,3 @@ Name of the Experience Builder site to preview. It has to match a site name from
 
 - Preview the site "Partner Central" from the org "myOrg":
   <%= config.bin %> <%= command.id %> --name "Partner Central" --target-org myOrg
-- Preview the site "Partner Central" from the org "myOrg" with Node Inspector enabled:
-  <%= config.bin %> <%= command.id %> --name "Partner Central" --target-org myOrg --debug
