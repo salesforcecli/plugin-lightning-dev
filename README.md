@@ -169,7 +169,7 @@ EXAMPLES
     $ sf lightning dev app --target-org myOrg --device-type ios --device-id "iPhone 15 Pro Max"
 ```
 
-_See code: [src/commands/lightning/dev/app.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/0.1.0-alpha.0/src/commands/lightning/dev/app.ts)_
+_See code: [src/commands/lightning/dev/app.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/1.0.26-alpha.1/src/commands/lightning/dev/app.ts)_
 
 ## `sf lightning dev site`
 
@@ -177,13 +177,13 @@ Preview an Experience Builder site locally and in real-time, without deploying i
 
 ```
 USAGE
-  $ sf lightning dev site [--flags-dir <value>] [-n <value>] [-o <value>]
+  $ sf lightning dev site -o <value> [--flags-dir <value>] [-n <value>]
 
 FLAGS
   -n, --name=<value>        Name of the Experience Builder site to preview. It has to match a site name from the current
                             org.
-  -o, --target-org=<value>  Username or alias of the target org. Not required if the `target-org` configuration variable
-                            is already set.
+  -o, --target-org=<value>  (required) Username or alias of the target org. Not required if the `target-org`
+                            configuration variable is already set.
 
 GLOBAL FLAGS
   --flags-dir=<value>  Import flag values from a directory.
@@ -213,6 +213,6 @@ EXAMPLES
     $ sf lightning dev site --name "Partner Central" --target-org myOrg
 ```
 
-_See code: [src/commands/lightning/dev/site.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/0.1.0-alpha.0/src/commands/lightning/dev/site.ts)_
+_See code: [src/commands/lightning/dev/site.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/1.0.26-alpha.1/src/commands/lightning/dev/site.ts)_
 
 <!-- commandsstop -->
