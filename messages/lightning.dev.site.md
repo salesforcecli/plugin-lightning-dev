@@ -21,10 +21,6 @@ For more considerations and limitations, see the Lightning Web Components Develo
 
 Name of the Experience Builder site to preview. It has to match a site name from the current org.
 
-# flags.target-org.summary
-
-Username or alias of the target org. Not required if the `target-org` configuration variable is already set.
-
 # examples
 
 - Preview the site "Partner Central" from the org "myOrg":

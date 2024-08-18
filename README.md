@@ -117,7 +117,7 @@ Preview a Lightning Experience app locally and in real-time, without deploying i
 
 ```
 USAGE
-  $ sf lightning dev app -o <value> [--json] [--flags-dir <value>] [-n <value>] [-t desktop|ios|android] [-i <value>]
+  $ sf lightning dev app -o <value> [--flags-dir <value>] [-n <value>] [-t desktop|ios|android] [-i <value>]
 
 FLAGS
   -i, --device-id=<value>     ID of the mobile device to display the preview if device type is set to `ios` or
@@ -130,7 +130,6 @@ FLAGS
 
 GLOBAL FLAGS
   --flags-dir=<value>  Import flag values from a directory.
-  --json               Format output as json.
 
 DESCRIPTION
   Preview a Lightning Experience app locally and in real-time, without deploying it.
@@ -178,7 +177,7 @@ Preview an Experience Builder site locally and in real-time, without deploying i
 
 ```
 USAGE
-  $ sf lightning dev site [--json] [--flags-dir <value>] [-n <value>] [--debug] [-o <value>]
+  $ sf lightning dev site [--flags-dir <value>] [-n <value>] [--debug] [-o <value>]
 
 FLAGS
   -n, --name=<value>        Name of the Experience Builder site to preview. It has to match a site name from the current
@@ -189,7 +188,6 @@ FLAGS
 
 GLOBAL FLAGS
   --flags-dir=<value>  Import flag values from a directory.
-  --json               Format output as json.
 
 DESCRIPTION
   Preview an Experience Builder site locally and in real-time, without deploying it.

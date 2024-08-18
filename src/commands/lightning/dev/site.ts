@@ -18,13 +18,14 @@ export default class LightningDevSite extends SfCommand<void> {
   public static readonly summary = messages.getMessage('summary');
   public static readonly description = messages.getMessage('description');
   public static readonly examples = messages.getMessages('examples');
+  public static readonly enableJsonFlag = false; // Disable json flag since we don't return anything
 
   public static readonly flags = {
     name: Flags.string({
       summary: messages.getMessage('flags.name.summary'),
       char: 'n',
     }),
-    'target-org': Flags.optionalOrg({ summary: messages.getMessage('flags.target-org.summary') }),
+    'target-org': Flags.requiredOrg(),
   };
 
   public async run(): Promise<void> {
