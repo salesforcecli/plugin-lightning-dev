@@ -23,10 +23,6 @@ To learn more about Local Dev enablement, considerations, and limitations, see t
 
 Name of the Lightning Experience app to preview.
 
-# flags.target-org.summary
-
-Username or alias of the target org. Not required if the `target-org` configuration variable is already set.
-
 # flags.device-type.summary
 
 Type of device to display the app preview.

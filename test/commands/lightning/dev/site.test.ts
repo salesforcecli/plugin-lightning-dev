@@ -31,11 +31,6 @@ describe('lightning dev site', () => {
     // expect(output).to.include('hello world');
   });
 
-  it('runs hello with --json and no provided name', async () => {
-    // const result = await LightningDevSite.run([]);
-    // expect(result.path).to.equal('/Users/nkruk/git/plugin-lightning-dev/src/commands/lightning/dev/site.ts');
-  });
-
   it('runs hello world --name Astro', async () => {
     // await LightningDevSite.run(['--name', 'Astro']);
     // const output = sfCommandStubs.log

@@ -1,85 +1,6 @@
-**NOTE: This template for sf plugins is not yet official. Please consult with the Platform CLI team before using this template.**
-
 # plugin-lightning-dev
 
 [![NPM](https://img.shields.io/npm/v/@salesforce/plugin-lightning-dev.svg?label=@salesforce/plugin-lightning-dev)](https://www.npmjs.com/package/@salesforce/plugin-lightning-dev) [![Downloads/week](https://img.shields.io/npm/dw/@salesforce/plugin-lightning-dev.svg)](https://npmjs.org/package/@salesforce/plugin-lightning-dev) [![License](https://img.shields.io/badge/License-BSD%203--Clause-brightgreen.svg)](https://raw.githubusercontent.com/salesforcecli/plugin-lightning-dev/main/LICENSE.txt)
-
-## Setup
-
-Prereqs:
-
-1. Setup an Experience Site and publish it
-
-2. Run the following:
-
-```bash
-yarn && yarn build
-yarn link-lwr
-sf org login web --instance-url ${orgfarmUrl}
-```
-
-## Run the command
-
-Then run the following for your environment:
-
-```bash
-./bin/dev.js lightning dev site
-```
-
-or for debugging:
-
-```bash
-NODE_OPTIONS='--inspect-brk' ./bin/dev.js lightning dev site
-```
-
-No need to recompile or watch typescript files as this happens automagically.
-
-## Fix Snapshots
-
-```bash
-node --loader ts-node/esm --no-warnings=ExperimentalWarning ./bin/dev.js snapshot:compare
-node --loader ts-node/esm --no-warnings=ExperimentalWarning ./bin/dev.js schema:compare
-yarn && yarn build
-yarn update-snapshots
-```
-
-## Using the template
-
-This repository provides a template for creating a plugin for the Salesforce CLI. To convert this template to a working plugin:
-
-1. Please get in touch with the Platform CLI team. We want to help you develop your plugin.
-2. Generate your plugin:
-
-   ```
-   sf plugins install dev
-   sf dev generate plugin
-
-   git init -b main
-   git add . && git commit -m "chore: initial commit"
-   ```
-
-3. Create your plugin's repo in the salesforcecli github org
-4. When you're ready, replace the contents of this README with the information you want.
-
-## Learn about `sf` plugins
-
-Salesforce CLI plugins are based on the [oclif plugin framework](https://oclif.io/docs/introduction). Read the [plugin developer guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_plugins.meta/sfdx_cli_plugins/cli_plugins_architecture_sf_cli.htm) to learn about Salesforce CLI plugin development.
-
-This repository contains a lot of additional scripts and tools to help with general Salesforce node development and enforce coding standards. You should familiarize yourself with some of the [node developer packages](#tooling) used by Salesforce. There is also a default circleci config using the [release management orb](https://github.com/forcedotcom/npm-release-management-orb) standards.
-
-Additionally, there are some additional tests that the Salesforce CLI will enforce if this plugin is ever bundled with the CLI. These test are included by default under the `posttest` script and it is required to keep these tests active in your plugin if you plan to have it bundled.
-
-### Tooling
-
-- [@salesforce/core](https://github.com/forcedotcom/sfdx-core)
-- [@salesforce/kit](https://github.com/forcedotcom/kit)
-- [@salesforce/sf-plugins-core](https://github.com/salesforcecli/sf-plugins-core)
-- [@salesforce/ts-types](https://github.com/forcedotcom/ts-types)
-- [@salesforce/ts-sinon](https://github.com/forcedotcom/ts-sinon)
-- [@salesforce/dev-config](https://github.com/forcedotcom/dev-config)
-- [@salesforce/dev-scripts](https://github.com/forcedotcom/dev-scripts)
-
-# Everything past here is only a suggestion as to what should be in your specific plugin's description
 
 This plugin is bundled with the [Salesforce CLI](https://developer.salesforce.com/tools/sfdxcli). For more information on the CLI, read the [getting started guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm).
 
@@ -89,6 +10,12 @@ We always recommend using the latest version of these commands bundled with the 
 
 ```bash
 sf plugins install @salesforce/plugin-lightning-dev@x.y.z
+```
+
+or
+
+```bash
+sf plugins install @salesforce/plugin-lightning-dev
 ```
 
 ## Issues
@@ -142,45 +69,181 @@ sf plugins link .
 sf plugins
 ```
 
+## LWR Sites Development Environment
+
+Follow these instructions if you want to setup a dev environment for the `sf lightning dev site` command.
+
+## Setup
+
+1. [Enable Local Development] (https://developer.salesforce.com/docs/platform/lwc/guide/get-started-test-components.html#enable-local-dev)
+
+2. Deploy some source files to your org from your SFDX project
+
+```bash
+sf org login web --alias dev --instance-url ${orgfarmUrl}
+
+```
+
+3. Add those source files to an LWR site in the Experience Builder and Publish the site (basePath: '/')
+
+4. Follow the [Build the plugin locally](#build) instructions
+
+5. [optional] Linking / Debugging LWR Source
+
+```bash
+# build and link lwr source
+cd lwr
+yarn && yarn link-lwr
+
+# build and link plugin-lightning-dev source
+cd plugin-lightning-dev
+yarn && yarn build
+yarn link-lwr
+
+# SFDX Project
+cd sfdx-project
+
+# Login to your org
+sf org login web --alias dev --instance-url https://login.test1.pc-rnd.salesforce.com/ (orgfarm needs instance url)
+
+# run/debug the sf cli command (attach to the CLI from the LWR repo in VS Code)
+NODE_OPTIONS="--inspect-brk" sf lightning dev site --target-org dev
+```
+
+Now you can Remote Attach to the CLI from the vscode debugger:
+
+- Use the "Attach" launch configuration
+- Run launch config from LWR repo if you want to debug LWR source
+- Run launch config from plugin-lightning-dev source if you want to debug the SFDX plugin source specifically
+
+If this doesn't work for whatever reason, you can always alias the build output directly like so:
+
+```bash
+alias sfdev="/{pathToGitDir}/plugin-lightning-dev/bin/run.js"
+# SFDX Project
+NODE_OPTIONS="--inspect-brk" sfdev lightning dev site --target-org dev
+```
+
+6. Make changes to your c-namespace components and you should see the browser refresh with those changes!
+
+## Fixing Snapshots
+
+```bash
+node --loader ts-node/esm --no-warnings=ExperimentalWarning ./bin/dev.js snapshot:compare
+node --loader ts-node/esm --no-warnings=ExperimentalWarning ./bin/dev.js schema:compare
+yarn && yarn build
+yarn update-snapshots
+```
+
 ## Commands
 
 <!-- commands -->
 
-- [`sf hello world`](#sf-hello-world)
+- [`sf lightning dev app`](#sf-lightning-dev-app)
+- [`sf lightning dev site`](#sf-lightning-dev-site)
 
-## `sf hello world`
+## `sf lightning dev app`
 
-Say hello.
+Preview a Lightning Experience app locally and in real-time, without deploying it.
 
 ```
 USAGE
-  $ sf hello world [--json] [--flags-dir <value>] [-n <value>]
+  $ sf lightning dev app -o <value> [--flags-dir <value>] [-n <value>] [-t desktop|ios|android] [-i <value>]
 
 FLAGS
-  -n, --name=<value>  [default: World] The name of the person you'd like to say hello to.
+  -i, --device-id=<value>     ID of the mobile device to display the preview if device type is set to `ios` or
+                              `android`. The default value is the ID of the first available mobile device.
+  -n, --name=<value>          Name of the Lightning Experience app to preview.
+  -o, --target-org=<value>    (required) Username or alias of the target org. Not required if the `target-org`
+                              configuration variable is already set.
+  -t, --device-type=<option>  [default: desktop] Type of device to display the app preview.
+                              <options: desktop|ios|android>
 
 GLOBAL FLAGS
   --flags-dir=<value>  Import flag values from a directory.
-  --json               Format output as JSON.
 
 DESCRIPTION
-  Say hello.
+  Preview a Lightning Experience app locally and in real-time, without deploying it.
 
-  Say hello either to the world or someone you know.
+  Use Local Dev (Beta) to see local changes to your app in a real-time preview that you don't have to deploy or manually
+  refresh. To let you quickly iterate on your Lightning web components (LWCs) and pages, your app preview automatically
+  refreshes when Local Dev detects source code changes.
+
+  When you edit these local files with Local Dev enabled, your org automatically reflects these changes.
+
+  - Basic HTML and CSS edits to LWCs
+  - JavaScript changes to LWCs that don't affect the component's public API
+  - Importing new custom LWCs
+  - Importing another instance of an existing LWC
+
+  To apply any other local changes not listed above, you must deploy them to your org using the `sf project deploy
+  start` command.
+
+  When you make changes directly in your org (like saving new component properties), they're automatically deployed to
+  your live app. To update your local version of the app with those changes, you must retrieve them from your org using
+  the `sf project retrieve start` command.
+
+  To learn more about Local Dev enablement, considerations, and limitations, see the Lightning Web Components Developer
+  Guide.
 
 EXAMPLES
-  Say hello to the world:
+  Preview the default app for the target org "myOrg" in a desktop environment:
 
-    $ sf hello world
+    $ sf lightning dev app --target-org myOrg
 
-  Say hello to someone you know:
+  Preview the app "myApp" for the target org "myOrg" in a desktop environment:
 
-    $ sf hello world --name Astro
+    $ sf lightning dev app --name MyApp --target-org myOrg --device-type desktop
 
-FLAG DESCRIPTIONS
-  -n, --name=<value>  The name of the person you'd like to say hello to.
+  Preview the default app for target org "myOrg" on an iOS device:
 
-    This person can be anyone in the world!
+    $ sf lightning dev app --target-org myOrg --device-type ios --device-id "iPhone 15 Pro Max"
 ```
+
+_See code: [src/commands/lightning/dev/app.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/1.0.26-alpha.1/src/commands/lightning/dev/app.ts)_
+
+## `sf lightning dev site`
+
+Preview an Experience Builder site locally and in real-time, without deploying it.
+
+```
+USAGE
+  $ sf lightning dev site -o <value> [--flags-dir <value>] [-n <value>]
+
+FLAGS
+  -n, --name=<value>        Name of the Experience Builder site to preview. It has to match a site name from the current
+                            org.
+  -o, --target-org=<value>  (required) Username or alias of the target org. Not required if the `target-org`
+                            configuration variable is already set.
+
+GLOBAL FLAGS
+  --flags-dir=<value>  Import flag values from a directory.
+
+DESCRIPTION
+  Preview an Experience Builder site locally and in real-time, without deploying it.
+
+  Enable Local Dev to see local changes to your site in a real-time preview that you don't have to deploy or manually
+  refresh. To let you quickly iterate on your Lightning web components (LWCs) and pages, your site preview automatically
+  refreshes when Local Dev detects source code changes.
+
+  When you edit these local files with Local Dev enabled, your org automatically reflects these changes.
+
+  - Basic HTML and CSS edits to LWCs
+  - JavaScript changes to LWCs that don't affect the component's public API
+  - Importing new custom LWCs
+  - Importing another instance of an existing LWC
+
+  To apply any other local changes not listed above, you must deploy them to your org using the `sf project deploy
+  start` command. Then republish your site and restart the server for the Local Dev experience.
+
+  For more considerations and limitations, see the Lightning Web Components Developer Guide.
+
+EXAMPLES
+  Preview the site "Partner Central" from the org "myOrg":
+
+    $ sf lightning dev site --name "Partner Central" --target-org myOrg
+```
+
+_See code: [src/commands/lightning/dev/site.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/1.0.26-alpha.1/src/commands/lightning/dev/site.ts)_
 
 <!-- commandsstop -->

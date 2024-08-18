@@ -21,17 +21,7 @@ For more considerations and limitations, see the Lightning Web Components Develo
 
 Name of the Experience Builder site to preview. It has to match a site name from the current org.
 
-# flags.target-org.summary
-
-Username or alias of the target org. Not required if the `target-org` configuration variable is already set.
-
-# flags.debug.summary
-
-Enable Node Inspector to debug server-side rendering.
-
 # examples
 
 - Preview the site "Partner Central" from the org "myOrg":
   <%= config.bin %> <%= command.id %> --name "Partner Central" --target-org myOrg
-- Preview the site "Partner Central" from the org "myOrg" with Node Inspector enabled:
-  <%= config.bin %> <%= command.id %> --name "Partner Central" --target-org myOrg --debug
