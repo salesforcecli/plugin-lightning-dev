@@ -2,47 +2,6 @@
 
 [![NPM](https://img.shields.io/npm/v/@salesforce/plugin-lightning-dev.svg?label=@salesforce/plugin-lightning-dev)](https://www.npmjs.com/package/@salesforce/plugin-lightning-dev) [![Downloads/week](https://img.shields.io/npm/dw/@salesforce/plugin-lightning-dev.svg)](https://npmjs.org/package/@salesforce/plugin-lightning-dev) [![License](https://img.shields.io/badge/License-BSD%203--Clause-brightgreen.svg)](https://raw.githubusercontent.com/salesforcecli/plugin-lightning-dev/main/LICENSE.txt)
 
-## Setup
-
-Prereqs:
-
-1. Setup an Experience Site and publish it
-
-2. Run the following:
-
-```bash
-yarn && yarn build
-yarn link-lwr
-sf org login web --instance-url ${orgfarmUrl}
-```
-
-## Run the command
-
-Then run the following for your environment:
-
-```bash
-./bin/dev.js lightning dev site
-```
-
-or for debugging:
-
-```bash
-NODE_OPTIONS='--inspect-brk' ./bin/dev.js lightning dev site
-```
-
-No need to recompile or watch typescript files as this happens automagically.
-
-## Fix Snapshots
-
-```bash
-node --loader ts-node/esm --no-warnings=ExperimentalWarning ./bin/dev.js snapshot:compare
-node --loader ts-node/esm --no-warnings=ExperimentalWarning ./bin/dev.js schema:compare
-yarn && yarn build
-yarn update-snapshots
-```
-
-## TODO Update
-
 This plugin is bundled with the [Salesforce CLI](https://developer.salesforce.com/tools/sfdxcli). For more information on the CLI, read the [getting started guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm).
 
 We always recommend using the latest version of these commands bundled with the CLI, however, you can install a specific version or tag if needed.
@@ -51,6 +10,12 @@ We always recommend using the latest version of these commands bundled with the 
 
 ```bash
 sf plugins install @salesforce/plugin-lightning-dev@x.y.z
+```
+
+or
+
+```bash
+sf plugins install @salesforce/plugin-lightning-dev
 ```
 
 ## Issues
@@ -102,6 +67,72 @@ There should be no differences when running via the Salesforce CLI or using the 
 sf plugins link .
 # To verify
 sf plugins
+```
+
+## LWR Sites Development Environment
+
+Follow these instructions if you want to setup a dev environment for the `sf lightning dev site` command.
+
+## Setup
+
+1. [Enable Local Development] (https://developer.salesforce.com/docs/platform/lwc/guide/get-started-test-components.html#enable-local-dev)
+
+2. Deploy some source files to your org from your SFDX project
+
+```bash
+sf org login web --alias dev --instance-url ${orgfarmUrl}
+
+```
+
+3. Add those source files to an LWR site in the Experience Builder and Publish the site (basePath: '/')
+
+4. Follow the [Build the plugin locally](#build) instructions
+
+5. [optional] Linking / Debugging LWR Source
+
+```bash
+# build and link lwr source
+cd lwr
+yarn && yarn link-lwr
+
+# build and link plugin-lightning-dev source
+cd plugin-lightning-dev
+yarn && yarn build
+yarn link-lwr
+
+# SFDX Project
+cd sfdx-project
+
+# Login to your org
+sf org login web --alias dev --instance-url https://login.test1.pc-rnd.salesforce.com/ (orgfarm needs instance url)
+
+# run/debug the sf cli command (attach to the CLI from the LWR repo in VS Code)
+NODE_OPTIONS="--inspect-brk" sf lightning dev site --target-org dev
+```
+
+Now you can Remote Attach to the CLI from the vscode debugger:
+
+- Use the "Attach" launch configuration
+- Run launch config from LWR repo if you want to debug LWR source
+- Run launch config from plugin-lightning-dev source if you want to debug the SFDX plugin source specifically
+
+If this doesn't work for whatever reason, you can always alias the build output directly like so:
+
+```bash
+alias sfdev="/{pathToGitDir}/plugin-lightning-dev/bin/run.js"
+# SFDX Project
+NODE_OPTIONS="--inspect-brk" sfdev lightning dev site --target-org dev
+```
+
+6. Make changes to your c-namespace components and you should see the browser refresh with those changes!
+
+## Fixing Snapshots
+
+```bash
+node --loader ts-node/esm --no-warnings=ExperimentalWarning ./bin/dev.js snapshot:compare
+node --loader ts-node/esm --no-warnings=ExperimentalWarning ./bin/dev.js schema:compare
+yarn && yarn build
+yarn update-snapshots
 ```
 
 ## Commands
