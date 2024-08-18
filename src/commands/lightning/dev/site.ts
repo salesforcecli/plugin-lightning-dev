@@ -23,10 +23,6 @@ export default class LightningDevSite extends SfCommand<void> {
     name: Flags.string({
       summary: messages.getMessage('flags.name.summary'),
       char: 'n',
-      required: false,
-    }),
-    debug: Flags.boolean({
-      summary: messages.getMessage('flags.debug.summary'),
     }),
     'target-org': Flags.optionalOrg({ summary: messages.getMessage('flags.target-org.summary') }),
   };
