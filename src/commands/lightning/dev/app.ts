@@ -270,7 +270,7 @@ export default class LightningDevApp extends SfCommand<void> {
     );
 
     // Start the LWC Dev Server
-    await startLWCServer(logger, sfdxProjectRootPath, token, serverPorts);
+    await startLWCServer(logger, sfdxProjectRootPath, token, Platform.desktop, serverPorts);
 
     // Open the browser and navigate to the right page
     await this.config.runCommand('org:open', launchArguments);
@@ -356,7 +356,7 @@ export default class LightningDevApp extends SfCommand<void> {
 
       // Start the LWC Dev Server
 
-      await startLWCServer(logger, sfdxProjectRootPath, token, serverPorts, certData);
+      await startLWCServer(logger, sfdxProjectRootPath, token, platform, serverPorts, certData);
 
       // Launch the native app for previewing (launchMobileApp will show its own spinner)
       // eslint-disable-next-line camelcase
