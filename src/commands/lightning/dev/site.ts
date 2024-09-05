@@ -64,11 +64,17 @@ export default class LightningDevSite extends SfCommand<void> {
         }
       }
 
+      // Pass auth token to LWR so we can use it with requests to the site
+      const authToken = org.getConnection().accessToken ?? '';
+      // eslint-disable-next-line no-console
+      console.log(authToken);
+
       // Start the dev server
       await expDev({
+        authToken,
         open: true,
         port: 3000,
-        logLevel: 'error',
+        logLevel: 'info',
         mode: 'dev',
         siteZip,
         siteDir: selectedSite.getSiteDirectory(),
