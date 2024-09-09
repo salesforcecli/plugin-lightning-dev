@@ -1,4 +1,10 @@
-# 1.1.0 (2024-08-18)
+## [1.1.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.1.0...1.1.1) (2024-09-09)
+
+### Bug Fixes
+
+- **readme:** broken links in README.md ([#163](https://github.com/salesforcecli/plugin-lightning-dev/issues/163)) ([b6f2cd7](https://github.com/salesforcecli/plugin-lightning-dev/commit/b6f2cd7d7bffbdf1cf2b98e8b37104aa51c385f6))
+
+# [1.1.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/55e1c19e84b534ecd35824f651c6f6b85c3eec1e...1.1.0) (2024-08-18)
 
 ### Bug Fixes
 
