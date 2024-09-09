@@ -20,7 +20,7 @@ sf plugins install @salesforce/plugin-lightning-dev
 
 ## Issues
 
-Please report any issues at https://github.com/forcedotcom/cli/issues
+Please report any issues at https://github.com/salesforcecli/plugin-lightning-dev/issues
 
 ## Contributing
 
