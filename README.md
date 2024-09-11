@@ -75,7 +75,7 @@ Follow these instructions if you want to setup a dev environment for the `sf lig
 
 ## Setup
 
-1. [Enable Local Development] (https://developer.salesforce.com/docs/platform/lwc/guide/get-started-test-components.html#enable-local-dev)
+1. [Enable Local Development](https://developer.salesforce.com/docs/platform/lwc/guide/get-started-test-components.html#enable-local-dev)
 
 2. Deploy some source files to your org from your SFDX project
 
