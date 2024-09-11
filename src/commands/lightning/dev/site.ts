@@ -64,10 +64,8 @@ export default class LightningDevSite extends SfCommand<void> {
         }
       }
 
-      // Pass auth token to LWR so we can use it with requests to the site
+      // Pass the org auth token so LWR can make authenticated requests to core
       const authToken = org.getConnection().accessToken ?? '';
-      // eslint-disable-next-line no-console
-      console.log(authToken);
 
       // Start the dev server
       await expDev({
