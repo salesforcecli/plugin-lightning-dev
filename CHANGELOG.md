@@ -1,3 +1,9 @@
+# [1.2.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.1.1...1.2.0) (2024-09-13)
+
+### Features
+
+- [sites] local dev authentication ([#155](https://github.com/salesforcecli/plugin-lightning-dev/issues/155)) ([2629dcc](https://github.com/salesforcecli/plugin-lightning-dev/commit/2629dcc6dd519894fc69f66f57827357ece0f6c8))
+
 ## [1.1.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.1.0...1.1.1) (2024-09-09)
 
 ### Bug Fixes
