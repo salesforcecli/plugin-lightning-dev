@@ -5,18 +5,21 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import fs from 'node:fs';
-import path from 'node:path';
 import { TestContext } from '@salesforce/core/testSetup';
 import { expect } from 'chai';
 import {
-  AndroidUtils,
-  AndroidVirtualDevice,
+  AndroidDevice,
+  AndroidDeviceManager,
+  AndroidOSType,
+  AppleDevice,
+  AppleDeviceManager,
+  AppleOSType,
   CommonUtils,
-  IOSSimulatorDevice,
-  IOSUtils,
+  CryptoUtils,
+  DeviceType,
   Platform,
   SSLCertificateData,
+  Version,
 } from '@salesforce/lwc-dev-mobile-core';
 import { Messages } from '@salesforce/core';
 import {
@@ -25,29 +28,25 @@ import {
   LocalWebServerIdentityData,
 } from '../../src/shared/configUtils.js';
 import { PreviewUtils } from '../../src/shared/previewUtils.js';
-import {
-  iOSSalesforceAppPreviewConfig,
-  androidSalesforceAppPreviewConfig,
-} from '../../src/commands/lightning/dev/app.js';
 
 describe('previewUtils', () => {
   const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.app');
   const $$ = new TestContext();
 
-  const testIOSDevice = new IOSSimulatorDevice(
-    'iPhone 15 Pro Max',
+  const testIOSDevice = new AppleDevice(
     'F2B4097F-F33E-4D8A-8FFF-CE49F8D6C166',
-    'Shutdown',
-    'iOS 17.4',
-    true
+    'iPhone 15 Pro Max',
+    DeviceType.mobile,
+    AppleOSType.iOS,
+    new Version(17, 5, 0)
   );
-  const testAndroidDevice = new AndroidVirtualDevice(
+  const testAndroidDevice = new AndroidDevice(
     'Pixel_5_API_34',
-    'Pixel 5',
-    'myDevice.avd',
-    'Google APIs',
-    'Android 14.0',
-    '34'
+    'Pixel 5 API 34',
+    DeviceType.mobile,
+    AndroidOSType.googleAPIs,
+    new Version(34, 0, 0),
+    false
   );
 
   const username = 'SalesforceDeveloper';
@@ -89,37 +88,23 @@ describe('previewUtils', () => {
   });
 
   it('getMobileDevice finds device', async () => {
-    $$.SANDBOX.stub(IOSUtils, 'getSimulator').resolves(testIOSDevice);
-    const iosDevice = await PreviewUtils.getMobileDevice(Platform.ios, testIOSDevice.udid);
+    $$.SANDBOX.stub(AppleDeviceManager.prototype, 'getDevice').resolves(testIOSDevice);
+    const iosDevice = await PreviewUtils.getMobileDevice(Platform.ios, testIOSDevice.id);
     expect(iosDevice).to.deep.equal(testIOSDevice);
 
-    $$.SANDBOX.stub(AndroidUtils, 'fetchEmulator').resolves(testAndroidDevice);
-    const androidDevice = await PreviewUtils.getMobileDevice(Platform.android, testAndroidDevice.name);
+    $$.SANDBOX.stub(AndroidDeviceManager.prototype, 'getDevice').resolves(testAndroidDevice);
+    const androidDevice = await PreviewUtils.getMobileDevice(Platform.android, testAndroidDevice.id);
     expect(androidDevice).to.deep.equal(testAndroidDevice);
   });
 
   it('getMobileDevice returns first available device', async () => {
-    $$.SANDBOX.stub(IOSUtils, 'getSupportedSimulators').resolves([testIOSDevice]);
+    $$.SANDBOX.stub(AppleDeviceManager.prototype, 'enumerateDevices').resolves([testIOSDevice]);
     const iosDevice = await PreviewUtils.getMobileDevice(Platform.ios);
     expect(iosDevice).to.deep.equal(testIOSDevice);
 
-    $$.SANDBOX.stub(AndroidUtils, 'fetchEmulators').resolves([testAndroidDevice]);
+    $$.SANDBOX.stub(AndroidDeviceManager.prototype, 'enumerateDevices').resolves([testAndroidDevice]);
     const androidDevice = await PreviewUtils.getMobileDevice(Platform.android);
     expect(androidDevice).to.deep.equal(testAndroidDevice);
-  });
-
-  it('bootMobileDevice boots device', async () => {
-    const bootMock = $$.SANDBOX.stub(IOSUtils, 'bootDevice');
-    const launchMock = $$.SANDBOX.stub(IOSUtils, 'launchSimulatorApp');
-    let emulatorPort = await PreviewUtils.bootMobileDevice(Platform.ios, testIOSDevice.udid);
-    expect(emulatorPort).to.be.undefined; // ios devices won't have an emulator port after booting
-    expect(bootMock.calledWith(testIOSDevice.udid, true, undefined)).to.be.true;
-    expect(launchMock.callCount).to.be.equal(1);
-
-    const startMock = $$.SANDBOX.stub(AndroidUtils, 'startEmulator').resolves(1234);
-    emulatorPort = await PreviewUtils.bootMobileDevice(Platform.android, testAndroidDevice.name);
-    expect(emulatorPort).to.be.equal(1234);
-    expect(startMock.calledWith(testAndroidDevice.name, false, true, undefined)).to.be.true;
   });
 
   it('generateDesktopPreviewLaunchArguments', async () => {
@@ -187,70 +172,14 @@ describe('previewUtils', () => {
     };
 
     $$.SANDBOX.stub(ConfigUtils, 'getCertData').resolves(expectedCertData);
-    $$.SANDBOX.stub(fs, 'existsSync').returns(false);
-    $$.SANDBOX.stub(fs, 'writeFileSync').returns();
+    $$.SANDBOX.stub(CryptoUtils, 'isExpired').returns(false);
 
-    const certDirPath = '/path/to/dir';
-    let result = await PreviewUtils.generateSelfSignedCert(Platform.ios, certDirPath);
-    expect(result.certFilePath).to.be.equal(path.join(path.resolve(certDirPath), 'localhost.der'));
-    expect(result.certData.derCertificate.toString('utf8')).to.be.equal('testDERCert');
-    expect(result.certData.pemCertificate).to.be.equal('testPEMCert');
-    expect(result.certData.pemPrivateKey).to.be.equal('testPrivateKey');
-    expect(result.certData.pemPublicKey).to.be.equal('testPublicKey');
+    const result = await PreviewUtils.generateSelfSignedCert();
 
-    result = await PreviewUtils.generateSelfSignedCert(Platform.android, certDirPath);
-    expect(result.certFilePath).to.be.equal(path.join(path.resolve(certDirPath), 'localhost.pem'));
-    expect(result.certData.derCertificate.toString('utf8')).to.be.equal('testDERCert');
-    expect(result.certData.pemCertificate).to.be.equal('testPEMCert');
-    expect(result.certData.pemPrivateKey).to.be.equal('testPrivateKey');
-    expect(result.certData.pemPublicKey).to.be.equal('testPublicKey');
-  });
-
-  it('launchMobileApp launches the app', async () => {
-    // eslint-disable-next-line camelcase
-    iOSSalesforceAppPreviewConfig.launch_arguments = [];
-    const iosLaunchMock = $$.SANDBOX.stub(IOSUtils, 'launchAppInBootedSimulator').callsFake(() => Promise.resolve());
-    await PreviewUtils.launchMobileApp(Platform.ios, iOSSalesforceAppPreviewConfig, testIOSDevice.udid);
-    expect(iosLaunchMock.calledWith(testIOSDevice.udid, undefined, iOSSalesforceAppPreviewConfig.id, [], undefined)).to
-      .be.true;
-
-    // eslint-disable-next-line camelcase
-    androidSalesforceAppPreviewConfig.launch_arguments = [];
-    const androidLaunchMock = $$.SANDBOX.stub(AndroidUtils, 'launchAppInBootedEmulator').callsFake(() =>
-      Promise.resolve()
-    );
-    await PreviewUtils.launchMobileApp(
-      Platform.android,
-      androidSalesforceAppPreviewConfig,
-      testAndroidDevice.deviceName,
-      1234
-    );
-    expect(
-      androidLaunchMock.calledWith(
-        undefined,
-        androidSalesforceAppPreviewConfig.id,
-        [],
-        androidSalesforceAppPreviewConfig.activity,
-        1234,
-        undefined
-      )
-    ).to.be.true;
-  });
-
-  it('verifyMobileAppInstalled checks for app on device', async () => {
-    $$.SANDBOX.stub(CommonUtils, 'executeCommandSync').returns('some_path');
-    expect(await PreviewUtils.verifyMobileAppInstalled(Platform.ios, iOSSalesforceAppPreviewConfig, testIOSDevice.udid))
-      .to.be.true;
-
-    $$.SANDBOX.stub(AndroidUtils, 'executeAdbCommand').resolves(undefined);
-    expect(
-      await PreviewUtils.verifyMobileAppInstalled(
-        Platform.android,
-        androidSalesforceAppPreviewConfig,
-        testAndroidDevice.deviceName,
-        1234
-      )
-    ).to.be.false;
+    expect(result.derCertificate.toString('utf8')).to.be.equal('testDERCert');
+    expect(result.pemCertificate).to.be.equal('testPEMCert');
+    expect(result.pemPrivateKey).to.be.equal('testPrivateKey');
+    expect(result.pemPublicKey).to.be.equal('testPublicKey');
   });
 
   it('getEntityId returns valid entity ID', async () => {

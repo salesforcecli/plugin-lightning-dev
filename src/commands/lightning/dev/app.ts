@@ -6,18 +6,16 @@
  */
 
 import path from 'node:path';
-import * as readline from 'node:readline';
 import { Connection, Logger, Messages, SfProject } from '@salesforce/core';
 import {
   AndroidAppPreviewConfig,
-  AndroidVirtualDevice,
+  AndroidDevice,
+  CommonUtils,
   IOSAppPreviewConfig,
-  IOSSimulatorDevice,
   Setup as LwcDevMobileCoreSetup,
   Platform,
 } from '@salesforce/lwc-dev-mobile-core';
 import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
-import chalk from 'chalk';
 import { OrgUtils } from '../../../shared/orgUtils.js';
 import { startLWCServer } from '../../../lwc-dev-server/index.js';
 import { PreviewUtils } from '../../../shared/previewUtils.js';
@@ -78,84 +76,6 @@ export default class LightningDevApp extends SfCommand<void> {
       char: 'i',
     }),
   };
-
-  private static async waitForKeyPress(): Promise<void> {
-    return new Promise((resolve) => {
-      const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-      });
-
-      // eslint-disable-next-line no-console
-      console.log(`\n${messages.getMessage('certificate.waiting')}\n`);
-
-      process.stdin.setRawMode(true);
-      process.stdin.resume();
-      process.stdin.once('data', () => {
-        process.stdin.setRawMode(false);
-        process.stdin.pause();
-        rl.close();
-        resolve();
-      });
-    });
-  }
-
-  public async waitForUserToInstallCert(
-    platform: Platform.ios | Platform.android,
-    device: IOSSimulatorDevice | AndroidVirtualDevice,
-    certFilePath: string
-  ): Promise<void> {
-    // eslint-disable-next-line no-console
-    console.log(`\n${messages.getMessage('certificate.installation.notice')}`);
-
-    const skipInstall = await this.confirm({
-      message: messages.getMessage('certificate.installation.skip.message'),
-      defaultAnswer: true,
-      ms: maxInt32, // simulate no timeout and wait for user to answer
-    });
-
-    if (skipInstall) {
-      return;
-    }
-
-    let installationSteps = '';
-    if (platform === Platform.ios) {
-      installationSteps = messages.getMessage('certificate.installation.steps.ios');
-    } else {
-      const apiLevel = (device as AndroidVirtualDevice).apiLevel.toString();
-
-      let subStepMessageKey = '';
-      if (apiLevel.startsWith('24.') || apiLevel.startsWith('25.')) {
-        subStepMessageKey = 'certificate.installation.steps.android.nav-target-api-24-25';
-      } else if (apiLevel.startsWith('26.') || apiLevel.startsWith('27.')) {
-        subStepMessageKey = 'certificate.installation.steps.android.nav-target-api-26-27';
-      } else if (apiLevel.startsWith('28.')) {
-        subStepMessageKey = 'certificate.installation.steps.android.nav-target-api-28';
-      } else if (apiLevel.startsWith('29.')) {
-        subStepMessageKey = 'certificate.installation.steps.android.nav-target-api-29';
-      } else if (apiLevel.startsWith('30.') || apiLevel.startsWith('31.') || apiLevel.startsWith('32.')) {
-        subStepMessageKey = 'certificate.installation.steps.android.nav-target-api-30-32';
-      } else if (apiLevel.startsWith('33.')) {
-        subStepMessageKey = 'certificate.installation.steps.android.nav-target-api-33';
-      } else {
-        subStepMessageKey = 'certificate.installation.steps.android.nav-target-api-34-up';
-      }
-
-      installationSteps = messages.getMessage('certificate.installation.steps.android', [
-        messages.getMessage(subStepMessageKey),
-      ]);
-    }
-
-    let message = messages.getMessage('certificate.installation.description', [certFilePath, installationSteps]);
-
-    // use chalk to format every substring wrapped in `` so they would stand out when printed on screen
-    message = message.replace(/`([^`]*)`/g, chalk.yellow('$1'));
-
-    // eslint-disable-next-line no-console
-    console.log(message);
-
-    return LightningDevApp.waitForKeyPress();
-  }
 
   public async run(): Promise<void> {
     const { flags } = await this.parse(LightningDevApp);
@@ -298,31 +218,43 @@ export default class LightningDevApp extends SfCommand<void> {
         throw new Error(messages.getMessage('error.device.notfound', [deviceId ?? '']));
       }
 
-      // Boot the device if not already booted
+      if ((device as AndroidDevice)?.isPlayStore === true) {
+        throw new Error(
+          `Google Play devices are not supported. ${device.id} is a Google Play device. Please use a Google APIs device instead.`
+        );
+      }
+
+      // Boot the device. If device is already booted then this will immediately return anyway.
       this.spinner.start(messages.getMessage('spinner.device.boot', [device.toString()]));
-      const resolvedDeviceId = platform === Platform.ios ? (device as IOSSimulatorDevice).udid : device.name;
-      const emulatorPort = await PreviewUtils.bootMobileDevice(platform, resolvedDeviceId, logger);
+      await device.boot();
       this.spinner.stop();
 
       // Configure certificates for dev server secure connection
       this.spinner.start(messages.getMessage('spinner.cert.gen'));
-      const { certData, certFilePath } = await PreviewUtils.generateSelfSignedCert(platform, sfdxProjectRootPath);
+      const certData = await PreviewUtils.generateSelfSignedCert();
       this.spinner.stop();
 
-      // Show message and wait for user to install the certificate on their device
-      await this.waitForUserToInstallCert(platform, device, certFilePath);
+      // Automatically install the certificate on the device.
+      this.spinner.start(messages.getMessage('spinner.cert.install'));
+      if (platform === Platform.ios) {
+        // On iOS we force-install the cert even if it is already installed because
+        // the process of installing the cert is fast and easy.
+        await device.installCert(certData);
+      } else {
+        // On Android the process of auto-installing a cert is a bit involved and slow.
+        // So it is best to first determine if the cert is already installed or not.
+        const isAlreadyInstalled = await device.isCertInstalled(certData);
+        if (!isAlreadyInstalled) {
+          await device.installCert(certData);
+        }
+      }
+      this.spinner.stop();
 
       // Check if Salesforce Mobile App is installed on the device
       const appConfig = platform === Platform.ios ? iOSSalesforceAppPreviewConfig : androidSalesforceAppPreviewConfig;
-      const appInstalled = await PreviewUtils.verifyMobileAppInstalled(
-        platform,
-        appConfig,
-        resolvedDeviceId,
-        emulatorPort,
-        logger
-      );
+      const appInstalled = await device.hasApp(appConfig.id);
 
-      // If Salesforce Mobile App is not installed, download and install it
+      // If Salesforce Mobile App is not installed, offer to download and install it
       let bundlePath: string | undefined;
       if (!appInstalled) {
         const proceedWithDownload = await this.confirm({
@@ -348,7 +280,7 @@ export default class LightningDevApp extends SfCommand<void> {
           this.spinner.start(messages.getMessage('spinner.extract.archive'));
           const outputDir = path.dirname(bundlePath);
           const finalBundlePath = path.join(outputDir, 'Chatter.app');
-          await PreviewUtils.extractZIPArchive(bundlePath, outputDir, logger);
+          await CommonUtils.extractZIPArchive(bundlePath, outputDir, logger);
           this.spinner.stop();
           bundlePath = finalBundlePath;
         }
@@ -366,7 +298,10 @@ export default class LightningDevApp extends SfCommand<void> {
         appName,
         appId
       );
-      await PreviewUtils.launchMobileApp(platform, appConfig, resolvedDeviceId, emulatorPort, bundlePath, logger);
+      const targetActivity = (appConfig as AndroidAppPreviewConfig)?.activity;
+      const targetApp = targetActivity ? `${appConfig.id}/${targetActivity}` : appConfig.id;
+
+      await device.launchApp(targetApp, bundlePath, appConfig.launch_arguments ?? []);
     } finally {
       // stop progress & spinner UX (that may still be running in case of an error)
       this.progress.stop();

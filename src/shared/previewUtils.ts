@@ -11,19 +11,15 @@
 // **********************************************************************************************
 
 import fs from 'node:fs';
-import https from 'node:https';
 import os from 'node:os';
 import path from 'node:path';
 import { Logger, Messages } from '@salesforce/core';
 import {
-  AndroidAppPreviewConfig,
-  AndroidUtils,
-  AndroidVirtualDevice,
+  AndroidDeviceManager,
+  AppleDeviceManager,
+  BaseDevice,
   CommonUtils,
   CryptoUtils,
-  IOSAppPreviewConfig,
-  IOSSimulatorDevice,
-  IOSUtils,
   LaunchArgument,
   PreviewUtils as LwcDevMobileCorePreviewUtils,
   Platform,
@@ -85,58 +81,30 @@ export class PreviewUtils {
     platform: Platform.ios | Platform.android,
     deviceId?: string,
     logger?: Logger
-  ): Promise<IOSSimulatorDevice | AndroidVirtualDevice | undefined> {
-    let device: IOSSimulatorDevice | AndroidVirtualDevice | undefined;
+  ): Promise<BaseDevice | undefined> {
+    let device: BaseDevice | undefined;
 
     logger?.debug(`Attempting to get mobile device for platform ${platform}`);
 
     if (deviceId) {
       logger?.debug(`Attempting to get device ${deviceId}`);
+
       device =
         platform === Platform.ios
-          ? (await IOSUtils.getSimulator(deviceId, logger)) ?? undefined
-          : await AndroidUtils.fetchEmulator(deviceId, logger);
+          ? await new AppleDeviceManager(logger).getDevice(deviceId)
+          : await new AndroidDeviceManager(logger).getDevice(deviceId);
     } else {
       logger?.debug('No particular device was targeted by the user...  fetching the first available device.');
       const devices =
         platform === Platform.ios
-          ? await IOSUtils.getSupportedSimulators(logger)
-          : await AndroidUtils.fetchEmulators(logger);
+          ? await new AppleDeviceManager(logger).enumerateDevices()
+          : await new AndroidDeviceManager(logger).enumerateDevices();
       if (devices && devices.length > 0) {
         device = devices[0];
       }
     }
 
     return Promise.resolve(device);
-  }
-
-  /**
-   * Attempts to boot a device.
-   *
-   * @param platform A mobile platform (iOS or Android)
-   * @param deviceId The identifier (such as name or UDID) of the target device
-   * @param logger An optional logger to be used for logging
-   * @returns For Android devices returns the emulator port number. For iOS devices returns `undefined`
-   */
-  public static async bootMobileDevice(
-    platform: Platform.ios | Platform.android,
-    deviceId: string,
-    logger?: Logger
-  ): Promise<number | undefined> {
-    logger?.debug(`Booting device ${deviceId}`);
-
-    let emulatorPort: number | undefined;
-
-    if (platform === Platform.ios) {
-      await IOSUtils.bootDevice(deviceId, true, logger); // will be no-op if already booted
-      await IOSUtils.launchSimulatorApp(logger);
-      logger?.debug('Device booted');
-    } else {
-      emulatorPort = await AndroidUtils.startEmulator(deviceId, false, true, logger); // will be no-op if already booted
-      logger?.debug(`Device booted on port ${emulatorPort}`);
-    }
-
-    return Promise.resolve(emulatorPort);
   }
 
   /**
@@ -213,122 +181,20 @@ export class PreviewUtils {
   }
 
   /**
-   * Generates a self-signed certificate and saves it to a file at the specified location.
+   * Checks the global cache to see if a self-signed certificate has previously been generated and cached.
+   * If so (and if the cached certificate is not expired) it will then return the cached certificate. Otherwise
+   * it will generate a self-signed certificate, cache it, and return it.
    *
-   * @param platform A mobile platform (iOS or Android)
-   * @param saveLocation Path to a folder where the generated certificated will be saved to (defaults to the current working directory)
-   * @returns Path to the generated certificate file and the certificate data
+   * @returns A self-signed certificate.
    */
-  public static async generateSelfSignedCert(
-    platform: Platform.ios | Platform.android,
-    saveLocation = '.'
-  ): Promise<{ certData: SSLCertificateData; certFilePath: string }> {
-    // See if we have previously generated cert data which is stored in the global config.
-    // If so then use that data otherwise generate new cert data and store it in the global config.
+  public static async generateSelfSignedCert(): Promise<SSLCertificateData> {
     let data = await ConfigUtils.getCertData();
-    if (!data) {
+    if (!data || CryptoUtils.isExpired(data)) {
       data = CryptoUtils.generateSelfSignedCert('localhost', 2048, 820);
       await ConfigUtils.writeCertData(data);
     }
 
-    const basePath = path.resolve(CommonUtils.resolveUserHomePath(saveLocation));
-
-    const targetFile =
-      platform === Platform.ios ? path.join(basePath, 'localhost.der') : path.join(basePath, 'localhost.pem');
-
-    // save to file
-    if (platform === Platform.ios) {
-      fs.writeFileSync(targetFile, data.derCertificate);
-    } else {
-      fs.writeFileSync(targetFile, data.pemCertificate);
-    }
-
-    return { certData: data, certFilePath: targetFile };
-  }
-
-  /**
-   * Launches the specified mobile app on the specified device.
-   *
-   * @param platform A mobile platform (iOS or Android)
-   * @param deviceId The identifier (such as name or UDID) of the target device
-   * @param appConfig The app configuration containing info about the mobile app to be launched
-   * @param emulatorPort Optional - only needed when platform is Android and specifies the ADB port of the booted Android virtual device
-   * @param logger An optional logger to be used for logging
-   */
-  public static async launchMobileApp(
-    platform: Platform.ios | Platform.android,
-    appConfig: IOSAppPreviewConfig | AndroidAppPreviewConfig,
-    deviceId: string,
-    emulatorPort?: number,
-    appBundlePath?: string,
-    logger?: Logger
-  ): Promise<void> {
-    logger?.debug(`Attempting to launch mobile app ${appConfig.name}`);
-
-    // If appBundlePath is provided then the app will be installed from
-    // the bundle first then will be launched. Otherwise the assumption
-    // is that app is already installed.
-    if (platform === Platform.ios) {
-      await IOSUtils.launchAppInBootedSimulator(
-        deviceId,
-        appBundlePath,
-        appConfig.id,
-        appConfig.launch_arguments ?? [],
-        logger
-      );
-    } else if (emulatorPort) {
-      // for Android, emulatorPort is required
-      await AndroidUtils.launchAppInBootedEmulator(
-        appBundlePath,
-        appConfig.id,
-        appConfig.launch_arguments ?? [],
-        (appConfig as AndroidAppPreviewConfig).activity,
-        emulatorPort,
-        logger
-      );
-    }
-  }
-
-  /**
-   * Verifies whether a particular app is installed on a mobile device.
-   *
-   * @param platform A mobile platform (iOS or Android)
-   * @param appConfig The app configuration containing info about the mobile app such as name and bundle/package id
-   * @param deviceId The identifier (such as name or UDID) of the target device
-   * @param emulatorPort Optional - only needed when platform is Android and specifies the ADB port of the booted Android virtual device
-   * @param logger An optional logger to be used for logging
-   * @returns `true` if app is installed, `false` otherwise
-   */
-  public static async verifyMobileAppInstalled(
-    platform: Platform.ios | Platform.android,
-    appConfig: IOSAppPreviewConfig | AndroidAppPreviewConfig,
-    deviceId: string,
-    emulatorPort?: number,
-    logger?: Logger
-  ): Promise<boolean> {
-    logger?.debug(`Checking if ${appConfig.id} is installed on device ${deviceId}`);
-    let result = '';
-    try {
-      if (platform === Platform.ios) {
-        result = CommonUtils.executeCommandSync(
-          `xcrun simctl listapps ${deviceId} | grep "${appConfig.id}"`,
-          undefined,
-          logger
-        );
-      } else {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const resolvedEmulatorPort = emulatorPort!;
-        result = await AndroidUtils.executeAdbCommand(
-          `shell pm list packages | grep "${appConfig.id}"`,
-          resolvedEmulatorPort,
-          logger
-        );
-      }
-    } catch {
-      /* ignore and continue */
-    }
-
-    return Promise.resolve(result ? true : false);
+    return data;
   }
 
   /**
@@ -355,7 +221,7 @@ export class PreviewUtils {
     try {
       spinner?.start(messages.getMessage('spinner.download.preparing'));
       logger?.debug(`Attempting to resolve full url from ${sfdcUrl}`);
-      fullUrl = await this.fetchFullUrlFromSfdc(sfdcUrl);
+      fullUrl = await CommonUtils.fetchFullUrlFromSfdcShortenedUrl(sfdcUrl);
       logger?.debug(`Full url is ${fullUrl}`);
     } finally {
       spinner?.stop();
@@ -424,64 +290,6 @@ export class PreviewUtils {
         resolve(downloadedFilePath);
       });
     });
-  }
-
-  /**
-   * Given an sfdc.co shortened url it returns the actual/full url that this will redirect to.
-   *
-   * @param httpsUrl The sfdc.co shortened url
-   * @returns The actual/full url
-   */
-  public static async fetchFullUrlFromSfdc(httpsUrl: string): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
-      https
-        .get(httpsUrl, (response) => {
-          let data = '';
-          response.on('data', (chunk) => {
-            data += chunk;
-          });
-          response.on('end', () => {
-            // sfdc.co urls will lead to an html page where, among other elements, there would be
-            // an element with id='full-url' and whose value would be the url to redirect to, eg:
-            // <h2 class="home-heading" style="word-wrap:break-word;" id="full-url">
-            //      https://developer.salesforce.com/files/sfmobiletools/SalesforceApp-Simulator-248.061-iOS.zip
-            // </h2>
-            const regex = /<[^>]*id\s*=\s*["']full-url["'][^>]*>(.*?)<\/[^>]*>/i;
-            const match = data.match(regex);
-            if (match?.[1]) {
-              resolve(match[1]);
-            } else {
-              resolve('');
-            }
-          });
-        })
-        .on('error)', (error) => {
-          reject(error);
-        });
-    });
-  }
-
-  /**
-   * Extracts a ZIP archive to an output directory.
-   *
-   * @param zipFilePath The path to the ZIP archive
-   * @param outputDir An optional output directory - if omitted then defaults to the same directory as the ZIP file
-   * @param logger An optional logger to be used for logging
-   */
-  public static async extractZIPArchive(zipFilePath: string, outputDir?: string, logger?: Logger): Promise<void> {
-    let archive = path.resolve(CommonUtils.resolveUserHomePath(zipFilePath));
-    let outDir = outputDir ? path.resolve(CommonUtils.resolveUserHomePath(outputDir)) : path.dirname(archive);
-
-    archive = CommonUtils.convertToUnixPath(archive);
-    outDir = CommonUtils.convertToUnixPath(outDir);
-
-    const cmd =
-      process.platform === 'win32'
-        ? `powershell -Command "$ProgressPreference = 'SilentlyContinue'; Expand-Archive -Path \\"${archive}\\" -DestinationPath \\"${outDir}\\" -Force"`
-        : `unzip -o -qq ${archive} -d ${outDir}`;
-
-    logger?.debug(`Extracting archive ${zipFilePath}`);
-    await CommonUtils.executeCommandAsync(cmd, logger);
   }
 
   public static async getEntityId(username: string): Promise<string> {
