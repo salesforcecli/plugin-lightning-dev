@@ -55,6 +55,10 @@ Unable to determine App Id for %s
 
 Unable to find device %s
 
+# error.device.google.play
+
+Google Play devices are not supported. %s is a Google Play device. Please use a Google APIs device instead.
+
 # spinner.device.boot
 
 Booting device %s

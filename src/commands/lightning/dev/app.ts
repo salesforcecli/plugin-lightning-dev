@@ -219,9 +219,7 @@ export default class LightningDevApp extends SfCommand<void> {
       }
 
       if ((device as AndroidDevice)?.isPlayStore === true) {
-        throw new Error(
-          `Google Play devices are not supported. ${device.id} is a Google Play device. Please use a Google APIs device instead.`
-        );
+        throw new Error(messages.getMessage('error.device.google.play', [device.id]));
       }
 
       // Boot the device. If device is already booted then this will immediately return anyway.
