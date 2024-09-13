@@ -72,7 +72,7 @@ export default class LightningDevSite extends SfCommand<void> {
         authToken,
         open: true,
         port: 3000,
-        logLevel: 'info',
+        logLevel: 'error',
         mode: 'dev',
         siteZip,
         siteDir: selectedSite.getSiteDirectory(),
