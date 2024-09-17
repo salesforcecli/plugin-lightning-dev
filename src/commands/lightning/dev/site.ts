@@ -64,15 +64,12 @@ export default class LightningDevSite extends SfCommand<void> {
         }
       }
 
-      // Pass the org auth token so LWR can make authenticated requests to core
-      const authToken = org.getConnection().accessToken ?? '';
-
-      const networkId = await selectedSite.getNetworkIdByName();
-      const sidToken = await selectedSite.getNewSidToken(networkId);
+      // Establish a valid access token for this site
+      const authToken = await selectedSite.setupAuth();
 
       // Start the dev server
       await expDev({
-        authToken: sidToken || authToken,
+        authToken,
         open: true,
         port: 3000,
         logLevel: 'error',
