@@ -20,20 +20,26 @@ _Short summary of what is going on or to provide context_.
 1.  This is step 1.
 1.  This is step 2. All steps should start with '1.'
 
-### Expected result
+### Expected Result
 
 _Describe what should have happened_.
 
-### Actual result
+### Actual Result
 
 _Describe what actually happened instead_.
 
-### Additional information
+### Additional Information
 
 _Feel free to attach a screenshot_.
 
-**VS Code Version**:
+### System Information
 
-**SFDX CLI Version**:
+**SF CLI:**
+<!-- Which shell or terminal are you using? (bash, zsh, powershell 7, cmd.exe, etc) -->
+<!-- Paste the **full** output of the `sf version --verbose --json` command below -->
 
-**OS and version**:
+```json
+PASTE_SF_VERSION_OUTPUT_HERE
+```
+
+**OS:**
