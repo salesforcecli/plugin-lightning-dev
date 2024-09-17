@@ -10,6 +10,7 @@ import { Connection, Logger, Messages, SfProject } from '@salesforce/core';
 import {
   AndroidAppPreviewConfig,
   AndroidDevice,
+  BootMode,
   CommonUtils,
   IOSAppPreviewConfig,
   Setup as LwcDevMobileCoreSetup,
@@ -224,7 +225,16 @@ export default class LightningDevApp extends SfCommand<void> {
 
       // Boot the device. If device is already booted then this will immediately return anyway.
       this.spinner.start(messages.getMessage('spinner.device.boot', [device.toString()]));
-      await device.boot();
+      if (platform === Platform.ios) {
+        await device.boot();
+      } else {
+        // Prefer to boot the AVD with system writable. If it is already booted then calling boot()
+        // will have no effect. But if an AVD is not already booted then this will perform a cold
+        // boot with writable system. This way later on when we want to install cert on the device,
+        // we won't need to shut it down and reboot it with writable system since it already will
+        // have writable system, thus speeding up the process of installing a cert.
+        await (device as AndroidDevice).boot(true, BootMode.systemWritablePreferred, false);
+      }
       this.spinner.stop();
 
       // Configure certificates for dev server secure connection
@@ -285,7 +295,6 @@ export default class LightningDevApp extends SfCommand<void> {
       }
 
       // Start the LWC Dev Server
-
       await startLWCServer(logger, sfdxProjectRootPath, token, serverPorts, certData);
 
       // Launch the native app for previewing (launchMobileApp will show its own spinner)
