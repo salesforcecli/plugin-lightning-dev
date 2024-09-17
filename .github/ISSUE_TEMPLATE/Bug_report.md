@@ -34,7 +34,7 @@ _Feel free to attach a screenshot_.
 
 ### System Information
 
-**SFDX CLI:**
+**SF CLI:**
 <!-- Which shell or terminal are you using? (bash, zsh, powershell 7, cmd.exe, etc) -->
 <!-- Paste the **full** output of the `sf version --verbose --json` command below -->
 
