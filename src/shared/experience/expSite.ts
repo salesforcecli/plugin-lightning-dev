@@ -7,6 +7,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { Org, SfError } from '@salesforce/core';
+import axios from 'axios';
 
 export type SiteMetadata = {
   bundleName: string;
@@ -224,6 +225,140 @@ export class ExperienceSite {
     }
 
     return resourcePath;
+  }
+
+  // TODO cleanup
+  public async getNetworkIdByName(): Promise<string> {
+    const conn = this.org.getConnection();
+    // try {
+    // Query the Network object for the network with the given site name
+    const result = await conn.query<{ Id: string }>(`SELECT Id FROM Network WHERE Name = '${this.siteDisplayName}'`);
+
+    const record = result.records[0];
+    if (record) {
+      let networkId = record.Id;
+      // Subtract the last three characters from the Network ID
+      networkId = networkId.substring(0, networkId.length - 3);
+      return networkId;
+    } else {
+      throw new Error(`Network with name '${this.siteDisplayName}' not found`);
+    }
+    // } catch (error) {
+    //   // console.error('Error fetching Network ID:', error);
+    //   throw error;
+    // }
+  }
+
+  public async getNewSidToken(networkId: string): Promise<string> {
+    // Get the connection and access token from the org
+    const conn = this.org.getConnection();
+    const identity = await conn.identity();
+    if (identity.user_id) {
+      // do something
+    }
+    const orgId = this.org.getOrgId();
+    const orgIdMinus3 = orgId.substring(0, orgId.length - 3);
+    const accessToken = conn.accessToken;
+    const instanceUrl = conn.instanceUrl;
+
+    // Construct the switch URL
+    const switchUrl = `${instanceUrl}/servlet/networks/switch?networkId=${networkId}`;
+
+    // try {
+    // Make the GET request without following redirects
+    if (accessToken) {
+      const cookies = [
+        `sid=${accessToken}`,
+        `oid=${orgIdMinus3}`,
+        // 'sid_Client=s000000uuCPw000000I7xV',
+        // Include other essential cookies if necessary
+        // For example:
+        // `oid=${conn.getAuthInfoFields().orgId}`,
+        // `sid_Client=${conn.userInfo.id}`,
+        // Add any other cookies that might be required
+      ]
+        .join('; ')
+        .trim();
+      let response = await axios.get(switchUrl, {
+        headers: {
+          Cookie: cookies,
+          // Include other headers if necessary
+          // 'User-Agent': 'Your User Agent String',
+          // 'Referer': 'Referer URL if required',
+        },
+        withCredentials: true,
+        maxRedirects: 0, // Prevent axios from following redirects
+        validateStatus: (status) => status >= 200 && status < 400, // Accept 3xx status codes
+      });
+
+      // Extract the Location header
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const locationHeader = response.headers['location'];
+
+      if (locationHeader) {
+        // Parse the URL to extract the 'sid' parameter
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        const urlObj = new URL(locationHeader);
+        const sid = urlObj.searchParams.get('sid') ?? '';
+        const cookies2 = [
+          '__Secure-has-sid=1',
+          `sid=${sid}`,
+          `oid=${orgIdMinus3}`,
+          // 'sid_Client=s000000uuCPw000000I7xV',
+          // Include other essential cookies if necessary
+          // For example:
+          // `oid=${conn.getAuthInfoFields().orgId}`,
+          // `sid_Client=${conn.userInfo.id}`,
+          // Add any other cookies that might be required
+        ]
+          .join('; ')
+          .trim();
+
+        response = await axios.get(urlObj.toString(), {
+          headers: {
+            Cookie: cookies2,
+            // Include other headers if necessary
+            // 'User-Agent': 'Your User Agent String',
+            // 'Referer': 'Referer URL if required',
+          },
+          withCredentials: true,
+          maxRedirects: 0, // Prevent axios from following redirects
+          validateStatus: (status) => status >= 200 && status < 400, // Accept 3xx status codes
+        });
+        const setCookieHeader = response.headers['set-cookie'];
+        if (setCookieHeader) {
+          // 'set-cookie' can be an array if multiple cookies are set
+          // Find the 'sid' cookie in the set-cookie header
+          const sidCookie = setCookieHeader.find((cookieStr: string) => cookieStr.startsWith('sid='));
+
+          if (sidCookie) {
+            // Extract the sid value from the cookie string
+            const sidMatch = sidCookie.match(/sid=([^;]+)/);
+            if (sidMatch?.[1]) {
+              const sidToken = sidMatch[1];
+              return sidToken;
+            }
+          }
+        } else {
+          // eslint-disable-next-line no-console
+          console.log('error couldnt find set-cookie header for sid token');
+        }
+
+        if (sid) {
+          return sid;
+        } else {
+          throw new Error('SID token not found in Location header');
+        }
+      } else {
+        throw new Error('Location header not found in response');
+      }
+    }
+    return '';
+    // } catch (error) {
+    //   // Handle errors (e.g., network issues, HTTP errors)
+    //   // console.error('Error obtaining new SID token:', error);
+    //   throw error;
+    // }
   }
 }
 
