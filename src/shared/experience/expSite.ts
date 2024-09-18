@@ -96,15 +96,6 @@ export class ExperienceSite {
   }
 
   /**
-   * Steps to init:
-   * 1) Verify the site is an actual site within this organization
-   * 2) Verify and output specific message if wrong site type is selected
-   * 2) Verify that site has been published with Local Dev perm enabled (i.e. a static resource exists for this site name)
-   * 3) Establish sid token for proxied requests
-   */
-  // public async init(): Promise<void> {}
-
-  /**
    * Esablish a valid token for this local development session
    *
    * @returns sid token for proxied site requests
