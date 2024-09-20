@@ -275,14 +275,13 @@ export class ExperienceSite {
     const accessToken = conn.accessToken;
     const instanceUrl = conn.instanceUrl; // Org URL
 
-    // Call out to the servlet to establish a session
-    const switchUrl = `${instanceUrl}/servlet/networks/switch?networkId=${networkId}`;
-
     // Make the GET request without following redirects
     if (accessToken) {
       // TODO should we try and refresh auth here?
       // await conn.refreshAuth();
 
+      // Call out to the switcher servlet to establish a session
+      const switchUrl = `${instanceUrl}/servlet/networks/switch?networkId=${networkId}`;
       const cookies = [`sid=${accessToken}`, `oid=${orgIdMinus3}`].join('; ').trim();
       let response = await axios.get(switchUrl, {
         headers: {
@@ -293,7 +292,7 @@ export class ExperienceSite {
         validateStatus: (status) => status >= 200 && status < 400, // Accept 3xx status codes
       });
 
-      // Extract the Location header
+      // Extract the Location callback header
       const locationHeader = response.headers['location'] as string;
       if (locationHeader) {
         // Parse the URL to extract the 'sid' parameter
