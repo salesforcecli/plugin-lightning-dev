@@ -1,3 +1,9 @@
+## [1.2.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.2.0...1.2.1) (2024-09-20)
+
+### Bug Fixes
+
+- update lwr 0.14.3 / windows fixes ([#180](https://github.com/salesforcecli/plugin-lightning-dev/issues/180)) ([7f74eff](https://github.com/salesforcecli/plugin-lightning-dev/commit/7f74effc23898ee18d226ce1b7bd8130b0bd954d))
+
 # [1.2.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.1.1...1.2.0) (2024-09-13)
 
 ### Features
