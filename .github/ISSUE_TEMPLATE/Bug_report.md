@@ -33,10 +33,10 @@ _Describe what actually happened instead_.
 **Screenshots:**
 <!-- Screenshots of the following are very helpful: -->
 <!-- 1) Browser state when you encounter the issue -->
-<!-- 2) [Sites-only] Chrome dev-tools Network tab (what requests failed during local dev) -->
+<!-- 2) Chrome dev-tools "Network" tab (what requests failed during local dev) -->
 
 **Logs:**
-<!-- Any logs from the browser and the local dev server when issue occurs -->
+<!-- Any logs from the browser and the local dev server when the issue occurs -->
 
 ### System Information
 
