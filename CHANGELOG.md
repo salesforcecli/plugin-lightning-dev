@@ -1,3 +1,9 @@
+# [1.3.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.2.1...1.3.0) (2024-09-20)
+
+### Features
+
+- establish valid experience site sessions at startup ([#175](https://github.com/salesforcecli/plugin-lightning-dev/issues/175)) ([1f29721](https://github.com/salesforcecli/plugin-lightning-dev/commit/1f29721e710524bce1508672167aab53678db08d))
+
 ## [1.2.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.2.0...1.2.1) (2024-09-20)
 
 ### Bug Fixes
