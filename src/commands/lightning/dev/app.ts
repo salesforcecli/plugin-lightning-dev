@@ -238,29 +238,27 @@ export default class LightningDevApp extends SfCommand<void> {
       this.spinner.stop();
 
       // Configure certificates for dev server secure connection
-      this.spinner.start(messages.getMessage('spinner.cert.gen'));
       const certData = await PreviewUtils.generateSelfSignedCert();
-      this.spinner.stop();
-
-      // Automatically install the certificate on the device.
-      this.spinner.start(messages.getMessage('spinner.cert.install'));
       if (platform === Platform.ios) {
         // On iOS we force-install the cert even if it is already installed because
         // the process of installing the cert is fast and easy.
+        this.spinner.start(messages.getMessage('spinner.cert.install'));
         await device.installCert(certData);
+        this.spinner.stop();
       } else {
         // On Android the process of auto-installing a cert is a bit involved and slow.
         // So it is best to first determine if the cert is already installed or not.
         const isAlreadyInstalled = await device.isCertInstalled(certData);
         if (!isAlreadyInstalled) {
+          this.spinner.start(messages.getMessage('spinner.cert.install'));
           await device.installCert(certData);
+          this.spinner.stop();
         }
       }
-      this.spinner.stop();
 
       // Check if Salesforce Mobile App is installed on the device
       const appConfig = platform === Platform.ios ? iOSSalesforceAppPreviewConfig : androidSalesforceAppPreviewConfig;
-      const appInstalled = await device.hasApp(appConfig.id);
+      const appInstalled = await device.isAppInstalled(appConfig.id);
 
       // If Salesforce Mobile App is not installed, offer to download and install it
       let bundlePath: string | undefined;
@@ -292,6 +290,11 @@ export default class LightningDevApp extends SfCommand<void> {
           this.spinner.stop();
           bundlePath = finalBundlePath;
         }
+
+        // now go ahead and install the app
+        this.spinner.start(messages.getMessage('spinner.app.install', [appConfig.id]));
+        await device.installApp(bundlePath);
+        this.spinner.stop();
       }
 
       // Start the LWC Dev Server
@@ -308,7 +311,7 @@ export default class LightningDevApp extends SfCommand<void> {
       const targetActivity = (appConfig as AndroidAppPreviewConfig)?.activity;
       const targetApp = targetActivity ? `${appConfig.id}/${targetActivity}` : appConfig.id;
 
-      await device.launchApp(targetApp, bundlePath, appConfig.launch_arguments ?? []);
+      await device.launchApp(targetApp, appConfig.launch_arguments ?? []);
     } finally {
       // stop progress & spinner UX (that may still be running in case of an error)
       this.progress.stop();

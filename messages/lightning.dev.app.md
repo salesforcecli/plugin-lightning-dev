@@ -71,6 +71,10 @@ Generating self-signed certificate
 
 Installing self-signed certificate
 
+# spinner.app.install
+
+Installing app %s
+
 # spinner.extract.archive
 
 Extracting archive

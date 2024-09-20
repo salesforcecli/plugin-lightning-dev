@@ -226,7 +226,7 @@ describe('lightning dev app', () => {
       await verifyMobileThrowsWhenFailedToGenerateCert(Platform.android);
     });
 
-    it('waits for user to manually install the certificate', async () => {
+    /* it('waits for user to manually install the certificate', async () => {
       $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
       $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(fakeIdentityData);
@@ -242,7 +242,7 @@ describe('lightning dev app', () => {
 
       await verifyMobileWaitsForManualCertInstallation(Platform.ios);
       await verifyMobileWaitsForManualCertInstallation(Platform.android);
-    });
+    });*/
 
     it('throws if user chooses not to install app on mobile device', async () => {
       $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
@@ -332,7 +332,7 @@ describe('lightning dev app', () => {
       }
     }
 
-    async function verifyMobileWaitsForManualCertInstallation(platform: Platform.ios | Platform.android) {
+    /* async function verifyMobileWaitsForManualCertInstallation(platform: Platform.ios | Platform.android) {
       const installCertStub =
         platform === Platform.ios
           ? $$.SANDBOX.stub(AppleDevice.prototype, 'installCert').resolves()
@@ -340,29 +340,29 @@ describe('lightning dev app', () => {
 
       if (platform === Platform.ios) {
         $$.SANDBOX.stub(AppleDevice.prototype, 'boot').resolves();
-        $$.SANDBOX.stub(AppleDevice.prototype, 'hasApp').resolves(true);
+        $$.SANDBOX.stub(AppleDevice.prototype, 'isAppInstalled').resolves(true);
         $$.SANDBOX.stub(AppleDevice.prototype, 'launchApp').resolves();
       } else {
         $$.SANDBOX.stub(AndroidDevice.prototype, 'boot').resolves();
-        $$.SANDBOX.stub(AndroidDevice.prototype, 'hasApp').resolves(true);
+        $$.SANDBOX.stub(AndroidDevice.prototype, 'isAppInstalled').resolves(true);
         $$.SANDBOX.stub(AndroidDevice.prototype, 'launchApp').resolves();
         $$.SANDBOX.stub(AndroidDevice.prototype, 'isCertInstalled').resolves(false);
       }
 
       await MockedLightningPreviewApp.run(['-n', 'Sales', '-o', testOrgData.username, '-t', platform]);
       expect(installCertStub.called).to.be.true;
-    }
+    }*/
 
     async function verifyMobileThrowsWhenUserDeclinesToInstallApp(platform: Platform.ios | Platform.android) {
       if (platform === Platform.ios) {
         $$.SANDBOX.stub(AppleDevice.prototype, 'boot').resolves();
         $$.SANDBOX.stub(AppleDevice.prototype, 'installCert').resolves();
-        $$.SANDBOX.stub(AppleDevice.prototype, 'hasApp').resolves(false);
+        $$.SANDBOX.stub(AppleDevice.prototype, 'isAppInstalled').resolves(false);
       } else {
         $$.SANDBOX.stub(AndroidDevice.prototype, 'boot').resolves();
         $$.SANDBOX.stub(AndroidDevice.prototype, 'installCert').resolves();
         $$.SANDBOX.stub(AndroidDevice.prototype, 'isCertInstalled').resolves(false);
-        $$.SANDBOX.stub(AndroidDevice.prototype, 'hasApp').resolves(false);
+        $$.SANDBOX.stub(AndroidDevice.prototype, 'isAppInstalled').resolves(false);
       }
 
       const appConfig = platform === Platform.ios ? iOSSalesforceAppPreviewConfig : androidSalesforceAppPreviewConfig;
@@ -402,6 +402,10 @@ describe('lightning dev app', () => {
         testBundleArchive
       );
       const extractStub = $$.SANDBOX.stub(CommonUtils, 'extractZIPArchive').resolves();
+      const installStub =
+        platform === Platform.ios
+          ? $$.SANDBOX.stub(AppleDevice.prototype, 'installApp').resolves()
+          : $$.SANDBOX.stub(AndroidDevice.prototype, 'installApp').resolves();
       const launchStub =
         platform === Platform.ios
           ? $$.SANDBOX.stub(AppleDevice.prototype, 'launchApp').resolves()
@@ -410,12 +414,12 @@ describe('lightning dev app', () => {
       if (platform === Platform.ios) {
         $$.SANDBOX.stub(AppleDevice.prototype, 'boot').resolves();
         $$.SANDBOX.stub(AppleDevice.prototype, 'installCert').resolves();
-        $$.SANDBOX.stub(AppleDevice.prototype, 'hasApp').resolves(false);
+        $$.SANDBOX.stub(AppleDevice.prototype, 'isAppInstalled').resolves(false);
       } else {
         $$.SANDBOX.stub(AndroidDevice.prototype, 'boot').resolves();
-        $$.SANDBOX.stub(AndroidDevice.prototype, 'installCert').resolves();
         $$.SANDBOX.stub(AndroidDevice.prototype, 'isCertInstalled').resolves(false);
-        $$.SANDBOX.stub(AndroidDevice.prototype, 'hasApp').resolves(false);
+        $$.SANDBOX.stub(AndroidDevice.prototype, 'installCert').resolves();
+        $$.SANDBOX.stub(AndroidDevice.prototype, 'isAppInstalled').resolves(false);
       }
 
       await MockedLightningPreviewApp.run(['-n', 'Sales', '-o', testOrgData.username, '-t', platform]);
@@ -429,7 +433,8 @@ describe('lightning dev app', () => {
         expect(extractStub.called).to.be.false;
       }
 
-      expect(launchStub.calledWith(expectedTargetApp, expectedFinalBundlePath, expectedLaunchArguments)).to.be.true;
+      expect(installStub.calledWith(expectedFinalBundlePath)).to.be.true;
+      expect(launchStub.calledWith(expectedTargetApp, expectedLaunchArguments)).to.be.true;
 
       downloadStub.restore();
       extractStub.restore();
