@@ -30,7 +30,13 @@ _Describe what actually happened instead_.
 
 ### Additional Information
 
-_Feel free to attach a screenshot_.
+**Screenshots:**
+<!-- Screenshots of the following are very helpful: -->
+<!-- 1) Browser state when you encounter the issue -->
+<!-- 2) [Sites-only] Chrome dev-tools Network tab (what requests failed during local dev) -->
+
+**Logs:**
+<!-- Any logs from the browser and the local dev server when issue occurs -->
 
 ### System Information
 
@@ -43,3 +49,12 @@ PASTE_SF_VERSION_OUTPUT_HERE
 ```
 
 **OS:**
+
+**Experience Sites Only:**
+<!-- If you are running an experience site locally, paste the contents of .localdev/${sitename}/app/site/.metadata/runtime-info.json below -->
+
+```json
+PASTE_runtime-info.json_HERE
+```
+
+
