@@ -333,6 +333,8 @@ export class ExperienceSite {
 
       return ''; // Site will be guest user access only
     }
+
+    // Not sure what scenarios we don't have an access token at all, but lets output a separate message here so we can distinguish these edge cases
     // eslint-disable-next-line no-console
     console.warn(
       'Warning: sf cli org connection missing accessToken. Local Dev proxied requests to your site may fail or return data from the guest user context.'
