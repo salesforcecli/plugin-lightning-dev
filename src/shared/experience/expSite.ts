@@ -101,8 +101,19 @@ export class ExperienceSite {
    * @returns sid token for proxied site requests
    */
   public async setupAuth(): Promise<string> {
-    const networkId = await this.getNetworkId();
-    const sidToken = await this.getNewSidToken(networkId);
+    let sidToken = ''; // Default to guest user access only
+
+    // Use environment variable for now if users want to just have guest access only
+    if (process.env.SITE_GUEST_ACCESS !== 'true') {
+      try {
+        const networkId = await this.getNetworkId();
+        sidToken = await this.getNewSidToken(networkId);
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to establish authentication for site', e);
+      }
+    }
+
     return sidToken;
   }
 
@@ -238,7 +249,7 @@ export class ExperienceSite {
     return resourcePath;
   }
 
-  public async getNetworkId(): Promise<string> {
+  private async getNetworkId(): Promise<string> {
     const conn = this.org.getConnection();
     // Query the Network object for the network with the given site name
     const result = await conn.query<{ Id: string }>(`SELECT Id FROM Network WHERE Name = '${this.siteDisplayName}'`);
@@ -250,18 +261,18 @@ export class ExperienceSite {
       networkId = networkId.substring(0, networkId.length - 3);
       return networkId;
     } else {
-      throw new Error(`Network with name '${this.siteDisplayName}' not found`);
+      throw new Error(`NetworkId for site: '${this.siteDisplayName}' could not be found`);
     }
   }
 
-  public async getNewSidToken(networkId: string): Promise<string> {
+  private async getNewSidToken(networkId: string): Promise<string> {
     // Get the connection and access token from the org
     const conn = this.org.getConnection();
     const orgId = this.org.getOrgId();
 
     // Not sure if we need to do this
     const orgIdMinus3 = orgId.substring(0, orgId.length - 3);
-    const accessToken = conn.accessToken; // TODO should we be refreshing before use?
+    const accessToken = conn.accessToken;
     const instanceUrl = conn.instanceUrl; // Org URL
 
     // Call out to the servlet to establish a session
@@ -269,7 +280,7 @@ export class ExperienceSite {
 
     // Make the GET request without following redirects
     if (accessToken) {
-      // TODO should we always refreshAuth?
+      // TODO should we try and refresh auth here?
       // await conn.refreshAuth();
 
       const cookies = [`sid=${accessToken}`, `oid=${orgIdMinus3}`].join('; ').trim();
@@ -283,14 +294,14 @@ export class ExperienceSite {
       });
 
       // Extract the Location header
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const locationHeader = response.headers['location'];
+      const locationHeader = response.headers['location'] as string;
       if (locationHeader) {
         // Parse the URL to extract the 'sid' parameter
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         const urlObj = new URL(locationHeader);
         const sid = urlObj.searchParams.get('sid') ?? '';
         const cookies2 = ['__Secure-has-sid=1', `sid=${sid}`, `oid=${orgIdMinus3}`].join('; ').trim();
+
+        // Request the location header to establish our session with the servlet
         response = await axios.get(urlObj.toString(), {
           headers: {
             Cookie: cookies2,
@@ -301,11 +312,10 @@ export class ExperienceSite {
         });
         const setCookieHeader = response.headers['set-cookie'];
         if (setCookieHeader) {
-          // 'set-cookie' can be an array if multiple cookies are set
           // Find the 'sid' cookie in the set-cookie header
           const sidCookie = setCookieHeader.find((cookieStr: string) => cookieStr.startsWith('sid='));
           if (sidCookie) {
-            // Extract the sid value from the cookie string
+            // Extract the sid value from the set-cookie string
             const sidMatch = sidCookie.match(/sid=([^;]+)/);
             if (sidMatch?.[1]) {
               const sidToken = sidMatch[1];
@@ -314,13 +324,15 @@ export class ExperienceSite {
           }
         }
       }
+
+      // if we can't establish a valid session this way, lets just warn the user and utilize the guest user context for the site
       // eslint-disable-next-line no-console
       console.warn(
         `Warning: could not establish valid auth token for your site '${this.siteDisplayName}'.` +
           'Local Dev proxied requests to your site may fail or return data from the guest user context.'
       );
 
-      return accessToken;
+      return ''; // Site will be guest user access only
     }
     // eslint-disable-next-line no-console
     console.warn(
