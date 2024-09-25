@@ -4218,10 +4218,10 @@
   dependencies:
     "@salesforce/ts-types" "^2.0.12"
 
-"@salesforce/lwc-dev-mobile-core@4.0.0-alpha.8":
-  version "4.0.0-alpha.8"
-  resolved "https://registry.yarnpkg.com/@salesforce/lwc-dev-mobile-core/-/lwc-dev-mobile-core-4.0.0-alpha.8.tgz#3cfe85bf1cba51a0cfdcfe656540ba15d881866e"
-  integrity sha512-qHufYgUYs4kNrZzLhXDYYlSngQjDU82i31VJsGWpjWJBbqEtHbOzj/oqX/V4IWjpdtjahNAKe0t8PCeiUfH3oQ==
+"@salesforce/lwc-dev-mobile-core@4.0.0-alpha.9":
+  version "4.0.0-alpha.9"
+  resolved "https://registry.yarnpkg.com/@salesforce/lwc-dev-mobile-core/-/lwc-dev-mobile-core-4.0.0-alpha.9.tgz#51d7b00be3b27fba4b7249e3a5a341e490ec82b0"
+  integrity sha512-XKxOgJc4fKbQm3CFeXqK8gvezPh/+yjv/LP+8RVx83ueMZyzMXfgINCadjZEq3iOLHPcAt+Pw+ubDxH0CeLx2w==
   dependencies:
     "@oclif/core" "^4.0.21"
     "@salesforce/core" "^8.5.7"
