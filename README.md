@@ -75,7 +75,7 @@ Follow these instructions if you want to setup a dev environment for the `sf lig
 
 ## Setup
 
-1. [Enable Local Development] (https://developer.salesforce.com/docs/platform/lwc/guide/get-started-test-components.html#enable-local-dev)
+1. [Enable Local Development](https://developer.salesforce.com/docs/platform/lwc/guide/get-started-test-components.html#enable-local-dev)
 
 2. Deploy some source files to your org from your SFDX project
 
@@ -200,7 +200,7 @@ EXAMPLES
     $ sf lightning dev app --target-org myOrg --device-type ios --device-id "iPhone 15 Pro Max"
 ```
 
-_See code: [src/commands/lightning/dev/app.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/1.1.1/src/commands/lightning/dev/app.ts)_
+_See code: [src/commands/lightning/dev/app.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/1.3.0/src/commands/lightning/dev/app.ts)_
 
 ## `sf lightning dev site`
 
@@ -244,6 +244,6 @@ EXAMPLES
     $ sf lightning dev site --name "Partner Central" --target-org myOrg
 ```
 
-_See code: [src/commands/lightning/dev/site.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/1.1.1/src/commands/lightning/dev/site.ts)_
+_See code: [src/commands/lightning/dev/site.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/1.3.0/src/commands/lightning/dev/site.ts)_
 
 <!-- commandsstop -->

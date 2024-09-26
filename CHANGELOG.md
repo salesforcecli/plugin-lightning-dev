@@ -1,3 +1,21 @@
+# [1.3.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.2.1...1.3.0) (2024-09-20)
+
+### Features
+
+- establish valid experience site sessions at startup ([#175](https://github.com/salesforcecli/plugin-lightning-dev/issues/175)) ([1f29721](https://github.com/salesforcecli/plugin-lightning-dev/commit/1f29721e710524bce1508672167aab53678db08d))
+
+## [1.2.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.2.0...1.2.1) (2024-09-20)
+
+### Bug Fixes
+
+- update lwr 0.14.3 / windows fixes ([#180](https://github.com/salesforcecli/plugin-lightning-dev/issues/180)) ([7f74eff](https://github.com/salesforcecli/plugin-lightning-dev/commit/7f74effc23898ee18d226ce1b7bd8130b0bd954d))
+
+# [1.2.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.1.1...1.2.0) (2024-09-13)
+
+### Features
+
+- [sites] local dev authentication ([#155](https://github.com/salesforcecli/plugin-lightning-dev/issues/155)) ([2629dcc](https://github.com/salesforcecli/plugin-lightning-dev/commit/2629dcc6dd519894fc69f66f57827357ece0f6c8))
+
 ## [1.1.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.1.0...1.1.1) (2024-09-09)
 
 ### Bug Fixes

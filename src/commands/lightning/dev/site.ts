@@ -64,8 +64,12 @@ export default class LightningDevSite extends SfCommand<void> {
         }
       }
 
+      // Establish a valid access token for this site
+      const authToken = await selectedSite.setupAuth();
+
       // Start the dev server
       await expDev({
+        authToken,
         open: true,
         port: 3000,
         logLevel: 'error',
