@@ -55,6 +55,10 @@ Unable to determine App Id for %s
 
 Unable to find device %s
 
+# error.device.google.play
+
+Google Play devices are not supported. %s is a Google Play device. Please use a Google APIs device instead.
+
 # spinner.device.boot
 
 Booting device %s
@@ -62,6 +66,14 @@ Booting device %s
 # spinner.cert.gen
 
 Generating self-signed certificate
+
+# spinner.cert.install
+
+Installing self-signed certificate
+
+# spinner.app.install
+
+Installing app %s
 
 # spinner.extract.archive
 
@@ -78,76 +90,6 @@ Downloading
 # trust.local.dev.server
 
 Note: Your desktop browser requires additional configuration to trust the local development server. See the documentation for more details.
-
-# certificate.installation.notice
-
-To use local preview on your device, you have to install a self-signed certificate on it. If you previously set up a certificate for your device, you can skip this step.
-
-# certificate.installation.skip.message
-
-Do you want to skip this step
-
-# certificate.installation.description
-
-Before proceeding, install the self-signed certificate on your device. The certificate file is located at
-
-`%s`
-
-To install the certificate, follow these steps:
-
-%s
-
-# certificate.installation.steps.ios
-
-1. Drag and drop the file onto your booted simulator.
-2. Click `Allow` to proceed with downloading the configuration file.
-3. Click `Close` and navigate to `Settings > General > VPN & Device Management > localhost`.
-4. Click `Install` in the title bar, in the warning window, and on the install button.
-5. In the `Profile Installed` view, confirm that the profile displays `Verified` and then click `Done`.
-6. Navigate to `Settings > General > About > Certificate Trust Settings`.
-7. Enable full trust for `localhost`.
-8. In the resulting warning pop-up, click `Continue`.
-
-# certificate.installation.steps.android
-
-1. Drag and drop the file onto your booted emulator.
-2. %s
-3. Navigate to the certificate file from step 1. (It's usually located in `/sdcard/download`).
-4. Follow the on-screen instructions to install it.
-5. Click `User credentials` under `Credential storage` and verify that your certificate is listed there.
-6. Click `Trusted credentials` under `Credential storage`. Then click `USER` and verify that page lists your certificate.
-
-# certificate.installation.steps.android.nav-target-api-24-25
-
-Navigate to `Settings > Security` and click `Install from SD card` under `Credential storage`.
-
-# certificate.installation.steps.android.nav-target-api-26-27
-
-Navigate to `Settings > Security & Location > Encryption & credentials` and click `Install from SD card` under `Credential storage`.
-
-# certificate.installation.steps.android.nav-target-api-28
-
-Navigate to `Settings > Security & Location > Advanced > Encryption & credentials` and click `Install from SD card` under `Credential storage`.
-
-# certificate.installation.steps.android.nav-target-api-29
-
-Navigate to `Settings > Security > Encryption & credentials` and click `Install from SD card` under `Credential storage`.
-
-# certificate.installation.steps.android.nav-target-api-30-32
-
-Navigate to `Settings > Security > Encryption & credentials` and click `Install a certificate` under `Credential storage`. Click `CA certificate`, and then click `Install anyway`.
-
-# certificate.installation.steps.android.nav-target-api-33
-
-Navigate to `Settings > Security > More security settings > Encryption & credentials` and click `Install a certificate` under `Credential storage`. Click `CA certificate`, and then click `Install anyway`.
-
-# certificate.installation.steps.android.nav-target-api-34-up
-
-Navigate to `Settings > Security & Privacy > More security & privacy > Encryption & credentials` and click `Install a certificate` under `Credential storage`. Click `CA certificate`, and then click `Install anyway`.
-
-# certificate.waiting
-
-After you install the certificate, press any key to continue...
 
 # mobileapp.notfound
 
