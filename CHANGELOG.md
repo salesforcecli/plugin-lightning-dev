@@ -1,3 +1,9 @@
+# [1.4.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.3.0...1.4.0) (2024-09-30)
+
+### Features
+
+- add support to auto-install cert on mobile device ([#167](https://github.com/salesforcecli/plugin-lightning-dev/issues/167)) ([e3c95a7](https://github.com/salesforcecli/plugin-lightning-dev/commit/e3c95a780cabad924ecf9870c6d1881bbcfbea11))
+
 # [1.3.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.2.1...1.3.0) (2024-09-20)
 
 ### Features
