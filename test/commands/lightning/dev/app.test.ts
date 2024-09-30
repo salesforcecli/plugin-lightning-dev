@@ -83,6 +83,7 @@ describe('lightning dev app', () => {
     $$.SANDBOX.stub(SfConfig.prototype, 'set');
     $$.SANDBOX.stub(SfConfig.prototype, 'write').resolves();
     $$.SANDBOX.stub(ConfigUtils, 'getOrCreateIdentityToken').resolves(fakeIdentityToken);
+    $$.SANDBOX.stub(OrgUtils, 'isLocalDevEnabled').resolves(true);
 
     MockedLightningPreviewApp = await esmock<typeof LightningDevApp>('../../../../src/commands/lightning/dev/app.js', {
       '../../../../src/lwc-dev-server/index.js': {
@@ -93,6 +94,16 @@ describe('lightning dev app', () => {
 
   afterEach(() => {
     $$.restore();
+  });
+
+  it('throws when local dev not enabled', async () => {
+    try {
+      $$.SANDBOX.restore();
+      $$.SANDBOX.stub(OrgUtils, 'isLocalDevEnabled').resolves(false);
+      await MockedLightningPreviewApp.run(['--name', 'blah', '-o', testOrgData.username]);
+    } catch (err) {
+      expect(err).to.be.an('error').with.property('message', messages.getMessage('error.localdev.not.enabled'));
+    }
   });
 
   it('throws when app not found', async () => {
@@ -226,24 +237,6 @@ describe('lightning dev app', () => {
       await verifyMobileThrowsWhenFailedToGenerateCert(Platform.android);
     });
 
-    /* it('waits for user to manually install the certificate', async () => {
-      $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
-      $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
-      $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(fakeIdentityData);
-
-      $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'init').resolves();
-      $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'run').resolves();
-
-      $$.SANDBOX.stub(PreviewUtils, 'getMobileDevice').callsFake((platform) =>
-        Promise.resolve(platform === Platform.ios ? testIOSDevice : testAndroidDevice)
-      );
-
-      $$.SANDBOX.stub(PreviewUtils, 'generateSelfSignedCert').resolves(certData);
-
-      await verifyMobileWaitsForManualCertInstallation(Platform.ios);
-      await verifyMobileWaitsForManualCertInstallation(Platform.android);
-    });*/
-
     it('throws if user chooses not to install app on mobile device', async () => {
       $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
@@ -331,27 +324,6 @@ describe('lightning dev app', () => {
         expect(err).to.be.an('error').with.property('message', 'Failed to generate certificate');
       }
     }
-
-    /* async function verifyMobileWaitsForManualCertInstallation(platform: Platform.ios | Platform.android) {
-      const installCertStub =
-        platform === Platform.ios
-          ? $$.SANDBOX.stub(AppleDevice.prototype, 'installCert').resolves()
-          : $$.SANDBOX.stub(AndroidDevice.prototype, 'installCert').resolves();
-
-      if (platform === Platform.ios) {
-        $$.SANDBOX.stub(AppleDevice.prototype, 'boot').resolves();
-        $$.SANDBOX.stub(AppleDevice.prototype, 'isAppInstalled').resolves(true);
-        $$.SANDBOX.stub(AppleDevice.prototype, 'launchApp').resolves();
-      } else {
-        $$.SANDBOX.stub(AndroidDevice.prototype, 'boot').resolves();
-        $$.SANDBOX.stub(AndroidDevice.prototype, 'isAppInstalled').resolves(true);
-        $$.SANDBOX.stub(AndroidDevice.prototype, 'launchApp').resolves();
-        $$.SANDBOX.stub(AndroidDevice.prototype, 'isCertInstalled').resolves(false);
-      }
-
-      await MockedLightningPreviewApp.run(['-n', 'Sales', '-o', testOrgData.username, '-t', platform]);
-      expect(installCertStub.called).to.be.true;
-    }*/
 
     async function verifyMobileThrowsWhenUserDeclinesToInstallApp(platform: Platform.ios | Platform.android) {
       if (platform === Platform.ios) {

@@ -101,6 +101,11 @@ export default class LightningDevApp extends SfCommand<void> {
       return Promise.reject(new Error(messages.getMessage('error.username')));
     }
 
+    const localDevEnabled = await OrgUtils.isLocalDevEnabled(connection);
+    if (!localDevEnabled) {
+      return Promise.reject(new Error(messages.getMessage('error.localdev.not.enabled')));
+    }
+
     const tokenService = new AppServerIdentityTokenService(connection);
     const token = await ConfigUtils.getOrCreateIdentityToken(username, tokenService);
 

@@ -38,4 +38,20 @@ export class OrgUtils {
 
     return undefined;
   }
+
+  /**
+   * Checks to see if Local Dev is enabled for the org.
+   *
+   * @param connection the connection to the org
+   * @returns boolean indicating whether Local Dev is enabled for the org.
+   */
+  public static async isLocalDevEnabled(connection: Connection): Promise<boolean> {
+    const metadata = await connection.metadata.read('LightningExperienceSettings', 'enableLightningPreviewPref');
+    // casting to any here b/c LightningExperienceSettings type which is defined in 'jsforce'
+    // does not contain a definition for enableLightningPreviewPref.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+    const flagValue = `${(metadata as any).enableLightningPreviewPref}`;
+    const localDevEnabled = flagValue.toLowerCase().trim() === 'true';
+    return localDevEnabled;
+  }
 }
