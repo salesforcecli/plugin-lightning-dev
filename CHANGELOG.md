@@ -1,4 +1,34 @@
-# 1.1.0 (2024-08-18)
+# [1.4.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.3.0...1.4.0) (2024-09-30)
+
+### Features
+
+- add support to auto-install cert on mobile device ([#167](https://github.com/salesforcecli/plugin-lightning-dev/issues/167)) ([e3c95a7](https://github.com/salesforcecli/plugin-lightning-dev/commit/e3c95a780cabad924ecf9870c6d1881bbcfbea11))
+
+# [1.3.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.2.1...1.3.0) (2024-09-20)
+
+### Features
+
+- establish valid experience site sessions at startup ([#175](https://github.com/salesforcecli/plugin-lightning-dev/issues/175)) ([1f29721](https://github.com/salesforcecli/plugin-lightning-dev/commit/1f29721e710524bce1508672167aab53678db08d))
+
+## [1.2.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.2.0...1.2.1) (2024-09-20)
+
+### Bug Fixes
+
+- update lwr 0.14.3 / windows fixes ([#180](https://github.com/salesforcecli/plugin-lightning-dev/issues/180)) ([7f74eff](https://github.com/salesforcecli/plugin-lightning-dev/commit/7f74effc23898ee18d226ce1b7bd8130b0bd954d))
+
+# [1.2.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.1.1...1.2.0) (2024-09-13)
+
+### Features
+
+- [sites] local dev authentication ([#155](https://github.com/salesforcecli/plugin-lightning-dev/issues/155)) ([2629dcc](https://github.com/salesforcecli/plugin-lightning-dev/commit/2629dcc6dd519894fc69f66f57827357ece0f6c8))
+
+## [1.1.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.1.0...1.1.1) (2024-09-09)
+
+### Bug Fixes
+
+- **readme:** broken links in README.md ([#163](https://github.com/salesforcecli/plugin-lightning-dev/issues/163)) ([b6f2cd7](https://github.com/salesforcecli/plugin-lightning-dev/commit/b6f2cd7d7bffbdf1cf2b98e8b37104aa51c385f6))
+
+# [1.1.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/55e1c19e84b534ecd35824f651c6f6b85c3eec1e...1.1.0) (2024-08-18)
 
 ### Bug Fixes
 

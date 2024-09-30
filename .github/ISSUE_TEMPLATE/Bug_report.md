@@ -20,20 +20,43 @@ _Short summary of what is going on or to provide context_.
 1.  This is step 1.
 1.  This is step 2. All steps should start with '1.'
 
-### Expected result
+### Expected Result
 
 _Describe what should have happened_.
 
-### Actual result
+### Actual Result
 
 _Describe what actually happened instead_.
 
-### Additional information
+### Additional Information
 
-_Feel free to attach a screenshot_.
+**Screenshots:**
 
-**VS Code Version**:
+<!-- Screenshots of the following are very helpful: -->
+<!-- 1) Browser state when you encounter the issue -->
+<!-- 2) Chrome dev-tools "Network" tab (what requests failed during local dev) -->
 
-**SFDX CLI Version**:
+**Logs:**
 
-**OS and version**:
+<!-- Any logs from the browser and the local dev server when the issue occurs -->
+
+### System Information
+
+**SF CLI:**
+
+<!-- Which shell or terminal are you using? (bash, zsh, powershell 7, cmd.exe, etc) -->
+<!-- Paste the **full** output of the `sf version --verbose --json` command below -->
+
+```json
+PASTE_SF_VERSION_OUTPUT_HERE
+```
+
+**OS:**
+
+**Experience Sites Only:**
+
+<!-- If you are running an experience site locally, paste the contents of .localdev/${sitename}/app/site/.metadata/runtime-info.json below -->
+
+```json
+PASTE_runtime-info.json_HERE
+```
