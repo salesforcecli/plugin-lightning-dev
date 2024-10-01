@@ -7,6 +7,10 @@
 
 import { Connection } from '@salesforce/core';
 
+type LightningPreviewMetadataResponse = {
+  enableLightningPreviewPref?: string;
+};
+
 export class OrgUtils {
   /**
    * Given an app name, it queries the org to find the matching app id. To do so,
@@ -37,5 +41,18 @@ export class OrgUtils {
     }
 
     return undefined;
+  }
+
+  /**
+   * Checks to see if Local Dev is enabled for the org.
+   *
+   * @param connection the connection to the org
+   * @returns boolean indicating whether Local Dev is enabled for the org.
+   */
+  public static async isLocalDevEnabled(connection: Connection): Promise<boolean> {
+    const metadata = await connection.metadata.read('LightningExperienceSettings', 'enableLightningPreviewPref');
+    const flagValue = (metadata as LightningPreviewMetadataResponse).enableLightningPreviewPref ?? 'false';
+    const localDevEnabled = flagValue.toLowerCase().trim() === 'true';
+    return localDevEnabled;
   }
 }

@@ -24,6 +24,7 @@ import { ConfigUtils, IdentityTokenService } from '../../../shared/configUtils.j
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.app');
+const sharedMessages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'shared.utils');
 
 export const iOSSalesforceAppPreviewConfig = {
   name: 'Salesforce Mobile App',
@@ -99,6 +100,11 @@ export default class LightningDevApp extends SfCommand<void> {
     const username = connection.getUsername();
     if (!username) {
       return Promise.reject(new Error(messages.getMessage('error.username')));
+    }
+
+    const localDevEnabled = await OrgUtils.isLocalDevEnabled(connection);
+    if (!localDevEnabled) {
+      return Promise.reject(new Error(sharedMessages.getMessage('error.localdev.not.enabled')));
     }
 
     const tokenService = new AppServerIdentityTokenService(connection);
