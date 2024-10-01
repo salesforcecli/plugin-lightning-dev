@@ -1,3 +1,9 @@
+# [1.5.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.4.0...1.5.0) (2024-10-01)
+
+### Features
+
+- ensure local dev is enabled for an org ([#189](https://github.com/salesforcecli/plugin-lightning-dev/issues/189)) ([c5749ec](https://github.com/salesforcecli/plugin-lightning-dev/commit/c5749eca230097c5b3d57d18d4967df8408e1cfa))
+
 # [1.4.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.3.0...1.4.0) (2024-09-30)
 
 ### Features
