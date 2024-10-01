@@ -8,11 +8,13 @@ import fs from 'node:fs';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import { expDev } from '@lwrjs/api';
+import { OrgUtils } from '../../../shared/orgUtils.js';
 import { PromptUtils } from '../../../shared/prompt.js';
 import { ExperienceSite } from '../../../shared/experience/expSite.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.site');
+const sharedMessages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'shared.utils');
 
 export default class LightningDevSite extends SfCommand<void> {
   public static readonly summary = messages.getMessage('summary');
@@ -34,6 +36,11 @@ export default class LightningDevSite extends SfCommand<void> {
     try {
       const org = flags['target-org'];
       let siteName = flags.name;
+
+      const localDevEnabled = await OrgUtils.isLocalDevEnabled(org.getConnection(undefined));
+      if (!localDevEnabled) {
+        throw new Error(sharedMessages.getMessage('error.localdev.not.enabled'));
+      }
 
       // If user doesn't specify a site, prompt the user for one
       if (!siteName) {

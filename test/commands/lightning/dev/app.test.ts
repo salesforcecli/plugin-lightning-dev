@@ -37,6 +37,7 @@ Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 
 describe('lightning dev app', () => {
   const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.app');
+  const sharedMessages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'shared.utils');
   const $$ = new TestContext();
   const testOrgData = new MockTestOrgData();
   const testAppId = '06m8b000002vpFSAAY';
@@ -102,7 +103,7 @@ describe('lightning dev app', () => {
       $$.SANDBOX.stub(OrgUtils, 'isLocalDevEnabled').resolves(false);
       await MockedLightningPreviewApp.run(['--name', 'blah', '-o', testOrgData.username]);
     } catch (err) {
-      expect(err).to.be.an('error').with.property('message', messages.getMessage('error.localdev.not.enabled'));
+      expect(err).to.be.an('error').with.property('message', sharedMessages.getMessage('error.localdev.not.enabled'));
     }
   });
 

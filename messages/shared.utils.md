@@ -25,3 +25,7 @@ The SSL certificate data to be used by the local dev server for secure connectio
 # config-utils.cert-error-message
 
 You must provide valid SSL certificate data
+
+# error.localdev.not.enabled
+
+Local Dev is not enabled for your org. See https://developer.salesforce.com/docs/platform/lwc/guide/get-started-test-components.html for more information on enabling and using Local Dev.

@@ -7,6 +7,10 @@
 
 import { Connection } from '@salesforce/core';
 
+type LightningPreviewMetadataResponse = {
+  enableLightningPreviewPref?: string;
+};
+
 export class OrgUtils {
   /**
    * Given an app name, it queries the org to find the matching app id. To do so,
@@ -47,10 +51,7 @@ export class OrgUtils {
    */
   public static async isLocalDevEnabled(connection: Connection): Promise<boolean> {
     const metadata = await connection.metadata.read('LightningExperienceSettings', 'enableLightningPreviewPref');
-    // casting to any here b/c LightningExperienceSettings type which is defined in 'jsforce'
-    // does not contain a definition for enableLightningPreviewPref.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-    const flagValue = `${(metadata as any).enableLightningPreviewPref}`;
+    const flagValue = (metadata as LightningPreviewMetadataResponse).enableLightningPreviewPref ?? 'false';
     const localDevEnabled = flagValue.toLowerCase().trim() === 'true';
     return localDevEnabled;
   }

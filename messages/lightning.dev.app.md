@@ -35,10 +35,6 @@ ID of the mobile device to display the preview if device type is set to `ios` or
 
 Org must have a valid user
 
-# error.localdev.not.enabled
-
-Local Dev is not enabled for your org. See https://developer.salesforce.com/docs/platform/lwc/guide/get-started-test-components.html for more information on enabling and using Local Dev.
-
 # error.identitydata
 
 Couldn't find identity data while generating preview arguments
