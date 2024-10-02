@@ -1,3 +1,9 @@
+# [1.6.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.5.0...1.6.0) (2024-10-02)
+
+### Features
+
+- add lwc dev server telemetry ([#148](https://github.com/salesforcecli/plugin-lightning-dev/issues/148)) ([33d09a3](https://github.com/salesforcecli/plugin-lightning-dev/commit/33d09a311560a1b7597f80001bff995661896643))
+
 # [1.5.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.4.0...1.5.0) (2024-10-01)
 
 ### Features
