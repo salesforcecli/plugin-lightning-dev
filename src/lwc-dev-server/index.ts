@@ -9,7 +9,7 @@ import { existsSync, lstatSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { LWCServer, LogLevel, ServerConfig, startLwcDevServer, Workspace } from '@lwc/lwc-dev-server';
-import { Logger } from '@salesforce/core';
+import { Lifecycle, Logger } from '@salesforce/core';
 import { SSLCertificateData } from '@salesforce/lwc-dev-mobile-core';
 import {
   ConfigUtils,
@@ -47,6 +47,7 @@ async function createLWCServerConfig(
   logger: Logger,
   rootDir: string,
   token: string,
+  clientType: string,
   serverPorts?: { httpPort: number; httpsPort: number },
   certData?: SSLCertificateData,
   workspace?: Workspace
@@ -91,6 +92,8 @@ async function createLWCServerConfig(
     workspace: workspace ?? (await ConfigUtils.getLocalDevServerWorkspace()) ?? LOCAL_DEV_SERVER_DEFAULT_WORKSPACE,
     identityToken: token,
     logLevel: mapLogLevel(logger.getLevel()),
+    lifecycle: Lifecycle.getInstance(),
+    clientType,
   };
 
   if (certData?.pemCertificate && certData.pemPrivateKey) {
@@ -108,11 +111,12 @@ export async function startLWCServer(
   logger: Logger,
   rootDir: string,
   token: string,
+  clientType: string,
   serverPorts?: { httpPort: number; httpsPort: number },
   certData?: SSLCertificateData,
   workspace?: Workspace
 ): Promise<LWCServer> {
-  const config = await createLWCServerConfig(logger, rootDir, token, serverPorts, certData, workspace);
+  const config = await createLWCServerConfig(logger, rootDir, token, clientType, serverPorts, certData, workspace);
 
   logger.trace(`Starting LWC Dev Server with config: ${JSON.stringify(config)}`);
   let lwcDevServer: LWCServer | null = await startLwcDevServer(config);
