@@ -75,7 +75,7 @@ export default class LightningDevSite extends SfCommand<void> {
       const authToken = await selectedSite.setupAuth();
 
       // Start the dev server
-      await expDev({
+      const params = {
         authToken,
         open: true,
         port: 3000,
@@ -83,7 +83,14 @@ export default class LightningDevSite extends SfCommand<void> {
         mode: 'dev',
         siteZip,
         siteDir: selectedSite.getSiteDirectory(),
-      });
+      };
+
+      // For testing purposes, allow skipping startup of the dev server
+      if (process.env.SKIP_STARTUP === 'true') {
+        this.log(`Skipping local server startup with parameters: '${JSON.stringify(params)}'`);
+      } else {
+        await expDev(params);
+      }
     } catch (e) {
       this.log('Local Development setup failed', e);
     }
