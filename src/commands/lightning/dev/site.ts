@@ -5,6 +5,7 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import fs from 'node:fs';
+import path from 'node:path';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import { expDev } from '@lwrjs/api';
@@ -75,7 +76,7 @@ export default class LightningDevSite extends SfCommand<void> {
       const authToken = await selectedSite.setupAuth();
 
       // Start the dev server
-      await expDev({
+      const params = {
         authToken,
         open: true,
         port: 3000,
@@ -83,7 +84,20 @@ export default class LightningDevSite extends SfCommand<void> {
         mode: 'dev',
         siteZip,
         siteDir: selectedSite.getSiteDirectory(),
-      });
+      };
+
+      // For testing purposes, allow skipping startup of the dev server
+      if (process.env.SKIP_STARTUP === 'true') {
+        this.log('Skipping startup...');
+        const scriptToRun = `import { expDev } from '@lwrjs/api';
+                             const params = ${JSON.stringify(params, null, 2)};
+                             await expDev(params);`;
+        const pathToScript = path.join(selectedSite.getSiteDirectory(), 'launchServer.mjs');
+        fs.writeFileSync(pathToScript, scriptToRun, 'utf-8');
+        this.log(`Launch server from the following script: ${pathToScript}`);
+      } else {
+        await expDev(params);
+      }
     } catch (e) {
       this.log('Local Development setup failed', e);
     }
