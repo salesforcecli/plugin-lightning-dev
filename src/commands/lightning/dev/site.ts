@@ -5,6 +5,7 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import fs from 'node:fs';
+import path from 'node:path';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import { expDev } from '@lwrjs/api';
@@ -87,7 +88,13 @@ export default class LightningDevSite extends SfCommand<void> {
 
       // For testing purposes, allow skipping startup of the dev server
       if (process.env.SKIP_STARTUP === 'true') {
-        this.log(`Skipping local server startup with parameters: '${JSON.stringify(params)}'`);
+        this.log('Skipping startup...');
+        const scriptToRun = `import { expDev } from '@lwrjs/api';
+                             const params = ${JSON.stringify(params, null, 2)};
+                             await expDev(params);`;
+        const pathToScript = path.join(selectedSite.getSiteDirectory(), 'launchServer.js');
+        fs.writeFileSync(pathToScript, scriptToRun, 'utf-8');
+        this.log(`Launch server from the following script: ${pathToScript}`);
       } else {
         await expDev(params);
       }
