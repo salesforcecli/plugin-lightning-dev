@@ -92,7 +92,7 @@ export default class LightningDevSite extends SfCommand<void> {
         const scriptToRun = `import { expDev } from '@lwrjs/api';
                              const params = ${JSON.stringify(params, null, 2)};
                              await expDev(params);`;
-        const pathToScript = path.join(selectedSite.getSiteDirectory(), 'launchServer.js');
+        const pathToScript = path.join(selectedSite.getSiteDirectory(), 'launchServer.mjs');
         fs.writeFileSync(pathToScript, scriptToRun, 'utf-8');
         this.log(`Launch server from the following script: ${pathToScript}`);
       } else {
