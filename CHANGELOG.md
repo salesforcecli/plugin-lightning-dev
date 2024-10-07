@@ -1,3 +1,9 @@
+# [1.7.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.6.0...1.7.0) (2024-10-07)
+
+### Features
+
+- prompt user to select device type ([#195](https://github.com/salesforcecli/plugin-lightning-dev/issues/195)) ([c544592](https://github.com/salesforcecli/plugin-lightning-dev/commit/c54459285ff9d9e2ed072588a2aadeb47b4c56c1))
+
 # [1.6.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.5.0...1.6.0) (2024-10-02)
 
 ### Features
