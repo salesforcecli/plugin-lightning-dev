@@ -6,7 +6,7 @@
  */
 
 import path from 'node:path';
-import { Connection, Logger, Messages, SfProject } from '@salesforce/core';
+import { Logger, Messages, SfProject } from '@salesforce/core';
 import {
   AndroidAppPreviewConfig,
   AndroidDevice,
@@ -20,7 +20,7 @@ import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
 import { OrgUtils } from '../../../shared/orgUtils.js';
 import { startLWCServer } from '../../../lwc-dev-server/index.js';
 import { PreviewUtils } from '../../../shared/previewUtils.js';
-import { ConfigUtils, IdentityTokenService } from '../../../shared/configUtils.js';
+import { PromptUtils } from '../../../shared/promptUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.app');
@@ -39,22 +39,6 @@ export const androidSalesforceAppPreviewConfig = {
 
 const maxInt32 = 2_147_483_647; // maximum 32-bit signed integer value
 
-class AppServerIdentityTokenService implements IdentityTokenService {
-  private connection: Connection;
-  public constructor(connection: Connection) {
-    this.connection = connection;
-  }
-
-  public async saveTokenToServer(token: string): Promise<string> {
-    const sobject = this.connection.sobject('UserLocalWebServerIdentity');
-    const result = await sobject.insert({ LocalWebServerIdentityToken: token });
-    if (result.success) {
-      return result.id;
-    }
-    throw new Error('Could not save the token to the server');
-  }
-}
-
 export default class LightningDevApp extends SfCommand<void> {
   public static readonly summary = messages.getMessage('summary');
   public static readonly description = messages.getMessage('description');
@@ -71,7 +55,6 @@ export default class LightningDevApp extends SfCommand<void> {
       summary: messages.getMessage('flags.device-type.summary'),
       char: 't',
       options: [Platform.desktop, Platform.ios, Platform.android] as const,
-      default: Platform.desktop,
     })(),
     'device-id': Flags.string({
       summary: messages.getMessage('flags.device-id.summary'),
@@ -83,9 +66,9 @@ export default class LightningDevApp extends SfCommand<void> {
     const { flags } = await this.parse(LightningDevApp);
     const logger = await Logger.child(this.ctor.name);
 
-    const appName = flags['name'];
-    const platform = flags['device-type'];
     const targetOrg = flags['target-org'];
+    const appName = flags['name'];
+    const platform = flags['device-type'] ?? (await PromptUtils.promptUserToSelectPlatform());
     const deviceId = flags['device-id'];
 
     let sfdxProjectRootPath = '';
@@ -107,8 +90,12 @@ export default class LightningDevApp extends SfCommand<void> {
       return Promise.reject(new Error(sharedMessages.getMessage('error.localdev.not.enabled')));
     }
 
-    const tokenService = new AppServerIdentityTokenService(connection);
-    const token = await ConfigUtils.getOrCreateIdentityToken(username, tokenService);
+    const appServerIdentity = await PreviewUtils.getOrCreateAppServerIdentity(connection);
+    const ldpServerToken = appServerIdentity.identityToken;
+    const ldpServerId = appServerIdentity.usernameToServerEntityIdMap[username];
+    if (!ldpServerId) {
+      return Promise.reject(new Error(messages.getMessage('error.identitydata.entityid')));
+    }
 
     let appId: string | undefined;
     if (appName) {
@@ -132,17 +119,23 @@ export default class LightningDevApp extends SfCommand<void> {
     const ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(platform, serverPorts, logger);
     logger.debug(`Local Dev Server url is ${ldpServerUrl}`);
 
-    const entityId = await PreviewUtils.getEntityId(username);
-
     if (platform === Platform.desktop) {
-      await this.desktopPreview(sfdxProjectRootPath, serverPorts, token, entityId, ldpServerUrl, appId, logger);
+      await this.desktopPreview(
+        sfdxProjectRootPath,
+        serverPorts,
+        ldpServerToken,
+        ldpServerId,
+        ldpServerUrl,
+        appId,
+        logger
+      );
     } else {
       await this.mobilePreview(
         platform,
         sfdxProjectRootPath,
         serverPorts,
-        token,
-        entityId,
+        ldpServerToken,
+        ldpServerId,
         ldpServerUrl,
         appName,
         appId,
@@ -155,8 +148,8 @@ export default class LightningDevApp extends SfCommand<void> {
   private async desktopPreview(
     sfdxProjectRootPath: string,
     serverPorts: { httpPort: number; httpsPort: number },
-    token: string,
-    entityId: string,
+    ldpServerToken: string,
+    ldpServerId: string,
     ldpServerUrl: string,
     appId: string | undefined,
     logger: Logger
@@ -191,13 +184,13 @@ export default class LightningDevApp extends SfCommand<void> {
 
     const launchArguments = PreviewUtils.generateDesktopPreviewLaunchArguments(
       ldpServerUrl,
-      entityId,
+      ldpServerId,
       appId,
       targetOrg
     );
 
     // Start the LWC Dev Server
-    await startLWCServer(logger, sfdxProjectRootPath, token, Platform.desktop, serverPorts);
+    await startLWCServer(logger, sfdxProjectRootPath, ldpServerToken, Platform.desktop, serverPorts);
 
     // Open the browser and navigate to the right page
     await this.config.runCommand('org:open', launchArguments);
@@ -207,8 +200,8 @@ export default class LightningDevApp extends SfCommand<void> {
     platform: Platform.ios | Platform.android,
     sfdxProjectRootPath: string,
     serverPorts: { httpPort: number; httpsPort: number },
-    token: string,
-    entityId: string,
+    ldpServerToken: string,
+    ldpServerId: string,
     ldpServerUrl: string,
     appName: string | undefined,
     appId: string | undefined,
@@ -304,14 +297,13 @@ export default class LightningDevApp extends SfCommand<void> {
       }
 
       // Start the LWC Dev Server
-
-      await startLWCServer(logger, sfdxProjectRootPath, token, platform, serverPorts, certData);
+      await startLWCServer(logger, sfdxProjectRootPath, ldpServerToken, platform, serverPorts, certData);
 
       // Launch the native app for previewing (launchMobileApp will show its own spinner)
       // eslint-disable-next-line camelcase
       appConfig.launch_arguments = PreviewUtils.generateMobileAppPreviewLaunchArguments(
         ldpServerUrl,
-        entityId,
+        ldpServerId,
         appName,
         appId
       );

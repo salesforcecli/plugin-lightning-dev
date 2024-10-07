@@ -6,13 +6,9 @@
  */
 
 import { Workspace } from '@lwc/lwc-dev-server';
-import { CryptoUtils, SSLCertificateData } from '@salesforce/lwc-dev-mobile-core';
+import { SSLCertificateData } from '@salesforce/lwc-dev-mobile-core';
 import { Config, ConfigAggregator } from '@salesforce/core';
 import configMeta, { ConfigVars, SerializedSSLCertificateData } from './../configMeta.js';
-
-export type IdentityTokenService = {
-  saveTokenToServer(token: string): Promise<string>;
-};
 
 export const LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT = 8081;
 export const LOCAL_DEV_SERVER_DEFAULT_WORKSPACE = Workspace.SfCli;
@@ -44,27 +40,16 @@ export class ConfigUtils {
     return this.#globalConfig;
   }
 
-  public static async getOrCreateIdentityToken(username: string, tokenService: IdentityTokenService): Promise<string> {
-    let identityData = await this.getIdentityData();
-    if (!identityData) {
-      const token = CryptoUtils.generateIdentityToken();
-      const entityId = await tokenService.saveTokenToServer(token);
-      identityData = {
-        identityToken: token,
-        usernameToServerEntityIdMap: {},
-      };
-      identityData.usernameToServerEntityIdMap[username] = entityId;
-      await this.writeIdentityData(identityData);
-      return token;
-    } else {
-      let entityId = identityData.usernameToServerEntityIdMap[username];
-      if (!entityId) {
-        entityId = await tokenService.saveTokenToServer(identityData.identityToken);
-        identityData.usernameToServerEntityIdMap[username] = entityId;
-        await this.writeIdentityData(identityData);
-      }
-      return identityData.identityToken;
+  public static async getIdentityData(): Promise<LocalWebServerIdentityData | undefined> {
+    const config = await ConfigAggregator.create({ customConfigMeta: configMeta });
+    // Need to reload to make sure the values read are decrypted
+    await config.reload();
+    const identityJson = config.getPropertyValue(ConfigVars.LOCAL_WEB_SERVER_IDENTITY_DATA);
+
+    if (identityJson) {
+      return JSON.parse(identityJson as string) as LocalWebServerIdentityData;
     }
+    return undefined;
   }
 
   public static async writeIdentityData(identityData: LocalWebServerIdentityData): Promise<void> {
@@ -116,17 +101,5 @@ export class ConfigUtils {
     const configWorkspace = config.get(ConfigVars.LOCAL_DEV_SERVER_WORKSPACE) as Workspace;
 
     return configWorkspace;
-  }
-
-  public static async getIdentityData(): Promise<LocalWebServerIdentityData | undefined> {
-    const config = await ConfigAggregator.create({ customConfigMeta: configMeta });
-    // Need to reload to make sure the values read are decrypted
-    await config.reload();
-    const identityJson = config.getPropertyValue(ConfigVars.LOCAL_WEB_SERVER_IDENTITY_DATA);
-
-    if (identityJson) {
-      return JSON.parse(identityJson as string) as LocalWebServerIdentityData;
-    }
-    return undefined;
   }
 }
