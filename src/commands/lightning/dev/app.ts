@@ -20,6 +20,7 @@ import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
 import { OrgUtils } from '../../../shared/orgUtils.js';
 import { startLWCServer } from '../../../lwc-dev-server/index.js';
 import { PreviewUtils } from '../../../shared/previewUtils.js';
+import { PromptUtils } from '../../../shared/promptUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.app');
@@ -54,7 +55,6 @@ export default class LightningDevApp extends SfCommand<void> {
       summary: messages.getMessage('flags.device-type.summary'),
       char: 't',
       options: [Platform.desktop, Platform.ios, Platform.android] as const,
-      default: Platform.desktop,
     })(),
     'device-id': Flags.string({
       summary: messages.getMessage('flags.device-id.summary'),
@@ -62,12 +62,22 @@ export default class LightningDevApp extends SfCommand<void> {
     }),
   };
 
+  private static async determinePlatform(flags: { 'device-type'?: Platform }): Promise<Platform> {
+    let platform = flags['device-type'];
+
+    if (!platform) {
+      platform = await PromptUtils.promptUserToSelectPlatform();
+    }
+
+    return platform;
+  }
+
   public async run(): Promise<void> {
     const { flags } = await this.parse(LightningDevApp);
     const logger = await Logger.child(this.ctor.name);
 
     const appName = flags['name'];
-    const platform = flags['device-type'];
+    const platform = await LightningDevApp.determinePlatform(flags);
     const targetOrg = flags['target-org'];
     const deviceId = flags['device-id'];
 

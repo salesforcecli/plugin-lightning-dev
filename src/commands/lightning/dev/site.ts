@@ -9,7 +9,7 @@ import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 import { expDev } from '@lwrjs/api';
 import { OrgUtils } from '../../../shared/orgUtils.js';
-import { PromptUtils } from '../../../shared/prompt.js';
+import { PromptUtils } from '../../../shared/promptUtils.js';
 import { ExperienceSite } from '../../../shared/experience/expSite.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);

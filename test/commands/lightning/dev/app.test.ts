@@ -32,6 +32,7 @@ import LightningDevApp, {
 import { OrgUtils } from '../../../../src/shared/orgUtils.js';
 import { PreviewUtils } from '../../../../src/shared/previewUtils.js';
 import { ConfigUtils, LocalWebServerIdentityData } from '../../../../src/shared/configUtils.js';
+import { PromptUtils } from '../../../../src/shared/promptUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 
@@ -103,7 +104,7 @@ describe('lightning dev app', () => {
     try {
       $$.SANDBOX.restore();
       $$.SANDBOX.stub(OrgUtils, 'isLocalDevEnabled').resolves(false);
-      await MockedLightningPreviewApp.run(['--name', 'blah', '-o', testOrgData.username]);
+      await MockedLightningPreviewApp.run(['--name', 'blah', '-o', testOrgData.username, '-t', Platform.desktop]);
     } catch (err) {
       expect(err).to.be.an('error').with.property('message', sharedMessages.getMessage('error.localdev.not.enabled'));
     }
@@ -112,7 +113,7 @@ describe('lightning dev app', () => {
   it('throws when app not found', async () => {
     try {
       $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(undefined);
-      await MockedLightningPreviewApp.run(['--name', 'blah', '-o', testOrgData.username]);
+      await MockedLightningPreviewApp.run(['--name', 'blah', '-o', testOrgData.username, '-t', Platform.desktop]);
     } catch (err) {
       expect(err)
         .to.be.an('error')
@@ -125,7 +126,7 @@ describe('lightning dev app', () => {
       $$.SANDBOX.restore();
       $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(undefined);
       $$.SANDBOX.stub(Connection.prototype, 'getUsername').returns(undefined);
-      await MockedLightningPreviewApp.run(['--name', 'blah', '-o', testOrgData.username]);
+      await MockedLightningPreviewApp.run(['--name', 'blah', '-o', testOrgData.username, '-t', Platform.desktop]);
     } catch (err) {
       expect(err).to.be.an('error').with.property('message', messages.getMessage('error.username'));
     }
@@ -137,44 +138,28 @@ describe('lightning dev app', () => {
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').throws(
         new Error('Cannot determine LDP url.')
       );
-      await MockedLightningPreviewApp.run(['--name', 'Sales', '-o', testOrgData.username]);
+      await MockedLightningPreviewApp.run(['--name', 'Sales', '-o', testOrgData.username, '-t', Platform.desktop]);
     } catch (err) {
       expect(err).to.be.an('error').with.property('message', 'Cannot determine LDP url.');
     }
   });
 
+  describe('interactive', () => {
+    it('prompts user to select platform when not provided', async () => {
+      const promptStub = $$.SANDBOX.stub(PromptUtils, 'promptUserToSelectPlatform').resolves(Platform.desktop);
+      await verifyOrgOpen('lightning');
+      expect(promptStub.calledOnce);
+    });
+  });
+
   describe('desktop dev', () => {
     it('runs org:open with proper flags when app name provided', async () => {
-      await verifyOrgOpen(`lightning/app/${testAppId}`, 'Sales');
+      await verifyOrgOpen(`lightning/app/${testAppId}`, Platform.desktop, 'Sales');
     });
 
     it('runs org:open with proper flags when no app name provided', async () => {
-      await verifyOrgOpen('lightning');
+      await verifyOrgOpen('lightning', Platform.desktop);
     });
-
-    async function verifyOrgOpen(expectedAppPath: string, appName?: string): Promise<void> {
-      $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
-      $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
-      $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(testIdentityData);
-
-      const runCmdStub = $$.SANDBOX.stub(OclifConfig.prototype, 'runCommand').resolves();
-      if (appName) {
-        await MockedLightningPreviewApp.run(['--name', appName, '-o', testOrgData.username]);
-      } else {
-        await MockedLightningPreviewApp.run(['-o', testOrgData.username]);
-      }
-
-      expect(runCmdStub.calledOnce);
-      expect(runCmdStub.getCall(0).args).to.deep.equal([
-        'org:open',
-        [
-          '--path',
-          `${expectedAppPath}?0.aura.ldpServerUrl=${testServerUrl}&0.aura.ldpServerId=${testLdpServerId}&0.aura.mode=DEVPREVIEW`,
-          '--target-org',
-          testOrgData.username,
-        ],
-      ]);
-    }
   });
 
   describe('mobile dev', () => {
@@ -411,4 +396,34 @@ describe('lightning dev app', () => {
       launchStub.restore();
     }
   });
+
+  async function verifyOrgOpen(expectedAppPath: string, deviceType?: Platform, appName?: string): Promise<void> {
+    $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
+    $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
+    $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(testIdentityData);
+
+    const runCmdStub = $$.SANDBOX.stub(OclifConfig.prototype, 'runCommand').resolves();
+    const flags = ['--target-org', testOrgData.username];
+
+    if (deviceType) {
+      flags.push('--device-type', deviceType);
+    }
+
+    if (appName) {
+      flags.push('--name', appName);
+    }
+
+    await MockedLightningPreviewApp.run(flags);
+
+    expect(runCmdStub.calledOnce);
+    expect(runCmdStub.getCall(0).args).to.deep.equal([
+      'org:open',
+      [
+        '--path',
+        `${expectedAppPath}?0.aura.ldpServerUrl=${testServerUrl}&0.aura.ldpServerId=${testLdpServerId}&0.aura.mode=DEVPREVIEW`,
+        '--target-org',
+        testOrgData.username,
+      ],
+    ]);
+  }
 });
