@@ -13,7 +13,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { Logger, Messages } from '@salesforce/core';
+import { Connection, Logger, Messages } from '@salesforce/core';
 import {
   AndroidDeviceManager,
   AppleDeviceManager,
@@ -27,7 +27,8 @@ import {
 } from '@salesforce/lwc-dev-mobile-core';
 import { Progress, Spinner } from '@salesforce/sf-plugins-core';
 import fetch from 'node-fetch';
-import { ConfigUtils, LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT } from './configUtils.js';
+import { ConfigUtils, LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT, LocalWebServerIdentityData } from './configUtils.js';
+import { OrgUtils } from './orgUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.app');
@@ -111,7 +112,7 @@ export class PreviewUtils {
    * Generates the proper set of arguments to be used for launching desktop browser and navigating to the right location.
    *
    * @param ldpServerUrl The URL for the local dev server
-   * @param entityId Record ID for the identity token
+   * @param ldpServerId Record ID for the identity token
    * @param appId An optional app id for a targeted LEX app
    * @param targetOrg An optional org id
    * @param auraMode An optional Aura Mode (defaults to DEVPREVIEW)
@@ -119,7 +120,7 @@ export class PreviewUtils {
    */
   public static generateDesktopPreviewLaunchArguments(
     ldpServerUrl: string,
-    entityId: string,
+    ldpServerId: string,
     appId?: string,
     targetOrg?: string,
     auraMode = DevPreviewAuraMode
@@ -134,7 +135,7 @@ export class PreviewUtils {
     // we prepend a '0.' to all of the params to ensure they will persist across browser redirects
     const launchArguments = [
       '--path',
-      `${appPath}?0.aura.ldpServerUrl=${ldpServerUrl}&0.aura.ldpServerId=${entityId}&0.aura.mode=${auraMode}`,
+      `${appPath}?0.aura.ldpServerUrl=${ldpServerUrl}&0.aura.ldpServerId=${ldpServerId}&0.aura.mode=${auraMode}`,
     ];
 
     if (targetOrg) {
@@ -148,7 +149,7 @@ export class PreviewUtils {
    * Generates the proper set of arguments to be used for launching a mobile app with custom launch arguments.
    *
    * @param ldpServerUrl The URL for the local dev server
-   * @param entityId Record ID for the identity token
+   * @param ldpServerId Record ID for the identity token
    * @param appName An optional app name for a targeted LEX app
    * @param appId An optional app id for a targeted LEX app
    * @param auraMode An optional Aura Mode (defaults to DEVPREVIEW)
@@ -156,7 +157,7 @@ export class PreviewUtils {
    */
   public static generateMobileAppPreviewLaunchArguments(
     ldpServerUrl: string,
-    entityId: string,
+    ldpServerId: string,
     appName?: string,
     appId?: string,
     auraMode = DevPreviewAuraMode
@@ -175,7 +176,7 @@ export class PreviewUtils {
 
     launchArguments.push({ name: 'aura.mode', value: auraMode });
 
-    launchArguments.push({ name: 'aura.ldpServerId', value: entityId });
+    launchArguments.push({ name: 'aura.ldpServerId', value: ldpServerId });
 
     return launchArguments;
   }
@@ -292,18 +293,28 @@ export class PreviewUtils {
     });
   }
 
-  public static async getEntityId(username: string): Promise<string> {
-    const identityData = await ConfigUtils.getIdentityData();
-    let entityId: string | undefined;
+  public static async getOrCreateAppServerIdentity(connection: Connection): Promise<LocalWebServerIdentityData> {
+    const username = connection.getUsername()!;
+
+    let identityData = await ConfigUtils.getIdentityData();
     if (!identityData) {
-      return Promise.reject(new Error(messages.getMessage('error.identitydata')));
+      const token = CryptoUtils.generateIdentityToken();
+      const entityId = await OrgUtils.saveAppServerIdentityToken(connection, token);
+      identityData = {
+        identityToken: token,
+        usernameToServerEntityIdMap: {},
+      };
+      identityData.usernameToServerEntityIdMap[username] = entityId;
+      await ConfigUtils.writeIdentityData(identityData);
     } else {
-      entityId = identityData.usernameToServerEntityIdMap[username];
+      let entityId = identityData.usernameToServerEntityIdMap[username];
       if (!entityId) {
-        return Promise.reject(new Error(messages.getMessage('error.identitydata.entityid')));
+        entityId = await OrgUtils.saveAppServerIdentityToken(connection, identityData.identityToken);
+        identityData.usernameToServerEntityIdMap[username] = entityId;
+        await ConfigUtils.writeIdentityData(identityData);
       }
-      return entityId;
     }
+    return identityData;
   }
 
   private static async doGetNextAvailablePort(startingPort: number): Promise<number> {

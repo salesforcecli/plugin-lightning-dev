@@ -55,4 +55,20 @@ export class OrgUtils {
     const localDevEnabled = flagValue.toLowerCase().trim() === 'true';
     return localDevEnabled;
   }
+
+  /**
+   * Saves an app server identity token to the UserLocalWebServerIdentity sObject in the org.
+   *
+   * @param connection the connection to the org
+   * @param token the token value to be saved
+   * @returns the id of the saved record
+   */
+  public static async saveAppServerIdentityToken(connection: Connection, token: string): Promise<string> {
+    const sobject = connection.sobject('UserLocalWebServerIdentity');
+    const result = await sobject.insert({ LocalWebServerIdentityToken: token });
+    if (result.success) {
+      return result.id;
+    }
+    throw new Error('Could not save the app server identity token to the org.');
+  }
 }

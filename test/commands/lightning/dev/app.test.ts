@@ -65,13 +65,14 @@ describe('lightning dev app', () => {
   };
   let MockedLightningPreviewApp: typeof LightningDevApp;
 
-  const fakeIdentityToken = 'PFT1vw8v65aXd2b9HFvZ3Zu4OcKZwjI60bq7BEjj5k4=';
-  const fakeEntityId = '1I9xx0000004ClkCAE';
-  const fakeIdentityData: LocalWebServerIdentityData = {
-    identityToken: `${fakeIdentityToken}`,
+  const testUsername = 'SalesforceDeveloper';
+  const testLdpServerId = '1I9xx0000004ClkCAE';
+  const testLdpServerToken = 'PFT1vw8v65aXd2b9HFvZ3Zu4OcKZwjI60bq7BEjj5k4=';
+  const testIdentityData: LocalWebServerIdentityData = {
+    identityToken: testLdpServerToken,
     usernameToServerEntityIdMap: {},
   };
-  fakeIdentityData.usernameToServerEntityIdMap[testOrgData.username] = fakeEntityId;
+  testIdentityData.usernameToServerEntityIdMap[testUsername] = testLdpServerId;
 
   beforeEach(async () => {
     stubUx($$.SANDBOX);
@@ -83,7 +84,8 @@ describe('lightning dev app', () => {
     $$.SANDBOX.stub(SfConfig.prototype, 'get').returns(undefined);
     $$.SANDBOX.stub(SfConfig.prototype, 'set');
     $$.SANDBOX.stub(SfConfig.prototype, 'write').resolves();
-    $$.SANDBOX.stub(ConfigUtils, 'getOrCreateIdentityToken').resolves(fakeIdentityToken);
+    $$.SANDBOX.stub(Connection.prototype, 'getUsername').returns(testUsername);
+    $$.SANDBOX.stub(PreviewUtils, 'getOrCreateAppServerIdentity').resolves(testIdentityData);
     $$.SANDBOX.stub(OrgUtils, 'isLocalDevEnabled').resolves(true);
 
     MockedLightningPreviewApp = await esmock<typeof LightningDevApp>('../../../../src/commands/lightning/dev/app.js', {
@@ -120,6 +122,7 @@ describe('lightning dev app', () => {
 
   it('throws when username not found', async () => {
     try {
+      $$.SANDBOX.restore();
       $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(undefined);
       $$.SANDBOX.stub(Connection.prototype, 'getUsername').returns(undefined);
       await MockedLightningPreviewApp.run(['--name', 'blah', '-o', testOrgData.username]);
@@ -152,7 +155,7 @@ describe('lightning dev app', () => {
     async function verifyOrgOpen(expectedAppPath: string, appName?: string): Promise<void> {
       $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
-      $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(fakeIdentityData);
+      $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(testIdentityData);
 
       const runCmdStub = $$.SANDBOX.stub(OclifConfig.prototype, 'runCommand').resolves();
       if (appName) {
@@ -166,7 +169,7 @@ describe('lightning dev app', () => {
         'org:open',
         [
           '--path',
-          `${expectedAppPath}?0.aura.ldpServerUrl=${testServerUrl}&0.aura.ldpServerId=${fakeEntityId}&0.aura.mode=DEVPREVIEW`,
+          `${expectedAppPath}?0.aura.ldpServerUrl=${testServerUrl}&0.aura.ldpServerId=${testLdpServerId}&0.aura.mode=DEVPREVIEW`,
           '--target-org',
           testOrgData.username,
         ],
@@ -178,7 +181,6 @@ describe('lightning dev app', () => {
     it('throws when environment setup requirements are not met', async () => {
       $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
-      $$.SANDBOX.stub(PreviewUtils, 'getEntityId').resolves(fakeEntityId);
 
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'init').resolves();
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'run').rejects(new Error('Requirement blah not met'));
@@ -190,7 +192,6 @@ describe('lightning dev app', () => {
     it('throws when unable to fetch mobile device', async () => {
       $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
-      $$.SANDBOX.stub(PreviewUtils, 'getEntityId').resolves(fakeEntityId);
 
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'init').resolves();
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'run').resolves();
@@ -204,7 +205,6 @@ describe('lightning dev app', () => {
     it('throws when device fails to boot', async () => {
       $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
-      $$.SANDBOX.stub(PreviewUtils, 'getEntityId').resolves(fakeEntityId);
 
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'init').resolves();
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'run').resolves();
@@ -220,7 +220,6 @@ describe('lightning dev app', () => {
     it('throws when cannot generate certificate', async () => {
       $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
-      $$.SANDBOX.stub(PreviewUtils, 'getEntityId').resolves(fakeEntityId);
 
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'init').resolves();
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'run').resolves();
@@ -241,7 +240,6 @@ describe('lightning dev app', () => {
     it('throws if user chooses not to install app on mobile device', async () => {
       $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
-      $$.SANDBOX.stub(PreviewUtils, 'getEntityId').resolves(fakeEntityId);
 
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'init').resolves();
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'run').resolves();
@@ -260,8 +258,7 @@ describe('lightning dev app', () => {
     it('installs and launches app on mobile device', async () => {
       $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
-      $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(fakeIdentityData);
-      $$.SANDBOX.stub(PreviewUtils, 'getEntityId').resolves(fakeEntityId);
+      $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(testIdentityData);
 
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'init').resolves();
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'run').resolves();
@@ -366,7 +363,7 @@ describe('lightning dev app', () => {
 
       const expectedLaunchArguments = PreviewUtils.generateMobileAppPreviewLaunchArguments(
         expectedLdpServerUrl,
-        fakeEntityId,
+        testLdpServerId,
         'Sales',
         testAppId
       );
