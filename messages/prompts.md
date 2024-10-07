@@ -4,11 +4,11 @@ Select a site
 
 # site.confirm-update
 
-An updated site bundle is available for "%s". Would you like to download and apply the update?
+An updated site bundle is available for "%s". Do you want to download and apply the update?
 
 # device-type.title
 
-Which device type would you like to use for preview
+Which device type do you want to use for the preview?
 
 # device-type.choice.desktop
 

@@ -62,23 +62,13 @@ export default class LightningDevApp extends SfCommand<void> {
     }),
   };
 
-  private static async determinePlatform(flags: { 'device-type'?: Platform }): Promise<Platform> {
-    let platform = flags['device-type'];
-
-    if (!platform) {
-      platform = await PromptUtils.promptUserToSelectPlatform();
-    }
-
-    return platform;
-  }
-
   public async run(): Promise<void> {
     const { flags } = await this.parse(LightningDevApp);
     const logger = await Logger.child(this.ctor.name);
 
-    const appName = flags['name'];
-    const platform = await LightningDevApp.determinePlatform(flags);
     const targetOrg = flags['target-org'];
+    const appName = flags['name'];
+    const platform = flags['device-type'] ?? (await PromptUtils.promptUserToSelectPlatform());
     const deviceId = flags['device-id'];
 
     let sfdxProjectRootPath = '';
