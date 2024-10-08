@@ -144,15 +144,13 @@ describe('lightning dev app', () => {
     }
   });
 
-  describe('interactive', () => {
+  describe('desktop dev', () => {
     it('prompts user to select platform when not provided', async () => {
       const promptStub = $$.SANDBOX.stub(PromptUtils, 'promptUserToSelectPlatform').resolves(Platform.desktop);
       await verifyOrgOpen('lightning');
       expect(promptStub.calledOnce);
     });
-  });
 
-  describe('desktop dev', () => {
     it('runs org:open with proper flags when app name provided', async () => {
       await verifyOrgOpen(`lightning/app/${testAppId}`, Platform.desktop, 'Sales');
     });
@@ -160,6 +158,36 @@ describe('lightning dev app', () => {
     it('runs org:open with proper flags when no app name provided', async () => {
       await verifyOrgOpen('lightning', Platform.desktop);
     });
+
+    async function verifyOrgOpen(expectedAppPath: string, deviceType?: Platform, appName?: string): Promise<void> {
+      $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
+      $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
+      $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(testIdentityData);
+
+      const runCmdStub = $$.SANDBOX.stub(OclifConfig.prototype, 'runCommand').resolves();
+      const flags = ['--target-org', testOrgData.username];
+
+      if (deviceType) {
+        flags.push('--device-type', deviceType);
+      }
+
+      if (appName) {
+        flags.push('--name', appName);
+      }
+
+      await MockedLightningPreviewApp.run(flags);
+
+      expect(runCmdStub.calledOnce);
+      expect(runCmdStub.getCall(0).args).to.deep.equal([
+        'org:open',
+        [
+          '--path',
+          `${expectedAppPath}?0.aura.ldpServerUrl=${testServerUrl}&0.aura.ldpServerId=${testLdpServerId}&0.aura.mode=DEVPREVIEW`,
+          '--target-org',
+          testOrgData.username,
+        ],
+      ]);
+    }
   });
 
   describe('mobile dev', () => {
@@ -238,6 +266,22 @@ describe('lightning dev app', () => {
 
       await verifyMobileThrowsWhenUserDeclinesToInstallApp(Platform.ios);
       await verifyMobileThrowsWhenUserDeclinesToInstallApp(Platform.android);
+    });
+
+    it('prompts user to select mobile device when not provided', async () => {
+      $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
+      $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
+      $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(testIdentityData);
+
+      $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'init').resolves();
+      $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'run').resolves();
+
+      $$.SANDBOX.stub(PreviewUtils, 'generateSelfSignedCert').resolves(certData);
+      $$.SANDBOX.stub(MockedLightningPreviewApp.prototype, 'confirm').resolves(true);
+
+      const promptStub = $$.SANDBOX.stub(PromptUtils, 'promptUserToSelectMobileDevice').resolves(testIOSDevice);
+      await verifyAppInstallAndLaunch(Platform.ios);
+      expect(promptStub.calledOnce);
     });
 
     it('installs and launches app on mobile device', async () => {
@@ -396,34 +440,4 @@ describe('lightning dev app', () => {
       launchStub.restore();
     }
   });
-
-  async function verifyOrgOpen(expectedAppPath: string, deviceType?: Platform, appName?: string): Promise<void> {
-    $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
-    $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
-    $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(testIdentityData);
-
-    const runCmdStub = $$.SANDBOX.stub(OclifConfig.prototype, 'runCommand').resolves();
-    const flags = ['--target-org', testOrgData.username];
-
-    if (deviceType) {
-      flags.push('--device-type', deviceType);
-    }
-
-    if (appName) {
-      flags.push('--name', appName);
-    }
-
-    await MockedLightningPreviewApp.run(flags);
-
-    expect(runCmdStub.calledOnce);
-    expect(runCmdStub.getCall(0).args).to.deep.equal([
-      'org:open',
-      [
-        '--path',
-        `${expectedAppPath}?0.aura.ldpServerUrl=${testServerUrl}&0.aura.ldpServerId=${testLdpServerId}&0.aura.mode=DEVPREVIEW`,
-        '--target-org',
-        testOrgData.username,
-      ],
-    ]);
-  }
 });

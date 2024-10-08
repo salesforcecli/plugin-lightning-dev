@@ -21,3 +21,11 @@ Mobile - Android
 # device-type.choice.ios
 
 Mobile - iOS
+
+# device-id.title
+
+Which device do you want to use for the preview?
+
+# error.device.enumeration
+
+Unable to enumerate a list of available devices.

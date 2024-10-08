@@ -6,8 +6,14 @@
  */
 import select from '@inquirer/select';
 import { confirm } from '@inquirer/prompts';
-import { Messages } from '@salesforce/core';
-import { Platform } from '@salesforce/lwc-dev-mobile-core';
+import { Logger, Messages } from '@salesforce/core';
+import {
+  AndroidDeviceManager,
+  AppleDeviceManager,
+  BaseDevice,
+  Platform,
+  Version,
+} from '@salesforce/lwc-dev-mobile-core';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'prompts');
@@ -43,5 +49,47 @@ export class PromptUtils {
     });
 
     return response;
+  }
+
+  public static async promptUserToSelectMobileDevice(
+    platform: Platform.ios | Platform.android,
+    logger?: Logger
+  ): Promise<BaseDevice> {
+    const availableDevices =
+      platform === Platform.ios
+        ? await new AppleDeviceManager(logger).enumerateDevices()
+        : await new AndroidDeviceManager(logger).enumerateDevices();
+
+    if (!availableDevices || availableDevices.length === 0) {
+      throw new Error(messages.getMessage('error.device.enumeration'));
+    }
+
+    const choices = availableDevices.map((device) => ({
+      name: `${device.name}, ${device.osType} ${this.getShortVersion(device.osVersion)}`,
+      value: device,
+    }));
+
+    const response = await select({
+      message: messages.getMessage('device-id.title'),
+      choices,
+    });
+
+    return response;
+  }
+
+  // returns the shorthand version of a Version object (eg. 17.0.0 => 17, 17.4.0 => 17.4, 17.4.1 => 17.4.1)
+  private static getShortVersion(version: Version | string): string {
+    // TODO: consider making this function part of the Version class in @lwc-dev-mobile-core
+    if (typeof version === 'string') {
+      return version; // codenamed versions will be returned as is
+    }
+
+    if (version.patch > 0) {
+      return `${version.major}.${version.minor}.${version.patch}`;
+    } else if (version.minor > 0) {
+      return `${version.major}.${version.minor}`;
+    } else {
+      return `${version.major}`;
+    }
   }
 }
