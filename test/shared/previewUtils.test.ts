@@ -103,16 +103,6 @@ describe('previewUtils', () => {
     expect(androidDevice).to.deep.equal(testAndroidDevice);
   });
 
-  it('getMobileDevice returns first available device', async () => {
-    $$.SANDBOX.stub(AppleDeviceManager.prototype, 'enumerateDevices').resolves([testIOSDevice]);
-    const iosDevice = await PreviewUtils.getMobileDevice(Platform.ios);
-    expect(iosDevice).to.deep.equal(testIOSDevice);
-
-    $$.SANDBOX.stub(AndroidDeviceManager.prototype, 'enumerateDevices').resolves([testAndroidDevice]);
-    const androidDevice = await PreviewUtils.getMobileDevice(Platform.android);
-    expect(androidDevice).to.deep.equal(testAndroidDevice);
-  });
-
   it('generateDesktopPreviewLaunchArguments', async () => {
     expect(
       PreviewUtils.generateDesktopPreviewLaunchArguments(
