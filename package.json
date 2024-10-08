@@ -8,7 +8,7 @@
     "@lwrjs/api": "0.14.3",
     "@lwc/lwc-dev-server": "^9.5.1",
     "@lwc/sfdc-lwc-compiler": "^9.5.1",
-    "@oclif/core": "^4.0.17",
+    "@oclif/core": "^4.0.27",
     "@salesforce/core": "^8.2.7",
     "@salesforce/kit": "^3.1.6",
     "@salesforce/lwc-dev-mobile-core": "4.0.0-alpha.9",
