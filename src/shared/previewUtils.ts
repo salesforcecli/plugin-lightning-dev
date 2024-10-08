@@ -29,6 +29,7 @@ import { Progress, Spinner } from '@salesforce/sf-plugins-core';
 import fetch from 'node-fetch';
 import { ConfigUtils, LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT, LocalWebServerIdentityData } from './configUtils.js';
 import { OrgUtils } from './orgUtils.js';
+import { PromptUtils } from './promptUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.app');
@@ -95,14 +96,9 @@ export class PreviewUtils {
           ? await new AppleDeviceManager(logger).getDevice(deviceId)
           : await new AndroidDeviceManager(logger).getDevice(deviceId);
     } else {
-      logger?.debug('No particular device was targeted by the user...  fetching the first available device.');
-      const devices =
-        platform === Platform.ios
-          ? await new AppleDeviceManager(logger).enumerateDevices()
-          : await new AndroidDeviceManager(logger).enumerateDevices();
-      if (devices && devices.length > 0) {
-        device = devices[0];
-      }
+      logger?.debug('Prompting the user to select a device.');
+
+      device = await PromptUtils.promptUserToSelectMobileDevice(platform, logger);
     }
 
     return Promise.resolve(device);
