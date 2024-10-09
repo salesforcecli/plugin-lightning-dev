@@ -6,7 +6,7 @@
  */
 import select from '@inquirer/select';
 import { confirm } from '@inquirer/prompts';
-import { Logger, Messages } from '@salesforce/core';
+import { Connection, Logger, Messages } from '@salesforce/core';
 import {
   AndroidDeviceManager,
   AppleDeviceManager,
@@ -14,6 +14,7 @@ import {
   Platform,
   Version,
 } from '@salesforce/lwc-dev-mobile-core';
+import { AppDefinition, OrgUtils } from './orgUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'prompts');
@@ -45,6 +46,18 @@ export class PromptUtils {
 
     const response = await select({
       message: messages.getMessage('device-type.title'),
+      choices,
+    });
+
+    return response;
+  }
+
+  public static async promptUserToSelectLightningExperienceApp(connection: Connection): Promise<AppDefinition> {
+    const apps = await OrgUtils.getLightningExperienceAppList(connection);
+    const choices = apps.map((app) => ({ name: app.Label, value: app }));
+
+    const response = await select({
+      message: messages.getMessage('lightning-experience-app.title'),
       choices,
     });
 

@@ -105,6 +105,41 @@ export class PreviewUtils {
   }
 
   /**
+   * If an app name is provided then it will query the org to determine the DurableId for the provided app.
+   * Otherwise it will get a list of all of the lightning experience apps in the org that are visible/accessible
+   * by the user, prompts the user to select one, then returns the DurableId of the selected app.
+   *
+   * @param connection the connection to the org
+   * @param appName optional - either the DeveloperName or Label for an app
+   * @param logger optional - logger to be used for logging
+   * @returns the DurableId for an app.
+   */
+  public static async getLightningExperienceAppId(
+    connection: Connection,
+    appName?: string,
+    logger?: Logger
+  ): Promise<string> {
+    if (appName) {
+      logger?.debug(`Determining App Id for ${appName}`);
+
+      // The appName is optional but if the user did provide an appName then it must be
+      // a valid one.... meaning that it should resolve to a valid appId.
+      const appId = await OrgUtils.getAppDefinitionDurableId(connection, appName);
+      if (!appId) {
+        return Promise.reject(new Error(messages.getMessage('error.fetching.app-id', [appName])));
+      }
+
+      logger?.debug(`App Id is ${appId} for ${appName}`);
+      return appId;
+    } else {
+      logger?.debug('Prompting the user to select an app.');
+      const appDefinition = await PromptUtils.promptUserToSelectLightningExperienceApp(connection);
+      logger?.debug(`App Id is ${appDefinition.DurableId} for ${appDefinition.Label}`);
+      return appDefinition.DurableId;
+    }
+  }
+
+  /**
    * Generates the proper set of arguments to be used for launching desktop browser and navigating to the right location.
    *
    * @param ldpServerUrl The URL for the local dev server

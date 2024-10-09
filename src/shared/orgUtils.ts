@@ -11,18 +11,26 @@ type LightningPreviewMetadataResponse = {
   enableLightningPreviewPref?: string;
 };
 
+export type AppDefinition = {
+  DeveloperName: string;
+  Label: string;
+  Description: string;
+  DurableId: string;
+};
+
 export class OrgUtils {
   /**
-   * Given an app name, it queries the org to find the matching app id. To do so,
-   * it will first attempt at finding the app with a matching DeveloperName. If
-   * no match is found, it will then attempt at finding the app with a matching
-   * Label. If multiple matches are found, then the first match is returned.
+   * Given an app name, it queries the AppDefinition table in the org to find
+   * the DurableId for the app. To do so, it will first attempt at finding the
+   * app with a matching DeveloperName. If no match is found, it will then
+   * attempt at finding the app with a matching Label. If multiple matches are
+   * found, then the first match is returned.
    *
    * @param connection the connection to the org
    * @param appName the name of the app
-   * @returns the app id or undefined if no match is found
+   * @returns the DurableId for the app as found in the AppDefinition table or undefined if no match is found
    */
-  public static async getAppId(connection: Connection, appName: string): Promise<string | undefined> {
+  public static async getAppDefinitionDurableId(connection: Connection, appName: string): Promise<string | undefined> {
     // NOTE: We have to break up the query and run against different columns separately instead
     // of using OR statement, otherwise we'll get the error 'Disjunctions not supported'
     const devNameQuery = `SELECT DurableId FROM AppDefinition WHERE DeveloperName LIKE '${appName}'`;
@@ -41,6 +49,39 @@ export class OrgUtils {
     }
 
     return undefined;
+  }
+
+  /**
+   * Queries the org and returns a list of the lightning experience apps in the org that are visible to and accessible by the user.
+   *
+   * @param connection the connection to the org
+   * @returns a list of the lightning experience apps in the org that are visible to and accessible by the user.
+   */
+  public static async getLightningExperienceAppList(connection: Connection): Promise<AppDefinition[]> {
+    const results: AppDefinition[] = [];
+
+    const appMenuItemsQuery =
+      'SELECT Label,Description,Name FROM AppMenuItem WHERE IsAccessible=true AND IsVisible=TRUE';
+    const appMenuItems = await connection.query<{ Label: string; Description: string; Name: string }>(
+      appMenuItemsQuery
+    );
+
+    const appDefinitionsQuery = "SELECT DeveloperName,DurableId FROM AppDefinition WHERE UiType='Lightning'";
+    const appDefinitions = await connection.query<{ DeveloperName: string; DurableId: string }>(appDefinitionsQuery);
+
+    appMenuItems.records.forEach((item) => {
+      const match = appDefinitions.records.find((definition) => definition.DeveloperName === item.Name);
+      if (match) {
+        results.push({
+          DeveloperName: match.DeveloperName,
+          Label: item.Label,
+          Description: item.Description,
+          DurableId: match.DurableId,
+        });
+      }
+    });
+
+    return results;
   }
 
   /**

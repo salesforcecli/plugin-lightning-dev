@@ -17,23 +17,23 @@ describe('orgUtils', () => {
     $$.restore();
   });
 
-  it('getAppId returns undefined when no matches found', async () => {
+  it('getAppDefinitionDurableId returns undefined when no matches found', async () => {
     $$.SANDBOX.stub(Connection.prototype, 'query').resolves({ records: [], done: true, totalSize: 0 });
-    const appId = await OrgUtils.getAppId(new Connection({ authInfo: new AuthInfo() }), 'blah');
+    const appId = await OrgUtils.getAppDefinitionDurableId(new Connection({ authInfo: new AuthInfo() }), 'blah');
     expect(appId).to.be.undefined;
   });
 
-  it('getAppId returns first match when multiple matches found', async () => {
+  it('getAppDefinitionDurableId returns first match when multiple matches found', async () => {
     $$.SANDBOX.stub(Connection.prototype, 'query').resolves({
       records: [{ DurableId: 'id1' }, { DurableId: 'id2' }],
       done: true,
       totalSize: 2,
     });
-    const appId = await OrgUtils.getAppId(new Connection({ authInfo: new AuthInfo() }), 'Sales');
+    const appId = await OrgUtils.getAppDefinitionDurableId(new Connection({ authInfo: new AuthInfo() }), 'Sales');
     expect(appId).to.be.equal('id1');
   });
 
-  it('getAppId uses Label if DeveloperName produces no matches', async () => {
+  it('getAppDefinitionDurableId uses Label if DeveloperName produces no matches', async () => {
     const noMatches = { records: [], done: true, totalSize: 0 };
     const matches = { records: [{ DurableId: 'id1' }, { DurableId: 'id2' }], done: true, totalSize: 2 };
     const stub = $$.SANDBOX.stub(Connection.prototype, 'query')
@@ -41,7 +41,7 @@ describe('orgUtils', () => {
       .resolves(noMatches)
       .onSecondCall()
       .resolves(matches);
-    const appId = await OrgUtils.getAppId(new Connection({ authInfo: new AuthInfo() }), 'Sales');
+    const appId = await OrgUtils.getAppDefinitionDurableId(new Connection({ authInfo: new AuthInfo() }), 'Sales');
     expect(appId).to.be.equal('id1');
     expect(stub.getCall(0).args[0]).to.include('DeveloperName');
     expect(stub.getCall(1).args[0]).to.include('Label');
