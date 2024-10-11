@@ -1,3 +1,9 @@
+# [1.9.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.8.0...1.9.0) (2024-10-11)
+
+### Features
+
+- prompt user to select lightning experince app ([#198](https://github.com/salesforcecli/plugin-lightning-dev/issues/198)) ([e4fee0e](https://github.com/salesforcecli/plugin-lightning-dev/commit/e4fee0e978e6362fcca1244d713b6722123e7562))
+
 # [1.8.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.7.0...1.8.0) (2024-10-08)
 
 ### Features
