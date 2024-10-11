@@ -97,19 +97,7 @@ export default class LightningDevApp extends SfCommand<void> {
       return Promise.reject(new Error(messages.getMessage('error.identitydata.entityid')));
     }
 
-    let appId: string | undefined;
-    if (appName) {
-      logger.debug(`Determining App Id for ${appName}`);
-
-      // The appName is optional but if the user did provide an appName then it must be
-      // a valid one.... meaning that it should resolve to a valid appId.
-      appId = await OrgUtils.getAppId(connection, appName);
-      if (!appId) {
-        return Promise.reject(new Error(messages.getMessage('error.fetching.app-id', [appName])));
-      }
-
-      logger.debug(`App Id is ${appId}`);
-    }
+    const appId = await PreviewUtils.getLightningExperienceAppId(connection, appName, logger);
 
     logger.debug('Determining the next available port for Local Dev Server');
     const serverPorts = await PreviewUtils.getNextAvailablePorts();

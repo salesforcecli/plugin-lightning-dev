@@ -29,7 +29,7 @@ import LightningDevApp, {
   androidSalesforceAppPreviewConfig,
   iOSSalesforceAppPreviewConfig,
 } from '../../../../src/commands/lightning/dev/app.js';
-import { OrgUtils } from '../../../../src/shared/orgUtils.js';
+import { AppDefinition, OrgUtils } from '../../../../src/shared/orgUtils.js';
 import { PreviewUtils } from '../../../../src/shared/previewUtils.js';
 import { ConfigUtils, LocalWebServerIdentityData } from '../../../../src/shared/configUtils.js';
 import { PromptUtils } from '../../../../src/shared/promptUtils.js';
@@ -41,7 +41,12 @@ describe('lightning dev app', () => {
   const sharedMessages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'shared.utils');
   const $$ = new TestContext();
   const testOrgData = new MockTestOrgData();
-  const testAppId = '06m8b000002vpFSAAY';
+  const testAppDefinition: AppDefinition = {
+    DeveloperName: 'TestApp',
+    DurableId: '06m8b000002vpFSAAY',
+    Label: 'Test App',
+    Description: 'An app to be used for unit testing',
+  };
   const testServerUrl = 'wss://localhost:1234';
   const testIOSDevice = new AppleDevice(
     'F2B4097F-F33E-4D8A-8FFF-CE49F8D6C166',
@@ -112,7 +117,7 @@ describe('lightning dev app', () => {
 
   it('throws when app not found', async () => {
     try {
-      $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(undefined);
+      $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(undefined);
       await MockedLightningPreviewApp.run(['--name', 'blah', '-o', testOrgData.username, '-t', Platform.desktop]);
     } catch (err) {
       expect(err)
@@ -124,7 +129,7 @@ describe('lightning dev app', () => {
   it('throws when username not found', async () => {
     try {
       $$.SANDBOX.restore();
-      $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(undefined);
+      $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(undefined);
       $$.SANDBOX.stub(Connection.prototype, 'getUsername').returns(undefined);
       await MockedLightningPreviewApp.run(['--name', 'blah', '-o', testOrgData.username, '-t', Platform.desktop]);
     } catch (err) {
@@ -134,7 +139,7 @@ describe('lightning dev app', () => {
 
   it('throws when cannot determine ldp server url', async () => {
     try {
-      $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
+      $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').throws(
         new Error('Cannot determine LDP url.')
       );
@@ -147,20 +152,25 @@ describe('lightning dev app', () => {
   describe('desktop dev', () => {
     it('prompts user to select platform when not provided', async () => {
       const promptStub = $$.SANDBOX.stub(PromptUtils, 'promptUserToSelectPlatform').resolves(Platform.desktop);
-      await verifyOrgOpen('lightning');
+      $$.SANDBOX.stub(PromptUtils, 'promptUserToSelectLightningExperienceApp').resolves(testAppDefinition);
+      await verifyOrgOpen(`lightning/app/${testAppDefinition.DurableId}`);
       expect(promptStub.calledOnce);
     });
 
     it('runs org:open with proper flags when app name provided', async () => {
-      await verifyOrgOpen(`lightning/app/${testAppId}`, Platform.desktop, 'Sales');
+      await verifyOrgOpen(`lightning/app/${testAppDefinition.DurableId}`, Platform.desktop, 'Sales');
     });
 
-    it('runs org:open with proper flags when no app name provided', async () => {
-      await verifyOrgOpen('lightning', Platform.desktop);
+    it('prompts user to select lightning app when not provided', async () => {
+      const promptStub = $$.SANDBOX.stub(PromptUtils, 'promptUserToSelectLightningExperienceApp').resolves(
+        testAppDefinition
+      );
+      await verifyOrgOpen(`lightning/app/${testAppDefinition.DurableId}`, Platform.desktop);
+      expect(promptStub.calledOnce);
     });
 
     async function verifyOrgOpen(expectedAppPath: string, deviceType?: Platform, appName?: string): Promise<void> {
-      $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
+      $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
       $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(testIdentityData);
 
@@ -192,7 +202,7 @@ describe('lightning dev app', () => {
 
   describe('mobile dev', () => {
     it('throws when environment setup requirements are not met', async () => {
-      $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
+      $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
 
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'init').resolves();
@@ -203,7 +213,7 @@ describe('lightning dev app', () => {
     });
 
     it('throws when unable to fetch mobile device', async () => {
-      $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
+      $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
 
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'init').resolves();
@@ -216,7 +226,7 @@ describe('lightning dev app', () => {
     });
 
     it('throws when device fails to boot', async () => {
-      $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
+      $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
 
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'init').resolves();
@@ -231,7 +241,7 @@ describe('lightning dev app', () => {
     });
 
     it('throws when cannot generate certificate', async () => {
-      $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
+      $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
 
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'init').resolves();
@@ -251,7 +261,7 @@ describe('lightning dev app', () => {
     });
 
     it('throws if user chooses not to install app on mobile device', async () => {
-      $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
+      $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
 
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'init').resolves();
@@ -269,7 +279,7 @@ describe('lightning dev app', () => {
     });
 
     it('prompts user to select mobile device when not provided', async () => {
-      $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
+      $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
       $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(testIdentityData);
 
@@ -285,7 +295,7 @@ describe('lightning dev app', () => {
     });
 
     it('installs and launches app on mobile device', async () => {
-      $$.SANDBOX.stub(OrgUtils, 'getAppId').resolves(testAppId);
+      $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
       $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(testIdentityData);
 
@@ -394,7 +404,7 @@ describe('lightning dev app', () => {
         expectedLdpServerUrl,
         testLdpServerId,
         'Sales',
-        testAppId
+        testAppDefinition.DurableId
       );
 
       const downloadStub = $$.SANDBOX.stub(PreviewUtils, 'downloadSalesforceMobileAppBundle').resolves(
