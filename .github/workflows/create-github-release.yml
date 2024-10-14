@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - prerelease/**
+      - 252-patch
     tags-ignore:
       - '*'
   workflow_dispatch:
