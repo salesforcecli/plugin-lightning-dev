@@ -216,5 +216,8 @@
     }
   },
   "exports": "./lib/index.js",
-  "type": "module"
+  "type": "module",
+  "volta": {
+    "node": "20.11.0"
+  }
 }
