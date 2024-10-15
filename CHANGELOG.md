@@ -1,3 +1,15 @@
+# [2.0.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.9.0...2.0.0) (2024-10-15)
+
+- feat!: 254 code line cut over, main now tracks 254(spring25) codeline @W-16974485@ (#203) ([20994b9](https://github.com/salesforcecli/plugin-lightning-dev/commit/20994b90f23635e43cb780a3d359ca1fb3b688dd)), closes [#203](https://github.com/salesforcecli/plugin-lightning-dev/issues/203)
+
+### BREAKING CHANGES
+
+- this version works with 254(spring25) release and newer
+
+- fix: address feedback
+
+- fix: typos
+
 # [1.9.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.8.0...1.9.0) (2024-10-11)
 
 ### Features
