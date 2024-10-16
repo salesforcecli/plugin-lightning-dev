@@ -27,6 +27,7 @@ jobs:
     needs: [getDistTag]
     outputs:
       major: ${{ steps.parsedVersion.outputs.major }}
+    runs-on: ubuntu-latest
     steps:
       - uses: salesforcecli/github-workflows/.github/actions/parse-semver@main
         with:
