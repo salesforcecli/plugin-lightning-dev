@@ -1,3 +1,9 @@
+## [2.0.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.0.0...2.0.1) (2024-10-16)
+
+### Bug Fixes
+
+- add runs-on property to release workflow @W-16974485@ ([#204](https://github.com/salesforcecli/plugin-lightning-dev/issues/204)) ([9c34a2f](https://github.com/salesforcecli/plugin-lightning-dev/commit/9c34a2f80164aca498d702d5e8bb06cb1b87da49))
+
 # [2.0.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.9.0...2.0.0) (2024-10-15)
 
 - feat!: 254 code line cut over, main now tracks 254(spring25) codeline @W-16974485@ (#203) ([20994b9](https://github.com/salesforcecli/plugin-lightning-dev/commit/20994b90f23635e43cb780a3d359ca1fb3b688dd)), closes [#203](https://github.com/salesforcecli/plugin-lightning-dev/issues/203)
