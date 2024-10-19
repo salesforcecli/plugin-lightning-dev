@@ -5,12 +5,11 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import path from 'node:path';
 import process from 'node:process';
 import { LWCServer, ServerConfig, startLwcDevServer, Workspace } from '@lwc/lwc-dev-server';
 import { Lifecycle, Logger, SfProject } from '@salesforce/core';
 import { SSLCertificateData } from '@salesforce/lwc-dev-mobile-core';
-import { globSync } from 'glob';
+import { glob } from 'glob';
 import {
   ConfigUtils,
   LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT,
@@ -27,20 +26,10 @@ async function createLWCServerConfig(
   workspace?: Workspace
 ): Promise<ServerConfig> {
   const project = await SfProject.resolve();
-  const projectJson = await project.resolveProjectConfig();
-  const packageDirectories = projectJson.packageDirectories;
-  const namespacePaths: string[] = [];
+  const packageDirs = project.getPackageDirectories();
 
-  if (!packageDirectories || !Array.isArray(packageDirectories)) {
-    throw new Error('No package directories defined.');
-  }
-
-  for (const dir of packageDirectories) {
-    if (dir && typeof dir === 'object' && 'path' in dir && typeof dir.path === 'string') {
-      const packageDirectory = path.resolve(rootDir, dir.path);
-      namespacePaths.push(...globSync(`${packageDirectory}/*/*/lwc`));
-    }
-  }
+  // e.g. the lwc folder in force-app/main/default/lwc
+  const namespacePaths = (await Promise.all(packageDirs.map((dir) => glob(`${dir.fullPath}/*/*/lwc`)))).flat();
 
   const ports = serverPorts ??
     (await ConfigUtils.getLocalDevServerPorts()) ?? {
