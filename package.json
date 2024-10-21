@@ -5,7 +5,7 @@
   "author": "Salesforce",
   "bugs": "https://github.com/forcedotcom/cli/issues",
   "dependencies": {
-    "@lwrjs/api": "0.15.0-alpha.30",
+    "@lwrjs/api": "0.15.0-alpha.31",
     "@lwc/lwc-dev-server": "^9.5.1",
     "@lwc/sfdc-lwc-compiler": "^9.5.1",
     "@oclif/core": "^4.0.17",
@@ -17,7 +17,7 @@
     "@inquirer/prompts": "^5.3.8",
     "axios": "^1.7.7",
     "lwc": "^8.2.0",
-    "lwr": "0.15.0-alpha.30",
+    "lwr": "0.15.0-alpha.31",
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {
