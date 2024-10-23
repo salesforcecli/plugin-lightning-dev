@@ -1,3 +1,9 @@
+# [2.1.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.0.1...2.1.0) (2024-10-23)
+
+### Features
+
+- upgrade main branch to latest lwr ([#214](https://github.com/salesforcecli/plugin-lightning-dev/issues/214)) ([bd95969](https://github.com/salesforcecli/plugin-lightning-dev/commit/bd9596927654495d73b61d01460edace0b632c8e))
+
 ## [2.0.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.0.0...2.0.1) (2024-10-16)
 
 ### Bug Fixes
