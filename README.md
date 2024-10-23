@@ -151,6 +151,8 @@ USAGE
   $ sf lightning dev app -o <value> [--flags-dir <value>] [-n <value>] [-t desktop|ios|android] [-i <value>]
 
 FLAGS
+  -b, --browser=<option>      Browser to open the url in when previewing on desktop.
+                              <options: chrome|edge|firefox>
   -i, --device-id=<value>     ID of the mobile device to display the preview if device type is set to `ios` or
                               `android`. The default value is the ID of the first available mobile device.
   -n, --name=<value>          Name of the Lightning Experience app to preview.
