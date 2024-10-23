@@ -1,3 +1,9 @@
+## [2.1.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.1.1...2.1.2) (2024-10-23)
+
+### Bug Fixes
+
+- **deps:** bump webpack from 5.93.0 to 5.94.0 in the npm_and_yarn group ([#149](https://github.com/salesforcecli/plugin-lightning-dev/issues/149)) ([d75830a](https://github.com/salesforcecli/plugin-lightning-dev/commit/d75830a3c9fb3308681e832f33c624c6550fc852))
+
 ## [2.1.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.1.0...2.1.1) (2024-10-23)
 
 ### Bug Fixes
