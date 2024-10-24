@@ -5,7 +5,13 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import { Connection } from '@salesforce/core';
+import path from 'node:path';
+import url from 'node:url';
+import { Connection, Messages } from '@salesforce/core';
+import { CommonUtils, Version } from '@salesforce/lwc-dev-mobile-core';
+
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'shared.utils');
 
 type LightningPreviewMetadataResponse = {
   enableLightningPreviewPref?: string;
@@ -16,6 +22,37 @@ export type AppDefinition = {
   Label: string;
   Description: string;
   DurableId: string;
+};
+
+/**
+ * As we go through different phases of release cycles, in order to ensure that the API version supported by
+ * the local dev server matches with Org API versions we rely on defining a metadata section in package.json
+ *
+ * The apiVersionMetadata entry in this json file defines "target" and "versionToTagMappings" sections.
+ *
+ * "target.versionNumber" defines the API version that the local dev server supports. As we pull in new versions
+ * of the lwc-dev-server we need to manually update "target.versionNumber" in package.json In order to ensure
+ * that we don't forget this step, we also have "target.matchingDevServerVersion" which is used husky during
+ * the pre-commit check to ensure that we have not forgotten to update apiVersionMetadata. Whenever we pull in
+ * a new version of lwc-dev-server in our dependencies, we must also update "target.matchingDevServerVersion"
+ * to the same version otherwise the pre-commit will fail.
+ *
+ * The "versionToTagMappings" section will provide a mapping between supported API version by the dev server,
+ * and the tagged version of our plugin. We use "versionToTagMappings" to convey to the user which version of
+ * our plugin should they be using to match with the API version of their org (i.e which version of our plugin
+ * contains the lwc-dev-server dependency that can support the API version of the user's org.)
+ */
+type apiVersionMetadata = {
+  target: {
+    versionNumber: string;
+    matchingDevServerVersion: string;
+  };
+  versionToTagMappings: [
+    {
+      versionNumber: string;
+      tagName: string;
+    }
+  ];
 };
 
 export class OrgUtils {
@@ -61,7 +98,7 @@ export class OrgUtils {
     const results: AppDefinition[] = [];
 
     const appMenuItemsQuery =
-      'SELECT Label,Description,Name FROM AppMenuItem WHERE IsAccessible=true AND IsVisible=TRUE';
+      'SELECT Label,Description,Name FROM AppMenuItem WHERE IsAccessible=true AND IsVisible=true';
     const appMenuItems = await connection.query<{ Label: string; Description: string; Name: string }>(
       appMenuItemsQuery
     );
@@ -111,5 +148,45 @@ export class OrgUtils {
       return result.id;
     }
     throw new Error('Could not save the app server identity token to the org.');
+  }
+
+  /**
+   * Given a connection to an Org, it ensures that org API version matches what the local dev server expects.
+   * To do this, it compares the org API version with the meta data stored in package.json under apiVersionMetadata.
+   * If the API versions do not match then this method will throw an exception.
+   *
+   * @param connection the connection to the org
+   */
+  public static ensureMatchingAPIVersion(connection: Connection): void {
+    const dirname = path.dirname(url.fileURLToPath(import.meta.url));
+    const packageJsonFilePath = path.resolve(dirname, '../../package.json');
+
+    const pkg = CommonUtils.loadJsonFromFile(packageJsonFilePath) as {
+      name: string;
+      apiVersionMetadata: apiVersionMetadata;
+    };
+    const targetVersion = pkg.apiVersionMetadata.target.versionNumber;
+    const orgVersion = connection.version;
+
+    if (Version.same(orgVersion, targetVersion) === false) {
+      let errorMessage = messages.getMessage('error.org.api-mismatch.message', [orgVersion, targetVersion]);
+      const tagName = pkg.apiVersionMetadata.versionToTagMappings.find(
+        (info) => info.versionNumber === targetVersion
+      )?.tagName;
+      if (tagName) {
+        const remediation = messages.getMessage('error.org.api-mismatch.remediation', [`${pkg.name}@${tagName}`]);
+        errorMessage = `${errorMessage} ${remediation}`;
+      }
+
+      // Examples of error messages are as below (where the tag name comes from apiVersionMetadata in package.json):
+      //
+      // Your org is on API version 61 but this CLI plugin supports API version 62. Please reinstall or update the plugin using @salesforce/plugin-lightning-dev@latest tag.
+      //
+      // Your org is on API version 62 but this CLI plugin supports API version 63. Please reinstall or update the plugin using @salesforce/plugin-lightning-dev@next tag.
+      //
+      // Your org is on API version 63 but this CLI plugin supports API version 62. Please reinstall or update the plugin using @salesforce/plugin-lightning-dev@latest tag.
+
+      throw new Error(errorMessage);
+    }
   }
 }

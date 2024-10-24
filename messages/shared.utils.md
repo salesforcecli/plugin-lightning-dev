@@ -29,3 +29,11 @@ You must provide valid SSL certificate data
 # error.localdev.not.enabled
 
 Local Dev is not enabled for your org. See https://developer.salesforce.com/docs/platform/lwc/guide/get-started-test-components.html for more information on enabling and using Local Dev.
+
+# error.org.api-mismatch.message
+
+Your org is on API version %s but this CLI plugin supports API version %s.
+
+# error.org.api-mismatch.remediation
+
+Please reinstall or update the plugin using %s tag.
