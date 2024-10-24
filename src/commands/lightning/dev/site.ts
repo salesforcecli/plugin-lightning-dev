@@ -37,10 +37,14 @@ export default class LightningDevSite extends SfCommand<void> {
       const org = flags['target-org'];
       let siteName = flags.name;
 
-      const localDevEnabled = await OrgUtils.isLocalDevEnabled(org.getConnection(undefined));
+      const connection = org.getConnection(undefined);
+
+      const localDevEnabled = await OrgUtils.isLocalDevEnabled(connection);
       if (!localDevEnabled) {
         throw new Error(sharedMessages.getMessage('error.localdev.not.enabled'));
       }
+
+      OrgUtils.ensureMatchingAPIVersion(connection);
 
       // If user doesn't specify a site, prompt the user for one
       if (!siteName) {

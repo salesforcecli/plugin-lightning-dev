@@ -68,7 +68,6 @@ export default class LightningDevApp extends SfCommand<void> {
 
     const targetOrg = flags['target-org'];
     const appName = flags['name'];
-    const platform = flags['device-type'] ?? (await PromptUtils.promptUserToSelectPlatform());
     const deviceId = flags['device-id'];
 
     let sfdxProjectRootPath = '';
@@ -78,7 +77,6 @@ export default class LightningDevApp extends SfCommand<void> {
       return Promise.reject(new Error(messages.getMessage('error.no-project', [(error as Error)?.message ?? ''])));
     }
 
-    logger.debug('Configuring local web server identity');
     const connection = targetOrg.getConnection(undefined);
     const username = connection.getUsername();
     if (!username) {
@@ -90,6 +88,11 @@ export default class LightningDevApp extends SfCommand<void> {
       return Promise.reject(new Error(sharedMessages.getMessage('error.localdev.not.enabled')));
     }
 
+    OrgUtils.ensureMatchingAPIVersion(connection);
+
+    const platform = flags['device-type'] ?? (await PromptUtils.promptUserToSelectPlatform());
+
+    logger.debug('Configuring local web server identity');
     const appServerIdentity = await PreviewUtils.getOrCreateAppServerIdentity(connection);
     const ldpServerToken = appServerIdentity.identityToken;
     const ldpServerId = appServerIdentity.usernameToServerEntityIdMap[username];
