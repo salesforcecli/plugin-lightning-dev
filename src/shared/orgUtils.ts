@@ -26,21 +26,23 @@ export type AppDefinition = {
 
 /**
  * As we go through different phases of release cycles, in order to ensure that the API version supported by
- * the local dev server matches with Org API versions we rely on defining a metadata section in package.json
+ * the local dev server matches with Org API versions, we rely on defining a metadata section in package.json
  *
- * The apiVersionMetadata entry in this json file defines "target" and "versionToTagMappings" sections.
+ * The "apiVersionMetadata" entry in this json file defines "target" and "versionToTagMappings" sections.
  *
  * "target.versionNumber" defines the API version that the local dev server supports. As we pull in new versions
  * of the lwc-dev-server we need to manually update "target.versionNumber" in package.json In order to ensure
- * that we don't forget this step, we also have "target.matchingDevServerVersion" which is used husky during
- * the pre-commit check to ensure that we have not forgotten to update apiVersionMetadata. Whenever we pull in
+ * that we don't forget this step, we also have "target.matchingDevServerVersion" which is used by husky during
+ * the pre-commit check to ensure that we have updated the "apiVersionMetadata" section. Whenever we pull in
  * a new version of lwc-dev-server in our dependencies, we must also update "target.matchingDevServerVersion"
- * to the same version otherwise the pre-commit will fail.
+ * to the same version otherwise the pre-commit will fail. This means that, as the PR owner deliberately
+ * updates "target.matchingDevServerVersion", they are responsible to ensuring that the rest of the data under
+ * "apiVersionMetadata" is accurate.
  *
- * The "versionToTagMappings" section will provide a mapping between supported API version by the dev server,
+ * The "versionToTagMappings" section will provide a mapping between supported API version by the dev server
  * and the tagged version of our plugin. We use "versionToTagMappings" to convey to the user which version of
  * our plugin should they be using to match with the API version of their org (i.e which version of our plugin
- * contains the lwc-dev-server dependency that can support the API version of the user's org.)
+ * contains the lwc-dev-server dependency that can support the API version of their org).
  */
 type apiVersionMetadata = {
   target: {
