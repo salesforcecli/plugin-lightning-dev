@@ -3317,10 +3317,10 @@
     "@lwc/style-compiler" "8.2.0"
     "@lwc/template-compiler" "8.2.0"
 
-"@lwc/dev-server-plugin-lex@9.5.1":
-  version "9.5.1"
-  resolved "https://registry.npmjs.org/@lwc/dev-server-plugin-lex/-/dev-server-plugin-lex-9.5.1.tgz#74da17642627a5d49315a299e7a472fea64b53b2"
-  integrity sha512-L60zXX0bHqNovxr0oCIA/hXjJ2ppdMzd83+CN1MHrWLLIL1Pu5QLoXKX4ylltQdAknVNA+dNvCoKStPaK2Bniw==
+"@lwc/dev-server-plugin-lex@9.5.2":
+  version "9.5.2"
+  resolved "https://registry.yarnpkg.com/@lwc/dev-server-plugin-lex/-/dev-server-plugin-lex-9.5.2.tgz#17958546b320848563caa54abbf08fd819e8d336"
+  integrity sha512-WOsdILeX/M1VYKWn4V/I5a8JgOwIjxUL7CPRUHiR6jwRwC4xCxsvE6RTQxx+FrNzuoGPKvNeWAxwGZqVtHakKw==
   dependencies:
     magic-string "~0.30.10"
 
@@ -3370,26 +3370,26 @@
   dependencies:
     "@lwc/shared" "8.2.0"
 
-"@lwc/lwc-dev-server@^9.5.1":
-  version "9.5.1"
-  resolved "https://registry.npmjs.org/@lwc/lwc-dev-server/-/lwc-dev-server-9.5.1.tgz#3f50ba4ef1a998a6de354ec3d7142133d0c3b511"
-  integrity sha512-FrJYT4mrDPleTd7Hofw+vLV+1DW6nkBYpp64Brh+OCqbUi9xFIJq4Wr2mVm5WZYb6uzkxIfj2Lat7WxqHaFqVA==
+"@lwc/lwc-dev-server@^9.5.2":
+  version "9.5.2"
+  resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server/-/lwc-dev-server-9.5.2.tgz#f68299e274f8ac80b1f1a35d7e8fa6b89096b117"
+  integrity sha512-e2ZDF6DZ2Q/K1a+m0iEB8iAO+/QVbBWf/al5neuilXa7vSd4NjeAagQqnB0z8QBAcy9RnHjzrNjU49ju3pdxuA==
   dependencies:
-    "@lwc/sfdc-lwc-compiler" "9.5.1"
+    "@lwc/sfdc-lwc-compiler" "9.5.2"
     chalk "~5.3.0"
     chokidar "~3.6.0"
     commander "~10.0.0"
     ws "^8.18.0"
 
-"@lwc/metadata@9.5.1":
-  version "9.5.1"
-  resolved "https://registry.npmjs.org/@lwc/metadata/-/metadata-9.5.1.tgz#575938209654ed4ab94faf10f76407d4bb5c03f9"
-  integrity sha512-spyoslO97E8Mi7Phps1UPnWv0IgS0yzoseuL+Yg+vyaG0dJJMURquD94116S5JsQ/h6TJBDvbl6UlTQuVJDb0Q==
+"@lwc/metadata@9.5.2":
+  version "9.5.2"
+  resolved "https://registry.yarnpkg.com/@lwc/metadata/-/metadata-9.5.2.tgz#674aa01f6b9d2cff83db5e1f45c58ec8af6d470e"
+  integrity sha512-oi0ze+kk/j7drQdKrP1ecxPxt6n3XYrfbKBmatX+wvDQMUgSC+mb/LIZMj/PleMrGlfLzZDVwvXL7AAM4MhKog==
   dependencies:
     "@babel/parser" "~7.24.8"
     "@babel/traverse" "~7.24.8"
     "@babel/types" "~7.24.8"
-    "@lwc/sfdc-compiler-utils" "9.5.1"
+    "@lwc/sfdc-compiler-utils" "9.5.2"
     postcss "~8.4.39"
     postcss-selector-parser "~6.1.0"
     postcss-value-parser "~4.2.0"
@@ -3411,15 +3411,15 @@
     "@lwc/shared" "8.2.0"
     "@rollup/pluginutils" "~5.1.2"
 
-"@lwc/sfdc-compiler-utils@9.5.1":
-  version "9.5.1"
-  resolved "https://registry.npmjs.org/@lwc/sfdc-compiler-utils/-/sfdc-compiler-utils-9.5.1.tgz#f8ca7151f9d70a211fd72e46945d2a3a9dc10e97"
-  integrity sha512-7sqEj9w/zF6zIzg3QVQ7WZ4fmpIX7YP3kTzmZw4cdFOfl/RIc6q3m1PJGPCC7IB4ILIiMWAjO4RVwEnLHtmQkw==
+"@lwc/sfdc-compiler-utils@9.5.2":
+  version "9.5.2"
+  resolved "https://registry.yarnpkg.com/@lwc/sfdc-compiler-utils/-/sfdc-compiler-utils-9.5.2.tgz#eb62f191f0c131fbf2e4762c78e494d025240829"
+  integrity sha512-QyKN5oK3tyZ4TW/W9FpJpXNWoBxanpSBrhPXkENVT4KQ+g17JcwSE1H+YMThJVJe30Q8OqkCb+2ENNQ4i40nCQ==
 
-"@lwc/sfdc-lwc-compiler@9.5.1", "@lwc/sfdc-lwc-compiler@^9.5.1":
-  version "9.5.1"
-  resolved "https://registry.npmjs.org/@lwc/sfdc-lwc-compiler/-/sfdc-lwc-compiler-9.5.1.tgz#fb2142a7d3d278cec5130426c0d9330206c3a47c"
-  integrity sha512-KuUdMBUEL1ZOJFxtn5PXqc9yLNc1RrDxJzdjxwtMVQxObJwDfYGpmWujCvAHtQgEbJkFYereNCWdfNsJo2WQ3g==
+"@lwc/sfdc-lwc-compiler@9.5.2", "@lwc/sfdc-lwc-compiler@^9.5.1":
+  version "9.5.2"
+  resolved "https://registry.yarnpkg.com/@lwc/sfdc-lwc-compiler/-/sfdc-lwc-compiler-9.5.2.tgz#66dcd27c04d472d9866a6d2d87ef8ef0f10b92a4"
+  integrity sha512-5ZLgzJf8xUZ771xRq9KTrvfkDPGHi0bC1jrbn8wRe5jnfFFLHrmDC9rkgi3Ez8Oa+lTQVe2OqqqG0pynzC97Hg==
   dependencies:
     "@babel/core" "7.24.8"
     "@babel/parser" "7.24.8"
@@ -3428,11 +3428,11 @@
     "@babel/traverse" "7.24.8"
     "@babel/types" "7.24.8"
     "@komaci/esm-generator" "252.1.0"
-    "@lwc/dev-server-plugin-lex" "9.5.1"
+    "@lwc/dev-server-plugin-lex" "9.5.2"
     "@lwc/eslint-plugin-lwc" "~1.8.2"
     "@lwc/eslint-plugin-lwc-platform" "~4.1.3"
-    "@lwc/metadata" "9.5.1"
-    "@lwc/sfdc-compiler-utils" "9.5.1"
+    "@lwc/metadata" "9.5.2"
+    "@lwc/sfdc-compiler-utils" "9.5.2"
     "@rollup/plugin-babel" "^6.0.4"
     "@rollup/plugin-replace" "^5.0.7"
     "@salesforce/eslint-config-lwc" "~3.6.0"
