@@ -32,8 +32,8 @@ Local Dev is not enabled for your org. See https://developer.salesforce.com/docs
 
 # error.org.api-mismatch.message
 
-Your org is on API version %s but this CLI plugin supports API version %s.
+Your org is on API version %s, but this version of the CLI plugin supports API version %s.
 
 # error.org.api-mismatch.remediation
 
-Please reinstall or update the plugin using %s tag.
+To use the plugin with this org, you can reinstall or update the plugin using the "%s" tag. For example: "sf plugins install %s".

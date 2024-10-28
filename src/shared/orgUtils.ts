@@ -44,7 +44,7 @@ export type AppDefinition = {
  * our plugin should they be using to match with the API version of their org (i.e which version of our plugin
  * contains the lwc-dev-server dependency that can support the API version of their org).
  */
-type apiVersionMetadata = {
+type ApiVersionMetadata = {
   target: {
     versionNumber: string;
     matchingDevServerVersion: string;
@@ -165,7 +165,7 @@ export class OrgUtils {
 
     const pkg = CommonUtils.loadJsonFromFile(packageJsonFilePath) as {
       name: string;
-      apiVersionMetadata: apiVersionMetadata;
+      apiVersionMetadata: ApiVersionMetadata;
     };
     const targetVersion = pkg.apiVersionMetadata.target.versionNumber;
     const orgVersion = connection.version;
@@ -176,17 +176,20 @@ export class OrgUtils {
         (info) => info.versionNumber === targetVersion
       )?.tagName;
       if (tagName) {
-        const remediation = messages.getMessage('error.org.api-mismatch.remediation', [`${pkg.name}@${tagName}`]);
+        const remediation = messages.getMessage('error.org.api-mismatch.remediation', [
+          tagName,
+          `${pkg.name}@${tagName}`,
+        ]);
         errorMessage = `${errorMessage} ${remediation}`;
       }
 
       // Examples of error messages are as below (where the tag name comes from apiVersionMetadata in package.json):
       //
-      // Your org is on API version 61 but this CLI plugin supports API version 62. Please reinstall or update the plugin using @salesforce/plugin-lightning-dev@latest tag.
+      // Your org is on API version 61.0, but this version of the CLI plugin supports API version 62.0. To use the plugin with this org, you can reinstall or update the plugin using the "latest" tag. For example: "sf plugins install @salesforce/plugin-lightning-dev@latest".
       //
-      // Your org is on API version 62 but this CLI plugin supports API version 63. Please reinstall or update the plugin using @salesforce/plugin-lightning-dev@next tag.
+      // Your org is on API version 62.0, but this version of the CLI plugin supports API version 63.0. To use the plugin with this org, you can reinstall or update the plugin using the "next" tag. For example: "sf plugins install @salesforce/plugin-lightning-dev@next".
       //
-      // Your org is on API version 63 but this CLI plugin supports API version 62. Please reinstall or update the plugin using @salesforce/plugin-lightning-dev@latest tag.
+      // Your org is on API version 63.0, but this version of the CLI plugin supports API version 62.0. To use the plugin with this org, you can reinstall or update the plugin using the "latest" tag. For example: "sf plugins install @salesforce/plugin-lightning-dev@latest".
 
       throw new Error(errorMessage);
     }

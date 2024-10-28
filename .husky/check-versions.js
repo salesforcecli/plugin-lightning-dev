@@ -17,7 +17,7 @@ if (devServerDependencyVersion === devServerTargetVersion) {
   process.exit(0); // Pass the check
 } else {
   console.error(
-    `Error: Versions do not match. @lwc/lwc-dev-server: ${devServerDependencyVersion}, matchingDevServerVersion: ${devServerTargetVersion}`
+    `Error: @lwc/lwc-dev-server versions do not match between 'dependencies' and 'apiVersionMetadata' in package.json. Expected ${devServerDependencyVersion} in apiVersionMetadata > target > matchingDevServerVersion. Got ${devServerTargetVersion} instead. When updating the @lwc/lwc-dev-server dependency, you must ensure that it is compatible with the supported API version in this branch, then update apiVersionMetadata > target > matchingDevServerVersion to match, in order to "sign off" on this dependency change.`
   );
   process.exit(1); // Fail the check
 }

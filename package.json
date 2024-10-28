@@ -216,7 +216,7 @@
     }
   },
   "apiVersionMetadata": {
-    "comment": "Refer to apiVersionMetadata in orgUtils.ts for details",
+    "comment": "Refer to ApiVersionMetadata in orgUtils.ts for details",
     "target": {
       "versionNumber": "62.0",
       "matchingDevServerVersion": "^9.5.1"
