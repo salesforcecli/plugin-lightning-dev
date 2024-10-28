@@ -1,3 +1,9 @@
+# [2.2.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.1.3...2.2.0) (2024-10-28)
+
+### Features
+
+- add api version validation ([#218](https://github.com/salesforcecli/plugin-lightning-dev/issues/218)) ([88f36c0](https://github.com/salesforcecli/plugin-lightning-dev/commit/88f36c0a7e5ddbf0af4c030bd654e9e079e20f16))
+
 ## [2.1.3](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.1.2...2.1.3) (2024-10-23)
 
 ### Bug Fixes
