@@ -215,6 +215,23 @@
       "output": []
     }
   },
+  "apiVersionMetadata": {
+    "comment": "Refer to ApiVersionMetadata in orgUtils.ts for details",
+    "target": {
+      "versionNumber": "62.0",
+      "matchingDevServerVersion": "^9.5.1"
+    },
+    "versionToTagMappings": [
+      {
+        "versionNumber": "62.0",
+        "tagName": "latest"
+      },
+      {
+        "versionNumber": "63.0",
+        "tagName": "next"
+      }
+    ]
+  },
   "exports": "./lib/index.js",
   "type": "module",
   "volta": {
