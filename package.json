@@ -6,8 +6,8 @@
   "bugs": "https://github.com/forcedotcom/cli/issues",
   "dependencies": {
     "@lwrjs/api": "0.15.0-alpha.31",
-    "@lwc/lwc-dev-server": "^9.5.1",
-    "@lwc/sfdc-lwc-compiler": "^9.5.1",
+    "@lwc/lwc-dev-server": "^10.7.3",
+    "@lwc/sfdc-lwc-compiler": "^10.7.3",
     "@oclif/core": "^4.0.30",
     "@salesforce/core": "^8.6.2",
     "@salesforce/kit": "^3.1.6",
@@ -16,6 +16,7 @@
     "@inquirer/select": "^2.4.7",
     "@inquirer/prompts": "^5.3.8",
     "axios": "^1.7.7",
+    "glob": "^10.4.5",
     "lwc": "^8.2.0",
     "lwr": "0.15.0-alpha.31",
     "node-fetch": "^3.3.2"
@@ -219,7 +220,7 @@
     "comment": "Refer to ApiVersionMetadata in orgUtils.ts for details",
     "target": {
       "versionNumber": "62.0",
-      "matchingDevServerVersion": "^9.5.1"
+      "matchingDevServerVersion": "^10.7.0"
     },
     "versionToTagMappings": [
       {
