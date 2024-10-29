@@ -48,7 +48,7 @@ async function createLWCServerConfig(
     identityToken: token,
     lifecycle: Lifecycle.getInstance(),
     clientType,
-    namespace: typeof namespace === 'string' ? namespace : undefined,
+    namespace: typeof namespace === 'string' && namespace.length > 0 ? namespace : undefined,
   };
 
   if (certData?.pemCertificate && certData.pemPrivateKey) {
