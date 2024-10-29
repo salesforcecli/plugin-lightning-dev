@@ -3390,10 +3390,10 @@
     "@lwc/style-compiler" "8.2.0"
     "@lwc/template-compiler" "8.2.0"
 
-"@lwc/dev-server-plugin-lex@10.7.3":
-  version "10.7.3"
-  resolved "https://registry.yarnpkg.com/@lwc/dev-server-plugin-lex/-/dev-server-plugin-lex-10.7.3.tgz#75717c57081e1ce8308db9fc3ddffd3e1ec4967b"
-  integrity sha512-CbrHGyolzetqqUqPLRHL/SaW1zWBlvguqCqKmiwmnAvpV0t36oEBgreGDv/QLsxjovx57d0c+LPrVnm+icJUEw==
+"@lwc/dev-server-plugin-lex@10.7.4":
+  version "10.7.4"
+  resolved "https://nexus-proxy.repo.local.sfdc.net/nexus/content/groups/npm-all/@lwc/dev-server-plugin-lex/-/dev-server-plugin-lex-10.7.4.tgz#fbd36af4dbe4aceeb152ea688df2c8268dbb005a"
+  integrity sha512-WMJ3nj1/Dsfz0gQPIvmL4xA26zEmNHYI3D2XnqLFJuQAAuIpxmnHASoyoC+wHoe5YPoGjXIKs/0WYsjWU4u66w==
   dependencies:
     magic-string "~0.30.11"
 
@@ -3443,33 +3443,33 @@
   dependencies:
     "@lwc/shared" "8.2.0"
 
-"@lwc/lwc-dev-server-types@10.7.3":
-  version "10.7.3"
-  resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server-types/-/lwc-dev-server-types-10.7.3.tgz#a2db5405998e76d061e8193fcbc0581c05fa4e18"
-  integrity sha512-CE+gawxQTRwSqxB0huKanMG9XxjxrPBviLYaqJYgnFAHSuKqYrpZ0gteHs83R3NWCaME0dNNhY/r3VIkS35gWw==
+"@lwc/lwc-dev-server-types@10.7.4":
+  version "10.7.4"
+  resolved "https://nexus-proxy.repo.local.sfdc.net/nexus/content/groups/npm-all/@lwc/lwc-dev-server-types/-/lwc-dev-server-types-10.7.4.tgz#4813e6efb703f425fec1c18e49ce0b56b01c7aa2"
+  integrity sha512-NAIOxn4dn51RzPrqVoSIBubwR+92StRsOX0StvL+Ks4lz2izzjFv6Y0XPIGlf97J+lutfiAZSQyMibSTnElSuw==
 
-"@lwc/lwc-dev-server@^10.7.3":
-  version "10.7.3"
-  resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server/-/lwc-dev-server-10.7.3.tgz#77f0547a1a57bc0f2c4f334620f80fcc9dcf8601"
-  integrity sha512-If+GusuplnEkfE1CzucUJTQYDxHqtA219GcFezHuTWO3C4obY8fAsftHtmUDrEWJAXN/+tEYEthXtByfVVe3sw==
+"@lwc/lwc-dev-server@^10.7.4":
+  version "10.7.4"
+  resolved "https://nexus-proxy.repo.local.sfdc.net/nexus/content/groups/npm-all/@lwc/lwc-dev-server/-/lwc-dev-server-10.7.4.tgz#3825c3169708a4b7b405c86d832876e347136711"
+  integrity sha512-unkhuWgn0Bs7mG0G3y8hQEIboURb8EVtdi5LILIgvIhvibvR01v3Dkt263awuoqA71CHofcDHLLiTrtUTUUbNA==
   dependencies:
-    "@lwc/lwc-dev-server-types" "10.7.3"
-    "@lwc/sfdc-lwc-compiler" "10.7.3"
+    "@lwc/lwc-dev-server-types" "10.7.4"
+    "@lwc/sfdc-lwc-compiler" "10.7.4"
     chalk "~5.3.0"
     chokidar "~3.6.0"
     commander "~10.0.0"
     glob "^10.4.5"
     ws "^8.18.0"
 
-"@lwc/metadata@10.7.3":
-  version "10.7.3"
-  resolved "https://registry.yarnpkg.com/@lwc/metadata/-/metadata-10.7.3.tgz#c3ac8bc748a77c4f43b5d8171e4d6c8e7cc35ebd"
-  integrity sha512-hiosNlootNQTp212Bc/wOEJgEJCk1VEX5JPAKQ7Q0kC8NGTMCmo+mIdWOKR1wHBVRHFk60urPde570fCAFnANg==
+"@lwc/metadata@10.7.4":
+  version "10.7.4"
+  resolved "https://nexus-proxy.repo.local.sfdc.net/nexus/content/groups/npm-all/@lwc/metadata/-/metadata-10.7.4.tgz#f09ac1dc53b7e07078ba24a08de619d40f0c6fce"
+  integrity sha512-JlTlz7uHRzGQxBOxSRVT7S3kgdNfNSdiqX9IJWc7baaKsUizBaZRf20bLEUDL/j4feukxiwXP6o9v8C+noIbeA==
   dependencies:
     "@babel/parser" "~7.25.6"
     "@babel/traverse" "~7.25.6"
     "@babel/types" "~7.25.6"
-    "@lwc/sfdc-compiler-utils" "10.7.3"
+    "@lwc/sfdc-compiler-utils" "10.7.4"
     postcss "~8.4.47"
     postcss-selector-parser "~6.1.2"
     postcss-value-parser "~4.2.0"
@@ -3491,15 +3491,15 @@
     "@lwc/shared" "8.2.0"
     "@rollup/pluginutils" "~5.1.2"
 
-"@lwc/sfdc-compiler-utils@10.7.3":
-  version "10.7.3"
-  resolved "https://registry.yarnpkg.com/@lwc/sfdc-compiler-utils/-/sfdc-compiler-utils-10.7.3.tgz#5b191a29b4ea15856c8d1c778b4fa9dcfa3540fa"
-  integrity sha512-CBwtKCNnOtYvROV3GUHgB7kjDJg8TNct6iKn2fjGRJYtqTgIQuY/GNx84RzleB64PNDyeNzCp3Nn/8bzbG4CMw==
+"@lwc/sfdc-compiler-utils@10.7.4":
+  version "10.7.4"
+  resolved "https://nexus-proxy.repo.local.sfdc.net/nexus/content/groups/npm-all/@lwc/sfdc-compiler-utils/-/sfdc-compiler-utils-10.7.4.tgz#548b6a4517184094c1145fa0142959522d6fc7a3"
+  integrity sha512-O11MmbO4Q67PYTiRr33lVDEibtzrlOSPawyYCs/LImvB2E4guYMt7rtQTc+4JgTT+F3HyOAdn1SdPjH4DvhEYQ==
 
-"@lwc/sfdc-lwc-compiler@10.7.3", "@lwc/sfdc-lwc-compiler@^10.7.3":
-  version "10.7.3"
-  resolved "https://registry.yarnpkg.com/@lwc/sfdc-lwc-compiler/-/sfdc-lwc-compiler-10.7.3.tgz#a79e1e0da839b8f4b2a18704ad37a4b5d23ff88d"
-  integrity sha512-rrQAA7ncNJD3wjWxIpv9qNJSNnXtsECyon8zIsj14KXLCD6hhAOclYKVHiT9QAvFAPGlgrqNGFwGFtklk1r3cg==
+"@lwc/sfdc-lwc-compiler@10.7.4", "@lwc/sfdc-lwc-compiler@^10.7.4":
+  version "10.7.4"
+  resolved "https://nexus-proxy.repo.local.sfdc.net/nexus/content/groups/npm-all/@lwc/sfdc-lwc-compiler/-/sfdc-lwc-compiler-10.7.4.tgz#9b3138171a6845595612a3f829ef6d31c7589e4e"
+  integrity sha512-BsUZ/HxN4cNlIFx9eGURp5Z6rUL2FB7aAz71mkZ6bhJFU7O7QfwQdkCXu3Dcpz9V+K5LnXxeu3o2xiWKRODWpQ==
   dependencies:
     "@babel/core" "7.24.8"
     "@babel/parser" "7.24.8"
@@ -3508,11 +3508,11 @@
     "@babel/traverse" "7.24.8"
     "@babel/types" "7.24.8"
     "@komaci/esm-generator" "254.0.2"
-    "@lwc/dev-server-plugin-lex" "10.7.3"
+    "@lwc/dev-server-plugin-lex" "10.7.4"
     "@lwc/eslint-plugin-lwc" "~1.8.2"
     "@lwc/eslint-plugin-lwc-platform" "~4.1.3"
-    "@lwc/metadata" "10.7.3"
-    "@lwc/sfdc-compiler-utils" "10.7.3"
+    "@lwc/metadata" "10.7.4"
+    "@lwc/sfdc-compiler-utils" "10.7.4"
     "@rollup/plugin-babel" "^6.0.4"
     "@rollup/plugin-replace" "^5.0.7"
     "@salesforce/eslint-config-lwc" "~3.6.0"
