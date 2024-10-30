@@ -3392,7 +3392,7 @@
 
 "@lwc/dev-server-plugin-lex@10.7.4":
   version "10.7.4"
-  resolved "https://nexus-proxy.repo.local.sfdc.net/nexus/content/groups/npm-all/@lwc/dev-server-plugin-lex/-/dev-server-plugin-lex-10.7.4.tgz#fbd36af4dbe4aceeb152ea688df2c8268dbb005a"
+  resolved "https://registry.yarnpkg.com/@lwc/dev-server-plugin-lex/-/dev-server-plugin-lex-10.7.4.tgz#fbd36af4dbe4aceeb152ea688df2c8268dbb005a"
   integrity sha512-WMJ3nj1/Dsfz0gQPIvmL4xA26zEmNHYI3D2XnqLFJuQAAuIpxmnHASoyoC+wHoe5YPoGjXIKs/0WYsjWU4u66w==
   dependencies:
     magic-string "~0.30.11"
@@ -3445,12 +3445,12 @@
 
 "@lwc/lwc-dev-server-types@10.7.4":
   version "10.7.4"
-  resolved "https://nexus-proxy.repo.local.sfdc.net/nexus/content/groups/npm-all/@lwc/lwc-dev-server-types/-/lwc-dev-server-types-10.7.4.tgz#4813e6efb703f425fec1c18e49ce0b56b01c7aa2"
+  resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server-types/-/lwc-dev-server-types-10.7.4.tgz#4813e6efb703f425fec1c18e49ce0b56b01c7aa2"
   integrity sha512-NAIOxn4dn51RzPrqVoSIBubwR+92StRsOX0StvL+Ks4lz2izzjFv6Y0XPIGlf97J+lutfiAZSQyMibSTnElSuw==
 
 "@lwc/lwc-dev-server@^10.7.4":
   version "10.7.4"
-  resolved "https://nexus-proxy.repo.local.sfdc.net/nexus/content/groups/npm-all/@lwc/lwc-dev-server/-/lwc-dev-server-10.7.4.tgz#3825c3169708a4b7b405c86d832876e347136711"
+  resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server/-/lwc-dev-server-10.7.4.tgz#3825c3169708a4b7b405c86d832876e347136711"
   integrity sha512-unkhuWgn0Bs7mG0G3y8hQEIboURb8EVtdi5LILIgvIhvibvR01v3Dkt263awuoqA71CHofcDHLLiTrtUTUUbNA==
   dependencies:
     "@lwc/lwc-dev-server-types" "10.7.4"
@@ -3463,7 +3463,7 @@
 
 "@lwc/metadata@10.7.4":
   version "10.7.4"
-  resolved "https://nexus-proxy.repo.local.sfdc.net/nexus/content/groups/npm-all/@lwc/metadata/-/metadata-10.7.4.tgz#f09ac1dc53b7e07078ba24a08de619d40f0c6fce"
+  resolved "https://registry.yarnpkg.com/@lwc/metadata/-/metadata-10.7.4.tgz#f09ac1dc53b7e07078ba24a08de619d40f0c6fce"
   integrity sha512-JlTlz7uHRzGQxBOxSRVT7S3kgdNfNSdiqX9IJWc7baaKsUizBaZRf20bLEUDL/j4feukxiwXP6o9v8C+noIbeA==
   dependencies:
     "@babel/parser" "~7.25.6"
@@ -3493,12 +3493,12 @@
 
 "@lwc/sfdc-compiler-utils@10.7.4":
   version "10.7.4"
-  resolved "https://nexus-proxy.repo.local.sfdc.net/nexus/content/groups/npm-all/@lwc/sfdc-compiler-utils/-/sfdc-compiler-utils-10.7.4.tgz#548b6a4517184094c1145fa0142959522d6fc7a3"
+  resolved "https://registry.yarnpkg.com/@lwc/sfdc-compiler-utils/-/sfdc-compiler-utils-10.7.4.tgz#548b6a4517184094c1145fa0142959522d6fc7a3"
   integrity sha512-O11MmbO4Q67PYTiRr33lVDEibtzrlOSPawyYCs/LImvB2E4guYMt7rtQTc+4JgTT+F3HyOAdn1SdPjH4DvhEYQ==
 
 "@lwc/sfdc-lwc-compiler@10.7.4", "@lwc/sfdc-lwc-compiler@^10.7.4":
   version "10.7.4"
-  resolved "https://nexus-proxy.repo.local.sfdc.net/nexus/content/groups/npm-all/@lwc/sfdc-lwc-compiler/-/sfdc-lwc-compiler-10.7.4.tgz#9b3138171a6845595612a3f829ef6d31c7589e4e"
+  resolved "https://registry.yarnpkg.com/@lwc/sfdc-lwc-compiler/-/sfdc-lwc-compiler-10.7.4.tgz#9b3138171a6845595612a3f829ef6d31c7589e4e"
   integrity sha512-BsUZ/HxN4cNlIFx9eGURp5Z6rUL2FB7aAz71mkZ6bhJFU7O7QfwQdkCXu3Dcpz9V+K5LnXxeu3o2xiWKRODWpQ==
   dependencies:
     "@babel/core" "7.24.8"
