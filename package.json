@@ -29,7 +29,7 @@
     "@types/node-fetch": "^2.6.11",
     "eslint-plugin-sf-plugin": "^1.20.1",
     "esmock": "^2.6.7",
-    "oclif": "^4.14.12",
+    "oclif": "^4.15.16",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   },
