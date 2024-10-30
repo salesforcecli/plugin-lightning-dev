@@ -1,3 +1,9 @@
+## [2.2.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.2.0...2.2.1) (2024-10-30)
+
+### Bug Fixes
+
+- consider lwc dirs nested under package directories ([#206](https://github.com/salesforcecli/plugin-lightning-dev/issues/206)) ([a066edb](https://github.com/salesforcecli/plugin-lightning-dev/commit/a066edb6e1f87989a99d8dcf2031ed10b8941730))
+
 # [2.2.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.1.3...2.2.0) (2024-10-28)
 
 ### Features
