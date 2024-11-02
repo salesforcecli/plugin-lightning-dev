@@ -18,7 +18,7 @@
     "axios": "^1.7.7",
     "glob": "^10.4.5",
     "lwc": "^8.2.0",
-    "lwr": "0.15.0-alpha.31",
+    "lwr": "0.15.0-alpha.36",
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {
