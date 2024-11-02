@@ -14,6 +14,7 @@ jobs:
   getDistTag:
     outputs:
       tag: ${{ steps.distTag.outputs.tag }}
+      version: ${{ steps.distTag.outputs.version }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,13 +22,24 @@ jobs:
           ref: ${{ github.event.release.tag_name || inputs.tag  }}
       - uses: salesforcecli/github-workflows/.github/actions/getPreReleaseTag@main
         id: distTag
+
+  getMajorVersion:
+    needs: [getDistTag]
+    outputs:
+      major: ${{ steps.parsedVersion.outputs.major }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: salesforcecli/github-workflows/.github/actions/parse-semver@main
+        with:
+          input_string: ${{ needs.getDistTag.outputs.version }}
+
   npm:
     uses: salesforcecli/github-workflows/.github/workflows/npmPublish.yml@main
-    needs: [getDistTag]
+    needs: [getDistTag, getMajorVersion]
     with:
       #ctc: true
       sign: true
-      tag: ${{ needs.getDistTag.outputs.tag || 'latest' }}
+      tag: ${{ needs.getDistTag.outputs.tag || (needs.getMajorVersion.outputs.major == '1') && 'latest' || 'next' }}
       githubTag: ${{ github.event.release.tag_name || inputs.tag }}
 
     secrets: inherit
