@@ -1,3 +1,12 @@
+## [1.9.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.9.0...1.9.1) (2024-11-02)
+
+### Bug Fixes
+
+- backport namespace and dir fix ([19bd2eb](https://github.com/salesforcecli/plugin-lightning-dev/commit/19bd2eb7e425a5c370c3173fdfe73417b64a52c3))
+- backport namespace and dir fixes ([957e507](https://github.com/salesforcecli/plugin-lightning-dev/commit/957e507976092827d68aaf19c1e3d3aca4f839ba))
+- backporting the workflow scripts to 252-patch @W-16974485@ ([#234](https://github.com/salesforcecli/plugin-lightning-dev/issues/234)) ([d154d3f](https://github.com/salesforcecli/plugin-lightning-dev/commit/d154d3f6df2582be6ea3ea0339a0e80a9eea451a))
+- trigger release ([#233](https://github.com/salesforcecli/plugin-lightning-dev/issues/233)) ([b06021f](https://github.com/salesforcecli/plugin-lightning-dev/commit/b06021f12ebaf6467e3b629cf6b8d3924f2b48bc))
+
 # [1.9.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.8.0...1.9.0) (2024-10-11)
 
 ### Features
