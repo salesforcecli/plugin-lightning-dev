@@ -180,9 +180,9 @@ export class ExperienceSite {
   public async getRemoteMetadata(): Promise<SiteMetadata | undefined> {
     if (this.metadataCache.remoteMetadata) return this.metadataCache.remoteMetadata;
     // Check if there are special characters in the site name
-    const siteNameHasSpacesOrSpecialChars = hasSpacesOrSpecialChars(this.siteName);
-    const originalSiteName = this.siteName;
-    if (siteNameHasSpacesOrSpecialChars) {
+    const isInvalidSiteName = hasSpacesOrSpecialChars(this.siteName);
+    // const originalSiteName = this.siteName;
+    if (isInvalidSiteName) {
       const updatedSiteName = replaceSpacesAndSpecialChars(this.siteName);
       this.siteName = updatedSiteName;
     }
@@ -192,7 +192,7 @@ export class ExperienceSite {
         `SELECT Name, LastModifiedDate FROM StaticResource WHERE Name LIKE 'MRT_experience_%_${this.siteName}'`
       );
     // Changing the site name back to original after fetching data from StaticResource so it may not break the flow elsewhere
-    this.siteName = originalSiteName;
+    // this.siteName = originalSiteName;
 
     if (result.records.length === 0) {
       return undefined;
@@ -367,7 +367,7 @@ function getSiteNameFromStaticResource(staticResourceName: string): string {
   return parts.slice(4).join(' ');
 }
 
-function replaceSpacesAndSpecialChars(value: string): string {
+export function replaceSpacesAndSpecialChars(value: string): string {
   // Replace any special characters with underscore
   value = value.replace(/[^a-zA-Z0-9]/g, '_');
 
@@ -377,7 +377,7 @@ function replaceSpacesAndSpecialChars(value: string): string {
   return value;
 }
 
-function hasSpacesOrSpecialChars(value: string): boolean {
+export function hasSpacesOrSpecialChars(value: string): boolean {
   // Check for spaces
   if (value.includes(' ')) {
     return true;
