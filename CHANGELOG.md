@@ -1,3 +1,9 @@
+## [1.9.3](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.9.2...1.9.3) (2024-11-04)
+
+### Bug Fixes
+
+- set node version for npm-publish @W-16974485@ ([#241](https://github.com/salesforcecli/plugin-lightning-dev/issues/241)) ([fe90b91](https://github.com/salesforcecli/plugin-lightning-dev/commit/fe90b91875edc9135dcb91a738a839ce6f3bd58b))
+
 ## [1.9.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.9.1...1.9.2) (2024-11-04)
 
 ### Bug Fixes
