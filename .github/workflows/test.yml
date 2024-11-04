@@ -4,10 +4,6 @@ on:
     branches-ignore: [main, 252-patch]
   workflow_dispatch:
 
-env:
-  # This repo currently runs on nodejs@20 due to a depedency that is incompatible with nodejs@22
-  NODE_VERSION_OVERRIDE: 'lts/-1'
-
 jobs:
   yarn-lockfile-check:
     uses: salesforcecli/github-workflows/.github/workflows/lockFileCheck.yml@main
@@ -30,3 +26,4 @@ jobs:
       fail-fast: false
     with:
       os: ${{ matrix.os }}
+      nodeVersion: 20.18.0
