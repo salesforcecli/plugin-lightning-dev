@@ -1,3 +1,9 @@
+## [2.2.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.2.1...2.2.2) (2024-11-04)
+
+### Bug Fixes
+
+- bump target API version to 63.0 to match main codeline ([#235](https://github.com/salesforcecli/plugin-lightning-dev/issues/235)) ([2540aa9](https://github.com/salesforcecli/plugin-lightning-dev/commit/2540aa923e97c00165f55b9cc31cfd6e8d8cefa8))
+
 ## [2.2.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.2.0...2.2.1) (2024-10-30)
 
 ### Bug Fixes
