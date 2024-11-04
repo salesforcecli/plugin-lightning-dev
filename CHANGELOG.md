@@ -1,3 +1,9 @@
+## [1.9.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.9.1...1.9.2) (2024-11-04)
+
+### Bug Fixes
+
+- add debug logs to figure out npm tag issue @W-16974485@ ([#236](https://github.com/salesforcecli/plugin-lightning-dev/issues/236)) ([d7dd58d](https://github.com/salesforcecli/plugin-lightning-dev/commit/d7dd58dc99792ca78a34e04fa9bbff95c14d503d))
+
 ## [1.9.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.9.0...1.9.1) (2024-11-02)
 
 ### Bug Fixes
