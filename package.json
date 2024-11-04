@@ -34,7 +34,7 @@
     "typescript": "^5.5.4"
   },
   "engines": {
-    "node": ">=18.0.0 <22"
+    "node": ">=18.0.0 <23"
   },
   "files": [
     "/lib",
@@ -219,7 +219,7 @@
   "apiVersionMetadata": {
     "comment": "Refer to ApiVersionMetadata in orgUtils.ts for details",
     "target": {
-      "versionNumber": "62.0",
+      "versionNumber": "63.0",
       "matchingDevServerVersion": "^10.7.4"
     },
     "versionToTagMappings": [
