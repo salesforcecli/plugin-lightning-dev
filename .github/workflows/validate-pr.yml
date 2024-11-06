@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [opened, reopened, edited]
     # only applies to PRs that want to merge to main
-    branches: [main]
+    branches: [main, 252-patch]
 
 jobs:
   pr-validation:
