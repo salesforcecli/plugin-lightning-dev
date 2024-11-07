@@ -1,7 +1,7 @@
 name: tests
 on:
   push:
-    branches-ignore: [main]
+    branches-ignore: [main, 252-patch]
   workflow_dispatch:
 
 jobs:
@@ -26,3 +26,4 @@ jobs:
       fail-fast: false
     with:
       os: ${{ matrix.os }}
+      nodeVersion: 20.18.0
