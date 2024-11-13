@@ -159,7 +159,7 @@ describe('lightning dev app', () => {
     });
 
     it('runs org:open with proper flags when app name provided', async () => {
-      await verifyOrgOpen(`lightning/app/${testAppDefinition.DurableId}`, Platform.desktop, 'Sales');
+      await verifyOrgOpen(`lightning/app/${testAppDefinition.DurableId}`, Platform.desktop, 'Sales', 'chrome');
     });
 
     it('prompts user to select lightning app when not provided', async () => {
@@ -170,7 +170,12 @@ describe('lightning dev app', () => {
       expect(promptStub.calledOnce);
     });
 
-    async function verifyOrgOpen(expectedAppPath: string, deviceType?: Platform, appName?: string): Promise<void> {
+    async function verifyOrgOpen(
+      expectedAppPath: string,
+      deviceType?: Platform,
+      appName?: string,
+      browser?: string
+    ): Promise<void> {
       $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
       $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(testIdentityData);
@@ -186,18 +191,25 @@ describe('lightning dev app', () => {
         flags.push('--name', appName);
       }
 
+      if (browser) {
+        flags.push('--browser', browser);
+      }
+
       await MockedLightningPreviewApp.run(flags);
 
+      const expectedParameters = [
+        '--path',
+        `${expectedAppPath}?0.aura.ldpServerUrl=${testServerUrl}&0.aura.ldpServerId=${testLdpServerId}&0.aura.mode=DEVPREVIEW`,
+        '--target-org',
+        testOrgData.username,
+      ];
+
+      if (browser) {
+        expectedParameters.push('--browser');
+      }
+
       expect(runCmdStub.calledOnce);
-      expect(runCmdStub.getCall(0).args).to.deep.equal([
-        'org:open',
-        [
-          '--path',
-          `${expectedAppPath}?0.aura.ldpServerUrl=${testServerUrl}&0.aura.ldpServerId=${testLdpServerId}&0.aura.mode=DEVPREVIEW`,
-          '--target-org',
-          testOrgData.username,
-        ],
-      ]);
+      expect(runCmdStub.getCall(0).args).to.deep.equal(['org:open', expectedParameters]);
     }
   });
 
