@@ -110,6 +110,7 @@ describe('previewUtils', () => {
         testLdpServerId,
         'MyAppId',
         'MyTargetOrg',
+        'MyBrowser',
         'MyAuraMode'
       )
     ).to.deep.equal([
@@ -117,6 +118,8 @@ describe('previewUtils', () => {
       `lightning/app/MyAppId?0.aura.ldpServerUrl=MyLdpServerUrl&0.aura.ldpServerId=${testLdpServerId}&0.aura.mode=MyAuraMode`,
       '--target-org',
       'MyTargetOrg',
+      '--browser',
+      'MyBrowser',
     ]);
 
     expect(PreviewUtils.generateDesktopPreviewLaunchArguments('MyLdpServerUrl', testLdpServerId)).to.deep.equal([
