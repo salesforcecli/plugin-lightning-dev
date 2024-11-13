@@ -3,8 +3,8 @@
     "alias": [],
     "command": "lightning:dev:app",
     "flagAliases": [],
-    "flagChars": ["i", "n", "o", "t"],
-    "flags": ["device-id", "device-type", "flags-dir", "name", "target-org"],
+    "flagChars": ["b", "i", "n", "o", "t"],
+    "flags": ["browser", "device-id", "device-type", "flags-dir", "name", "target-org"],
     "plugin": "@salesforce/plugin-lightning-dev"
   },
   {
