@@ -146,6 +146,7 @@ export class PreviewUtils {
    * @param ldpServerId Record ID for the identity token
    * @param appId An optional app id for a targeted LEX app
    * @param targetOrg An optional org id
+   * @param browser An optional browser
    * @param auraMode An optional Aura Mode (defaults to DEVPREVIEW)
    * @returns Array of arguments to be used by Org:Open command for launching desktop browser
    */
@@ -154,6 +155,7 @@ export class PreviewUtils {
     ldpServerId: string,
     appId?: string,
     targetOrg?: string,
+    browser?: string,
     auraMode = DevPreviewAuraMode
   ): string[] {
     // appPath will resolve to one of the following:
@@ -171,6 +173,10 @@ export class PreviewUtils {
 
     if (targetOrg) {
       launchArguments.push('--target-org', targetOrg);
+    }
+
+    if (browser) {
+      launchArguments.push('--browser', browser);
     }
 
     return launchArguments;

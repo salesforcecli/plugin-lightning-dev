@@ -60,6 +60,11 @@ export default class LightningDevApp extends SfCommand<void> {
       summary: messages.getMessage('flags.device-id.summary'),
       char: 'i',
     }),
+    browser: Flags.option({
+      char: 'b',
+      summary: messages.getMessage('flags.browser.summary'),
+      options: ['chrome', 'edge', 'firefox'] as const, // These are ones supported by "open" package
+    })(),
   };
 
   public async run(): Promise<void> {
@@ -69,6 +74,7 @@ export default class LightningDevApp extends SfCommand<void> {
     const targetOrg = flags['target-org'];
     const appName = flags['name'];
     const deviceId = flags['device-id'];
+    const browser = flags['browser'];
 
     let sfdxProjectRootPath = '';
     try {
@@ -118,6 +124,7 @@ export default class LightningDevApp extends SfCommand<void> {
         ldpServerId,
         ldpServerUrl,
         appId,
+        browser,
         logger
       );
     } else {
@@ -143,6 +150,7 @@ export default class LightningDevApp extends SfCommand<void> {
     ldpServerId: string,
     ldpServerUrl: string,
     appId: string | undefined,
+    browser: string | undefined,
     logger: Logger
   ): Promise<void> {
     if (!appId) {
@@ -177,7 +185,8 @@ export default class LightningDevApp extends SfCommand<void> {
       ldpServerUrl,
       ldpServerId,
       appId,
-      targetOrg
+      targetOrg,
+      browser
     );
 
     // Start the LWC Dev Server

@@ -31,6 +31,10 @@ Type of device to display the app preview.
 
 ID of the mobile device to display the preview if device type is set to `ios` or `android`. The default value is the ID of the first available mobile device.
 
+# flags.browser.summary
+
+Browser where the org opens in desktop preview.
+
 # error.username
 
 Org must have a valid user
