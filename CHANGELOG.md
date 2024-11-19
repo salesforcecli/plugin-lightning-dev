@@ -1,3 +1,9 @@
+# [2.3.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.2.3...2.3.0) (2024-11-19)
+
+### Features
+
+- add setup / port env variables ([#257](https://github.com/salesforcecli/plugin-lightning-dev/issues/257)) ([b753b42](https://github.com/salesforcecli/plugin-lightning-dev/commit/b753b4289148c937ba6a12db54c27c243705d3c4))
+
 ## [2.2.3](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.2.2...2.2.3) (2024-11-06)
 
 ### Bug Fixes
