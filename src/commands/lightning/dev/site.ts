@@ -7,7 +7,7 @@
 import fs from 'node:fs';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
-import { expDev } from '@lwrjs/api';
+import { expDev, setupDev } from '@lwrjs/api';
 import { OrgUtils } from '../../../shared/orgUtils.js';
 import { PromptUtils } from '../../../shared/promptUtils.js';
 import { ExperienceSite } from '../../../shared/experience/expSite.js';
@@ -79,15 +79,24 @@ export default class LightningDevSite extends SfCommand<void> {
       const authToken = await selectedSite.setupAuth();
 
       // Start the dev server
-      await expDev({
+      const port = parseInt(process.env.PORT ?? '3000', 10);
+      const startupParams = {
+        sfCli: true,
         authToken,
         open: true,
-        port: 3000,
+        port,
         logLevel: 'error',
         mode: 'dev',
         siteZip,
         siteDir: selectedSite.getSiteDirectory(),
-      });
+      };
+
+      // Environment variable used to setup the site rather than setup & start server
+      if (process.env.SETUP_ONLY === 'true') {
+        await setupDev(startupParams);
+      } else {
+        await expDev(startupParams);
+      }
     } catch (e) {
       this.log('Local Development setup failed', e);
     }
