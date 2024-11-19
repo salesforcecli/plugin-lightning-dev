@@ -1,7 +1,7 @@
 {
   "name": "@salesforce/plugin-lightning-dev",
   "description": "Lightning development tools for LEX, Mobile, and Experience Sites",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "author": "Salesforce",
   "bugs": "https://github.com/forcedotcom/cli/issues",
   "dependencies": {
@@ -9,7 +9,7 @@
     "@inquirer/select": "^2.4.7",
     "@lwc/lwc-dev-server": "^10.7.4",
     "@lwc/sfdc-lwc-compiler": "^10.7.4",
-    "@lwrjs/api": "0.15.0-alpha.31",
+    "@lwrjs/api": "0.15.0-alpha.44",
     "@oclif/core": "^4.0.30",
     "@salesforce/core": "^8.6.2",
     "@salesforce/kit": "^3.1.6",
@@ -18,7 +18,7 @@
     "axios": "^1.7.7",
     "glob": "^10.4.5",
     "lwc": "^8.2.0",
-    "lwr": "0.15.0-alpha.31",
+    "lwr": "0.15.0-alpha.44",
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {
@@ -29,12 +29,12 @@
     "@types/node-fetch": "^2.6.11",
     "eslint-plugin-sf-plugin": "^1.20.1",
     "esmock": "^2.6.7",
-    "oclif": "^4.14.12",
+    "oclif": "^4.15.28",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   },
   "engines": {
-    "node": ">=18.0.0 <22"
+    "node": ">=18.0.0 <23"
   },
   "files": [
     "/lib",
@@ -219,7 +219,7 @@
   "apiVersionMetadata": {
     "comment": "Refer to ApiVersionMetadata in orgUtils.ts for details",
     "target": {
-      "versionNumber": "62.0",
+      "versionNumber": "63.0",
       "matchingDevServerVersion": "^10.7.4"
     },
     "versionToTagMappings": [

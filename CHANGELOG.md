@@ -1,3 +1,21 @@
+# [2.3.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.2.3...2.3.0) (2024-11-19)
+
+### Features
+
+- add setup / port env variables ([#257](https://github.com/salesforcecli/plugin-lightning-dev/issues/257)) ([b753b42](https://github.com/salesforcecli/plugin-lightning-dev/commit/b753b4289148c937ba6a12db54c27c243705d3c4))
+
+## [2.2.3](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.2.2...2.2.3) (2024-11-06)
+
+### Bug Fixes
+
+- set node version for npm-publish @W-16974485@ ([#242](https://github.com/salesforcecli/plugin-lightning-dev/issues/242)) ([e6e836c](https://github.com/salesforcecli/plugin-lightning-dev/commit/e6e836cab5061b33713cb9799816e82193b0229d)), closes [#236](https://github.com/salesforcecli/plugin-lightning-dev/issues/236) [#241](https://github.com/salesforcecli/plugin-lightning-dev/issues/241)
+
+## [2.2.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.2.1...2.2.2) (2024-11-04)
+
+### Bug Fixes
+
+- bump target API version to 63.0 to match main codeline ([#235](https://github.com/salesforcecli/plugin-lightning-dev/issues/235)) ([2540aa9](https://github.com/salesforcecli/plugin-lightning-dev/commit/2540aa923e97c00165f55b9cc31cfd6e8d8cefa8))
+
 ## [2.2.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.2.0...2.2.1) (2024-10-30)
 
 ### Bug Fixes
