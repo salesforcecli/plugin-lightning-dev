@@ -179,6 +179,13 @@ export class ExperienceSite {
 
   public async getRemoteMetadata(): Promise<SiteMetadata | undefined> {
     if (this.metadataCache.remoteMetadata) return this.metadataCache.remoteMetadata;
+    // Check if there are special characters in the site name
+    const isInvalidSiteName = hasSpacesOrSpecialChars(this.siteName);
+    // const originalSiteName = this.siteName;
+    if (isInvalidSiteName) {
+      const updatedSiteName = replaceSpacesAndSpecialChars(this.siteName);
+      this.siteName = updatedSiteName;
+    }
     const result = await this.org
       .getConnection()
       .query<{ Name: string; LastModifiedDate: string }>(
@@ -355,4 +362,28 @@ function getSiteNameFromStaticResource(staticResourceName: string): string {
     throw new Error(`Unexpected static resource name: ${staticResourceName}`);
   }
   return parts.slice(4).join(' ');
+}
+
+export function replaceSpacesAndSpecialChars(value: string): string {
+  // Replace any special characters with underscore
+  value = value.replace(/[^a-zA-Z0-9]/g, '_');
+
+  // Replace spaces with underscore
+  value = value.replace(/ /g, '_');
+
+  return value;
+}
+
+export function hasSpacesOrSpecialChars(value: string): boolean {
+  // Check for spaces
+  if (value.includes(' ')) {
+    return true;
+  }
+
+  // Check for special characters
+  if (/[^\w]/.test(value)) {
+    return true;
+  }
+
+  return false;
 }
