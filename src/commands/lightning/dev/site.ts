@@ -81,7 +81,7 @@ export default class LightningDevSite extends SfCommand<void> {
       // Start the dev server
       const port = parseInt(process.env.PORT ?? '3000', 10);
       const startupParams: LocalDevOptions = {
-        sfCli: true,
+        sfCLI: true,
         authToken,
         open: true,
         port,
