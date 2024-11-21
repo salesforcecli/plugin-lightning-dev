@@ -7,7 +7,7 @@
 import fs from 'node:fs';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
-import { expDev, setupDev } from '@lwrjs/api';
+import { expDev, LocalDevOptions, setupDev } from '@lwrjs/api';
 import { OrgUtils } from '../../../shared/orgUtils.js';
 import { PromptUtils } from '../../../shared/promptUtils.js';
 import { ExperienceSite } from '../../../shared/experience/expSite.js';
@@ -80,8 +80,8 @@ export default class LightningDevSite extends SfCommand<void> {
 
       // Start the dev server
       const port = parseInt(process.env.PORT ?? '3000', 10);
-      const startupParams = {
-        sfCli: true,
+      const startupParams: LocalDevOptions = {
+        sfCLI: true,
         authToken,
         open: true,
         port,
