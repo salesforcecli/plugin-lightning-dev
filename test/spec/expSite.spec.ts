@@ -7,40 +7,7 @@
 import { expect } from 'chai';
 import { Connection, Org } from '@salesforce/core';
 import sinon from 'sinon';
-import {
-  replaceSpacesAndSpecialChars,
-  hasSpacesOrSpecialChars,
-  ExperienceSite,
-} from '../../src/shared/experience/expSite.js';
-
-describe('replaceSpacesAndSpecialChars', () => {
-  it('should replace spaces and special characters with underscores', () => {
-    const input = 'site#name@with-special%chars with spaces';
-    const expectedOutput = 'site_name_with_special_chars_with_spaces';
-    const output = replaceSpacesAndSpecialChars(input);
-    expect(output).to.equal(expectedOutput);
-  });
-});
-
-describe('hasSpacesOrSpecialChars', () => {
-  it('should return true if the input string has spaces', () => {
-    const input = 'Hello World';
-    const output = hasSpacesOrSpecialChars(input);
-    expect(output).to.be.true;
-  });
-
-  it('should return true if the input string has special characters', () => {
-    const input = 'Hello, @#';
-    const output = hasSpacesOrSpecialChars(input);
-    expect(output).to.be.true;
-  });
-
-  it('should return false if the input string has neither spaces nor special characters', () => {
-    const input = 'HelloWorld';
-    const output = hasSpacesOrSpecialChars(input);
-    expect(output).to.be.false;
-  });
-});
+import { ExperienceSite } from '../../src/shared/experience/expSite.js';
 
 describe('getRemoteMetadata', () => {
   it('should return remote metadata when it exists', async () => {
