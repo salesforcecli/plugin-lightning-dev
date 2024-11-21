@@ -224,28 +224,93 @@ export class ExperienceSite {
    * @returns path of downloaded site zip
    */
   public async downloadSite(): Promise<string> {
-    const remoteMetadata = await this.getRemoteMetadata();
-    if (!remoteMetadata) {
+    if (process.env.API_ENABLED !== 'true') {
+      const retVal = await this.downloadSiteV2();
+      return retVal;
+    } else {
+      const remoteMetadata = await this.getRemoteMetadata();
+      if (!remoteMetadata) {
+        throw new SfError(`No published site found for: ${this.siteDisplayName}`);
+      }
+
+      // Download the site from static resources
+      // eslint-disable-next-line no-console
+      console.log('[local-dev] Downloading site...'); // TODO spinner
+      const resourcePath = this.getSiteZipPath(remoteMetadata);
+      const staticresource = await this.org.getConnection().metadata.read('StaticResource', remoteMetadata.bundleName);
+      if (staticresource?.content) {
+        // Save the static resource
+        fs.mkdirSync(this.getSiteDirectory(), { recursive: true });
+        const buffer = Buffer.from(staticresource.content, 'base64');
+        fs.writeFileSync(resourcePath, buffer);
+
+        // Save the site's metadata
+        this.saveMetadata(remoteMetadata);
+      } else {
+        throw new SfError(`Error occurred downloading your site: ${this.siteDisplayName}`);
+      }
+
+      return resourcePath;
+    }
+  }
+
+  /**
+   * Generate a site bundle on demand and download it
+   *
+   * @returns path of downloaded site zip
+   */
+  public async downloadSiteV2(): Promise<string> {
+    const remoteMetadata = await this.org
+      .getConnection()
+      .query<{ Id: string; Name: string; LastModifiedDate: string; MasterLabel: string }>(
+        `Select Id, Name, LastModifiedDate, MasterLabel, UrlPathPrefix, SiteType, Status from Site WHERE Name like '${this.siteName}1'`
+      );
+    if (!remoteMetadata || remoteMetadata.records.length === 0) {
       throw new SfError(`No published site found for: ${this.siteDisplayName}`);
     }
+    const theSite = remoteMetadata.records[0];
 
-    // Download the site from static resources
+    // Download the site via API
     // eslint-disable-next-line no-console
     console.log('[local-dev] Downloading site...'); // TODO spinner
-    const resourcePath = this.getSiteZipPath(remoteMetadata);
-    const staticresource = await this.org.getConnection().metadata.read('StaticResource', remoteMetadata.bundleName);
-    if (staticresource?.content) {
-      // Save the static resource
-      fs.mkdirSync(this.getSiteDirectory(), { recursive: true });
-      const buffer = Buffer.from(staticresource.content, 'base64');
-      fs.writeFileSync(resourcePath, buffer);
-
-      // Save the site's metadata
-      this.saveMetadata(remoteMetadata);
-    } else {
+    const conn = this.org.getConnection();
+    const metadata = {
+      bundleName: theSite.Name,
+      bundleLastModified: theSite.LastModifiedDate,
+    };
+    const siteId = theSite.Id;
+    const siteIdMinus3 = siteId.substring(0, siteId.length - 3);
+    const accessToken = conn.accessToken;
+    const instanceUrl = conn.instanceUrl; // Org URL
+    if (!accessToken) {
       throw new SfError(`Error occurred downloading your site: ${this.siteDisplayName}`);
     }
+    const resourcePath = this.getSiteZipPath(metadata);
+    try {
+      const apiUrl = `${instanceUrl}/services/data/v63.0/sites/${siteIdMinus3}/preview`;
+      const response = await axios.get(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        responseType: 'stream',
+      });
+      fs.mkdirSync(this.getSiteDirectory(), { recursive: true });
 
+      const fileStream = fs.createWriteStream(resourcePath);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+      response.data.pipe(fileStream);
+
+      await new Promise((resolve, reject) => {
+        fileStream.on('finish', resolve);
+        fileStream.on('error', reject);
+      });
+      this.saveMetadata(metadata);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('failed to download site', e);
+    }
+
+    // Save the site's metadata
     return resourcePath;
   }
 
