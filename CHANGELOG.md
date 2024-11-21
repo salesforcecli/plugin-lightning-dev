@@ -1,3 +1,9 @@
+## [2.3.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.3.0...2.3.1) (2024-11-21)
+
+### Bug Fixes
+
+- sfCLI parameter ([#260](https://github.com/salesforcecli/plugin-lightning-dev/issues/260)) ([f6556b1](https://github.com/salesforcecli/plugin-lightning-dev/commit/f6556b13c0c44cf283c31a8a3e99f97dffc60bd6))
+
 # [2.3.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.2.3...2.3.0) (2024-11-19)
 
 ### Features
