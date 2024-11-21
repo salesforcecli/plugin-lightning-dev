@@ -224,7 +224,7 @@ export class ExperienceSite {
    * @returns path of downloaded site zip
    */
   public async downloadSite(): Promise<string> {
-    if (process.env.API_ENABLED !== 'true') {
+    if (process.env.STATIC_MODE !== 'true') {
       const retVal = await this.downloadSiteV2();
       return retVal;
     } else {
