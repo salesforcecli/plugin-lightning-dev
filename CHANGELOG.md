@@ -1,3 +1,9 @@
+## [2.3.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.3.1...2.3.2) (2024-11-22)
+
+### Bug Fixes
+
+- download site bundle correctly if site name has special chars ([#262](https://github.com/salesforcecli/plugin-lightning-dev/issues/262)) ([fd52cec](https://github.com/salesforcecli/plugin-lightning-dev/commit/fd52cecb73535cd5fdd303bdd4f82321d3848c40))
+
 ## [2.3.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.3.0...2.3.1) (2024-11-21)
 
 ### Bug Fixes
