@@ -93,7 +93,6 @@
     "prepare": "sf-install",
     "test": "wireit",
     "test:nuts": "nyc mocha \"**/*.nut.ts\" --slow 4500 --timeout 600000 --parallel",
-    "test:spec": "nyc mocha \"test/**/*.spec.ts\" --slow 4500 --timeout 600000 --parallel",
     "test:only": "wireit",
     "unlink-lwr": "yarn unlink @lwrjs/api @lwrjs/app-service @lwrjs/asset-registry @lwrjs/asset-transformer @lwrjs/auth-middleware @lwrjs/base-view-provider @lwrjs/base-view-transformer @lwrjs/client-modules @lwrjs/config @lwrjs/core @lwrjs/dev-proxy-server @lwrjs/diagnostics @lwrjs/esbuild @lwrjs/everywhere @lwrjs/fs-asset-provider @lwrjs/fs-watch @lwrjs/html-view-provider @lwrjs/instrumentation @lwrjs/label-module-provider @lwrjs/lambda @lwrjs/legacy-npm-module-provider @lwrjs/loader @lwrjs/lwc-module-provider @lwrjs/lwc-ssr @lwrjs/markdown-view-provider @lwrjs/module-bundler @lwrjs/module-registry @lwrjs/npm-module-provider @lwrjs/nunjucks-view-provider @lwrjs/o11y @lwrjs/resource-registry @lwrjs/router @lwrjs/security @lwrjs/server @lwrjs/shared-utils @lwrjs/static @lwrjs/tools @lwrjs/types @lwrjs/view-registry lwr",
     "update-snapshots": "node --loader ts-node/esm --no-warnings=ExperimentalWarning \"./bin/dev.js\" snapshot:generate",
