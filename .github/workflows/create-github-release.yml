@@ -6,6 +6,7 @@ on:
       - main
       - prerelease/**
       - 252-patch
+      - 254-patch
     tags-ignore:
       - '*'
   workflow_dispatch:
