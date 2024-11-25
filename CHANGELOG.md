@@ -1,3 +1,9 @@
+## [1.9.4](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.9.3...1.9.4) (2024-11-25)
+
+### Bug Fixes
+
+- use absolute directories ([#263](https://github.com/salesforcecli/plugin-lightning-dev/issues/263)) ([056c011](https://github.com/salesforcecli/plugin-lightning-dev/commit/056c011b8667cb80538147fdd5329d93ab742726))
+
 ## [1.9.3](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.9.2...1.9.3) (2024-11-04)
 
 ### Bug Fixes
