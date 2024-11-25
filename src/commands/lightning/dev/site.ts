@@ -83,7 +83,7 @@ export default class LightningDevSite extends SfCommand<void> {
       const startupParams: LocalDevOptions = {
         sfCLI: true,
         authToken,
-        open: true,
+        open: process.env.OPEN_BROWSER === 'false' ? false : true,
         port,
         logLevel: 'error',
         mode: 'dev',
