@@ -1,3 +1,9 @@
+# [2.5.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.4.0...2.5.0) (2024-11-25)
+
+### Features
+
+- update lwc dependencies to match 254/patch code line @W-17311538 ([#271](https://github.com/salesforcecli/plugin-lightning-dev/issues/271)) ([89c40b3](https://github.com/salesforcecli/plugin-lightning-dev/commit/89c40b37720014fc591af53c6df9cffc21c58eba))
+
 # [2.4.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.3.2...2.4.0) (2024-11-25)
 
 ### Features
