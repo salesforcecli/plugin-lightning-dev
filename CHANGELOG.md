@@ -1,3 +1,9 @@
+# [2.4.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.3.2...2.4.0) (2024-11-25)
+
+### Features
+
+- add open_browser env var for testing ([#269](https://github.com/salesforcecli/plugin-lightning-dev/issues/269)) ([d4d3778](https://github.com/salesforcecli/plugin-lightning-dev/commit/d4d37782b779867c85d4e8f388a93d5af670da9c))
+
 ## [2.3.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.3.1...2.3.2) (2024-11-22)
 
 ### Bug Fixes
