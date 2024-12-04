@@ -37,6 +37,8 @@ export class ExperienceSite {
     this.org = org;
     this.siteDisplayName = siteName.trim();
     this.siteName = this.siteDisplayName.replace(' ', '_');
+    // Replace any special characters in site name with underscore
+    this.siteName = this.siteName.replace(/[^a-zA-Z0-9]/g, '_');
   }
 
   /**
