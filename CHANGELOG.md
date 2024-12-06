@@ -1,3 +1,9 @@
+## [2.6.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.6.1...2.6.2) (2024-12-06)
+
+### Bug Fixes
+
+- **deps:** bump the npm_and_yarn group with 2 updates ([#284](https://github.com/salesforcecli/plugin-lightning-dev/issues/284)) ([c05b45d](https://github.com/salesforcecli/plugin-lightning-dev/commit/c05b45d43fde49bff671a99d6e8c9afccc8ee8c8))
+
 ## [2.6.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.6.0...2.6.1) (2024-12-06)
 
 ### Bug Fixes
