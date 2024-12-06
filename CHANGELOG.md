@@ -1,3 +1,9 @@
+# [2.6.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.5.0...2.6.0) (2024-12-06)
+
+### Features
+
+- support node 22+ ([#282](https://github.com/salesforcecli/plugin-lightning-dev/issues/282)) ([ea9b60f](https://github.com/salesforcecli/plugin-lightning-dev/commit/ea9b60f145de5874f53db5cdf78c8c9566dcfeac))
+
 # [2.5.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.4.0...2.5.0) (2024-11-25)
 
 ### Features
