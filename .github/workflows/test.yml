@@ -4,9 +4,6 @@ on:
     branches-ignore: [main, 252-patch]
   workflow_dispatch:
 
-# UT_DISABLE_NODE_CURRENT variable can disable latest node in github actions
-# NODE_VERSION_OVERRIDE will change the set of tests to run on a specific version of node
-
 jobs:
   yarn-lockfile-check:
     uses: salesforcecli/github-workflows/.github/workflows/lockFileCheck.yml@main
