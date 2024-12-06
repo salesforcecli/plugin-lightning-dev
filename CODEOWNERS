@@ -1,4 +1,4 @@
 # Comment line immediately above ownership line is reserved for related other information. Please be careful while editing.
 
 #GUSINFO: Web Application Runtime, Lightning Web Runtime (Container)
-* @salesforcecli/lwr
+* @salesforcecli/lwr @salesforcecli/lex @salesforcecli/mobile-platform-experience
