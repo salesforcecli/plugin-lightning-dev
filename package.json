@@ -30,7 +30,7 @@
     "esmock": "^2.6.7",
     "oclif": "^4.15.28",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.4"
+    "typescript": "^5.7.2"
   },
   "engines": {
     "node": ">=18.0.0"
