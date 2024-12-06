@@ -1,3 +1,9 @@
+## [2.6.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.6.0...2.6.1) (2024-12-06)
+
+### Bug Fixes
+
+- rename CI readme ([f6d0c2c](https://github.com/salesforcecli/plugin-lightning-dev/commit/f6d0c2ca09b02ad7d82b1c2a919fdb617c76b085))
+
 # [2.6.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.5.0...2.6.0) (2024-12-06)
 
 ### Features
