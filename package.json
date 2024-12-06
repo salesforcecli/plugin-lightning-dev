@@ -26,7 +26,7 @@
     "@salesforce/dev-scripts": "^10.2.10",
     "@salesforce/plugin-command-reference": "^3.1.34",
     "@types/node-fetch": "^2.6.11",
-    "eslint-plugin-sf-plugin": "^1.20.1",
+    "eslint-plugin-sf-plugin": "^1.20.13",
     "esmock": "^2.6.7",
     "oclif": "^4.15.28",
     "ts-node": "^10.9.2",
