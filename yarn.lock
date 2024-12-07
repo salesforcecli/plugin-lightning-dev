@@ -6182,10 +6182,10 @@ eslint@^8.56.0, eslint@~8.57.0:
     strip-ansi "^6.0.1"
     text-table "^0.2.0"
 
-esmock@^2.6.7:
-  version "2.6.7"
-  resolved "https://registry.yarnpkg.com/esmock/-/esmock-2.6.7.tgz#e6d737de83d9b895958640cc60a4ff28112b30a8"
-  integrity sha512-4DmjZ0qQIG+NQV1njHvWrua/cZEuJq56A3pSELT2BjNuol1aads7BluofCbLErdO41Ic1XCd2UMepVLpjL64YQ==
+esmock@^2.6.9:
+  version "2.6.9"
+  resolved "https://registry.yarnpkg.com/esmock/-/esmock-2.6.9.tgz#3d8fc5f277ec82f0ae1cfc579712cc19ff53d999"
+  integrity sha512-SJ5YnoWi8yuGghBrupScARmIcUh2A2a2gIfdVRtQ2MQpQo91wMWHx/fsN0ZDERLAUso1ea4Q/9CKCL88O5MEpg==
 
 espree@^9.6.0, espree@^9.6.1:
   version "9.6.1"
