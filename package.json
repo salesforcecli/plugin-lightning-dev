@@ -1,15 +1,15 @@
 {
   "name": "@salesforce/plugin-lightning-dev",
   "description": "Lightning development tools for LEX, Mobile, and Experience Sites",
-  "version": "2.3.2-alpha.0",
+  "version": "2.6.2",
   "author": "Salesforce",
   "bugs": "https://github.com/forcedotcom/cli/issues",
   "dependencies": {
     "@inquirer/prompts": "^5.3.8",
     "@inquirer/select": "^2.4.7",
-    "@lwc/lwc-dev-server": "^10.7.4",
-    "@lwc/sfdc-lwc-compiler": "^10.7.4",
-    "@lwrjs/api": "0.15.0-alpha.44",
+    "@lwc/lwc-dev-server": "^11.1.0",
+    "@lwc/sfdc-lwc-compiler": "^11.1.0",
+    "@lwrjs/api": "0.15.6",
     "@oclif/core": "^4.0.30",
     "@salesforce/core": "^8.6.2",
     "@salesforce/kit": "^3.1.6",
@@ -17,8 +17,7 @@
     "@salesforce/sf-plugins-core": "^11.2.4",
     "axios": "^1.7.7",
     "glob": "^10.4.5",
-    "lwc": "^8.2.0",
-    "lwr": "0.15.0-alpha.44",
+    "lwc": "^8.10.1",
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {
@@ -27,14 +26,14 @@
     "@salesforce/dev-scripts": "^10.2.10",
     "@salesforce/plugin-command-reference": "^3.1.34",
     "@types/node-fetch": "^2.6.11",
-    "eslint-plugin-sf-plugin": "^1.20.1",
+    "eslint-plugin-sf-plugin": "^1.20.13",
     "esmock": "^2.6.7",
     "oclif": "^4.15.28",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   },
   "engines": {
-    "node": ">=18.0.0 <23"
+    "node": ">=18.0.0"
   },
   "files": [
     "/lib",
@@ -220,7 +219,7 @@
     "comment": "Refer to ApiVersionMetadata in orgUtils.ts for details",
     "target": {
       "versionNumber": "63.0",
-      "matchingDevServerVersion": "^10.7.4"
+      "matchingDevServerVersion": "^11.1.0"
     },
     "versionToTagMappings": [
       {

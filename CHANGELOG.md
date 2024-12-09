@@ -1,3 +1,39 @@
+## [2.6.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.6.1...2.6.2) (2024-12-06)
+
+### Bug Fixes
+
+- **deps:** bump the npm_and_yarn group with 2 updates ([#284](https://github.com/salesforcecli/plugin-lightning-dev/issues/284)) ([c05b45d](https://github.com/salesforcecli/plugin-lightning-dev/commit/c05b45d43fde49bff671a99d6e8c9afccc8ee8c8))
+
+## [2.6.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.6.0...2.6.1) (2024-12-06)
+
+### Bug Fixes
+
+- rename CI readme ([f6d0c2c](https://github.com/salesforcecli/plugin-lightning-dev/commit/f6d0c2ca09b02ad7d82b1c2a919fdb617c76b085))
+
+# [2.6.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.5.0...2.6.0) (2024-12-06)
+
+### Features
+
+- support node 22+ ([#282](https://github.com/salesforcecli/plugin-lightning-dev/issues/282)) ([ea9b60f](https://github.com/salesforcecli/plugin-lightning-dev/commit/ea9b60f145de5874f53db5cdf78c8c9566dcfeac))
+
+# [2.5.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.4.0...2.5.0) (2024-11-25)
+
+### Features
+
+- update lwc dependencies to match 254/patch code line @W-17311538 ([#271](https://github.com/salesforcecli/plugin-lightning-dev/issues/271)) ([89c40b3](https://github.com/salesforcecli/plugin-lightning-dev/commit/89c40b37720014fc591af53c6df9cffc21c58eba))
+
+# [2.4.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.3.2...2.4.0) (2024-11-25)
+
+### Features
+
+- add open_browser env var for testing ([#269](https://github.com/salesforcecli/plugin-lightning-dev/issues/269)) ([d4d3778](https://github.com/salesforcecli/plugin-lightning-dev/commit/d4d37782b779867c85d4e8f388a93d5af670da9c))
+
+## [2.3.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.3.1...2.3.2) (2024-11-22)
+
+### Bug Fixes
+
+- download site bundle correctly if site name has special chars ([#262](https://github.com/salesforcecli/plugin-lightning-dev/issues/262)) ([fd52cec](https://github.com/salesforcecli/plugin-lightning-dev/commit/fd52cecb73535cd5fdd303bdd4f82321d3848c40))
+
 ## [2.3.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.3.0...2.3.1) (2024-11-21)
 
 ### Bug Fixes
