@@ -49,6 +49,5 @@ jobs:
       sign: true
       tag: ${{ needs.getDistTag.outputs.tag || (needs.getMajorVersion.outputs.major == '1') && 'latest' || 'next' }}
       githubTag: ${{ github.event.release.tag_name || inputs.tag }}
-      nodeVersion: 20.18.0
 
     secrets: inherit
