@@ -1,3 +1,10 @@
+## [2.6.3](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.6.2...2.6.3) (2024-12-17)
+
+### Bug Fixes
+
+- **deps:** bump @oclif/core from 4.0.33 to 4.1.0 ([#298](https://github.com/salesforcecli/plugin-lightning-dev/issues/298)) ([de34c0c](https://github.com/salesforcecli/plugin-lightning-dev/commit/de34c0cf3eb102b100dffe53a168698c5497060f))
+- **deps:** bump nanoid from 3.3.7 to 3.3.8 in the npm_and_yarn group ([#296](https://github.com/salesforcecli/plugin-lightning-dev/issues/296)) ([b24ecc4](https://github.com/salesforcecli/plugin-lightning-dev/commit/b24ecc4377814fc3bc049e6c1934498cc77e59de))
+
 ## [2.6.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.6.1...2.6.2) (2024-12-06)
 
 ### Bug Fixes
