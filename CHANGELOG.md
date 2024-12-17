@@ -1,3 +1,9 @@
+## [2.6.4](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.6.3...2.6.4) (2024-12-17)
+
+### Bug Fixes
+
+- **deps:** bump axios from 1.7.7 to 1.7.9 ([#288](https://github.com/salesforcecli/plugin-lightning-dev/issues/288)) ([ccb7d6f](https://github.com/salesforcecli/plugin-lightning-dev/commit/ccb7d6fe5c4b42f4c6bde1410dcfe259e2b8d5a0))
+
 ## [2.6.3](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.6.2...2.6.3) (2024-12-17)
 
 ### Bug Fixes
