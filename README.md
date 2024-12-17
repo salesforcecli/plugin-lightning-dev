@@ -49,7 +49,7 @@ To build the plugin locally, make sure to have yarn installed and run the follow
 # Clone the repository
 git clone git@github.com:salesforcecli/plugin-lightning-dev
 
-# Install the dependencies and compile
+# Install the dependencies and compile the plugin
 yarn && yarn build
 ```
 
