@@ -10,7 +10,7 @@
     "@lwc/lwc-dev-server": "^11.1.0",
     "@lwc/sfdc-lwc-compiler": "^11.1.0",
     "@lwrjs/api": "0.15.6",
-    "@oclif/core": "^4.0.30",
+    "@oclif/core": "^4.1.0",
     "@salesforce/core": "^8.6.2",
     "@salesforce/kit": "^3.1.6",
     "@salesforce/lwc-dev-mobile-core": "4.0.0-alpha.9",
@@ -23,11 +23,11 @@
   "devDependencies": {
     "@oclif/plugin-command-snapshot": "^5.2.19",
     "@salesforce/cli-plugins-testkit": "^5.3.25",
-    "@salesforce/dev-scripts": "^10.2.10",
-    "@salesforce/plugin-command-reference": "^3.1.34",
+    "@salesforce/dev-scripts": "^10.2.11",
+    "@salesforce/plugin-command-reference": "^3.1.37",
     "@types/node-fetch": "^2.6.11",
     "eslint-plugin-sf-plugin": "^1.20.13",
-    "esmock": "^2.6.7",
+    "esmock": "^2.6.9",
     "oclif": "^4.15.28",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
