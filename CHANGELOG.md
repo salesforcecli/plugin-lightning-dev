@@ -1,3 +1,9 @@
+# [2.7.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.6.4...2.7.0) (2024-12-17)
+
+### Features
+
+- consume local dev API for on-demand site bundle generation ([#264](https://github.com/salesforcecli/plugin-lightning-dev/issues/264)) ([a5601a7](https://github.com/salesforcecli/plugin-lightning-dev/commit/a5601a7b4fea40d5b920c93a1648c9875364b4f9))
+
 ## [2.6.4](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.6.3...2.6.4) (2024-12-17)
 
 ### Bug Fixes
