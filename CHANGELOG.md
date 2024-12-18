@@ -1,3 +1,13 @@
+# [3.0.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.7.0...3.0.0) (2024-12-18)
+
+- fix!: trigger a major release (#299) ([135c6a8](https://github.com/salesforcecli/plugin-lightning-dev/commit/135c6a8e93241ac060d0b37db80a2ce2a4cb6bd8)), closes [#299](https://github.com/salesforcecli/plugin-lightning-dev/issues/299)
+
+### BREAKING CHANGES
+
+- this version works with 256(summer25) release and newer
+
+@W-17311538@
+
 # [2.7.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.6.4...2.7.0) (2024-12-17)
 
 ### Features
