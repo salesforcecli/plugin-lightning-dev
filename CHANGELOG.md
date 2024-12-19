@@ -1,3 +1,9 @@
+# [2.8.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.7.0...2.8.0) (2024-12-19)
+
+### Features
+
+- 254-patch prerelease @W-15440507@ ([#300](https://github.com/salesforcecli/plugin-lightning-dev/issues/300)) ([ef98bd9](https://github.com/salesforcecli/plugin-lightning-dev/commit/ef98bd9c407a7d9817850559e5b82a4fec92fb90))
+
 # [2.7.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.6.4...2.7.0) (2024-12-17)
 
 ### Features
