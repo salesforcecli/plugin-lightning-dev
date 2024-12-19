@@ -218,7 +218,7 @@
   "apiVersionMetadata": {
     "comment": "Refer to ApiVersionMetadata in orgUtils.ts for details",
     "target": {
-      "versionNumber": "64.0",
+      "versionNumber": "63.0",
       "matchingDevServerVersion": "^11.1.0"
     },
     "versionToTagMappings": [
