@@ -228,6 +228,10 @@
       },
       {
         "versionNumber": "63.0",
+        "tagName": "prerelease"
+      },
+      {
+        "versionNumber": "64.0",
         "tagName": "next"
       }
     ]
