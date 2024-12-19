@@ -1,3 +1,23 @@
+# [1.10.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.9.5-alpha.3...1.10.0) (2024-12-19)
+
+### Bug Fixes
+
+- release 252-patch ([#301](https://github.com/salesforcecli/plugin-lightning-dev/issues/301)) ([3f7ebe1](https://github.com/salesforcecli/plugin-lightning-dev/commit/3f7ebe10c0cd606ea87dc58745242900b60495af))
+
+## [1.9.5-alpha.3](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.9.5-alpha.2...1.9.5-alpha.3) (2024-12-17)
+
+### Bug Fixes
+
+- **backport:** download site bundle correctly if site name has special chars ([#270](https://github.com/salesforcecli/plugin-lightning-dev/issues/270)) ([d9437ac](https://github.com/salesforcecli/plugin-lightning-dev/commit/d9437ac0a8ee65b35864b5c3b24c3039323b1ce3)), closes [#262](https://github.com/salesforcecli/plugin-lightning-dev/issues/262)
+
+## [1.9.5-alpha.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.9.5-alpha.1...1.9.5-alpha.2) (2024-12-17)
+
+## [1.9.5-alpha.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.9.4...1.9.5-alpha.1) (2024-12-17)
+
+### Features
+
+- **backport:** support node 22+ ([#292](https://github.com/salesforcecli/plugin-lightning-dev/issues/292)) ([053395f](https://github.com/salesforcecli/plugin-lightning-dev/commit/053395f02c55f17adbe7bec24fa554617d2128bc))
+
 ## [1.9.4](https://github.com/salesforcecli/plugin-lightning-dev/compare/1.9.3...1.9.4) (2024-11-25)
 
 ### Bug Fixes
