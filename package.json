@@ -7,7 +7,7 @@
   "dependencies": {
     "@inquirer/prompts": "^5.3.8",
     "@inquirer/select": "^2.4.7",
-    "@lwc/lwc-dev-server": "^11.1.0",
+    "@lwc/lwc-dev-server": "^11.5.0",
     "@lwc/sfdc-lwc-compiler": "^11.1.0",
     "@lwrjs/api": "0.15.6",
     "@oclif/core": "^4.1.0",
