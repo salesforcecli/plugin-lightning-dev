@@ -289,7 +289,9 @@ export class ExperienceSite {
     }
     const resourcePath = this.getSiteZipPath(metadata);
     try {
-      const apiUrl = `${instanceUrl}/services/data/v63.0/sites/${siteIdMinus3}/preview`;
+      // Limit API to published sites for now until we have a patch for the issues with unpublished sites
+      // TODO set the api version dynamically based on CLI input
+      const apiUrl = `${instanceUrl}/services/data/v63.0/sites/${siteIdMinus3}/preview?published`;
       const response = await axios.get(apiUrl, {
         headers: {
           Authorization: `Bearer ${accessToken}`,

@@ -28,6 +28,10 @@ export default class LightningDevSite extends SfCommand<void> {
       char: 'n',
     }),
     'target-org': Flags.requiredOrg(),
+    'get-latest': Flags.boolean({
+      summary: messages.getMessage('flags.get-latest.summary'),
+      char: 'l',
+    }),
   };
 
   public async run(): Promise<void> {
@@ -69,7 +73,7 @@ export default class LightningDevSite extends SfCommand<void> {
             // delete oldSitePath recursive
             const oldSitePath = selectedSite.getExtractDirectory();
             if (fs.existsSync(oldSitePath)) {
-              fs.rmdirSync(oldSitePath, { recursive: true });
+              fs.rmSync(oldSitePath, { recursive: true });
             }
           }
         }

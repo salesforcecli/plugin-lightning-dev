@@ -1,6 +1,6 @@
 # site.select
 
-Select a site
+Which Experience Cloud Site would you like to preview (Use arrow keys)
 
 # site.confirm-update
 
