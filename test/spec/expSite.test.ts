@@ -44,6 +44,7 @@ describe('getRemoteMetadata', () => {
     expect(remoteMetadata).to.deep.equal({
       bundleName: 'MRT_experience_00DSG00000ECBfZ_0DMSG000001CfA6_site_with_special_chars_10-30_12-47',
       bundleLastModified: '2024-11-12',
+      coreVersion: '254',
     });
   });
 });
