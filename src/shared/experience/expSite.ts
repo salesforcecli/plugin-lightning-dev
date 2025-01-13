@@ -12,6 +12,7 @@ import axios from 'axios';
 export type SiteMetadata = {
   bundleName: string;
   bundleLastModified: string;
+  coreVersion: string;
 };
 
 export type SiteMetadataCache = {
@@ -97,7 +98,10 @@ export class ExperienceSite {
 
   // Is the site extracted locally
   public isSiteSetup(): boolean {
-    return fs.existsSync(path.join(this.getExtractDirectory(), 'ssr.js'));
+    if (fs.existsSync(path.join(this.getExtractDirectory(), 'ssr.js'))) {
+      return this.getLocalMetadata()?.coreVersion === '254';
+    }
+    return false;
   }
 
   // Is the static resource available on the server
@@ -155,6 +159,7 @@ export class ExperienceSite {
     this.metadataCache.remoteMetadata = {
       bundleName: staticResource.Name,
       bundleLastModified: staticResource.LastModifiedDate,
+      coreVersion: '254',
     };
     return this.metadataCache.remoteMetadata;
   }
@@ -188,14 +193,15 @@ export class ExperienceSite {
    * @returns path of downloaded site zip
    */
   public async downloadSite(): Promise<string> {
+    let retVal;
     if (process.env.STATIC_MODE !== 'true') {
       // Use sites API to download the site bundle on demand
-      const retVal = await this.downloadSiteApi();
-      return retVal;
+      retVal = await this.downloadSiteApi();
     } else {
-      const retVal = await this.downloadSiteStaticResources();
-      return retVal;
+      // This is for testing purposes only now - not an officially supported external path
+      retVal = await this.downloadSiteStaticResources();
     }
+    return retVal;
   }
 
   /**
@@ -219,26 +225,27 @@ export class ExperienceSite {
     const metadata = {
       bundleName: theSite.Name,
       bundleLastModified: theSite.LastModifiedDate,
+      coreVersion: '254',
     };
     const siteId = theSite.Id;
     const siteIdMinus3 = siteId.substring(0, siteId.length - 3);
     const accessToken = conn.accessToken;
     const instanceUrl = conn.instanceUrl; // Org URL
     if (!accessToken) {
-      throw new SfError(`Error occurred downloading your site: ${this.siteDisplayName}`);
+      throw new SfError(`Invalid access token, unable to download site: ${this.siteDisplayName}`);
     }
     const resourcePath = this.getSiteZipPath(metadata);
     try {
       // Limit API to published sites for now until we have a patch for the issues with unpublished sites
-      // TODO use preview api when fixed
-      const apiUrl = `${instanceUrl}/services/data/v63.0/sites/${siteIdMinus3}/preview`;
+      // TODO switch api back to preview mode after issues are addressed
+      const apiUrl = `${instanceUrl}/services/data/v63.0/sites/${siteIdMinus3}/preview?published`;
       const response = await axios.get(apiUrl, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
         responseType: 'stream',
       });
-      fs.mkdirSync(this.getSiteDirectory(), { recursive: true });
+      if (response.statusText) fs.mkdirSync(this.getSiteDirectory(), { recursive: true });
 
       const fileStream = fs.createWriteStream(resourcePath);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
@@ -249,9 +256,20 @@ export class ExperienceSite {
         fileStream.on('error', reject);
       });
       this.saveMetadata(metadata);
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error('failed to download site', e);
+    } catch (error) {
+      // Handle axios errors
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          // Server responded with non-200 status
+          throw new SfError(
+            `Failed to download site: Server responded with status ${error.response.status} - ${error.response.statusText}`
+          );
+        } else if (error.request) {
+          // Request was made but no response received
+          throw new SfError('Failed to download site: No response received from server');
+        }
+      }
+      throw new SfError(`Failed to download site: ${this.siteDisplayName}`);
     }
 
     // Save the site's metadata
@@ -261,7 +279,6 @@ export class ExperienceSite {
   // Deprecated. Only used internally now for testing. Customer sites will no longer be stored in static resources
   // and are only available via the API.
   public async downloadSiteStaticResources(): Promise<string> {
-    // This is for testing purposes only now - not an officially supported external path
     const remoteMetadata = await this.getRemoteMetadata();
     if (!remoteMetadata) {
       throw new SfError(`No published site found for: ${this.siteDisplayName}`);
@@ -300,7 +317,7 @@ export class ExperienceSite {
     }
   }
 
-  // TODO
+  // TODO need to get auth tokens for the builder preview also once API issues are addressed
   private async getNewSidToken(networkId: string): Promise<string> {
     // Get the connection and access token from the org
     const conn = this.org.getConnection();

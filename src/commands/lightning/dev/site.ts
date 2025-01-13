@@ -60,19 +60,23 @@ export default class LightningDevSite extends SfCommand<void> {
       const selectedSite = new ExperienceSite(org, siteName);
       let siteZip: string | undefined;
 
-      // TODO if locally cached site is 252 site, we should trigger an update also
+      // If the site is not setup / is not based on the current release / or get-latest is requested ->
+      // generate and download a new site bundle from the org based on latest builder metadata
       if (!selectedSite.isSiteSetup() || getLatest) {
-        this.log(`[local-dev] initializing: '${siteName}'`);
+        const startTime = Date.now();
+        this.log(`[local-dev] Initializing: ${siteName}`);
         this.spinner.start('[local-dev] Downloading site (this may take a few minutes)');
         siteZip = await selectedSite.downloadSite();
 
         // delete oldSitePath recursive
-        this.spinner.status = '[local-dev] cleaning up site cache';
         const oldSitePath = selectedSite.getExtractDirectory();
         if (fs.existsSync(oldSitePath)) {
           fs.rmSync(oldSitePath, { recursive: true });
         }
-        this.spinner.stop('[local-dev] setup complete');
+        const endTime = Date.now();
+        const duration = (endTime - startTime) / 1000; // Convert to seconds
+        this.spinner.stop('done.');
+        this.log(`[local-dev] Site setup completed in ${duration.toFixed(2)} seconds.`);
       }
 
       this.log(`[local-dev] launching browser preview for: ${siteName}`);
@@ -96,11 +100,13 @@ export default class LightningDevSite extends SfCommand<void> {
       // Environment variable used to setup the site rather than setup & start server
       if (process.env.SETUP_ONLY === 'true') {
         await setupDev(startupParams);
+        this.log('[local-dev] setup complete!');
       } else {
         await expDev(startupParams);
         this.log('[local-dev] watching for file changes... (CTRL-C to stop)');
       }
     } catch (e) {
+      this.spinner.stop('failed.');
       this.log('Local Development setup failed', e);
     }
   }
