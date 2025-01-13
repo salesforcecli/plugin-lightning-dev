@@ -42,44 +42,6 @@ export class ExperienceSite {
   }
 
   /**
-   * Get an experience site bundle by site name.
-   *
-   * @param conn - Salesforce connection object.
-   * @param siteName - The name of the experience site.
-   * @returns - The experience site.
-   *
-   * @param siteName
-   * @returns
-   */
-  public static getLocalExpSite(siteName: string): ExperienceSite {
-    const siteJsonPath = path.join('.localdev', siteName.trim().replace(' ', '_'), 'site.json');
-    const siteJson = fs.readFileSync(siteJsonPath, 'utf8');
-    const site = JSON.parse(siteJson) as ExperienceSite;
-    return site;
-  }
-
-  /**
-   * Fetches all experience site bundles that are published to MRT.
-   *
-   * @param {Connection} conn - Salesforce connection object.
-   * @returns {Promise<ExperienceSite[]>} - List of experience sites.
-   */
-  public static async getAllPublishedExpSites(org: Org): Promise<ExperienceSite[]> {
-    const result = await org
-      .getConnection()
-      .query<{ Id: string; Name: string; LastModifiedDate: string }>(
-        "SELECT Id, Name, LastModifiedDate FROM StaticResource WHERE Name LIKE 'MRT%_'"
-      );
-
-    // Example of creating ExperienceSite instances
-    const experienceSites: ExperienceSite[] = result.records.map(
-      (record) => new ExperienceSite(org, getSiteNameFromStaticResource(record.Name))
-    );
-
-    return experienceSites;
-  }
-
-  /**
    * Fetches all current experience sites
    *
    * @param {Connection} conn - Salesforce connection object.
@@ -227,32 +189,12 @@ export class ExperienceSite {
    */
   public async downloadSite(): Promise<string> {
     if (process.env.STATIC_MODE !== 'true') {
-      const retVal = await this.downloadSiteV2();
+      // Use sites API to download the site bundle on demand
+      const retVal = await this.downloadSiteApi();
       return retVal;
     } else {
-      const remoteMetadata = await this.getRemoteMetadata();
-      if (!remoteMetadata) {
-        throw new SfError(`No published site found for: ${this.siteDisplayName}`);
-      }
-
-      // Download the site from static resources
-      // eslint-disable-next-line no-console
-      console.log('[local-dev] Downloading site...'); // TODO spinner
-      const resourcePath = this.getSiteZipPath(remoteMetadata);
-      const staticresource = await this.org.getConnection().metadata.read('StaticResource', remoteMetadata.bundleName);
-      if (staticresource?.content) {
-        // Save the static resource
-        fs.mkdirSync(this.getSiteDirectory(), { recursive: true });
-        const buffer = Buffer.from(staticresource.content, 'base64');
-        fs.writeFileSync(resourcePath, buffer);
-
-        // Save the site's metadata
-        this.saveMetadata(remoteMetadata);
-      } else {
-        throw new SfError(`Error occurred downloading your site: ${this.siteDisplayName}`);
-      }
-
-      return resourcePath;
+      const retVal = await this.downloadSiteStaticResources();
+      return retVal;
     }
   }
 
@@ -261,7 +203,7 @@ export class ExperienceSite {
    *
    * @returns path of downloaded site zip
    */
-  public async downloadSiteV2(): Promise<string> {
+  public async downloadSiteApi(): Promise<string> {
     const remoteMetadata = await this.org
       .getConnection()
       .query<{ Id: string; Name: string; LastModifiedDate: string; MasterLabel: string }>(
@@ -273,8 +215,6 @@ export class ExperienceSite {
     const theSite = remoteMetadata.records[0];
 
     // Download the site via API
-    // eslint-disable-next-line no-console
-    console.log('[local-dev] Downloading site...'); // TODO spinner
     const conn = this.org.getConnection();
     const metadata = {
       bundleName: theSite.Name,
@@ -290,8 +230,8 @@ export class ExperienceSite {
     const resourcePath = this.getSiteZipPath(metadata);
     try {
       // Limit API to published sites for now until we have a patch for the issues with unpublished sites
-      // TODO set the api version dynamically based on CLI input
-      const apiUrl = `${instanceUrl}/services/data/v63.0/sites/${siteIdMinus3}/preview?published`;
+      // TODO use preview api when fixed
+      const apiUrl = `${instanceUrl}/services/data/v63.0/sites/${siteIdMinus3}/preview`;
       const response = await axios.get(apiUrl, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -318,6 +258,32 @@ export class ExperienceSite {
     return resourcePath;
   }
 
+  // Deprecated. Only used internally now for testing. Customer sites will no longer be stored in static resources
+  // and are only available via the API.
+  public async downloadSiteStaticResources(): Promise<string> {
+    // This is for testing purposes only now - not an officially supported external path
+    const remoteMetadata = await this.getRemoteMetadata();
+    if (!remoteMetadata) {
+      throw new SfError(`No published site found for: ${this.siteDisplayName}`);
+    }
+
+    // Download the site from static resources
+    const resourcePath = this.getSiteZipPath(remoteMetadata);
+    const staticresource = await this.org.getConnection().metadata.read('StaticResource', remoteMetadata.bundleName);
+    if (staticresource?.content) {
+      // Save the static resource
+      fs.mkdirSync(this.getSiteDirectory(), { recursive: true });
+      const buffer = Buffer.from(staticresource.content, 'base64');
+      fs.writeFileSync(resourcePath, buffer);
+
+      // Save the site's metadata
+      this.saveMetadata(remoteMetadata);
+    } else {
+      throw new SfError(`Error occurred downloading your site: ${this.siteDisplayName}`);
+    }
+    return resourcePath;
+  }
+
   private async getNetworkId(): Promise<string> {
     const conn = this.org.getConnection();
     // Query the Network object for the network with the given site name
@@ -334,6 +300,7 @@ export class ExperienceSite {
     }
   }
 
+  // TODO
   private async getNewSidToken(networkId: string): Promise<string> {
     // Get the connection and access token from the org
     const conn = this.org.getConnection();
@@ -346,9 +313,6 @@ export class ExperienceSite {
 
     // Make the GET request without following redirects
     if (accessToken) {
-      // TODO should we try and refresh auth here?
-      // await conn.refreshAuth();
-
       // Call out to the switcher servlet to establish a session
       const switchUrl = `${instanceUrl}/servlet/networks/switch?networkId=${networkId}`;
       const cookies = [`sid=${accessToken}`, `oid=${orgIdMinus3}`].join('; ').trim();
@@ -410,18 +374,4 @@ export class ExperienceSite {
     );
     return '';
   }
-}
-
-/**
- * Return the site name given the name of its static resource bundle
- *
- * @param staticResourceName the static resource bundle name
- * @returns the name of the site
- */
-function getSiteNameFromStaticResource(staticResourceName: string): string {
-  const parts = staticResourceName.split('_');
-  if (parts.length < 5) {
-    throw new Error(`Unexpected static resource name: ${staticResourceName}`);
-  }
-  return parts.slice(4).join(' ');
 }

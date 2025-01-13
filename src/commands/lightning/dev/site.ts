@@ -39,6 +39,7 @@ export default class LightningDevSite extends SfCommand<void> {
 
     try {
       const org = flags['target-org'];
+      const getLatest = flags['get-latest'];
       let siteName = flags.name;
 
       const connection = org.getConnection(undefined);
@@ -59,25 +60,22 @@ export default class LightningDevSite extends SfCommand<void> {
       const selectedSite = new ExperienceSite(org, siteName);
       let siteZip: string | undefined;
 
-      if (!selectedSite.isSiteSetup()) {
-        this.log(`[local-dev] initializing: ${siteName}`);
+      // TODO if locally cached site is 252 site, we should trigger an update also
+      if (!selectedSite.isSiteSetup() || getLatest) {
+        this.log(`[local-dev] initializing: '${siteName}'`);
+        this.spinner.start('[local-dev] Downloading site (this may take a few minutes)');
         siteZip = await selectedSite.downloadSite();
-      } else {
-        // If local-dev is already setup, check if an updated site has been published to download
-        const updateAvailable = await selectedSite.isUpdateAvailable();
-        if (updateAvailable) {
-          const shouldUpdate = await PromptUtils.promptUserToConfirmUpdate(siteName);
-          if (shouldUpdate) {
-            this.log(`[local-dev] updating: ${siteName}`);
-            siteZip = await selectedSite.downloadSite();
-            // delete oldSitePath recursive
-            const oldSitePath = selectedSite.getExtractDirectory();
-            if (fs.existsSync(oldSitePath)) {
-              fs.rmSync(oldSitePath, { recursive: true });
-            }
-          }
+
+        // delete oldSitePath recursive
+        this.spinner.status = '[local-dev] cleaning up site cache';
+        const oldSitePath = selectedSite.getExtractDirectory();
+        if (fs.existsSync(oldSitePath)) {
+          fs.rmSync(oldSitePath, { recursive: true });
         }
+        this.spinner.stop('[local-dev] setup complete');
       }
+
+      this.log(`[local-dev] launching browser preview for: ${siteName}`);
 
       // Establish a valid access token for this site
       const authToken = await selectedSite.setupAuth();
@@ -100,6 +98,7 @@ export default class LightningDevSite extends SfCommand<void> {
         await setupDev(startupParams);
       } else {
         await expDev(startupParams);
+        this.log('[local-dev] watching for file changes... (CTRL-C to stop)');
       }
     } catch (e) {
       this.log('Local Development setup failed', e);
