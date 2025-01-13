@@ -1,3 +1,9 @@
+# [2.9.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.8.0...2.9.0) (2025-01-13)
+
+### Features
+
+- [sites] add `get-latest` cli parameter / update lwr -> v0.16.2 (includes latest local-dev fixes) ([#311](https://github.com/salesforcecli/plugin-lightning-dev/issues/311)) ([03fd833](https://github.com/salesforcecli/plugin-lightning-dev/commit/03fd833a399771041d1edb58e22158cf12888ff1))
+
 # [2.8.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.7.0...2.8.0) (2024-12-19)
 
 ### Features
