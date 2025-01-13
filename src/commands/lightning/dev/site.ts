@@ -28,6 +28,10 @@ export default class LightningDevSite extends SfCommand<void> {
       char: 'n',
     }),
     'target-org': Flags.requiredOrg(),
+    'get-latest': Flags.boolean({
+      summary: messages.getMessage('flags.get-latest.summary'),
+      char: 'l',
+    }),
   };
 
   public async run(): Promise<void> {
@@ -35,6 +39,7 @@ export default class LightningDevSite extends SfCommand<void> {
 
     try {
       const org = flags['target-org'];
+      const getLatest = flags['get-latest'];
       let siteName = flags.name;
 
       const connection = org.getConnection(undefined);
@@ -55,25 +60,26 @@ export default class LightningDevSite extends SfCommand<void> {
       const selectedSite = new ExperienceSite(org, siteName);
       let siteZip: string | undefined;
 
-      if (!selectedSite.isSiteSetup()) {
-        this.log(`[local-dev] initializing: ${siteName}`);
+      // If the site is not setup / is not based on the current release / or get-latest is requested ->
+      // generate and download a new site bundle from the org based on latest builder metadata
+      if (!selectedSite.isSiteSetup() || getLatest) {
+        const startTime = Date.now();
+        this.log(`[local-dev] Initializing: ${siteName}`);
+        this.spinner.start('[local-dev] Downloading site (this may take a few minutes)');
         siteZip = await selectedSite.downloadSite();
-      } else {
-        // If local-dev is already setup, check if an updated site has been published to download
-        const updateAvailable = await selectedSite.isUpdateAvailable();
-        if (updateAvailable) {
-          const shouldUpdate = await PromptUtils.promptUserToConfirmUpdate(siteName);
-          if (shouldUpdate) {
-            this.log(`[local-dev] updating: ${siteName}`);
-            siteZip = await selectedSite.downloadSite();
-            // delete oldSitePath recursive
-            const oldSitePath = selectedSite.getExtractDirectory();
-            if (fs.existsSync(oldSitePath)) {
-              fs.rmdirSync(oldSitePath, { recursive: true });
-            }
-          }
+
+        // delete oldSitePath recursive
+        const oldSitePath = selectedSite.getExtractDirectory();
+        if (fs.existsSync(oldSitePath)) {
+          fs.rmSync(oldSitePath, { recursive: true });
         }
+        const endTime = Date.now();
+        const duration = (endTime - startTime) / 1000; // Convert to seconds
+        this.spinner.stop('done.');
+        this.log(`[local-dev] Site setup completed in ${duration.toFixed(2)} seconds.`);
       }
+
+      this.log(`[local-dev] launching browser preview for: ${siteName}`);
 
       // Establish a valid access token for this site
       const authToken = await selectedSite.setupAuth();
@@ -94,10 +100,13 @@ export default class LightningDevSite extends SfCommand<void> {
       // Environment variable used to setup the site rather than setup & start server
       if (process.env.SETUP_ONLY === 'true') {
         await setupDev(startupParams);
+        this.log('[local-dev] setup complete!');
       } else {
         await expDev(startupParams);
+        this.log('[local-dev] watching for file changes... (CTRL-C to stop)');
       }
     } catch (e) {
+      this.spinner.stop('failed.');
       this.log('Local Development setup failed', e);
     }
   }
