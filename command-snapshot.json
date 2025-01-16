@@ -9,6 +9,14 @@
   },
   {
     "alias": [],
+    "command": "lightning:dev:component",
+    "flagAliases": [],
+    "flagChars": ["a", "n", "o", "s"],
+    "flags": ["attributes", "flags-dir", "json", "name", "namespace", "target-org"],
+    "plugin": "@salesforce/plugin-lightning-dev"
+  },
+  {
+    "alias": [],
     "command": "lightning:dev:site",
     "flagAliases": [],
     "flagChars": ["l", "n", "o"],
