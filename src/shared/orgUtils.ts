@@ -160,6 +160,11 @@ export class OrgUtils {
    * @param connection the connection to the org
    */
   public static ensureMatchingAPIVersion(connection: Connection): void {
+    // Testing purposes only - using this flag may cause local development to not function correctly
+    if (process.env.SKIP_API_VERSION_CHECK === 'true') {
+      return;
+    }
+
     const dirname = path.dirname(url.fileURLToPath(import.meta.url));
     const packageJsonFilePath = path.resolve(dirname, '../../package.json');
 
