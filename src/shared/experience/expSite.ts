@@ -238,7 +238,11 @@ export class ExperienceSite {
     try {
       // Limit API to published sites for now until we have a patch for the issues with unpublished sites
       // TODO switch api back to preview mode after issues are addressed
-      const apiUrl = `${instanceUrl}/services/data/v63.0/sites/${siteIdMinus3}/preview?published`;
+      let apiUrl = `${instanceUrl}/services/data/v63.0/sites/${siteIdMinus3}/preview?published`;
+      if (process.env.SITE_API_MODE === 'preview') {
+        apiUrl = `${instanceUrl}/services/data/v63.0/sites/${siteIdMinus3}/preview`;
+      }
+
       const response = await axios.get(apiUrl, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
