@@ -1,3 +1,9 @@
+# [2.10.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.9.0...2.10.0) (2025-01-23)
+
+### Features
+
+- add api flags for testing ([#319](https://github.com/salesforcecli/plugin-lightning-dev/issues/319)) ([4eb7340](https://github.com/salesforcecli/plugin-lightning-dev/commit/4eb7340ae7b9f7ebd8170789d39aed580b7ff489))
+
 # [2.9.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.8.0...2.9.0) (2025-01-13)
 
 ### Features
