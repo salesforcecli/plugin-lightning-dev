@@ -2016,7 +2016,7 @@
   resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server-types/-/lwc-dev-server-types-11.5.0.tgz#39436111b9db62015f87ba63e04e13a0fca5dfa3"
   integrity sha512-oCqiwstPUErEN4RQMjGiZNcagWiEDD1+7eWT2xUmTyGVtZu8e6jeyN98cKiv+pWei++bUwp60nj13yWgJoc2Pg==
 
-"@lwc/lwc-dev-server@^11.5.0":
+"@lwc/lwc-dev-server@~11.5.0":
   version "11.5.0"
   resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server/-/lwc-dev-server-11.5.0.tgz#3f2dd099bd82dbc4d559ffe36645298598dc72d4"
   integrity sha512-Sdtru9id6Ne9khGtRI5CRJA01OblDJBgTnce/8UTwplQ0Lt6Cp5WkybUlArMyMbOTI8/VBRIGcMEqUhAJdqHIQ==
@@ -2064,7 +2064,7 @@
   resolved "https://registry.yarnpkg.com/@lwc/sfdc-compiler-utils/-/sfdc-compiler-utils-11.5.0.tgz#60f481d2b3905431ec67a8cc1f5426bdd91550b3"
   integrity sha512-dWNiD5E6sx9WMYAtbSY5oaH525qQ3nYzucHF9j683AVNWAYVEgzICNGNLYmYdb4KhfLso5uJYudvt10nOANipg==
 
-"@lwc/sfdc-lwc-compiler@11.5.0", "@lwc/sfdc-lwc-compiler@^11.5.0":
+"@lwc/sfdc-lwc-compiler@11.5.0", "@lwc/sfdc-lwc-compiler@~11.5.0":
   version "11.5.0"
   resolved "https://registry.yarnpkg.com/@lwc/sfdc-lwc-compiler/-/sfdc-lwc-compiler-11.5.0.tgz#1b08d47ff08781eb851afa29203bcbdaea7c7e47"
   integrity sha512-Sck+mhdYnyn4I5qTXQV43rLY+zimkr8YaMDAkNhJDap+lODxvYxQruYJb6iTNF7nwmu7Ly3VCZDqGAZjnnXBlQ==
@@ -8000,7 +8000,7 @@ lunr@^2.3.9:
   resolved "https://registry.yarnpkg.com/lunr/-/lunr-2.3.9.tgz#18b123142832337dd6e964df1a5a7707b25d35e1"
   integrity sha512-zTU3DaZaF3Rt9rhN3uBMGQD3dD2/vFQqnvZCDv4dl5iOzq2IZQqTxu90r4E5J+nP70J3ilqVCrbho2eWaeW8Ow==
 
-lwc@^8.12.5:
+lwc@~8.12.5:
   version "8.12.5"
   resolved "https://registry.yarnpkg.com/lwc/-/lwc-8.12.5.tgz#76c544d7436cbae9b47b556a6b4d3ab49eb2f29c"
   integrity sha512-MHOIV0eG8ZtkZZZEAebqSz2Hw7bA6k/DWxOQisTwYbCH1ZfGDeRSEQt/mHjMrLSXdg9TIYo/eEYm7ly5FvPnxw==
@@ -10904,6 +10904,7 @@ workerpool@^6.5.1:
   integrity sha512-Fs4dNYcsdpYSAfVxhnl1L5zTksjvOJxtC5hzMNl+1t9B8hTJTdKDyZ5ju7ztgPy+ft9tBFXoOlDNiOT9WUXZlA==
 
 "wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
+  name wrap-ansi-cjs
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
