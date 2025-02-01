@@ -1,3 +1,9 @@
+## [2.10.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.10.0...2.10.1) (2025-02-01)
+
+### Bug Fixes
+
+- adopt lwr v0.16.3 ([#325](https://github.com/salesforcecli/plugin-lightning-dev/issues/325)) ([d787067](https://github.com/salesforcecli/plugin-lightning-dev/commit/d787067dffab4d1ac7091bcc300eeb809f24961e))
+
 # [2.10.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.9.0...2.10.0) (2025-01-23)
 
 ### Features
