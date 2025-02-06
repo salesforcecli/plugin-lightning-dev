@@ -200,7 +200,7 @@ EXAMPLES
     $ sf lightning dev app --target-org myOrg --device-type ios --device-id "iPhone 15 Pro Max"
 ```
 
-_See code: [src/commands/lightning/dev/app.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/2.10.1/src/commands/lightning/dev/app.ts)_
+_See code: [src/commands/lightning/dev/app.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/2.10.2/src/commands/lightning/dev/app.ts)_
 
 ## `sf lightning dev site`
 
@@ -254,6 +254,6 @@ EXAMPLES
     $ sf lightning dev site --name "Partner Central" --target-org myOrg --get-latest
 ```
 
-_See code: [src/commands/lightning/dev/site.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/2.10.1/src/commands/lightning/dev/site.ts)_
+_See code: [src/commands/lightning/dev/site.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/2.10.2/src/commands/lightning/dev/site.ts)_
 
 <!-- commandsstop -->

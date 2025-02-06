@@ -1,3 +1,9 @@
+## [2.10.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.10.1...2.10.2) (2025-02-06)
+
+### Bug Fixes
+
+- hot reload not working on windows ([#330](https://github.com/salesforcecli/plugin-lightning-dev/issues/330)) ([6066577](https://github.com/salesforcecli/plugin-lightning-dev/commit/60665774e3c741517e502e3c09fffb77ad6a1ddc))
+
 ## [2.10.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.10.0...2.10.1) (2025-02-01)
 
 ### Bug Fixes
