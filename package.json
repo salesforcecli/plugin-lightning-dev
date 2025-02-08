@@ -28,7 +28,7 @@
     "@types/node-fetch": "^2.6.11",
     "eslint-plugin-sf-plugin": "^1.20.13",
     "esmock": "^2.6.9",
-    "oclif": "^4.15.28",
+    "oclif": "^4.17.25",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   },
