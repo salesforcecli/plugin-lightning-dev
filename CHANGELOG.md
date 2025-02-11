@@ -1,3 +1,9 @@
+# [3.1.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.0.0...3.1.0) (2025-02-11)
+
+### Features
+
+- pull forward 254-patch fixes @W-17682405 ([#334](https://github.com/salesforcecli/plugin-lightning-dev/issues/334)) ([e163efd](https://github.com/salesforcecli/plugin-lightning-dev/commit/e163efde19f86e2726b0f889c9eb7cb4c687eb9d)), closes [#300](https://github.com/salesforcecli/plugin-lightning-dev/issues/300) [#311](https://github.com/salesforcecli/plugin-lightning-dev/issues/311) [#319](https://github.com/salesforcecli/plugin-lightning-dev/issues/319) [#320](https://github.com/salesforcecli/plugin-lightning-dev/issues/320) [#325](https://github.com/salesforcecli/plugin-lightning-dev/issues/325) [#330](https://github.com/salesforcecli/plugin-lightning-dev/issues/330)
+
 # [3.0.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.7.0...3.0.0) (2024-12-18)
 
 - fix!: trigger a major release (#299) ([135c6a8](https://github.com/salesforcecli/plugin-lightning-dev/commit/135c6a8e93241ac060d0b37db80a2ce2a4cb6bd8)), closes [#299](https://github.com/salesforcecli/plugin-lightning-dev/issues/299)
