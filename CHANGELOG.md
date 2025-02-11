@@ -1,32 +1,12 @@
-## [2.10.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.10.1...2.10.2) (2025-02-06)
+# [3.0.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.7.0...3.0.0) (2024-12-18)
 
-### Bug Fixes
+- fix!: trigger a major release (#299) ([135c6a8](https://github.com/salesforcecli/plugin-lightning-dev/commit/135c6a8e93241ac060d0b37db80a2ce2a4cb6bd8)), closes [#299](https://github.com/salesforcecli/plugin-lightning-dev/issues/299)
 
-- hot reload not working on windows ([#330](https://github.com/salesforcecli/plugin-lightning-dev/issues/330)) ([6066577](https://github.com/salesforcecli/plugin-lightning-dev/commit/60665774e3c741517e502e3c09fffb77ad6a1ddc))
+### BREAKING CHANGES
 
-## [2.10.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.10.0...2.10.1) (2025-02-01)
+- this version works with 256(summer25) release and newer
 
-### Bug Fixes
-
-- adopt lwr v0.16.3 ([#325](https://github.com/salesforcecli/plugin-lightning-dev/issues/325)) ([d787067](https://github.com/salesforcecli/plugin-lightning-dev/commit/d787067dffab4d1ac7091bcc300eeb809f24961e))
-
-# [2.10.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.9.0...2.10.0) (2025-01-23)
-
-### Features
-
-- add api flags for testing ([#319](https://github.com/salesforcecli/plugin-lightning-dev/issues/319)) ([4eb7340](https://github.com/salesforcecli/plugin-lightning-dev/commit/4eb7340ae7b9f7ebd8170789d39aed580b7ff489))
-
-# [2.9.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.8.0...2.9.0) (2025-01-13)
-
-### Features
-
-- [sites] add `get-latest` cli parameter / update lwr -> v0.16.2 (includes latest local-dev fixes) ([#311](https://github.com/salesforcecli/plugin-lightning-dev/issues/311)) ([03fd833](https://github.com/salesforcecli/plugin-lightning-dev/commit/03fd833a399771041d1edb58e22158cf12888ff1))
-
-# [2.8.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.7.0...2.8.0) (2024-12-19)
-
-### Features
-
-- 254-patch prerelease @W-15440507@ ([#300](https://github.com/salesforcecli/plugin-lightning-dev/issues/300)) ([ef98bd9](https://github.com/salesforcecli/plugin-lightning-dev/commit/ef98bd9c407a7d9817850559e5b82a4fec92fb90))
+@W-17311538@
 
 # [2.7.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.6.4...2.7.0) (2024-12-17)
 
