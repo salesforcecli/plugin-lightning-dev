@@ -1,3 +1,9 @@
+## [3.1.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.1.1...3.1.2) (2025-02-11)
+
+### Bug Fixes
+
+- **deps:** bump undici from 6.20.1 to 6.21.1 in the npm_and_yarn group ([#318](https://github.com/salesforcecli/plugin-lightning-dev/issues/318)) ([c26294e](https://github.com/salesforcecli/plugin-lightning-dev/commit/c26294e56465d5088097dc38d2364a187c0244eb))
+
 ## [3.1.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.1.0...3.1.1) (2025-02-11)
 
 ### Bug Fixes
