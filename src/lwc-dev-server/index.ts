@@ -30,7 +30,7 @@ async function createLWCServerConfig(
   const { namespace } = projectJson;
 
   // e.g. lwc folders in force-app/main/default/lwc, package-dir/lwc
-  const namespacePaths = (await Promise.all(packageDirs.map((dir) => glob(`${dir.fullPath}/**/lwc`)))).flat();
+  const namespacePaths = (await Promise.all(packageDirs.map((dir) => glob(`${dir.fullPath}/**/lwc`, { absolute: true })))).flat();
 
   const ports = serverPorts ??
     (await ConfigUtils.getLocalDevServerPorts()) ?? {

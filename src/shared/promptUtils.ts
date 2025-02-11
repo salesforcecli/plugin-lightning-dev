@@ -21,7 +21,7 @@ const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'prom
 
 export class PromptUtils {
   public static async promptUserToSelectSite(sites: string[]): Promise<string> {
-    const choices = sites.map((site) => ({ value: site }));
+    const choices = sites.sort((a, b) => a.localeCompare(b)).map((site) => ({ value: site }));
     const response = await select({
       message: messages.getMessage('site.select'),
       choices,
