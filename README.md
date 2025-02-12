@@ -140,6 +140,7 @@ yarn update-snapshots
 <!-- commands -->
 
 - [`sf lightning dev app`](#sf-lightning-dev-app)
+- [`sf lightning dev component`](#sf-lightning-dev-component)
 - [`sf lightning dev site`](#sf-lightning-dev-site)
 
 ## `sf lightning dev app`
@@ -200,7 +201,41 @@ EXAMPLES
     $ sf lightning dev app --target-org myOrg --device-type ios --device-id "iPhone 15 Pro Max"
 ```
 
-_See code: [src/commands/lightning/dev/app.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/3.1.2/src/commands/lightning/dev/app.ts)_
+_See code: [src/commands/lightning/dev/app.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/3.2.0/src/commands/lightning/dev/app.ts)_
+
+## `sf lightning dev component`
+
+Preview LWC components in isolation.
+
+```
+USAGE
+  $ sf lightning dev component -o <value> [--json] [--flags-dir <value>] [-n <value>]
+
+FLAGS
+  -n, --name=<value>        Description of a flag.
+  -o, --target-org=<value>  (required) Username or alias of the target org. Not required if the `target-org`
+                            configuration variable is already set.
+
+GLOBAL FLAGS
+  --flags-dir=<value>  Import flag values from a directory.
+  --json               Format output as json.
+
+DESCRIPTION
+  Preview LWC components in isolation.
+
+  Preview LWC components in isolation. Replacement for:
+  https://developer.salesforce.com/docs/platform/sfvscode-extensions/guide/lwclocaldev.html
+
+EXAMPLES
+  $ sf lightning dev component
+
+FLAG DESCRIPTIONS
+  -n, --name=<value>  Description of a flag.
+
+    More information about a flag. Don't repeat the summary.
+```
+
+_See code: [src/commands/lightning/dev/component.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/3.2.0/src/commands/lightning/dev/component.ts)_
 
 ## `sf lightning dev site`
 
@@ -254,6 +289,6 @@ EXAMPLES
     $ sf lightning dev site --name "Partner Central" --target-org myOrg --get-latest
 ```
 
-_See code: [src/commands/lightning/dev/site.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/3.1.2/src/commands/lightning/dev/site.ts)_
+_See code: [src/commands/lightning/dev/site.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/3.2.0/src/commands/lightning/dev/site.ts)_
 
 <!-- commandsstop -->

@@ -1,3 +1,9 @@
+# [3.2.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.1.2...3.2.0) (2025-02-12)
+
+### Features
+
+- scaffolding for single component preview command @W-17803218 ([#336](https://github.com/salesforcecli/plugin-lightning-dev/issues/336)) ([41155bf](https://github.com/salesforcecli/plugin-lightning-dev/commit/41155bf5f90cec75b961b0eeed605ca471cad11b))
+
 ## [3.1.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.1.1...3.1.2) (2025-02-11)
 
 ### Bug Fixes
