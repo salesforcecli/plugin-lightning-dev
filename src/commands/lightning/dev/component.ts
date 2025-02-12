@@ -28,6 +28,9 @@ export default class LightningDevComponent extends SfCommand<LightningDevCompone
       char: 'n',
       required: false,
     }),
+    // TODO should this be required or optional?
+    // We don't technically need this if your components are simple / don't need any data from your org
+    'target-org': Flags.requiredOrg(),
   };
 
   public async run(): Promise<LightningDevComponentResult> {

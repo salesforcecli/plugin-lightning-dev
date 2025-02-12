@@ -1,6 +1,6 @@
 # summary
 
-Preview LWC component in insolation.
+Preview LWC components in isolation.
 
 # description
 
