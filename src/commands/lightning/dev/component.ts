@@ -7,6 +7,7 @@
 
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
+import { cmpDev } from '@lwrjs/api';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.component');
@@ -33,7 +34,14 @@ export default class LightningDevComponent extends SfCommand<LightningDevCompone
     const { flags } = await this.parse(LightningDevComponent);
 
     const name = flags.name ?? 'world';
-    this.log(`hello ${name}`);
+    this.log(`preview component: ${name}`);
+
+    // TODO implement me
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    await cmpDev({
+      componentName: name,
+    });
+
     return {
       path: '',
     };
