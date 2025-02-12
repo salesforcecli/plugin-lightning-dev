@@ -9,7 +9,7 @@
   },
   {
     "alias": [],
-    "command": "lightning:preview:component",
+    "command": "lightning:dev:component",
     "flagAliases": [],
     "flagChars": ["n"],
     "flags": ["flags-dir", "json", "name"],

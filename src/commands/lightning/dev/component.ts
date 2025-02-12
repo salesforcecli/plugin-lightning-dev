@@ -9,13 +9,13 @@ import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
-const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.preview.component');
+const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.component');
 
-export type LightningPreviewComponentResult = {
+export type LightningDevComponentResult = {
   path: string;
 };
 
-export default class LightningPreviewComponent extends SfCommand<LightningPreviewComponentResult> {
+export default class LightningDevComponent extends SfCommand<LightningDevComponentResult> {
   public static readonly summary = messages.getMessage('summary');
   public static readonly description = messages.getMessage('description');
   public static readonly examples = messages.getMessages('examples');
@@ -29,13 +29,13 @@ export default class LightningPreviewComponent extends SfCommand<LightningPrevie
     }),
   };
 
-  public async run(): Promise<LightningPreviewComponentResult> {
-    const { flags } = await this.parse(LightningPreviewComponent);
+  public async run(): Promise<LightningDevComponentResult> {
+    const { flags } = await this.parse(LightningDevComponent);
 
     const name = flags.name ?? 'world';
-    this.log(`hello ${name} from /Users/nkruk/git/plugin-lightning-dev/src/commands/lightning/preview/component.ts`);
+    this.log(`hello ${name}`);
     return {
-      path: '/Users/nkruk/git/plugin-lightning-dev/src/commands/lightning/preview/component.ts',
+      path: '',
     };
   }
 }
