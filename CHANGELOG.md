@@ -1,3 +1,9 @@
+## [3.2.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.2.1...3.2.2) (2025-02-23)
+
+### Bug Fixes
+
+- bump lwr version ([#345](https://github.com/salesforcecli/plugin-lightning-dev/issues/345)) ([ea0edc6](https://github.com/salesforcecli/plugin-lightning-dev/commit/ea0edc6365f3f87ccf5afeb10ea8321187700701))
+
 ## [3.2.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.2.0...3.2.1) (2025-02-23)
 
 # [3.2.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.1.2...3.2.0) (2025-02-12)
