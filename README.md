@@ -201,7 +201,7 @@ EXAMPLES
     $ sf lightning dev app --target-org myOrg --device-type ios --device-id "iPhone 15 Pro Max"
 ```
 
-_See code: [src/commands/lightning/dev/app.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/3.2.0/src/commands/lightning/dev/app.ts)_
+_See code: [src/commands/lightning/dev/app.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/3.2.1/src/commands/lightning/dev/app.ts)_
 
 ## `sf lightning dev component`
 
@@ -209,12 +209,11 @@ Preview LWC components in isolation.
 
 ```
 USAGE
-  $ sf lightning dev component -o <value> [--json] [--flags-dir <value>] [-n <value>]
+  $ sf lightning dev component [--json] [--flags-dir <value>] [-n <value>] [-o <value>]
 
 FLAGS
-  -n, --name=<value>        Description of a flag.
-  -o, --target-org=<value>  (required) Username or alias of the target org. Not required if the `target-org`
-                            configuration variable is already set.
+  -n, --name=<value>        Name of a component to preview.
+  -o, --target-org=<value>  Username or alias of the target org.
 
 GLOBAL FLAGS
   --flags-dir=<value>  Import flag values from a directory.
@@ -223,19 +222,31 @@ GLOBAL FLAGS
 DESCRIPTION
   Preview LWC components in isolation.
 
-  Preview LWC components in isolation. Replacement for:
-  https://developer.salesforce.com/docs/platform/sfvscode-extensions/guide/lwclocaldev.html
+  Component preview launches an isolated development environment for Lightning Web Components, enabling rapid iteration
+  without needing to deploy changes. The server provides real-time previews of your components through hot module
+  replacement (HMR), automatically refreshing the view when source files are modified.
+
+  When running the development server, these changes are immediately reflected:
+
+  - Component template (HTML) modifications
+  - Styling updates in component CSS files
+  - JavaScript logic changes that don't modify the component's API
+  - Adding or updating internal component dependencies
+  - Modifying static resources used by the component
+
+  See the LWC Development Guide for more information about component development best practices and limitations.
 
 EXAMPLES
-  $ sf lightning dev component
+  Select a component and launch the component preview:
 
-FLAG DESCRIPTIONS
-  -n, --name=<value>  Description of a flag.
+    $ sf lightning dev component
 
-    More information about a flag. Don't repeat the summary.
+  Launch component preview for "myComponent":
+
+    $ sf lightning dev component --name myComponent
 ```
 
-_See code: [src/commands/lightning/dev/component.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/3.2.0/src/commands/lightning/dev/component.ts)_
+_See code: [src/commands/lightning/dev/component.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/3.2.1/src/commands/lightning/dev/component.ts)_
 
 ## `sf lightning dev site`
 
@@ -289,6 +300,6 @@ EXAMPLES
     $ sf lightning dev site --name "Partner Central" --target-org myOrg --get-latest
 ```
 
-_See code: [src/commands/lightning/dev/site.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/3.2.0/src/commands/lightning/dev/site.ts)_
+_See code: [src/commands/lightning/dev/site.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/3.2.1/src/commands/lightning/dev/site.ts)_
 
 <!-- commandsstop -->
