@@ -15,7 +15,8 @@ import { PromptUtils } from '../../../shared/promptUtils.js';
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.component');
 
-const MODULES_DIR = './force-app/main/default/lwc';
+// TODO support other module directories
+const MODULES_DIR = path.resolve(path.join('force-app', 'main', 'default', 'lwc'));
 
 function getDirectories(filePath: string): string[] {
   try {
@@ -40,6 +41,9 @@ export default class LightningDevComponent extends SfCommand<void> {
       char: 'n',
       requiredOrDefaulted: false,
     }),
+    // TODO should this be required or optional?
+    // We don't technically need this if your components are simple / don't need any data from your org
+    'target-org': Flags.requiredOrg(),
   };
 
   public async run(): Promise<void> {
