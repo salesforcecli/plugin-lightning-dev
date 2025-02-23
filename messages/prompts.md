@@ -33,3 +33,7 @@ Which device do you want to use for the preview?
 # error.device.enumeration
 
 Unable to enumerate a list of available devices.
+
+# component.select
+
+Which Lightning Web Component would you like to preview (Use arrow keys)

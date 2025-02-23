@@ -9,7 +9,7 @@
     "@inquirer/select": "^2.4.7",
     "@lwc/lwc-dev-server": "~11.1.0",
     "@lwc/sfdc-lwc-compiler": "~11.1.0",
-    "@lwrjs/api": "0.16.6",
+    "@lwrjs/api": "0.16.8",
     "@oclif/core": "^4.1.0",
     "@salesforce/core": "^8.6.2",
     "@salesforce/kit": "^3.1.6",
