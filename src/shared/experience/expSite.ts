@@ -66,17 +66,20 @@ export class ExperienceSite {
    * @returns sid token for proxied site requests
    */
   public async setupAuth(): Promise<string> {
-    let sidToken = ''; // Default to guest user access only
+    let sidToken = '';
+    // Default to guest user access if specified
+    if (process.env.SITE_GUEST_ACCESS === 'true') return sidToken;
 
-    // Use environment variable for now if users want to just have guest access only
-    if (process.env.SITE_GUEST_ACCESS !== 'true') {
-      try {
-        const networkId = await this.getNetworkId();
-        sidToken = await this.getNewSidToken(networkId);
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error('Failed to establish authentication for site', e);
-      }
+    // Use a provided token if specified in environment variables
+    if (process.env.SID_TOKEN) return process.env.SID_TOKEN;
+
+    // Otherwise attempt to generate one based on the currently authenticated admin user
+    try {
+      const networkId = await this.getNetworkId();
+      sidToken = await this.getNewSidToken(networkId);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to establish authentication for site', e);
     }
 
     return sidToken;
