@@ -90,6 +90,21 @@ export class PromptUtils {
     return response;
   }
 
+  public static async promptUserToSelectComponent(components: Array<Record<string, string>>): Promise<string> {
+    const choices = components.map((component) => ({
+      name: component.label.length > 0 ? component.label : component.name,
+      value: component.name,
+      description: component.description,
+    }));
+
+    const response = await select({
+      message: messages.getMessage('component.select'),
+      choices,
+    });
+
+    return response;
+  }
+
   // returns the shorthand version of a Version object (eg. 17.0.0 => 17, 17.4.0 => 17.4, 17.4.1 => 17.4.1)
   private static getShortVersion(version: Version | string): string {
     // TODO: consider making this function part of the Version class in @lwc-dev-mobile-core
