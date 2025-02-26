@@ -21,12 +21,12 @@
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {
-    "@oclif/plugin-command-snapshot": "^5.2.19",
+    "@oclif/plugin-command-snapshot": "^5.2.35",
     "@salesforce/cli-plugins-testkit": "^5.3.39",
     "@salesforce/dev-scripts": "^10.2.11",
     "@salesforce/plugin-command-reference": "^3.1.37",
     "@types/node-fetch": "^2.6.11",
-    "eslint-plugin-sf-plugin": "^1.20.13",
+    "eslint-plugin-sf-plugin": "^1.20.15",
     "esmock": "^2.6.9",
     "oclif": "^4.17.27",
     "ts-node": "^10.9.2",
