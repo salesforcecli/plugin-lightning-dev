@@ -86,12 +86,17 @@ export default class LightningDevSite extends SfCommand<void> {
 
       // Start the dev server
       const port = parseInt(process.env.PORT ?? '3000', 10);
+
+      // Internal vs external mode
+      const internalProject = !fs.existsSync('sfdx-project.json') && fs.existsSync('lwr.config.json');
+      const logLevel = process.env.LOG_LEVEL ?? 'error';
+
       const startupParams: SitesLocalDevOptions = {
-        sfCLI: true,
+        sfCLI: !internalProject,
         authToken,
         open: process.env.OPEN_BROWSER === 'false' ? false : true,
         port,
-        logLevel: 'error',
+        logLevel,
         mode: 'dev',
         siteZip,
         siteDir: selectedSite.getSiteDirectory(),
