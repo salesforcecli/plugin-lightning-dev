@@ -1,3 +1,9 @@
+## [3.2.5](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.2.4...3.2.5) (2025-02-26)
+
+### Bug Fixes
+
+- @W-17910486 babel error during single component preview ([#349](https://github.com/salesforcecli/plugin-lightning-dev/issues/349)) ([f0c26b9](https://github.com/salesforcecli/plugin-lightning-dev/commit/f0c26b973ee05b5244ae031efb92bab5bb4466d1))
+
 ## [3.2.4](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.2.3...3.2.4) (2025-02-26)
 
 ### Bug Fixes
