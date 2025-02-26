@@ -1,3 +1,9 @@
+## [3.2.3](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.2.2...3.2.3) (2025-02-26)
+
+### Bug Fixes
+
+- @W-17758477 cli accepts a provided sid token for use during sites local dev ([#346](https://github.com/salesforcecli/plugin-lightning-dev/issues/346)) ([143bbc1](https://github.com/salesforcecli/plugin-lightning-dev/commit/143bbc1ef3fac99d735c9f6afb8ceaf4a12781db))
+
 ## [3.2.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.2.1...3.2.2) (2025-02-23)
 
 ### Bug Fixes
