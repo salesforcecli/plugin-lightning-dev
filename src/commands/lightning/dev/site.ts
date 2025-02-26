@@ -89,7 +89,7 @@ export default class LightningDevSite extends SfCommand<void> {
 
       // Internal vs external mode
       const internalProject = !fs.existsSync('sfdx-project.json') && fs.existsSync('lwr.config.json');
-      const logLevel = process.env.LOG_LEVEL ?? (internalProject ? 'info' : 'error');
+      const logLevel = process.env.LOG_LEVEL ?? 'error';
 
       const startupParams: SitesLocalDevOptions = {
         sfCLI: !internalProject,
