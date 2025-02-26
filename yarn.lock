@@ -3001,7 +3001,7 @@
     strip-ansi "6.0.1"
     ts-retry-promise "^0.8.1"
 
-"@salesforce/core@^8.5.1", "@salesforce/core@^8.5.7", "@salesforce/core@^8.6.2", "@salesforce/core@^8.6.4", "@salesforce/core@^8.8.0", "@salesforce/core@^8.8.3":
+"@salesforce/core@^8.5.1", "@salesforce/core@^8.5.7", "@salesforce/core@^8.6.2", "@salesforce/core@^8.8.0", "@salesforce/core@^8.8.2", "@salesforce/core@^8.8.3":
   version "8.8.3"
   resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-8.8.3.tgz#a764f1cf5f07b0a57d68c80d0d0a94bc95a7c97a"
   integrity sha512-2yzDs+qGIFCeUtXcB6rOCZbBftqFH3492CfAlP1KSK8xY16wH38SAvW0RsuepetA2UBOZhwx7R4uyHKDn26Png==
@@ -3098,17 +3098,17 @@
     listr2 "^8.2.4"
     node-forge "^1.3.1"
 
-"@salesforce/plugin-command-reference@^3.1.37":
-  version "3.1.37"
-  resolved "https://registry.yarnpkg.com/@salesforce/plugin-command-reference/-/plugin-command-reference-3.1.37.tgz#3a44388ef53ac16cd1b20ae45abb7b19a3addd71"
-  integrity sha512-337SfxYklboSaPlxcXrC7D54ZNo1umZvIjm68i+8pF3AfwwMjwraXXjJu1y2zIQPEvYkolK7tQzaoiO/3dPeZA==
+"@salesforce/plugin-command-reference@^3.1.44":
+  version "3.1.44"
+  resolved "https://registry.yarnpkg.com/@salesforce/plugin-command-reference/-/plugin-command-reference-3.1.44.tgz#3adab9c652c222e2b0542be468ce4c8c7106d687"
+  integrity sha512-6Fr9lDc/mR1Sq3HloSamc8/jH+25iD73bM3ZUgpqUyx5zLUhdVuAJJlBb7Ye0LpPXn062NLDDxcy6cpQdAQNiA==
   dependencies:
     "@oclif/core" "^4"
-    "@salesforce/core" "^8.6.4"
+    "@salesforce/core" "^8.8.2"
     "@salesforce/kit" "^3.2.3"
     "@salesforce/sf-plugins-core" "^11.3.12"
     "@salesforce/ts-types" "^2.0.11"
-    chalk "^5.3.0"
+    chalk "^5.4.1"
     debug "^4.4.0"
     handlebars "^4.7.8"
 
@@ -4832,7 +4832,12 @@ chalk@^4, chalk@^4.0.0, chalk@^4.0.2, chalk@^4.1.0:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
-chalk@^5.0.0, chalk@^5.3.0, chalk@~5.3.0:
+chalk@^5.0.0, chalk@^5.3.0, chalk@^5.4.1:
+  version "5.4.1"
+  resolved "https://registry.yarnpkg.com/chalk/-/chalk-5.4.1.tgz#1b48bf0963ec158dce2aacf69c093ae2dd2092d8"
+  integrity sha512-zgVZuo2WcZgfUEmsn6eO3kINexW8RAE4maiQ8QNs8CtpPCSyMiYsULR3HQYkm3w8FIA3SberyMJMSldGsW+U3w==
+
+chalk@~5.3.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-5.3.0.tgz#67c20a7ebef70e7f3970a01f90fa210cb6860385"
   integrity sha512-dLitG79d+GV1Nb/VYcCDFivJeK1hiukt9QjRNVOsUtTy1rR1YJsmpGGTZ3qJos+uw7WmWF4wUwBd9jxjocFC2w==
