@@ -1,3 +1,9 @@
+## [3.2.4](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.2.3...3.2.4) (2025-02-26)
+
+### Bug Fixes
+
+- @W-17792692 - internal developer scenarios ([#348](https://github.com/salesforcecli/plugin-lightning-dev/issues/348)) ([94a735d](https://github.com/salesforcecli/plugin-lightning-dev/commit/94a735da058f7ed9e6baeb40d1953afb1161ad18))
+
 ## [3.2.3](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.2.2...3.2.3) (2025-02-26)
 
 ### Bug Fixes
