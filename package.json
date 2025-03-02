@@ -15,7 +15,7 @@
     "@salesforce/kit": "^3.1.6",
     "@salesforce/lwc-dev-mobile-core": "4.0.0-alpha.9",
     "@salesforce/sf-plugins-core": "^11.2.4",
-    "axios": "^1.7.9",
+    "axios": "^1.8.1",
     "glob": "^10.4.5",
     "lwc": "~8.12.5",
     "node-fetch": "^3.3.2"
