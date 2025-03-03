@@ -1,3 +1,9 @@
+## [2.10.3](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.10.2...2.10.3) (2025-03-03)
+
+### Bug Fixes
+
+- bump version 2 to latest ([#356](https://github.com/salesforcecli/plugin-lightning-dev/issues/356)) ([#357](https://github.com/salesforcecli/plugin-lightning-dev/issues/357)) ([150bcfa](https://github.com/salesforcecli/plugin-lightning-dev/commit/150bcfa3036018ea49ab73da10d1b470cab0ad43))
+
 ## [2.10.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/2.10.1...2.10.2) (2025-02-06)
 
 ### Bug Fixes
