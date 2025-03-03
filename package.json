@@ -27,7 +27,7 @@
     "@salesforce/plugin-command-reference": "^3.1.44",
     "@types/node-fetch": "^2.6.11",
     "eslint-plugin-sf-plugin": "^1.20.15",
-    "esmock": "^2.6.9",
+    "esmock": "^2.7.0",
     "oclif": "^4.17.27",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
