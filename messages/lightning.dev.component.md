@@ -28,6 +28,14 @@ Unable to find components
 
 Unable to determine component name
 
+# error.component-metadata
+
+Failed to parse component metadata at: %s
+
+# error.component-not-found
+
+Unable to find component with name: %s
+
 # examples
 
 - Select a component and launch the component preview:

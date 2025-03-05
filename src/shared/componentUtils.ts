@@ -6,9 +6,9 @@
  */
 import path from 'node:path';
 import fs from 'node:fs';
-import { SfProject } from '@salesforce/core';
 import { glob } from 'glob';
 import { parseStringPromise } from 'xml2js';
+import { SfProject } from '@salesforce/core';
 
 export type LwcMetadata = {
   LightningComponentBundle: {
@@ -26,23 +26,22 @@ export class ComponentUtils {
     return componentName.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
   }
 
-  public static async getComponentPaths(project: SfProject): Promise<string[]> {
+  public static async getNamespacePaths(project: SfProject): Promise<string[]> {
     const packageDirs = project.getPackageDirectories();
-    const namespacePaths = (
-      await Promise.all(packageDirs.map((dir) => glob(`${dir.fullPath}/**/lwc`, { absolute: true })))
-    ).flat();
 
+    return (await Promise.all(packageDirs.map((dir) => glob(`${dir.fullPath}/**/lwc`, { absolute: true })))).flat();
+  }
+
+  public static async getAllComponentPaths(namespacePaths: string[]): Promise<string[]> {
     return (
-      await Promise.all(
-        namespacePaths.map(async (namespacePath): Promise<string[]> => {
-          const children = await fs.promises.readdir(namespacePath, { withFileTypes: true });
-
-          return children
-            .filter((child) => child.isDirectory())
-            .map((child) => path.join(child.parentPath, child.name));
-        })
-      )
+      await Promise.all(namespacePaths.map((namespacePath) => ComponentUtils.getComponentPaths(namespacePath)))
     ).flat();
+  }
+
+  public static async getComponentPaths(namespacePath: string): Promise<string[]> {
+    const children = await fs.promises.readdir(namespacePath, { withFileTypes: true });
+
+    return children.filter((child) => child.isDirectory()).map((child) => path.join(child.parentPath, child.name));
   }
 
   public static async getComponentMetadata(dirname: string): Promise<LwcMetadata | undefined> {
@@ -52,7 +51,7 @@ export class ComponentUtils {
       return undefined;
     }
 
-    const xmlContent = fs.readFileSync(metaXmlPath, 'utf8');
+    const xmlContent = await fs.promises.readFile(metaXmlPath, 'utf8');
     const parsedData = (await parseStringPromise(xmlContent)) as LwcMetadata;
     if (!this.isLwcMetadata(parsedData)) {
       return undefined;

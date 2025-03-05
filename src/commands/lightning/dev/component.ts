@@ -32,43 +32,56 @@ export default class LightningDevComponent extends SfCommand<void> {
   };
 
   public async run(): Promise<void> {
-    const project = await SfProject.resolve();
     const { flags } = await this.parse(LightningDevComponent);
+    const project = await SfProject.resolve();
+
+    const namespacePaths = await ComponentUtils.getNamespacePaths(project);
+    const componentPaths = await ComponentUtils.getAllComponentPaths(namespacePaths);
+    if (!componentPaths) {
+      throw new Error(messages.getMessage('error.directory'));
+    }
+
+    const components = (
+      await Promise.all(
+        componentPaths.map(async (componentPath) => {
+          let xml;
+
+          try {
+            xml = await ComponentUtils.getComponentMetadata(componentPath);
+          } catch (err) {
+            this.warn(messages.getMessage('error.component-metadata', [componentPath]));
+          }
+
+          // components must have meta xml to be previewed
+          if (!xml) {
+            return undefined;
+          }
+
+          const componentName = path.basename(componentPath);
+          const label = ComponentUtils.componentNameToTitleCase(componentName);
+
+          return {
+            name: componentName,
+            label: xml.LightningComponentBundle.masterLabel ?? label,
+            description: xml.LightningComponentBundle.description ?? '',
+          };
+        })
+      )
+    ).filter((component) => !!component);
 
     let name = flags.name;
-    if (!name) {
-      const dirs = await ComponentUtils.getComponentPaths(project);
-      if (!dirs) {
-        throw new Error(messages.getMessage('error.directory'));
+    if (name) {
+      // validate that the component exists before launching the server
+      if (!components.find((component) => name === component.name)) {
+        throw new Error(messages.getMessage('error.component-not-found', [name]));
       }
-
-      const components = (
-        await Promise.all(
-          dirs.map(async (dir) => {
-            const xml = await ComponentUtils.getComponentMetadata(dir);
-            if (!xml) {
-              return undefined;
-            }
-
-            const componentName = path.basename(dir);
-            const label = ComponentUtils.componentNameToTitleCase(componentName);
-
-            return {
-              name: componentName,
-              label: xml.LightningComponentBundle.masterLabel ?? label,
-              description: xml.LightningComponentBundle.description ?? '',
-            };
-          })
-        )
-      ).filter((component) => !!component);
-
+    } else {
+      // prompt the user for a name if one was not provided
       name = await PromptUtils.promptUserToSelectComponent(components);
       if (!name) {
         throw new Error(messages.getMessage('error.component'));
       }
     }
-
-    this.log('Starting application on port 3000...');
 
     const port = parseInt(process.env.PORT ?? '3000', 10);
 
