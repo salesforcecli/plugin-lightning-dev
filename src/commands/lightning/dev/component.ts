@@ -5,30 +5,15 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import fs from 'node:fs';
 import path from 'node:path';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
-import { Messages } from '@salesforce/core';
+import { Messages, SfProject } from '@salesforce/core';
 import { cmpDev } from '@lwrjs/api';
+import { ComponentUtils } from '../../../shared/componentUtils.js';
 import { PromptUtils } from '../../../shared/promptUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.component');
-
-// TODO support other module directories
-const MODULES_DIR = path.resolve(path.join('force-app', 'main', 'default', 'lwc'));
-
-function getDirectories(filePath: string): string[] {
-  try {
-    const items = fs.readdirSync(filePath);
-
-    const directories = items.filter((item) => fs.statSync(path.join(filePath, item)).isDirectory());
-
-    return directories;
-  } catch (error) {
-    return [];
-  }
-}
 
 export default class LightningDevComponent extends SfCommand<void> {
   public static readonly summary = messages.getMessage('summary');
@@ -47,27 +32,35 @@ export default class LightningDevComponent extends SfCommand<void> {
   };
 
   public async run(): Promise<void> {
+    const project = await SfProject.resolve();
     const { flags } = await this.parse(LightningDevComponent);
 
     let name = flags.name;
     if (!name) {
-      const dirs = getDirectories(path.resolve(MODULES_DIR));
+      const dirs = await ComponentUtils.getComponentPaths(project);
       if (!dirs) {
         throw new Error(messages.getMessage('error.directory'));
       }
 
-      const components = dirs.map((dir) => {
-        const xmlPath = path.resolve(path.join(MODULES_DIR, dir, `${dir}.js-meta.xml`));
-        const xmlContent = fs.readFileSync(xmlPath, 'utf-8');
-        const label = xmlContent.match(/<masterLabel>(.*?)<\/masterLabel>/);
-        const description = xmlContent.match(/<description>(.*?)<\/description>/);
+      const components = (
+        await Promise.all(
+          dirs.map(async (dir) => {
+            const xml = await ComponentUtils.getComponentMetadata(dir);
+            if (!xml) {
+              return undefined;
+            }
 
-        return {
-          name: dir,
-          label: label ? label[1] : '',
-          description: description ? description[1] : '',
-        };
-      });
+            const componentName = path.basename(dir);
+            const label = ComponentUtils.componentNameToTitleCase(componentName);
+
+            return {
+              name: componentName,
+              label: xml.LightningComponentBundle.masterLabel ?? label,
+              description: xml.LightningComponentBundle.description ?? '',
+            };
+          })
+        )
+      ).filter((component) => !!component);
 
       name = await PromptUtils.promptUserToSelectComponent(components);
       if (!name) {
