@@ -5,30 +5,15 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import fs from 'node:fs';
 import path from 'node:path';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
-import { Messages } from '@salesforce/core';
+import { Messages, SfProject } from '@salesforce/core';
 import { cmpDev } from '@lwrjs/api';
+import { ComponentUtils } from '../../../shared/componentUtils.js';
 import { PromptUtils } from '../../../shared/promptUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.component');
-
-// TODO support other module directories
-const MODULES_DIR = path.resolve(path.join('force-app', 'main', 'default', 'lwc'));
-
-function getDirectories(filePath: string): string[] {
-  try {
-    const items = fs.readdirSync(filePath);
-
-    const directories = items.filter((item) => fs.statSync(path.join(filePath, item)).isDirectory());
-
-    return directories;
-  } catch (error) {
-    return [];
-  }
-}
 
 export default class LightningDevComponent extends SfCommand<void> {
   public static readonly summary = messages.getMessage('summary');
@@ -48,34 +33,55 @@ export default class LightningDevComponent extends SfCommand<void> {
 
   public async run(): Promise<void> {
     const { flags } = await this.parse(LightningDevComponent);
+    const project = await SfProject.resolve();
+
+    const namespacePaths = await ComponentUtils.getNamespacePaths(project);
+    const componentPaths = await ComponentUtils.getAllComponentPaths(namespacePaths);
+    if (!componentPaths) {
+      throw new Error(messages.getMessage('error.directory'));
+    }
+
+    const components = (
+      await Promise.all(
+        componentPaths.map(async (componentPath) => {
+          let xml;
+
+          try {
+            xml = await ComponentUtils.getComponentMetadata(componentPath);
+          } catch (err) {
+            this.warn(messages.getMessage('error.component-metadata', [componentPath]));
+          }
+
+          // components must have meta xml to be previewed
+          if (!xml) {
+            return undefined;
+          }
+
+          const componentName = path.basename(componentPath);
+          const label = ComponentUtils.componentNameToTitleCase(componentName);
+
+          return {
+            name: componentName,
+            label: xml.LightningComponentBundle.masterLabel ?? label,
+            description: xml.LightningComponentBundle.description ?? '',
+          };
+        })
+      )
+    ).filter((component) => !!component);
 
     let name = flags.name;
-    if (!name) {
-      const dirs = getDirectories(path.resolve(MODULES_DIR));
-      if (!dirs) {
-        throw new Error(messages.getMessage('error.directory'));
+    if (name) {
+      // validate that the component exists before launching the server
+      if (!components.find((component) => name === component.name)) {
+        throw new Error(messages.getMessage('error.component-not-found', [name]));
       }
-
-      const components = dirs.map((dir) => {
-        const xmlPath = path.resolve(path.join(MODULES_DIR, dir, `${dir}.js-meta.xml`));
-        const xmlContent = fs.readFileSync(xmlPath, 'utf-8');
-        const label = xmlContent.match(/<masterLabel>(.*?)<\/masterLabel>/);
-        const description = xmlContent.match(/<description>(.*?)<\/description>/);
-
-        return {
-          name: dir,
-          label: label ? label[1] : '',
-          description: description ? description[1] : '',
-        };
-      });
-
+    } else {
+      // prompt the user for a name if one was not provided
       name = await PromptUtils.promptUserToSelectComponent(components);
       if (!name) {
         throw new Error(messages.getMessage('error.component'));
       }
     }
-
-    this.log('Starting application on port 3000...');
 
     const port = parseInt(process.env.PORT ?? '3000', 10);
 

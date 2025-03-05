@@ -18,7 +18,8 @@
     "axios": "^1.7.9",
     "glob": "^10.4.5",
     "lwc": "~8.12.5",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "@oclif/plugin-command-snapshot": "^5.2.35",
@@ -26,6 +27,7 @@
     "@salesforce/dev-scripts": "^10.2.11",
     "@salesforce/plugin-command-reference": "^3.1.44",
     "@types/node-fetch": "^2.6.11",
+    "@types/xml2js": "^0.4.14",
     "eslint-plugin-sf-plugin": "^1.20.15",
     "esmock": "^2.6.9",
     "oclif": "^4.17.27",
