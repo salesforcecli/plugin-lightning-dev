@@ -6,6 +6,14 @@ Which Experience Cloud Site would you like to preview (Use arrow keys)
 
 An updated site bundle is available for "%s". Do you want to download and apply the update?
 
+# site.auth.prompt
+
+Please enter your authentication token:
+
+# site.auth.error
+
+Authentication token cannot be empty
+
 # lightning-experience-app.title
 
 Which Lightning Experience App do you want to use for the preview?

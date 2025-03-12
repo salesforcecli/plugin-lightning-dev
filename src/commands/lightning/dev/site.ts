@@ -11,6 +11,7 @@ import { expDev, SitesLocalDevOptions, setupDev } from '@lwrjs/api';
 import { OrgUtils } from '../../../shared/orgUtils.js';
 import { PromptUtils } from '../../../shared/promptUtils.js';
 import { ExperienceSite } from '../../../shared/experience/expSite.js';
+import 'dotenv/config';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.site');
@@ -87,12 +88,10 @@ export default class LightningDevSite extends SfCommand<void> {
       // Start the dev server
       const port = parseInt(process.env.PORT ?? '3000', 10);
 
-      // Internal vs external mode
-      const internalProject = !fs.existsSync('sfdx-project.json') && fs.existsSync('lwr.config.json');
       const logLevel = process.env.LOG_LEVEL ?? 'error';
 
       const startupParams: SitesLocalDevOptions = {
-        sfCLI: !internalProject,
+        sfCLI: process.env.INTERNAL_DEVELOPER_MODE !== 'true',
         authToken,
         open: process.env.OPEN_BROWSER === 'false' ? false : true,
         port,

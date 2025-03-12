@@ -8,7 +8,28 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { Org, SfError } from '@salesforce/core';
 import axios from 'axios';
+import { PromptUtils } from '../promptUtils.js';
 
+// TODO this format is what we want to be storing for each site
+export type NewSiteMetadata = {
+  name: string;
+  siteZip: string; // TODO do we want to store a list of ordered zip files we've downloaded? or just the most recent
+  lastModified: Date;
+  coreVersion: string;
+  needsUpdate: boolean;
+  users: AuthUserMap;
+};
+
+export type AuthUserMap = {
+  [username: string]: AuthToken;
+};
+
+export type AuthToken = {
+  token: string;
+  issued: Date;
+};
+
+// This is what we have been storing in the sites.json
 export type SiteMetadata = {
   bundleName: string;
   bundleLastModified: string;
@@ -33,6 +54,7 @@ export class ExperienceSite {
   public siteName: string;
   private org: Org;
   private metadataCache: SiteMetadataCache = {};
+  private config;
 
   public constructor(org: Org, siteName: string) {
     this.org = org;
@@ -40,9 +62,87 @@ export class ExperienceSite {
     this.siteName = this.siteDisplayName.replace(' ', '_');
     // Replace any special characters in site name with underscore
     this.siteName = this.siteName.replace(/[^a-zA-Z0-9]/g, '_');
+
+    // Backwards Compat
+    if (process.env.SITE_GUEST_ACCESS === 'true') {
+      process.env.PREVIEW_USER = 'Guest';
+    }
+    if (process.env.SID_TOKEN && !process.env.PREVIEW_USER) {
+      process.env.PREVIEW_USER = 'Custom';
+    }
+
+    // TODO the config handling code should move into its own file
+    // Store variables in consumable config to limit use of env variables
+    // Eventually these will be part of CLI interface or scrapped in favor of config
+    // once they are no longer experimental
+    this.config = {
+      previewUser: process.env.PREVIEW_USER ?? 'Admin',
+      previewToken: process.env.SID_TOKEN ?? '',
+      apiStaticMode: process.env.API_STATIC_MODE === 'true' ? true : false,
+      apiBundlingGroups: process.env.API_BUNDLING_GROUPS === 'true' ? true : false,
+      apiVersion: process.env.API_VERSION ?? 'v64.0',
+      apiSiteVersion: process.env.API_SITE_VERSION ?? 'published',
+    };
+  }
+
+  public get apiQueryParams(): string {
+    const retVal = [];
+
+    // Preview is default. If we specify another mode, add it as a query parameter
+    if (this.config.apiSiteVersion !== 'preview') {
+      retVal.push(this.config.apiSiteVersion);
+    }
+
+    // Bundling groups are off by default. Only add if enabled
+    if (this.config.apiBundlingGroups) {
+      retVal.push('bundlingGroups');
+    }
+
+    // Metrics - TODO
+
+    // If we have query parameters, return them
+    if (retVal.length) {
+      return '?' + retVal.join('&');
+    }
+
+    // Otherwise just return an empty string
+    return '';
   }
 
   /**
+   * TODO this should use the connect api `{{orgInstance}}/services/data/v{{version}}/connect/communities`
+   * Returns array of sites like:
+   * communities[
+   *   {
+            "allowChatterAccessWithoutLogin": true,
+            "allowMembersToFlag": false,
+            "builderBasedSnaEnabled": true,
+            "builderUrl": "https://orgfarm-656f3290cc.test1.my.pc-rnd.salesforce.com/sfsites/picasso/core/config/commeditor.jsp?siteId=0DMSG000001lhVa",
+            "contentSpaceId": "0ZuSG000001n1la0AA",
+            "description": "D2C Codecept Murazik",
+            "guestMemberVisibilityEnabled": false,
+            "id": "0DBSG000001huWE4AY",
+            "imageOptimizationCDNEnabled": true,
+            "invitationsEnabled": false,
+            "knowledgeableEnabled": false,
+            "loginUrl": "https://orgfarm-656f3290cc.test1.my.pc-rnd.site.com/d2cbernadette/login",
+            "memberVisibilityEnabled": false,
+            "name": "D2C Codecept Murazik",
+            "nicknameDisplayEnabled": true,
+            "privateMessagesEnabled": false,
+            "reputationEnabled": false,
+            "sendWelcomeEmail": true,
+            "siteAsContainerEnabled": true,
+            "siteUrl": "https://orgfarm-656f3290cc.test1.my.pc-rnd.site.com/d2cbernadette",
+            "status": "Live",
+            "templateName": "D2C Commerce (LWR)",
+            "url": "/services/data/v64.0/connect/communities/0DBSG000001huWE4AY",
+            "urlPathPrefix": "d2cbernadettevforcesite"
+        },
+        ...
+        ]
+   * 
+   * 
    * Fetches all current experience sites
    *
    * @param {Connection} conn - Salesforce connection object.
@@ -66,25 +166,37 @@ export class ExperienceSite {
    * @returns sid token for proxied site requests
    */
   public async setupAuth(): Promise<string> {
-    let sidToken = '';
-    // Default to guest user access if specified
-    if (process.env.SITE_GUEST_ACCESS === 'true') return sidToken;
+    const previewUser = this.config.previewUser.toLocaleLowerCase();
 
-    // Use a provided token if specified in environment variables
-    if (process.env.SID_TOKEN) return process.env.SID_TOKEN;
+    // Preview as Guest User (no token)
+    if (previewUser === 'guest') return '';
 
-    // Otherwise attempt to generate one based on the currently authenticated admin user
-    try {
-      const networkId = await this.getNetworkId();
-      sidToken = await this.getNewSidToken(networkId);
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error('Failed to establish authentication for site', e);
+    // Preview with supplied user token
+    if (this.config.previewToken) return this.config.previewToken;
+
+    // Preview as CLI Admin user (Default)
+    if (previewUser === 'admin') {
+      try {
+        const networkId = await this.getNetworkId();
+        const sidToken = await this.getNewSidToken(networkId);
+        return sidToken;
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to establish authentication for site', e);
+      }
     }
+
+    // TODO Check local metadata for token, if it doesn't exist, prompt the user
+
+    // Prompt user for token or re-use token already saved for the site
+    const sidToken = await PromptUtils.promptUserForAuthToken();
+
+    // TODO If are supplied a token, we should store it in the local metadata to reuse later on
 
     return sidToken;
   }
 
+  // TODO this doesn't work anymore, we should consider alternative strategies
   public async isUpdateAvailable(): Promise<boolean> {
     const localMetadata = this.getLocalMetadata();
     if (!localMetadata) {
@@ -148,6 +260,7 @@ export class ExperienceSite {
     return siteJson;
   }
 
+  // TODO rename to getStaticResourceMetadata()
   public async getRemoteMetadata(): Promise<SiteMetadata | undefined> {
     if (this.metadataCache.remoteMetadata) return this.metadataCache.remoteMetadata;
     const result = await this.org
@@ -197,7 +310,7 @@ export class ExperienceSite {
    */
   public async downloadSite(): Promise<string> {
     let retVal;
-    if (process.env.STATIC_MODE !== 'true') {
+    if (!this.config.apiStaticMode) {
       // Use sites API to download the site bundle on demand
       retVal = await this.downloadSiteApi();
     } else {
@@ -225,6 +338,8 @@ export class ExperienceSite {
 
     // Download the site via API
     const conn = this.org.getConnection();
+
+    // TODO update to the new metadata format
     const metadata = {
       bundleName: theSite.Name,
       bundleLastModified: theSite.LastModifiedDate,
@@ -239,12 +354,7 @@ export class ExperienceSite {
     }
     const resourcePath = this.getSiteZipPath(metadata);
     try {
-      // Limit API to published sites for now until we have a patch for the issues with unpublished sites
-      // TODO switch api back to preview mode after issues are addressed
-      let apiUrl = `${instanceUrl}/services/data/v63.0/sites/${siteIdMinus3}/preview?published`;
-      if (process.env.SITE_API_MODE === 'preview') {
-        apiUrl = `${instanceUrl}/services/data/v63.0/sites/${siteIdMinus3}/preview`;
-      }
+      const apiUrl = `${instanceUrl}/services/data/${this.config.apiVersion}/sites/${siteIdMinus3}/preview${this.apiQueryParams}`;
 
       const response = await axios.get(apiUrl, {
         headers: {

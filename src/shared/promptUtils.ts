@@ -5,7 +5,7 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import select from '@inquirer/select';
-import { confirm } from '@inquirer/prompts';
+import { confirm, input } from '@inquirer/prompts';
 import { Connection, Logger, Messages } from '@salesforce/core';
 import {
   AndroidDeviceManager,
@@ -25,6 +25,22 @@ export class PromptUtils {
     const response = await select({
       message: messages.getMessage('site.select'),
       choices,
+    });
+
+    return response;
+  }
+
+  // Add this method to the PromptUtils class
+  public static async promptUserForAuthToken(defaultToken?: string): Promise<string> {
+    const response = await input({
+      message: messages.getMessage('site.auth.prompt'),
+      default: defaultToken,
+      validate: (value) => {
+        if (!value.trim()) {
+          return messages.getMessage('site.auth.error');
+        }
+        return true;
+      },
     });
 
     return response;
