@@ -108,7 +108,7 @@ export class PromptUtils {
 
   public static async promptUserToSelectComponent(components: Array<Record<string, string>>): Promise<string> {
     const choices = components.map((component) => ({
-      name: component.label.length > 0 ? component.label : component.name,
+      name: component.label ?? component.name,
       value: component.name,
       description: component.description,
     }));
