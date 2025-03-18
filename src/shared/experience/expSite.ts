@@ -6,18 +6,39 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import { Org, SfError } from '@salesforce/core';
+import { Org, SfError, Logger } from '@salesforce/core';
 import axios from 'axios';
 import { PromptUtils } from '../promptUtils.js';
+import { ExperienceSiteConfigManager } from './expSiteConfig.js';
 
-// TODO this format is what we want to be storing for each site
+// New metadata format for sites
 export type NewSiteMetadata = {
   name: string;
-  siteZip: string; // TODO do we want to store a list of ordered zip files we've downloaded? or just the most recent
+  orgId: string;
+  siteId: string; // From the builderUrl query parameter
+  siteZips: Array<{
+    filename: string;
+    downloadedAt: Date;
+    bundleLastModified: Date;
+  }>;
   lastModified: Date;
   coreVersion: string;
   needsUpdate: boolean;
   users: AuthUserMap;
+  metadata?: ConnectApiSiteMetadata; // Metadata from Connect API
+};
+
+// Type for site metadata from Connect API
+export type ConnectApiSiteMetadata = {
+  id: string;
+  name: string;
+  description?: string;
+  status: string;
+  urlPathPrefix?: string;
+  siteUrl?: string;
+  builderUrl?: string;
+  templateName?: string;
+  lastModifiedDate?: string;
 };
 
 export type AuthUserMap = {
@@ -37,8 +58,86 @@ export type SiteMetadata = {
 };
 
 export type SiteMetadataCache = {
-  [key: string]: SiteMetadata;
+  [key: string]: SiteMetadata | NewSiteMetadata;
 };
+
+/**
+ * Migrates old metadata format to the new format, adding orgId and siteId
+ */
+export async function migrateToNewMetadataFormat(
+  oldMetadata: SiteMetadata,
+  org: Org,
+  siteName: string
+): Promise<NewSiteMetadata> {
+  const functionLogger = Logger.childFromRoot('migrateToNewMetadataFormat');
+  functionLogger.debug(`Migrating metadata for site: ${siteName}`);
+
+  // Get the orgId
+  const orgId = org.getOrgId();
+  functionLogger.debug(`OrgId: ${orgId}`);
+
+  // Get site metadata from Connect API
+  let connectApiMetadata: ConnectApiSiteMetadata | undefined;
+  let siteId = '';
+
+  try {
+    functionLogger.debug('Fetching site details from Connect API');
+    const conn = org.getConnection();
+    const apiVersion = conn.version;
+    const url = `/services/data/v${apiVersion}/connect/communities`;
+
+    const response = await conn.request<{
+      communities: ConnectApiSiteMetadata[];
+    }>(url);
+
+    if (response?.communities) {
+      functionLogger.debug(`Found ${response.communities.length} communities in the org`);
+      connectApiMetadata = response.communities.find((site) => site.name === siteName);
+
+      if (connectApiMetadata) {
+        functionLogger.debug(`Found site metadata for ${siteName}`);
+
+        if (connectApiMetadata.builderUrl) {
+          // Extract siteId from builderUrl query parameter
+          const urlObj = new URL(connectApiMetadata.builderUrl);
+          siteId = urlObj.searchParams.get('siteId') ?? '';
+          functionLogger.debug(`Extracted siteId: ${siteId}`);
+        } else {
+          functionLogger.debug('No builderUrl found in site metadata');
+        }
+      } else {
+        functionLogger.debug(`Site ${siteName} not found in Connect API response`);
+      }
+    } else {
+      functionLogger.debug('No communities found in Connect API response');
+    }
+  } catch (error) {
+    functionLogger.error('Error fetching site details for migration:');
+    functionLogger.error(error);
+    // If we can't get the metadata from the Connect API, we'll continue with empty values
+  }
+
+  const newMetadata: NewSiteMetadata = {
+    name: oldMetadata.bundleName.replace(/^MRT_experience_.*_/, ''),
+    orgId,
+    siteId,
+    siteZips: [
+      {
+        filename: oldMetadata.bundleName,
+        downloadedAt: new Date(),
+        bundleLastModified: new Date(oldMetadata.bundleLastModified),
+      },
+    ],
+    lastModified: new Date(oldMetadata.bundleLastModified),
+    coreVersion: oldMetadata.coreVersion,
+    needsUpdate: false,
+    users: {},
+    metadata: connectApiMetadata,
+  };
+
+  functionLogger.debug('Migration complete. New metadata created.');
+  return newMetadata;
+}
 
 /**
  * Experience Site class.
@@ -54,230 +153,350 @@ export class ExperienceSite {
   public siteName: string;
   private org: Org;
   private metadataCache: SiteMetadataCache = {};
+  private configManager: ExperienceSiteConfigManager;
   private config;
+  private logger: Logger;
 
   public constructor(org: Org, siteName: string) {
+    this.logger = Logger.childFromRoot(`ExperienceSite:${siteName}`);
+    this.logger.debug(`Initializing ExperienceSite with name: ${siteName}`);
+
     this.org = org;
     this.siteDisplayName = siteName.trim();
     this.siteName = this.siteDisplayName.replace(' ', '_');
     // Replace any special characters in site name with underscore
     this.siteName = this.siteName.replace(/[^a-zA-Z0-9]/g, '_');
+    this.logger.debug(`Normalized site name: ${this.siteName}`);
 
-    // Backwards Compat
-    if (process.env.SITE_GUEST_ACCESS === 'true') {
-      process.env.PREVIEW_USER = 'Guest';
-    }
-    if (process.env.SID_TOKEN && !process.env.PREVIEW_USER) {
-      process.env.PREVIEW_USER = 'Custom';
-    }
-
-    // TODO the config handling code should move into its own file
-    // Store variables in consumable config to limit use of env variables
-    // Eventually these will be part of CLI interface or scrapped in favor of config
-    // once they are no longer experimental
-    this.config = {
-      previewUser: process.env.PREVIEW_USER ?? 'Admin',
-      previewToken: process.env.SID_TOKEN ?? '',
-      apiStaticMode: process.env.API_STATIC_MODE === 'true' ? true : false,
-      apiBundlingGroups: process.env.API_BUNDLING_GROUPS === 'true' ? true : false,
-      apiVersion: process.env.API_VERSION ?? 'v64.0',
-      apiSiteVersion: process.env.API_SITE_VERSION ?? 'published',
-    };
+    this.configManager = ExperienceSiteConfigManager.getInstance();
+    this.config = this.configManager.getConfig();
+    this.logger.debug('Configuration loaded');
   }
 
   public get apiQueryParams(): string {
-    const retVal = [];
-
-    // Preview is default. If we specify another mode, add it as a query parameter
-    if (this.config.apiSiteVersion !== 'preview') {
-      retVal.push(this.config.apiSiteVersion);
-    }
-
-    // Bundling groups are off by default. Only add if enabled
-    if (this.config.apiBundlingGroups) {
-      retVal.push('bundlingGroups');
-    }
-
-    // Metrics - TODO
-
-    // If we have query parameters, return them
-    if (retVal.length) {
-      return '?' + retVal.join('&');
-    }
-
-    // Otherwise just return an empty string
-    return '';
+    return this.configManager.getApiQueryParams();
   }
 
   /**
-   * TODO this should use the connect api `{{orgInstance}}/services/data/v{{version}}/connect/communities`
-   * Returns array of sites like:
-   * communities[
-   *   {
-            "allowChatterAccessWithoutLogin": true,
-            "allowMembersToFlag": false,
-            "builderBasedSnaEnabled": true,
-            "builderUrl": "https://orgfarm-656f3290cc.test1.my.pc-rnd.salesforce.com/sfsites/picasso/core/config/commeditor.jsp?siteId=0DMSG000001lhVa",
-            "contentSpaceId": "0ZuSG000001n1la0AA",
-            "description": "D2C Codecept Murazik",
-            "guestMemberVisibilityEnabled": false,
-            "id": "0DBSG000001huWE4AY",
-            "imageOptimizationCDNEnabled": true,
-            "invitationsEnabled": false,
-            "knowledgeableEnabled": false,
-            "loginUrl": "https://orgfarm-656f3290cc.test1.my.pc-rnd.site.com/d2cbernadette/login",
-            "memberVisibilityEnabled": false,
-            "name": "D2C Codecept Murazik",
-            "nicknameDisplayEnabled": true,
-            "privateMessagesEnabled": false,
-            "reputationEnabled": false,
-            "sendWelcomeEmail": true,
-            "siteAsContainerEnabled": true,
-            "siteUrl": "https://orgfarm-656f3290cc.test1.my.pc-rnd.site.com/d2cbernadette",
-            "status": "Live",
-            "templateName": "D2C Commerce (LWR)",
-            "url": "/services/data/v64.0/connect/communities/0DBSG000001huWE4AY",
-            "urlPathPrefix": "d2cbernadettevforcesite"
-        },
-        ...
-        ]
-   * 
-   * 
-   * Fetches all current experience sites
+   * Fetches all current experience sites using the Connect API
    *
-   * @param {Connection} conn - Salesforce connection object.
-   * @returns {Promise<string[]>} - List of experience sites.
+   * @param org - Salesforce org
+   * @returns Array of site names
    */
   public static async getAllExpSites(org: Org): Promise<string[]> {
-    const result = await org.getConnection().query<{
-      Id: string;
-      Name: string;
-      LastModifiedDate: string;
-      UrlPathPrefix: string;
-      Status: string;
-    }>('SELECT Id, Name, LastModifiedDate, UrlPathPrefix, Status FROM Network');
-    const experienceSites: string[] = result.records.map((record) => record.Name);
-    return experienceSites;
+    const staticLogger = Logger.childFromRoot('ExperienceSite.getAllExpSites');
+    staticLogger.debug('Fetching all experience sites');
+
+    try {
+      staticLogger.debug('Attempting to fetch sites using Connect API');
+      const conn = org.getConnection();
+      const apiVersion = conn.version;
+      const url = `/services/data/v${apiVersion}/connect/communities`;
+
+      const response = await conn.request<{
+        communities: ConnectApiSiteMetadata[];
+      }>(url);
+
+      if (!response?.communities) {
+        staticLogger.debug('No communities found in Connect API response');
+        return [];
+      }
+
+      // Filter to only return live sites
+      const experienceSites: string[] = response.communities
+        .filter((site) => site.status === 'Live')
+        .map((site) => site.name);
+
+      staticLogger.debug(`Found ${experienceSites.length} live sites`);
+      return experienceSites;
+    } catch (error) {
+      staticLogger.error('Error fetching sites using Connect API:');
+      staticLogger.error(error);
+
+      // Fallback to the original query method
+      staticLogger.debug('Falling back to Network query');
+      const result = await org.getConnection().query<{
+        Id: string;
+        Name: string;
+        LastModifiedDate: string;
+        UrlPathPrefix: string;
+        Status: string;
+      }>('SELECT Id, Name, LastModifiedDate, UrlPathPrefix, Status FROM Network');
+
+      const experienceSites: string[] = result.records.map((record) => record.Name);
+      staticLogger.debug(`Found ${experienceSites.length} sites via Network query`);
+      return experienceSites;
+    }
   }
 
   /**
-   * Esablish a valid token for this local development session
+   * Establish a valid token for this local development session
    *
    * @returns sid token for proxied site requests
    */
   public async setupAuth(): Promise<string> {
+    this.logger.debug('Setting up authentication token');
     const previewUser = this.config.previewUser.toLocaleLowerCase();
+    this.logger.debug(`Preview user: ${previewUser}`);
 
     // Preview as Guest User (no token)
-    if (previewUser === 'guest') return '';
+    if (previewUser === 'guest') {
+      this.logger.debug('Guest user selected, returning empty token');
+      return '';
+    }
 
     // Preview with supplied user token
-    if (this.config.previewToken) return this.config.previewToken;
+    if (this.config.previewToken) {
+      this.logger.debug('Using token from configuration');
+      // Store the token for future use
+      await this.storeAuthToken('Custom', this.config.previewToken);
+      return this.config.previewToken;
+    }
 
     // Preview as CLI Admin user (Default)
     if (previewUser === 'admin') {
+      this.logger.debug('Attempting to get admin token');
       try {
+        // Check if we have a stored token for Admin that's still valid
+        const storedToken = await this.getStoredAuthToken('Admin');
+        if (storedToken) {
+          this.logger.debug('Using stored admin token');
+          // TODO: Add token validation logic here
+          // For now, just return the stored token if it exists
+          return storedToken;
+        }
+
+        // If no stored token or it's invalid, get a new one
+        this.logger.debug('Getting new admin token');
         const networkId = await this.getNetworkId();
         const sidToken = await this.getNewSidToken(networkId);
+
+        // Store the token for future use
+        if (sidToken) {
+          this.logger.debug('Storing new admin token');
+          await this.storeAuthToken('Admin', sidToken);
+        } else {
+          this.logger.warn('Failed to obtain admin token');
+        }
+
         return sidToken;
       } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error('Failed to establish authentication for site', e);
+        this.logger.error('Failed to establish authentication for site:');
+        this.logger.error(e);
       }
     }
 
-    // TODO Check local metadata for token, if it doesn't exist, prompt the user
+    // Check for a stored token for the requested user
+    this.logger.debug(`Checking for stored token for user: ${previewUser}`);
+    const storedToken = await this.getStoredAuthToken(previewUser);
+    if (storedToken) {
+      this.logger.debug('Using stored token for requested user');
+      return storedToken;
+    }
 
-    // Prompt user for token or re-use token already saved for the site
+    // Prompt user for token
+    this.logger.debug('Prompting user for authentication token');
     const sidToken = await PromptUtils.promptUserForAuthToken();
 
-    // TODO If are supplied a token, we should store it in the local metadata to reuse later on
+    // Store the token for future use
+    if (sidToken) {
+      this.logger.debug('Storing token provided by user');
+      await this.storeAuthToken(previewUser, sidToken);
+    } else {
+      this.logger.warn('User provided empty or invalid token');
+    }
 
     return sidToken;
   }
 
-  // TODO this doesn't work anymore, we should consider alternative strategies
-  public async isUpdateAvailable(): Promise<boolean> {
-    const localMetadata = this.getLocalMetadata();
-    if (!localMetadata) {
-      return true; // If no local metadata, assume update is available
-    }
-
-    const remoteMetadata = await this.getRemoteMetadata();
-    if (!remoteMetadata) {
-      return false; // If no org bundle found, no update available
-    }
-
-    return new Date(remoteMetadata.bundleLastModified) > new Date(localMetadata.bundleLastModified);
-  }
-
   // Is the site extracted locally
-  public isSiteSetup(): boolean {
-    if (fs.existsSync(path.join(this.getExtractDirectory(), 'ssr.js'))) {
-      return this.getLocalMetadata()?.coreVersion === '254';
+  public async isSiteSetup(): Promise<boolean> {
+    this.logger.debug('Checking if site is set up');
+    const ssrJsPath = path.join(this.getExtractDirectory(), 'ssr.js');
+
+    if (fs.existsSync(ssrJsPath)) {
+      this.logger.debug('ssr.js file exists, checking metadata');
+      const metadata = await this.getLocalMetadata();
+      const isSetup = metadata?.coreVersion === '254';
+      this.logger.debug(`Site setup status: ${isSetup}`);
+      return isSetup;
     }
+
+    this.logger.debug('ssr.js file does not exist, site is not set up');
     return false;
   }
 
   // Is the static resource available on the server
   public async isSitePublished(): Promise<boolean> {
-    const remoteMetadata = await this.getRemoteMetadata();
-    if (!remoteMetadata) {
-      return false;
-    }
-    return true;
+    this.logger.debug('Checking if site is published');
+    const remoteMetadata = await this.getStaticResourceMetadata();
+    const isPublished = !!remoteMetadata;
+    this.logger.debug(`Site published status: ${isPublished}`);
+    return isPublished;
   }
 
   // Is there a local gz file of the site
-  public isSiteDownloaded(): boolean {
-    const metadata = this.getLocalMetadata();
+  public async isSiteDownloaded(): Promise<boolean> {
+    this.logger.debug('Checking if site is downloaded');
+    const metadata = await this.getLocalMetadata();
     if (!metadata) {
+      this.logger.debug('No metadata found, site is not downloaded');
       return false;
     }
-    return fs.existsSync(this.getSiteZipPath(metadata));
+
+    const zipPath = this.getSiteZipPath(metadata);
+    this.logger.debug(`Checking for zip file at: ${zipPath}`);
+    const isDownloaded = fs.existsSync(zipPath);
+    this.logger.debug(`Site downloaded status: ${isDownloaded}`);
+    return isDownloaded;
   }
 
-  public saveMetadata(metadata: SiteMetadata): void {
+  public saveMetadata(metadata: NewSiteMetadata | SiteMetadata): void {
     const siteJsonPath = path.join(this.getSiteDirectory(), 'site.json');
-    const siteJson = JSON.stringify(metadata, null, 2);
+    this.logger.debug(`Saving metadata to: ${siteJsonPath}`);
+
+    // Ensure the directory exists
+    fs.mkdirSync(path.dirname(siteJsonPath), { recursive: true });
+
+    // Convert dates to strings for JSON serialization
+    const preparedMetadata = JSON.parse(JSON.stringify(metadata)) as SiteMetadata;
+
+    const siteJson = JSON.stringify(preparedMetadata, null, 2);
     fs.writeFileSync(siteJsonPath, siteJson);
+    this.logger.debug('Metadata saved successfully');
   }
 
-  public getLocalMetadata(): SiteMetadata | undefined {
-    if (this.metadataCache.localMetadata) return this.metadataCache.localMetadata;
+  public async getLocalMetadata(): Promise<NewSiteMetadata | undefined> {
+    this.logger.debug('Getting local metadata');
+
+    if (this.metadataCache.localMetadata) {
+      this.logger.debug('Using cached metadata');
+      // If we have cached metadata, convert it if it's the old format
+      if (!('users' in this.metadataCache.localMetadata)) {
+        this.logger.debug('Converting cached metadata from old format to new format');
+        this.metadataCache.localMetadata = await migrateToNewMetadataFormat(
+          this.metadataCache.localMetadata as unknown as SiteMetadata,
+          this.org,
+          this.siteDisplayName
+        );
+        // Save the migrated metadata
+        this.saveMetadata(this.metadataCache.localMetadata);
+      }
+      return this.metadataCache.localMetadata;
+    }
+
     const siteJsonPath = path.join(this.getSiteDirectory(), 'site.json');
-    let siteJson;
+    this.logger.debug(`Checking for site metadata at: ${siteJsonPath}`);
+
     if (fs.existsSync(siteJsonPath)) {
       try {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        siteJson = JSON.parse(fs.readFileSync(siteJsonPath, 'utf-8')) as SiteMetadata;
-        this.metadataCache.localMetadata = siteJson;
+        this.logger.debug('Reading metadata from file');
+        const rawData = JSON.parse(fs.readFileSync(siteJsonPath, 'utf-8')) as SiteMetadata;
+
+        // Check if it's the old format and convert if needed
+        if (!('users' in rawData)) {
+          this.logger.debug('Converting file metadata from old format to new format');
+          const newMetadata = await migrateToNewMetadataFormat(rawData, this.org, this.siteDisplayName);
+          this.metadataCache.localMetadata = newMetadata;
+          // Save the new format back to disk
+          this.saveMetadata(newMetadata);
+        } else {
+          this.logger.debug('Metadata already in new format');
+          this.metadataCache.localMetadata = rawData;
+        }
+
+        return this.metadataCache.localMetadata as NewSiteMetadata;
       } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('Error reading site.json file', error);
+        this.logger.error('Error reading site.json file:');
+        this.logger.error(error);
       }
+    } else {
+      this.logger.debug('No metadata file found');
     }
-    return siteJson;
+
+    return undefined;
   }
 
-  // TODO rename to getStaticResourceMetadata()
-  public async getRemoteMetadata(): Promise<SiteMetadata | undefined> {
-    if (this.metadataCache.remoteMetadata) return this.metadataCache.remoteMetadata;
+  /**
+   * Gets metadata from the static resource in the org
+   *
+   * @returns The static resource metadata if found
+   */
+  public async getStaticResourceMetadata(): Promise<SiteMetadata | undefined> {
+    this.logger.debug('Getting static resource metadata');
+
+    if (this.metadataCache.remoteMetadata) {
+      this.logger.debug('Using cached remote metadata');
+      return this.metadataCache.remoteMetadata as SiteMetadata;
+    }
+
+    this.logger.debug('Querying static resource');
     const result = await this.org
       .getConnection()
       .query<{ Name: string; LastModifiedDate: string }>(
         `SELECT Name, LastModifiedDate FROM StaticResource WHERE Name LIKE 'MRT_experience_%_${this.siteName}'`
       );
+
     if (result.records.length === 0) {
+      this.logger.debug('No static resource found');
       return undefined;
     }
+
     const staticResource = result.records[0];
+    this.logger.debug(`Found static resource: ${staticResource.Name}`);
+
     this.metadataCache.remoteMetadata = {
       bundleName: staticResource.Name,
       bundleLastModified: staticResource.LastModifiedDate,
       coreVersion: '254',
     };
+
     return this.metadataCache.remoteMetadata;
+  }
+
+  /**
+   * Fetches metadata for this site from the Connect API
+   *
+   * @returns The site metadata from Connect API
+   */
+  public async getSiteMetadataFromConnectApi(): Promise<ConnectApiSiteMetadata | undefined> {
+    this.logger.debug('Fetching site metadata from Connect API');
+
+    try {
+      const conn = this.org.getConnection();
+      const apiVersion = conn.version;
+      const url = `/services/data/v${apiVersion}/connect/communities`;
+      this.logger.debug(`Connect API URL: ${url}`);
+
+      const response = await conn.request<{
+        communities: ConnectApiSiteMetadata[];
+      }>(url);
+
+      if (!response?.communities) {
+        this.logger.debug('No communities found in Connect API response');
+        return undefined;
+      }
+
+      this.logger.debug(`Found ${response.communities.length} communities in the org`);
+
+      // Find the site with matching name
+      const siteMetadata = response.communities.find((site) => site.name === this.siteDisplayName);
+
+      if (siteMetadata) {
+        this.logger.debug(`Found metadata for site: ${this.siteDisplayName}`);
+        this.logger.debug(`Site ID: ${siteMetadata.id}`);
+        this.logger.debug(`Site status: ${siteMetadata.status}`);
+        this.logger.debug(`Template: ${siteMetadata.templateName ?? 'None'}`);
+      } else {
+        this.logger.debug(`Site ${this.siteDisplayName} not found in Connect API response`);
+      }
+
+      return siteMetadata;
+    } catch (error) {
+      this.logger.error('Error fetching site metadata from Connect API:');
+      this.logger.error(error);
+      return undefined;
+    }
   }
 
   /**
@@ -286,21 +505,37 @@ export class ExperienceSite {
    * @returns the path to the site
    */
   public getSiteDirectory(): string {
-    return path.join('.localdev', this.siteName);
+    const dirPath = path.join('.localdev', this.siteName);
+    this.logger.debug(`Site directory: ${dirPath}`);
+    return dirPath;
   }
 
   public getExtractDirectory(): string {
-    return path.join('.localdev', this.siteName, 'app');
+    const dirPath = path.join('.localdev', this.siteName, 'app');
+    this.logger.debug(`Extract directory: ${dirPath}`);
+    return dirPath;
   }
 
-  public getSiteZipPath(metadata: SiteMetadata): string {
-    const lastModifiedDate = new Date(metadata.bundleLastModified);
-    const timestamp = `${
-      lastModifiedDate.getMonth() + 1
-    }-${lastModifiedDate.getDate()}_${lastModifiedDate.getHours()}-${lastModifiedDate.getMinutes()}`;
-    const fileName = `${metadata.bundleName}_${timestamp}.gz`;
-    const resourcePath = path.join(this.getSiteDirectory(), fileName);
-    return resourcePath;
+  public getSiteZipPath(metadata: NewSiteMetadata | SiteMetadata): string {
+    this.logger.debug('Getting site zip path');
+
+    if ('siteZips' in metadata && metadata.siteZips?.length > 0) {
+      // New metadata format
+      const zipPath = path.join(this.getSiteDirectory(), metadata.siteZips[0].filename);
+      this.logger.debug(`Using path from siteZips: ${zipPath}`);
+      return zipPath;
+    } else {
+      // Old metadata format
+      const oldMetadata = metadata as SiteMetadata;
+      const lastModifiedDate = new Date(oldMetadata.bundleLastModified);
+      const timestamp = `${
+        lastModifiedDate.getMonth() + 1
+      }-${lastModifiedDate.getDate()}_${lastModifiedDate.getHours()}-${lastModifiedDate.getMinutes()}`;
+      const fileName = `${oldMetadata.bundleName}_${timestamp}.gz`;
+      const zipPath = path.join(this.getSiteDirectory(), fileName);
+      this.logger.debug(`Generated zip path: ${zipPath}`);
+      return zipPath;
+    }
   }
 
   /**
@@ -309,15 +544,95 @@ export class ExperienceSite {
    * @returns path of downloaded site zip
    */
   public async downloadSite(): Promise<string> {
-    let retVal;
+    this.logger.debug('Downloading site');
+
+    let zipPath;
     if (!this.config.apiStaticMode) {
       // Use sites API to download the site bundle on demand
-      retVal = await this.downloadSiteApi();
+      this.logger.debug('Using sites API to download site');
+      zipPath = await this.downloadSiteApi();
     } else {
       // This is for testing purposes only now - not an officially supported external path
-      retVal = await this.downloadSiteStaticResources();
+      this.logger.debug('Using static resources to download site (testing mode)');
+      zipPath = await this.downloadSiteStaticResources();
     }
-    return retVal;
+
+    this.logger.debug(`Site downloaded to: ${zipPath}`);
+
+    // Get the current orgId
+    const orgId = this.org.getOrgId();
+    this.logger.debug(`OrgId: ${orgId}`);
+
+    // Get site metadata from Connect API
+    this.logger.debug('Fetching site metadata from Connect API');
+    const connectApiMetadata = await this.getSiteMetadataFromConnectApi();
+
+    // Extract siteId from builderUrl if available
+    let siteId = '';
+    if (connectApiMetadata?.builderUrl) {
+      try {
+        const urlObj = new URL(connectApiMetadata.builderUrl);
+        siteId = urlObj.searchParams.get('siteId') ?? '';
+        this.logger.debug(`Extracted siteId: ${siteId}`);
+      } catch (error) {
+        this.logger.error('Error extracting siteId from builderUrl:');
+        this.logger.error(error);
+      }
+    }
+
+    // Get or create metadata
+    this.logger.debug('Getting or creating metadata');
+    const metadata = (await this.getLocalMetadata()) ?? {
+      name: this.siteName,
+      orgId,
+      siteId,
+      siteZips: [],
+      lastModified: new Date(),
+      coreVersion: '254',
+      needsUpdate: false,
+      users: {},
+      metadata: connectApiMetadata,
+    };
+
+    // Update orgId, siteId, and Connect API metadata in case they've changed
+    metadata.orgId = orgId;
+    if (siteId) {
+      metadata.siteId = siteId;
+    }
+    metadata.metadata = connectApiMetadata ?? metadata.metadata;
+
+    // Get just the filename from the full path
+    const filename = path.basename(zipPath);
+    this.logger.debug(`Zip filename: ${filename}`);
+
+    // Add this zip to the history
+    metadata.siteZips.unshift({
+      filename,
+      downloadedAt: new Date(),
+      bundleLastModified: new Date(metadata.lastModified),
+    });
+    this.logger.debug('Added zip to history');
+
+    // Limit the history to 5 entries
+    if (metadata.siteZips?.length > 5) {
+      this.logger.debug(`Zip history has ${metadata.siteZips.length} entries, limiting to 5`);
+      const zipsToRemove = metadata.siteZips.slice(5).map((zip) => path.join(this.getSiteDirectory(), zip.filename));
+
+      zipsToRemove.forEach((oldZipPath) => {
+        if (fs.existsSync(oldZipPath)) {
+          this.logger.debug(`Removing old zip: ${oldZipPath}`);
+          fs.unlinkSync(oldZipPath);
+        }
+      });
+
+      metadata.siteZips = metadata.siteZips.slice(0, 5);
+    }
+
+    // Update metadata
+    this.logger.debug('Saving updated metadata');
+    this.saveMetadata(metadata);
+
+    return zipPath;
   }
 
   /**
@@ -326,116 +641,265 @@ export class ExperienceSite {
    * @returns path of downloaded site zip
    */
   public async downloadSiteApi(): Promise<string> {
+    this.logger.debug('Downloading site via API');
+
+    this.logger.debug('Querying site from org');
     const remoteMetadata = await this.org
       .getConnection()
       .query<{ Id: string; Name: string; LastModifiedDate: string; MasterLabel: string }>(
         `Select Id, Name, LastModifiedDate, MasterLabel, UrlPathPrefix, SiteType, Status from Site WHERE Name like '${this.siteName}1'`
       );
-    if (!remoteMetadata || remoteMetadata.records.length === 0) {
-      throw new SfError(`No published site found for: ${this.siteDisplayName}`);
+
+    if (!remoteMetadata?.records?.length) {
+      const errorMsg = `No published site found for: ${this.siteDisplayName}`;
+      this.logger.error(errorMsg);
+      throw new SfError(errorMsg);
     }
+
     const theSite = remoteMetadata.records[0];
+    this.logger.debug(`Found site: ${theSite.Name}`);
 
     // Download the site via API
     const conn = this.org.getConnection();
 
-    // TODO update to the new metadata format
-    const metadata = {
+    // Create temporary metadata for file naming
+    const metadata: SiteMetadata = {
       bundleName: theSite.Name,
       bundleLastModified: theSite.LastModifiedDate,
       coreVersion: '254',
     };
+
     const siteId = theSite.Id;
     const siteIdMinus3 = siteId.substring(0, siteId.length - 3);
+    this.logger.debug(`Site ID: ${siteId}, Modified ID: ${siteIdMinus3}`);
+
     const accessToken = conn.accessToken;
     const instanceUrl = conn.instanceUrl; // Org URL
+
     if (!accessToken) {
-      throw new SfError(`Invalid access token, unable to download site: ${this.siteDisplayName}`);
+      const errorMsg = `Invalid access token, unable to download site: ${this.siteDisplayName}`;
+      this.logger.error(errorMsg);
+      throw new SfError(errorMsg);
     }
+
     const resourcePath = this.getSiteZipPath(metadata);
+    this.logger.debug(`Resource will be saved to: ${resourcePath}`);
+
     try {
       const apiUrl = `${instanceUrl}/services/data/${this.config.apiVersion}/sites/${siteIdMinus3}/preview${this.apiQueryParams}`;
+      this.logger.debug(`API URL: ${apiUrl}`);
 
+      this.logger.debug('Sending API request');
       const response = await axios.get(apiUrl, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
         responseType: 'stream',
       });
-      if (response.statusText) fs.mkdirSync(this.getSiteDirectory(), { recursive: true });
 
+      if (response.statusText) {
+        this.logger.debug('Creating site directory');
+        fs.mkdirSync(this.getSiteDirectory(), { recursive: true });
+      }
+
+      this.logger.debug('Streaming response to file');
       const fileStream = fs.createWriteStream(resourcePath);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       response.data.pipe(fileStream);
 
       await new Promise((resolve, reject) => {
-        fileStream.on('finish', resolve);
-        fileStream.on('error', reject);
+        fileStream.on('finish', () => {
+          this.logger.debug('File stream finished successfully');
+          resolve(undefined);
+        });
+        fileStream.on('error', (err) => {
+          this.logger.error('File stream error:');
+          this.logger.error(err);
+          reject(err);
+        });
       });
-      this.saveMetadata(metadata);
+
+      this.logger.debug('Download complete');
     } catch (error) {
       // Handle axios errors
       if (axios.isAxiosError(error)) {
         if (error.response) {
           // Server responded with non-200 status
-          throw new SfError(
-            `Failed to download site: Server responded with status ${error.response.status} - ${error.response.statusText}`
-          );
+          const errorMsg = `Failed to download site: Server responded with status ${error.response.status} - ${error.response.statusText}`;
+          this.logger.error(errorMsg);
+          throw new SfError(errorMsg);
         } else if (error.request) {
           // Request was made but no response received
-          throw new SfError('Failed to download site: No response received from server');
+          const errorMsg = 'Failed to download site: No response received from server';
+          this.logger.error(errorMsg);
+          throw new SfError(errorMsg);
         }
       }
-      throw new SfError(`Failed to download site: ${this.siteDisplayName}`);
+      const errorMsg = `Failed to download site: ${this.siteDisplayName}`;
+      this.logger.error(errorMsg);
+      this.logger.error(error);
+      throw new SfError(errorMsg);
     }
 
-    // Save the site's metadata
     return resourcePath;
   }
 
   // Deprecated. Only used internally now for testing. Customer sites will no longer be stored in static resources
   // and are only available via the API.
   public async downloadSiteStaticResources(): Promise<string> {
-    const remoteMetadata = await this.getRemoteMetadata();
+    this.logger.debug('Downloading site from static resources (deprecated method)');
+
+    const remoteMetadata = await this.getStaticResourceMetadata();
     if (!remoteMetadata) {
-      throw new SfError(`No published site found for: ${this.siteDisplayName}`);
+      const errorMsg = `No published site found for: ${this.siteDisplayName}`;
+      this.logger.error(errorMsg);
+      throw new SfError(errorMsg);
     }
 
     // Download the site from static resources
     const resourcePath = this.getSiteZipPath(remoteMetadata);
+    this.logger.debug(`Resource will be saved to: ${resourcePath}`);
+
+    this.logger.debug(`Reading static resource: ${remoteMetadata.bundleName}`);
     const staticresource = await this.org.getConnection().metadata.read('StaticResource', remoteMetadata.bundleName);
+
     if (staticresource?.content) {
       // Save the static resource
+      this.logger.debug('Creating site directory');
       fs.mkdirSync(this.getSiteDirectory(), { recursive: true });
+
+      this.logger.debug('Converting base64 content to buffer');
       const buffer = Buffer.from(staticresource.content, 'base64');
+
+      this.logger.debug('Writing buffer to file');
       fs.writeFileSync(resourcePath, buffer);
 
       // Save the site's metadata
+      this.logger.debug('Saving metadata');
       this.saveMetadata(remoteMetadata);
     } else {
-      throw new SfError(`Error occurred downloading your site: ${this.siteDisplayName}`);
+      const errorMsg = `Error occurred downloading your site: ${this.siteDisplayName}`;
+      this.logger.error(errorMsg);
+      throw new SfError(errorMsg);
     }
+
+    this.logger.debug('Download complete');
     return resourcePath;
   }
 
+  /**
+   * Get a stored authentication token for a user
+   *
+   * @param username The user to get the token for
+   * @returns The stored token or undefined
+   */
+  private async getStoredAuthToken(username: string): Promise<string | undefined> {
+    this.logger.debug(`Getting stored auth token for user: ${username}`);
+
+    const metadata = await this.getLocalMetadata();
+    if (!metadata?.users?.[username]) {
+      this.logger.debug(`No token found for user: ${username}`);
+      return undefined;
+    }
+
+    const tokenData = metadata.users[username];
+
+    // Check if token is older than 8 hours (token expiry time)
+    const tokenAgeMs = Date.now() - new Date(tokenData.issued).getTime();
+    const tokenAgeHours = tokenAgeMs / (1000 * 60 * 60);
+
+    if (tokenAgeHours > 8) {
+      this.logger.debug(`Token for user ${username} has expired (${tokenAgeHours.toFixed(2)} hours old)`);
+      return undefined;
+    }
+
+    this.logger.debug(`Found valid token for user: ${username}`);
+    return tokenData.token;
+  }
+
+  /**
+   * Store an authentication token for a user
+   *
+   * @param username The user to store the token for
+   * @param token The token to store
+   */
+  private async storeAuthToken(username: string, token: string): Promise<void> {
+    this.logger.debug(`Storing auth token for user: ${username}`);
+
+    let metadata = await this.getLocalMetadata();
+
+    if (!metadata) {
+      this.logger.debug('No existing metadata, creating new metadata');
+      const orgId = this.org.getOrgId();
+      metadata = {
+        name: this.siteName,
+        orgId,
+        siteId: '',
+        siteZips: [],
+        lastModified: new Date(),
+        coreVersion: '254',
+        needsUpdate: false,
+        users: {},
+      };
+    }
+
+    if (!metadata.users) {
+      this.logger.debug('No users object in metadata, creating new users object');
+      metadata.users = {};
+    }
+
+    metadata.users[username] = {
+      token,
+      issued: new Date(),
+    };
+
+    this.logger.debug('Saving updated metadata with token');
+    this.saveMetadata(metadata);
+  }
+
   private async getNetworkId(): Promise<string> {
+    this.logger.debug('Getting network ID');
+
     const conn = this.org.getConnection();
     // Query the Network object for the network with the given site name
-    const result = await conn.query<{ Id: string }>(`SELECT Id FROM Network WHERE Name = '${this.siteDisplayName}'`);
+    const query = `SELECT Id FROM Network WHERE Name = '${this.siteDisplayName}'`;
+    this.logger.debug(`Query: ${query}`);
 
-    const record = result.records[0];
+    const result = await conn.query<{ Id: string }>(query);
+
+    const record = result.records?.[0];
     if (record) {
       let networkId = record.Id;
+      this.logger.debug(`Found network ID: ${networkId}`);
+
       // Subtract the last three characters from the Network ID
       networkId = networkId.substring(0, networkId.length - 3);
+      this.logger.debug(`Modified network ID: ${networkId}`);
+
       return networkId;
     } else {
-      throw new Error(`NetworkId for site: '${this.siteDisplayName}' could not be found`);
+      const errorMsg = `NetworkId for site: '${this.siteDisplayName}' could not be found`;
+      this.logger.error(errorMsg);
+      throw new Error(errorMsg);
     }
   }
 
-  // TODO need to get auth tokens for the builder preview also once API issues are addressed
-  private async getNewSidToken(networkId: string): Promise<string> {
+  /**
+   * Get a new authentication token for site preview
+   *
+   * This method can be used for both runtime preview and builder preview contexts.
+   * Builder preview requires a special token format that we'll implement in future
+   * when API limitations are addressed.
+   *
+   * @param networkId The network ID for the site
+   * @returns The authentication token
+   */
+  private async getNewSidToken(networkId: string, forBuilder: boolean = false): Promise<string> {
+    this.logger.debug(`Getting new SID token for network ID: ${networkId}`);
+    if (forBuilder) {
+      this.logger.debug('Token is for builder preview');
+    }
+
     // Get the connection and access token from the org
     const conn = this.org.getConnection();
     const orgId = this.org.getOrgId();
@@ -444,12 +908,17 @@ export class ExperienceSite {
     const orgIdMinus3 = orgId.substring(0, orgId.length - 3);
     const accessToken = conn.accessToken;
     const instanceUrl = conn.instanceUrl; // Org URL
+    this.logger.debug(`Instance URL: ${instanceUrl}`);
 
     // Make the GET request without following redirects
     if (accessToken) {
       // Call out to the switcher servlet to establish a session
       const switchUrl = `${instanceUrl}/servlet/networks/switch?networkId=${networkId}`;
+      this.logger.debug(`Switch URL: ${switchUrl}`);
+
       const cookies = [`sid=${accessToken}`, `oid=${orgIdMinus3}`].join('; ').trim();
+      this.logger.debug('Making request to switcher servlet');
+
       let response = await axios.get(switchUrl, {
         headers: {
           Cookie: cookies,
@@ -462,12 +931,16 @@ export class ExperienceSite {
       // Extract the Location callback header
       const locationHeader = response.headers['location'] as string;
       if (locationHeader) {
+        this.logger.debug(`Got location header: ${locationHeader}`);
         // Parse the URL to extract the 'sid' parameter
         const urlObj = new URL(locationHeader);
         const sid = urlObj.searchParams.get('sid') ?? '';
+        this.logger.debug(`Extracted SID parameter: ${sid}`);
+
         const cookies2 = ['__Secure-has-sid=1', `sid=${sid}`, `oid=${orgIdMinus3}`].join('; ').trim();
 
         // Request the location header to establish our session with the servlet
+        this.logger.debug(`Making request to location URL: ${urlObj.toString()}`);
         response = await axios.get(urlObj.toString(), {
           headers: {
             Cookie: cookies2,
@@ -476,24 +949,33 @@ export class ExperienceSite {
           maxRedirects: 0, // Prevent axios from following redirects
           validateStatus: (status) => status >= 200 && status < 400, // Accept 3xx status codes
         });
+
         const setCookieHeader = response.headers['set-cookie'];
         if (setCookieHeader) {
+          this.logger.debug('Found set-cookie header in response');
           // Find the 'sid' cookie in the set-cookie header
           const sidCookie = setCookieHeader.find((cookieStr: string) => cookieStr.startsWith('sid='));
           if (sidCookie) {
+            this.logger.debug(`Found SID cookie: ${sidCookie}`);
             // Extract the sid value from the set-cookie string
             const sidMatch = sidCookie.match(/sid=([^;]+)/);
             if (sidMatch?.[1]) {
               const sidToken = sidMatch[1];
+              this.logger.debug(`Successfully extracted SID token: ${sidToken.substring(0, 10)}...`);
               return sidToken;
             }
+          } else {
+            this.logger.debug('No SID cookie found in set-cookie header');
           }
+        } else {
+          this.logger.debug('No set-cookie header found in response');
         }
+      } else {
+        this.logger.debug('No location header in response');
       }
 
       // if we can't establish a valid session this way, lets just warn the user and utilize the guest user context for the site
-      // eslint-disable-next-line no-console
-      console.warn(
+      this.logger.warn(
         `Warning: could not establish valid auth token for your site '${this.siteDisplayName}'.` +
           'Local Dev proxied requests to your site may fail or return data from the guest user context.'
       );
@@ -502,8 +984,7 @@ export class ExperienceSite {
     }
 
     // Not sure what scenarios we don't have an access token at all, but lets output a separate message here so we can distinguish these edge cases
-    // eslint-disable-next-line no-console
-    console.warn(
+    this.logger.warn(
       'Warning: sf cli org connection missing accessToken. Local Dev proxied requests to your site may fail or return data from the guest user context.'
     );
     return '';

@@ -63,7 +63,7 @@ export default class LightningDevSite extends SfCommand<void> {
 
       // If the site is not setup / is not based on the current release / or get-latest is requested ->
       // generate and download a new site bundle from the org based on latest builder metadata
-      if (!selectedSite.isSiteSetup() || getLatest) {
+      if (!(await selectedSite.isSiteSetup()) || getLatest) {
         const startTime = Date.now();
         this.log(`[local-dev] Initializing: ${siteName}`);
         this.spinner.start('[local-dev] Downloading site (this may take a few minutes)');
