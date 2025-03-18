@@ -1,6 +1,6 @@
 # summary
 
-Preview LWC components in isolation.
+[Beta] Preview LWC components in isolation.
 
 # description
 
