@@ -1,3 +1,9 @@
+## [3.2.7](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.2.6...3.2.7) (2025-03-18)
+
+### Bug Fixes
+
+- @W-17964111 improve component resolution for single component preview ([#358](https://github.com/salesforcecli/plugin-lightning-dev/issues/358)) ([2d301f9](https://github.com/salesforcecli/plugin-lightning-dev/commit/2d301f99afb6172e10c7c9f990d40b85239b0bab))
+
 ## [3.2.6](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.2.5...3.2.6) (2025-03-03)
 
 ### Bug Fixes
