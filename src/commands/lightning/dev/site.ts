@@ -6,12 +6,12 @@
  */
 import fs from 'node:fs';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
-import { Messages } from '@salesforce/core';
+import { Logger, Messages } from '@salesforce/core';
 import { expDev, SitesLocalDevOptions, setupDev } from '@lwrjs/api';
 import { OrgUtils } from '../../../shared/orgUtils.js';
 import { PromptUtils } from '../../../shared/promptUtils.js';
 import { ExperienceSite } from '../../../shared/experience/expSite.js';
-import 'dotenv/config';
+import { getExperienceSiteConfig } from '../../../shared/experience/expSiteConfig.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.site');
@@ -37,6 +37,7 @@ export default class LightningDevSite extends SfCommand<void> {
 
   public async run(): Promise<void> {
     const { flags } = await this.parse(LightningDevSite);
+    const logger = await Logger.child(this.ctor.name);
 
     try {
       const org = flags['target-org'];
@@ -51,6 +52,9 @@ export default class LightningDevSite extends SfCommand<void> {
       }
 
       OrgUtils.ensureMatchingAPIVersion(connection);
+
+      // Load up any environment configuration
+      const config = getExperienceSiteConfig();
 
       // If user doesn't specify a site, prompt the user for one
       if (!siteName) {
@@ -85,24 +89,20 @@ export default class LightningDevSite extends SfCommand<void> {
       // Establish a valid access token for this site
       const authToken = await selectedSite.setupAuth();
 
-      // Start the dev server
-      const port = parseInt(process.env.PORT ?? '3000', 10);
-
-      const logLevel = process.env.LOG_LEVEL ?? 'error';
-
+      // Start the dev server w/ configured parameters
       const startupParams: SitesLocalDevOptions = {
-        sfCLI: process.env.INTERNAL_DEVELOPER_MODE !== 'true',
+        sfCLI: !config.lwcConfigEnabled,
         authToken,
-        open: process.env.OPEN_BROWSER === 'false' ? false : true,
-        port,
-        logLevel,
+        open: config.openBrowser,
+        port: config.port,
+        logLevel: config.logLevel,
         mode: 'dev',
         siteZip,
         siteDir: selectedSite.getSiteDirectory(),
       };
 
       // Environment variable used to setup the site rather than setup & start server
-      if (process.env.SETUP_ONLY === 'true') {
+      if (config.setupOnly) {
         await setupDev(startupParams);
         this.log('[local-dev] setup complete!');
       } else {
@@ -111,7 +111,7 @@ export default class LightningDevSite extends SfCommand<void> {
       }
     } catch (e) {
       this.spinner.stop('failed.');
-      this.log('Local Development setup failed', e);
+      logger.error('Local Development setup failed', e);
     }
   }
 }

@@ -314,6 +314,8 @@ export class ExperienceSite {
     this.logger.debug('Checking if site is set up');
     const ssrJsPath = path.join(this.getExtractDirectory(), 'ssr.js');
 
+    // Verifies that we have an extracted site at the expected location
+    // Verifies that our site metadata is the latest
     if (fs.existsSync(ssrJsPath)) {
       this.logger.debug('ssr.js file exists, checking metadata');
       const metadata = await this.getLocalMetadata();
@@ -686,7 +688,7 @@ export class ExperienceSite {
     this.logger.debug(`Resource will be saved to: ${resourcePath}`);
 
     try {
-      const apiUrl = `${instanceUrl}/services/data/${this.config.apiVersion}/sites/${siteIdMinus3}/preview${this.apiQueryParams}`;
+      const apiUrl = `${instanceUrl}/services/data/v${conn.version}/sites/${siteIdMinus3}/preview${this.apiQueryParams}`;
       this.logger.debug(`API URL: ${apiUrl}`);
 
       this.logger.debug('Sending API request');
