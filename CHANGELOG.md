@@ -1,3 +1,9 @@
+## [3.2.8](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.2.7...3.2.8) (2025-03-27)
+
+### Bug Fixes
+
+- add beta to component command summary ([#370](https://github.com/salesforcecli/plugin-lightning-dev/issues/370)) ([7b10784](https://github.com/salesforcecli/plugin-lightning-dev/commit/7b107844f1d4cda9983bf0e04e530fea69d89974))
+
 ## [3.2.7](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.2.6...3.2.7) (2025-03-18)
 
 ### Bug Fixes
