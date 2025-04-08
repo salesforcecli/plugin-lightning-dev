@@ -9,7 +9,7 @@
     "@inquirer/select": "^2.4.7",
     "@lwc/lwc-dev-server": "~11.5.0",
     "@lwc/sfdc-lwc-compiler": "~11.5.0",
-    "@lwrjs/api": "0.16.10",
+    "@lwrjs/api": "0.18.0",
     "@oclif/core": "^4.1.0",
     "@salesforce/core": "^8.6.2",
     "@salesforce/kit": "^3.1.6",
@@ -17,6 +17,7 @@
     "@salesforce/sf-plugins-core": "^11.2.4",
     "axios": "^1.7.9",
     "glob": "^10.4.5",
+    "lightning-base-components": "1.27.2-alpha",
     "lwc": "~8.12.5",
     "node-fetch": "^3.3.2",
     "xml2js": "^0.6.2"
