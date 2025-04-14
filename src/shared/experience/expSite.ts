@@ -643,37 +643,31 @@ export class ExperienceSite {
    * @returns path of downloaded site zip
    */
   public async downloadSiteApi(): Promise<string> {
-    this.logger.debug('Downloading site via API');
-
-    this.logger.debug('Querying site from org');
-    const remoteMetadata = await this.org
-      .getConnection()
-      .query<{ Id: string; Name: string; LastModifiedDate: string; MasterLabel: string }>(
-        `Select Id, Name, LastModifiedDate, MasterLabel, UrlPathPrefix, SiteType, Status from Site WHERE Name like '${this.siteName}1'`
-      );
-
-    if (!remoteMetadata?.records?.length) {
-      const errorMsg = `No published site found for: ${this.siteDisplayName}`;
+    const remoteMetadata = await this.getSiteMetadataFromConnectApi();
+    if (!remoteMetadata) {
+      const errorMsg = `No site found for: ${this.siteDisplayName}`;
       this.logger.error(errorMsg);
       throw new SfError(errorMsg);
     }
 
-    const theSite = remoteMetadata.records[0];
-    this.logger.debug(`Found site: ${theSite.Name}`);
+    this.logger.debug('Downloading site via API');
 
     // Download the site via API
     const conn = this.org.getConnection();
 
     // Create temporary metadata for file naming
     const metadata: SiteMetadata = {
-      bundleName: theSite.Name,
-      bundleLastModified: theSite.LastModifiedDate,
-      coreVersion: '254',
+      bundleName: this.siteName,
+      bundleLastModified: new Date().toISOString(),
+      coreVersion: '256',
     };
 
-    const siteId = theSite.Id;
-    const siteIdMinus3 = siteId.substring(0, siteId.length - 3);
-    this.logger.debug(`Site ID: ${siteId}, Modified ID: ${siteIdMinus3}`);
+    const siteId = remoteMetadata.builderUrl?.split('siteId=')[1];
+    if (!siteId) {
+      const errorMsg = `Missing builderUrl for site: ${this.siteDisplayName}`;
+      this.logger.error(errorMsg);
+      throw new SfError(errorMsg);
+    }
 
     const accessToken = conn.accessToken;
     const instanceUrl = conn.instanceUrl; // Org URL
@@ -688,7 +682,7 @@ export class ExperienceSite {
     this.logger.debug(`Resource will be saved to: ${resourcePath}`);
 
     try {
-      const apiUrl = `${instanceUrl}/services/data/v${conn.version}/sites/${siteIdMinus3}/preview${this.apiQueryParams}`;
+      const apiUrl = `${instanceUrl}/services/data/v${conn.version}/sites/${siteId}/preview${this.apiQueryParams}`;
       this.logger.debug(`API URL: ${apiUrl}`);
 
       this.logger.debug('Sending API request');
