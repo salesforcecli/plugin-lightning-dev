@@ -1,3 +1,9 @@
+## [3.2.9](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.2.8...3.2.9) (2025-04-14)
+
+### Bug Fixes
+
+- @ W-17818313 add base components and support label selection ([#379](https://github.com/salesforcecli/plugin-lightning-dev/issues/379)) ([b4c8924](https://github.com/salesforcecli/plugin-lightning-dev/commit/b4c89241bcca1337e71015b78e58a83ae257bb21))
+
 ## [3.2.8](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.2.7...3.2.8) (2025-03-27)
 
 ### Bug Fixes
