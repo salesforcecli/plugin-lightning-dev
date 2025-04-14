@@ -28,7 +28,7 @@ class Logger {
   }
 
   private static formatMessage(color: string, label: string, message: unknown): string {
-    return `\x1b[${color}m${label} ${message}\x1b[0m`;
+    return `\x1b[${color}m${label} ${String(message)}\x1b[0m`;
   }
 }
 
