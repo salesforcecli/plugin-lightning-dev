@@ -1,0 +1,7 @@
+{
+  "modules": [
+    {
+      "npm": "lightning-base-components"
+    }
+  ]
+}

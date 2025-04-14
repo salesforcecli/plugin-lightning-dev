@@ -6,6 +6,7 @@
  */
 
 import path from 'node:path';
+import url from 'node:url';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages, SfProject } from '@salesforce/core';
 import { cmpDev } from '@lwrjs/api';
@@ -72,9 +73,12 @@ export default class LightningDevComponent extends SfCommand<void> {
     let name = flags.name;
     if (name) {
       // validate that the component exists before launching the server
-      if (!components.find((component) => name === component.name)) {
+      const match = components.find((component) => name === component.name || name === component.label);
+      if (!match) {
         throw new Error(messages.getMessage('error.component-not-found', [name]));
       }
+
+      name = match.name;
     } else {
       // prompt the user for a name if one was not provided
       name = await PromptUtils.promptUserToSelectComponent(components);
@@ -83,12 +87,16 @@ export default class LightningDevComponent extends SfCommand<void> {
       }
     }
 
+    const dirname = path.dirname(url.fileURLToPath(import.meta.url));
+    const rootDir = path.resolve(dirname, '../../../..');
     const port = parseInt(process.env.PORT ?? '3000', 10);
 
     await cmpDev({
+      rootDir,
       mode: 'dev',
       port,
       name: `c/${name}`,
+      namespacePaths,
     });
   }
 }

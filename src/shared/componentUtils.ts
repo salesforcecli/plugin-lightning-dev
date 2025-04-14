@@ -57,10 +57,31 @@ export class ComponentUtils {
       return undefined;
     }
 
+    if (parsedData.LightningComponentBundle) {
+      parsedData.LightningComponentBundle.masterLabel = this.normalizeMetaProperty(
+        parsedData.LightningComponentBundle.masterLabel
+      );
+      parsedData.LightningComponentBundle.description = this.normalizeMetaProperty(
+        parsedData.LightningComponentBundle.description
+      );
+    }
+
     return parsedData;
   }
 
   private static isLwcMetadata(obj: unknown): obj is LwcMetadata {
     return (obj && typeof obj === 'object' && 'LightningComponentBundle' in obj) === true;
+  }
+
+  private static normalizeMetaProperty(prop: string[] | string | undefined): string | undefined {
+    if (!prop || typeof prop === 'string') {
+      return prop;
+    }
+
+    if (Array.isArray(prop) && prop.length > 0) {
+      return prop[0];
+    }
+
+    return undefined;
   }
 }
