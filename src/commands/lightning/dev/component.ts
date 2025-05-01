@@ -11,7 +11,6 @@ import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages, SfProject } from '@salesforce/core';
 import { cmpDev } from '@lwrjs/api';
 import { ComponentUtils } from '../../../shared/componentUtils.js';
-import { PromptUtils } from '../../../shared/promptUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.component');
@@ -79,12 +78,6 @@ export default class LightningDevComponent extends SfCommand<void> {
       }
 
       name = match.name;
-    } else {
-      // prompt the user for a name if one was not provided
-      name = await PromptUtils.promptUserToSelectComponent(components);
-      if (!name) {
-        throw new Error(messages.getMessage('error.component'));
-      }
     }
 
     const dirname = path.dirname(url.fileURLToPath(import.meta.url));
@@ -95,7 +88,7 @@ export default class LightningDevComponent extends SfCommand<void> {
       rootDir,
       mode: 'dev',
       port,
-      name: `c/${name}`,
+      name: name ? `c/${name}` : 'c/',
       namespacePaths,
     });
   }
