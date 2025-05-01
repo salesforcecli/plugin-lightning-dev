@@ -88,7 +88,7 @@ export default class LightningDevComponent extends SfCommand<void> {
       rootDir,
       mode: 'dev',
       port,
-      name: name ? `c/${name}` : 'c/',
+      name: `c/${name ?? ''}`,
       namespacePaths,
     });
   }
