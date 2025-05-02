@@ -1,0 +1,13 @@
+.important-text {
+  font-weight: bold;
+  color: blue;
+  padding-bottom: 10px;
+}
+
+.footer-text {
+  font-style: italic;
+  color: grey;
+  font-size: 0.8rem;
+}
+
+/* Add more styles here later to test HMR */
