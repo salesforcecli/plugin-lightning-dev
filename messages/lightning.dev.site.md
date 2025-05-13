@@ -25,6 +25,10 @@ Name of the Experience Builder site to preview. It has to match a site name from
 
 Download the latest version of the specified site from your org, instead of using any local cache.
 
+# flags.guest.summary
+
+Preview the site as a guest user (rather than an authenticated user),
+
 # examples
 
 - Select a site to preview from the org "myOrg":
