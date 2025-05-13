@@ -8,13 +8,17 @@
 import path from 'node:path';
 import url from 'node:url';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
-import { Messages, SfProject } from '@salesforce/core';
+import { Messages, SfProject, Logger } from '@salesforce/core';
 import { cmpDev } from '@lwrjs/api';
 import { ComponentUtils } from '../../../shared/componentUtils.js';
 import { PromptUtils } from '../../../shared/promptUtils.js';
+import { OrgUtils } from '../../../shared/orgUtils.js';
+import { PreviewUtils } from '../../../shared/previewUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.component');
+const appMessages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.app');
+const sharedMessages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'shared.utils');
 
 export default class LightningDevComponent extends SfCommand<void> {
   public static readonly summary = messages.getMessage('summary');
@@ -27,13 +31,36 @@ export default class LightningDevComponent extends SfCommand<void> {
       char: 'n',
       requiredOrDefaulted: false,
     }),
-    // TODO should this be required or optional?
-    // We don't technically need this if your components are simple / don't need any data from your org
-    'target-org': Flags.optionalOrg(),
+    'target-org': Flags.requiredOrg(),
   };
 
   public async run(): Promise<void> {
     const { flags } = await this.parse(LightningDevComponent);
+    const logger = await Logger.child(this.ctor.name);
+
+    // Org connection and setup
+    const targetOrg = flags['target-org'];
+    const connection = targetOrg.getConnection(undefined);
+    const username = connection.getUsername();
+    if (!username) {
+      throw new Error(appMessages.getMessage('error.username'));
+    }
+
+    const localDevEnabled = await OrgUtils.isLocalDevEnabled(connection);
+    if (!localDevEnabled) {
+      throw new Error(sharedMessages.getMessage('error.localdev.not.enabled'));
+    }
+
+    OrgUtils.ensureMatchingAPIVersion(connection);
+
+    logger.debug('Configuring local web server identity');
+    const appServerIdentity = await PreviewUtils.getOrCreateAppServerIdentity(connection);
+    const ldpServerToken = appServerIdentity.identityToken;
+    const ldpServerId = appServerIdentity.usernameToServerEntityIdMap[username];
+    if (!ldpServerId) {
+      throw new Error(appMessages.getMessage('error.identitydata.entityid'));
+    }
+
     const project = await SfProject.resolve();
 
     const namespacePaths = await ComponentUtils.getNamespacePaths(project);
@@ -89,12 +116,15 @@ export default class LightningDevComponent extends SfCommand<void> {
 
     const dirname = path.dirname(url.fileURLToPath(import.meta.url));
     const rootDir = path.resolve(dirname, '../../../..');
-    const port = parseInt(process.env.PORT ?? '3000', 10);
+    const serverPorts = await PreviewUtils.getNextAvailablePorts();
+    logger.debug(
+      `Next available ports for component preview are http=${serverPorts.httpPort} , https=${serverPorts.httpsPort}`
+    );
 
     await cmpDev({
       rootDir,
       mode: 'dev',
-      port,
+      port: serverPorts.httpPort,
       name: `c/${name}`,
       namespacePaths,
     });
