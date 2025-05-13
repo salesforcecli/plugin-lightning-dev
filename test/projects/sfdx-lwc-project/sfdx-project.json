@@ -1,0 +1,12 @@
+{
+  "packageDirectories": [
+    {
+      "path": "force-app",
+      "default": true
+    }
+  ],
+  "name": "sfdx-lwc-project",
+  "namespace": "",
+  "sfdcLoginUrl": "https://login.test1.pc-rnd.salesforce.com",
+  "sourceApiVersion": "64.0"
+}
