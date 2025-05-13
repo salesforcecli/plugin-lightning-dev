@@ -27,7 +27,7 @@ Download the latest version of the specified site from your org, instead of usin
 
 # flags.guest.summary
 
-Preview the site as a guest user (rather than an authenticated user),
+Preview the site as a guest user (rather than an authenticated user).
 
 # examples
 
