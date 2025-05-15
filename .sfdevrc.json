@@ -1,5 +1,14 @@
 {
   "test": {
     "testsPath": "test/**/*.test.ts"
-  }
+  },
+  "//": "@lwc/sfdc-lwc-compiler brings eslint@v9 and the @salesforce/dev-scripts requires eslint@v8. So this section temporarily adds the deps to be compatible.",
+  "devDepOverrides": [
+    "eslint",
+    "eslint-config-prettier",
+    "@typescript-eslint/eslint-plugin",
+    "eslint-plugin-header",
+    "eslint-plugin-jsdoc",
+    "eslint-plugin-unicorn"
+  ]
 }
