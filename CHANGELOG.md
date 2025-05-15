@@ -1,3 +1,9 @@
+## [3.2.10](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.2.9...3.2.10) (2025-05-15)
+
+### Bug Fixes
+
+- @W-17672756@ update version recommendation logic ([#401](https://github.com/salesforcecli/plugin-lightning-dev/issues/401)) ([894b14a](https://github.com/salesforcecli/plugin-lightning-dev/commit/894b14a9f79a5f4dfb52fddd45437eda31056b15))
+
 ## [3.2.9](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.2.8...3.2.9) (2025-04-14)
 
 ### Bug Fixes
