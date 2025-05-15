@@ -219,11 +219,13 @@
     }
   },
   "apiVersionMetadata": {
-    "comment": "Refer to ApiVersionMetadata in orgUtils.ts for details",
+    "comment1": "Refer to ApiVersionMetadata in orgUtils.ts for more details.",
+    "comment2": "target section defines the dev server version (matchingDevServerVersion) and the API version that it can support (versionNumber).",
     "target": {
       "versionNumber": "64.0",
       "matchingDevServerVersion": "~11.5.0"
     },
+    "comment3": "versionToTagMappings section defines the mapping between released tags for our CLI plugin and the org version that each tag supports.",
     "versionToTagMappings": [
       {
         "versionNumber": "62.0",

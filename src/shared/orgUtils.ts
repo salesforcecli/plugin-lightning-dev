@@ -177,8 +177,9 @@ export class OrgUtils {
 
     if (Version.same(orgVersion, targetVersion) === false) {
       let errorMessage = messages.getMessage('error.org.api-mismatch.message', [orgVersion, targetVersion]);
+      // Find the tag (if any) that can support this org version
       const tagName = pkg.apiVersionMetadata.versionToTagMappings.find(
-        (info) => info.versionNumber === targetVersion
+        (info) => info.versionNumber === orgVersion
       )?.tagName;
       if (tagName) {
         const remediation = messages.getMessage('error.org.api-mismatch.remediation', [
