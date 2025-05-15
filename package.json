@@ -7,8 +7,8 @@
   "dependencies": {
     "@inquirer/prompts": "^5.3.8",
     "@inquirer/select": "^2.4.7",
-    "@lwc/lwc-dev-server": "~11.5.0",
-    "@lwc/sfdc-lwc-compiler": "~11.5.0",
+    "@lwc/lwc-dev-server": "~12.3.1",
+    "@lwc/sfdc-lwc-compiler": "~12.3.1",
     "@lwrjs/api": "0.18.1",
     "@oclif/core": "^4.1.0",
     "@salesforce/core": "^8.6.2",
@@ -18,7 +18,7 @@
     "axios": "^1.7.9",
     "glob": "^10.4.5",
     "lightning-base-components": "1.27.2-alpha",
-    "lwc": "~8.12.5",
+    "lwc": "~8.16.5",
     "node-fetch": "^3.3.2",
     "xml2js": "^0.6.2"
   },
@@ -29,7 +29,13 @@
     "@salesforce/plugin-command-reference": "^3.1.44",
     "@types/node-fetch": "^2.6.11",
     "@types/xml2js": "^0.4.14",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-header": "^3.1.1",
     "eslint-plugin-sf-plugin": "^1.20.15",
+    "eslint-plugin-jsdoc": "^46.10.1",
+    "eslint-plugin-unicorn": "^50.0.1",
     "esmock": "^2.6.9",
     "oclif": "^4.17.27",
     "ts-node": "^10.9.2",
@@ -226,7 +232,7 @@
     ],
     "target": {
       "versionNumber": "64.0",
-      "matchingDevServerVersion": "~11.5.0"
+      "matchingDevServerVersion": "~12.3.1"
     },
     "versionToTagMappings": [
       {
