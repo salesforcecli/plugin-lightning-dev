@@ -201,7 +201,7 @@ EXAMPLES
     $ sf lightning dev app --target-org myOrg --device-type ios --device-id "iPhone 15 Pro Max"
 ```
 
-_See code: [src/commands/lightning/dev/app.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/3.2.10/src/commands/lightning/dev/app.ts)_
+_See code: [src/commands/lightning/dev/app.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/3.3.0/src/commands/lightning/dev/app.ts)_
 
 ## `sf lightning dev component`
 
@@ -209,9 +209,10 @@ _See code: [src/commands/lightning/dev/app.ts](https://github.com/salesforcecli/
 
 ```
 USAGE
-  $ sf lightning dev component [--json] [--flags-dir <value>] [-n <value>] [-o <value>]
+  $ sf lightning dev component [--json] [--flags-dir <value>] [-n <value>] [-c] [-o <value>]
 
 FLAGS
+  -c, --client-select       Launch component preview without selecting a component
   -n, --name=<value>        Name of a component to preview.
   -o, --target-org=<value>  Username or alias of the target org.
 
@@ -246,7 +247,7 @@ EXAMPLES
     $ sf lightning dev component --name myComponent
 ```
 
-_See code: [src/commands/lightning/dev/component.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/3.2.10/src/commands/lightning/dev/component.ts)_
+_See code: [src/commands/lightning/dev/component.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/3.3.0/src/commands/lightning/dev/component.ts)_
 
 ## `sf lightning dev site`
 
@@ -300,6 +301,6 @@ EXAMPLES
     $ sf lightning dev site --name "Partner Central" --target-org myOrg --get-latest
 ```
 
-_See code: [src/commands/lightning/dev/site.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/3.2.10/src/commands/lightning/dev/site.ts)_
+_See code: [src/commands/lightning/dev/site.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/3.3.0/src/commands/lightning/dev/site.ts)_
 
 <!-- commandsstop -->
