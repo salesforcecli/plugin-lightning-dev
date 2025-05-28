@@ -20,6 +20,10 @@ See the LWC Development Guide for more information about component development b
 
 Name of a component to preview.
 
+# flags.client-select.summary
+
+Launch component preview without selecting a component
+
 # error.directory
 
 Unable to find components
