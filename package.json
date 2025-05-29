@@ -7,8 +7,8 @@
   "dependencies": {
     "@inquirer/prompts": "^5.3.8",
     "@inquirer/select": "^2.4.7",
-    "@lwc/lwc-dev-server": "~12.3.1",
-    "@lwc/sfdc-lwc-compiler": "~12.3.1",
+    "@lwc/lwc-dev-server": "~12.3.4",
+    "@lwc/sfdc-lwc-compiler": "~12.3.4",
     "@lwrjs/api": "0.18.3",
     "@oclif/core": "^4.1.0",
     "@salesforce/core": "^8.6.2",
@@ -232,7 +232,7 @@
     ],
     "target": {
       "versionNumber": "64.0",
-      "matchingDevServerVersion": "~12.3.1"
+      "matchingDevServerVersion": "~12.3.4"
     },
     "versionToTagMappings": [
       {
