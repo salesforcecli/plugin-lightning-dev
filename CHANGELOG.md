@@ -1,3 +1,9 @@
+# [3.4.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.3.1...3.4.0) (2025-06-02)
+
+### Features
+
+- add --guest flag for experience sites @W-17731639 ([#396](https://github.com/salesforcecli/plugin-lightning-dev/issues/396)) ([60a8098](https://github.com/salesforcecli/plugin-lightning-dev/commit/60a80983cd8898eec4d982cd9b91bea2a6c0d012))
+
 ## [3.3.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.3.0...3.3.1) (2025-05-29)
 
 ### Bug Fixes
