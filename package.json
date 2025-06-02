@@ -238,14 +238,18 @@
     "versionToTagMappings": [
       {
         "versionNumber": "62.0",
-        "tagName": "latest"
+        "tagName": "v1"
       },
       {
         "versionNumber": "63.0",
-        "tagName": "prerelease"
+        "tagName": "latest"
       },
       {
         "versionNumber": "64.0",
+        "tagName": "prerelease"
+      },
+      {
+        "versionNumber": "65.0",
         "tagName": "next"
       }
     ]
