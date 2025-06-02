@@ -32,6 +32,10 @@ export default class LightningDevSite extends SfCommand<void> {
       summary: messages.getMessage('flags.get-latest.summary'),
       char: 'l',
     }),
+    guest: Flags.boolean({
+      summary: messages.getMessage('flags.guest.summary'),
+      default: false,
+    }),
   };
 
   public async run(): Promise<void> {
@@ -40,6 +44,7 @@ export default class LightningDevSite extends SfCommand<void> {
     try {
       const org = flags['target-org'];
       const getLatest = flags['get-latest'];
+      const guest = flags.guest;
       let siteName = flags.name;
 
       const connection = org.getConnection(undefined);
@@ -82,7 +87,7 @@ export default class LightningDevSite extends SfCommand<void> {
       this.log(`[local-dev] launching browser preview for: ${siteName}`);
 
       // Establish a valid access token for this site
-      const authToken = await selectedSite.setupAuth();
+      const authToken = guest ? '' : await selectedSite.setupAuth();
 
       // Start the dev server
       const port = parseInt(process.env.PORT ?? '3000', 10);
