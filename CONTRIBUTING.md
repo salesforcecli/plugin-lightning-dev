@@ -20,7 +20,7 @@ CLCO (Feature Freeze)
 
 - Merge any outstanding PRs to main
 - Create a new \*-patch branch based on main once CI has published to NPM.
-- Create a [main branch pull request](https://github.com/salesforcecli/plugin-lightning-dev/commit/76493c627818e070283a157f3ffc4dd598e6ecec). Ensure this step completes successfully and has released a new major version of the plugin to NPM.
+- Create a [main branch pull request](https://github.com/salesforcecli/plugin-lightning-dev/commit/76493c627818e070283a157f3ffc4dd598e6ecec). NOTE: [PR details](https://github.com/salesforcecli/plugin-lightning-dev/pull/299) must have "BREAKING CHANGE" in the description. Once merged and CI is complete, ensure a new major version (i.e. 3.x.x -> 4.0.0) of the plugin has been published to NPM with the "next" tag.
 - If the release to NPM doesn't happen, you can manually [run a release](https://github.com/salesforcecli/plugin-lightning-dev/actions/workflows/create-github-release.yml) via Github actions or by submitting a [release PR](https://github.com/salesforcecli/plugin-lightning-dev/pull/299).
 - Create a [patch branch pull request](https://github.com/salesforcecli/plugin-lightning-dev/commit/ef98bd9c407a7d9817850559e5b82a4fec92fb90) on the \*-patch branch to release the pre-release version of the plugin. Ensure this step completes successfully and has released a newly tagged "prerelease" version of the plugin to NPM.
 
