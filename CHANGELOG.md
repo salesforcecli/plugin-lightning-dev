@@ -1,3 +1,11 @@
+# [4.0.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.4.0...4.0.0) (2025-06-02)
+
+- fix!: trigger npm publish (v4.0.0) (#414) ([12f67fd](https://github.com/salesforcecli/plugin-lightning-dev/commit/12f67fd49940cfa6847927f8c9a38f5364b424ec)), closes [#414](https://github.com/salesforcecli/plugin-lightning-dev/issues/414)
+
+### BREAKING CHANGES
+
+- this version works with 258(winter26) release and newer
+
 # [3.4.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.3.1...3.4.0) (2025-06-02)
 
 ### Features
