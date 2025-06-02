@@ -27,6 +27,11 @@ export default class LightningDevComponent extends SfCommand<void> {
       char: 'n',
       requiredOrDefaulted: false,
     }),
+    'client-select': Flags.boolean({
+      summary: messages.getMessage('flags.client-select.summary'),
+      char: 'c',
+      default: false,
+    }),
     // TODO should this be required or optional?
     // We don't technically need this if your components are simple / don't need any data from your org
     'target-org': Flags.optionalOrg(),
@@ -71,19 +76,21 @@ export default class LightningDevComponent extends SfCommand<void> {
     ).filter((component) => !!component);
 
     let name = flags.name;
-    if (name) {
-      // validate that the component exists before launching the server
-      const match = components.find((component) => name === component.name || name === component.label);
-      if (!match) {
-        throw new Error(messages.getMessage('error.component-not-found', [name]));
-      }
+    if (!flags['client-select']) {
+      if (name) {
+        // validate that the component exists before launching the server
+        const match = components.find((component) => name === component.name || name === component.label);
+        if (!match) {
+          throw new Error(messages.getMessage('error.component-not-found', [name]));
+        }
 
-      name = match.name;
-    } else {
-      // prompt the user for a name if one was not provided
-      name = await PromptUtils.promptUserToSelectComponent(components);
-      if (!name) {
-        throw new Error(messages.getMessage('error.component'));
+        name = match.name;
+      } else {
+        // prompt the user for a name if one was not provided
+        name = await PromptUtils.promptUserToSelectComponent(components);
+        if (!name) {
+          throw new Error(messages.getMessage('error.component'));
+        }
       }
     }
 
@@ -95,7 +102,7 @@ export default class LightningDevComponent extends SfCommand<void> {
       rootDir,
       mode: 'dev',
       port,
-      name: `c/${name}`,
+      name: name ? `c/${name}` : undefined,
       namespacePaths,
     });
   }

@@ -11,8 +11,8 @@
     "alias": [],
     "command": "lightning:dev:component",
     "flagAliases": [],
-    "flagChars": ["n", "o"],
-    "flags": ["flags-dir", "json", "name", "target-org"],
+    "flagChars": ["c", "n", "o"],
+    "flags": ["client-select", "flags-dir", "json", "name", "target-org"],
     "plugin": "@salesforce/plugin-lightning-dev"
   },
   {

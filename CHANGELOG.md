@@ -1,3 +1,21 @@
+## [3.3.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.3.0...3.3.1) (2025-05-29)
+
+### Bug Fixes
+
+- **deps:** bump @oclif/core from 4.2.6 to 4.3.0 ([#392](https://github.com/salesforcecli/plugin-lightning-dev/issues/392)) ([c983cf7](https://github.com/salesforcecli/plugin-lightning-dev/commit/c983cf78b25777fad5041f1520c78524d2012045))
+
+# [3.3.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.2.10...3.3.0) (2025-05-28)
+
+### Features
+
+- @W-18182827@ defer component selection ([#402](https://github.com/salesforcecli/plugin-lightning-dev/issues/402)) ([e09ce62](https://github.com/salesforcecli/plugin-lightning-dev/commit/e09ce62ebe5b0e2218b5ef5c0738610238a955f0))
+
+## [3.2.10](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.2.9...3.2.10) (2025-05-15)
+
+### Bug Fixes
+
+- @W-17672756@ update version recommendation logic ([#401](https://github.com/salesforcecli/plugin-lightning-dev/issues/401)) ([894b14a](https://github.com/salesforcecli/plugin-lightning-dev/commit/894b14a9f79a5f4dfb52fddd45437eda31056b15))
+
 ## [3.2.9](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.2.8...3.2.9) (2025-04-14)
 
 ### Bug Fixes
