@@ -232,7 +232,7 @@
       "The 'versionToTagMappings' section defines the mapping between released tags for our CLI plugin and the org version that each tag supports."
     ],
     "target": {
-      "versionNumber": "65.0",
+      "versionNumber": "64.0",
       "matchingDevServerVersion": "~12.3.4"
     },
     "versionToTagMappings": [
