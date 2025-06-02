@@ -1,3 +1,9 @@
+# [3.5.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.4.0...3.5.0) (2025-06-02)
+
+### Features
+
+- 256-patch prerelease (v3) @W-18658526 ([#413](https://github.com/salesforcecli/plugin-lightning-dev/issues/413)) ([c149906](https://github.com/salesforcecli/plugin-lightning-dev/commit/c149906a98d281adf663310e0dc8f1d56f7776bb))
+
 # [3.4.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.3.1...3.4.0) (2025-06-02)
 
 ### Features
