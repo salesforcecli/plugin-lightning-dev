@@ -7,4 +7,6 @@ on:
 jobs:
   automerge:
     uses: salesforcecli/github-workflows/.github/workflows/automerge.yml@main
+    with:
+      mergeMethod: squash
     secrets: inherit
