@@ -1,3 +1,9 @@
+## [4.0.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.0.0...4.0.1) (2025-06-14)
+
+### Bug Fixes
+
+- **deps:** bump axios from 1.7.9 to 1.8.2 in the npm_and_yarn group ([#419](https://github.com/salesforcecli/plugin-lightning-dev/issues/419)) ([af9d9fd](https://github.com/salesforcecli/plugin-lightning-dev/commit/af9d9fd0eea92def52e5de10c7afe86736370abc))
+
 # [4.0.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.4.0...4.0.0) (2025-06-02)
 
 - fix!: trigger npm publish (v4.0.0) (#414) ([12f67fd](https://github.com/salesforcecli/plugin-lightning-dev/commit/12f67fd49940cfa6847927f8c9a38f5364b424ec)), closes [#414](https://github.com/salesforcecli/plugin-lightning-dev/issues/414)
