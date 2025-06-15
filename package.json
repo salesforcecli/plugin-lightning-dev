@@ -18,7 +18,7 @@
     "axios": "^1.8.2",
     "glob": "^10.4.5",
     "lightning-base-components": "1.27.2-alpha",
-    "lwc": "~8.16.5",
+    "lwc": "~8.20.0",
     "node-fetch": "^3.3.2",
     "xml2js": "^0.6.2"
   },
