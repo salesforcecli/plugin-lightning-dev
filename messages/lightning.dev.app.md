@@ -43,10 +43,6 @@ Couldn't find identity data while generating preview arguments
 
 Couldn't find entity ID while generating preview arguments
 
-# error.no-project
-
-This command is required to run from within a Salesforce project directory. %s
-
 # error.fetching.app-id
 
 Unable to determine App Id for %s

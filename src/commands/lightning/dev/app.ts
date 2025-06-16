@@ -17,7 +17,6 @@ import {
   Platform,
 } from '@salesforce/lwc-dev-mobile-core';
 import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
-import { OrgUtils } from '../../../shared/orgUtils.js';
 import { startLWCServer } from '../../../lwc-dev-server/index.js';
 import { PreviewUtils } from '../../../shared/previewUtils.js';
 import { PromptUtils } from '../../../shared/promptUtils.js';
@@ -74,31 +73,15 @@ export default class LightningDevApp extends SfCommand<void> {
     try {
       sfdxProjectRootPath = await SfProject.resolveProjectPath();
     } catch (error) {
-      return Promise.reject(new Error(messages.getMessage('error.no-project', [(error as Error)?.message ?? ''])));
+      return Promise.reject(
+        new Error(sharedMessages.getMessage('error.no-project', [(error as Error)?.message ?? '']))
+      );
     }
 
-    const connection = targetOrg.getConnection(undefined);
-    const username = connection.getUsername();
-    if (!username) {
-      return Promise.reject(new Error(messages.getMessage('error.username')));
-    }
-
-    const localDevEnabled = await OrgUtils.isLocalDevEnabled(connection);
-    if (!localDevEnabled) {
-      return Promise.reject(new Error(sharedMessages.getMessage('error.localdev.not.enabled')));
-    }
-
-    OrgUtils.ensureMatchingAPIVersion(connection);
+    logger.debug('Initalizing preview connection and configuring local web server identity');
+    const { connection, ldpServerId, ldpServerToken } = await PreviewUtils.initializePreviewConnection(targetOrg);
 
     const platform = flags['device-type'] ?? (await PromptUtils.promptUserToSelectPlatform());
-
-    logger.debug('Configuring local web server identity');
-    const appServerIdentity = await PreviewUtils.getOrCreateAppServerIdentity(connection);
-    const ldpServerToken = appServerIdentity.identityToken;
-    const ldpServerId = appServerIdentity.usernameToServerEntityIdMap[username];
-    if (!ldpServerId) {
-      return Promise.reject(new Error(messages.getMessage('error.identitydata.entityid')));
-    }
 
     const appId = await PreviewUtils.getLightningExperienceAppId(connection, appName, logger);
 
@@ -149,25 +132,7 @@ export default class LightningDevApp extends SfCommand<void> {
       logger.debug('No Lightning Experience application name provided.... using the default app instead.');
     }
 
-    // There are various ways to pass in a target org (as an alias, as a username, etc).
-    // We could have LightningPreviewApp parse its --target-org flag which will be resolved
-    // to an Org object (see https://github.com/forcedotcom/sfdx-core/blob/main/src/org/org.ts)
-    // then write a bunch of code to look at this Org object to try to determine whether
-    // it was initialized using Alias, Username, etc. and get a string representation of the
-    // org to be forwarded to OrgOpenCommand.
-    //
-    // Or we could simply look at the raw arguments passed to the LightningPreviewApp command,
-    // find the raw value for --target-org flag and forward that raw value to OrgOpenCommand.
-    // The OrgOpenCommand will then parse the raw value automatically. If the value is
-    // valid then OrgOpenCommand will consume it and continue. And if the value is invalid then
-    // OrgOpenCommand simply throws an error which will get bubbled up to LightningPreviewApp.
-    //
-    // Here we've chosen the second approach
-    const idx = this.argv.findIndex((item) => item.toLowerCase() === '-o' || item.toLowerCase() === '--target-org');
-    let targetOrg: string | undefined;
-    if (idx >= 0 && idx < this.argv.length - 1) {
-      targetOrg = this.argv[idx + 1];
-    }
+    const targetOrg = PreviewUtils.getTargetOrgFromArguments(this.argv);
 
     if (ldpServerUrl.startsWith('wss')) {
       this.log(`\n${messages.getMessage('trust.local.dev.server')}`);
