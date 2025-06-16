@@ -5,6 +5,7 @@
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+import { parseArgs } from 'node:util';
 import { TestContext } from '@salesforce/core/testSetup';
 import { expect } from 'chai';
 import {
@@ -21,7 +22,8 @@ import {
   SSLCertificateData,
   Version,
 } from '@salesforce/lwc-dev-mobile-core';
-import { AuthInfo, Connection } from '@salesforce/core';
+import { AuthInfo, Connection, Logger, Org } from '@salesforce/core';
+import { PreviewUtils as LwcDevMobileCorePreviewUtils } from '@salesforce/lwc-dev-mobile-core';
 import {
   ConfigUtils,
   LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT,
@@ -187,5 +189,207 @@ describe('previewUtils', () => {
 
     expect(resolved).to.deep.equal(testIdentityData);
     expect(writeIdentityTokenStub.calledOnce).to.be.true;
+  });
+
+  it('generateComponentPreviewLaunchArguments with all parameters', async () => {
+    const result = PreviewUtils.generateComponentPreviewLaunchArguments(
+      'https://localhost:3333',
+      testLdpServerId,
+      'myTestComponent',
+      'myTargetOrg'
+    );
+
+    const parsed = parseArgs({
+      args: result,
+      options: {
+        path: { type: 'string' },
+        'target-org': { type: 'string' },
+      },
+    });
+
+    expect(parsed.values.path).to.include('ldpServerUrl=https://localhost:3333');
+    expect(parsed.values.path).to.include(`ldpServerId=${testLdpServerId}`);
+    expect(parsed.values.path).to.include('specifier=c/myTestComponent');
+    expect(parsed.values['target-org']).to.equal('myTargetOrg');
+  });
+
+  it('generateComponentPreviewLaunchArguments without componentName', async () => {
+    const result = PreviewUtils.generateComponentPreviewLaunchArguments(
+      'https://localhost:3333',
+      testLdpServerId,
+      undefined,
+      'myTargetOrg'
+    );
+
+    const parsed = parseArgs({
+      args: result,
+      options: {
+        path: { type: 'string' },
+        'target-org': { type: 'string' },
+      },
+    });
+
+    expect(parsed.values.path).to.include('ldpServerUrl=https://localhost:3333');
+    expect(parsed.values.path).to.include(`ldpServerId=${testLdpServerId}`);
+    expect(parsed.values.path).to.not.include('specifier=');
+    expect(parsed.values['target-org']).to.equal('myTargetOrg');
+  });
+
+  it('generateComponentPreviewLaunchArguments without targetOrg', async () => {
+    const result = PreviewUtils.generateComponentPreviewLaunchArguments(
+      'https://localhost:3333',
+      testLdpServerId,
+      'myTestComponent'
+    );
+
+    const parsed = parseArgs({
+      args: result,
+      options: {
+        path: { type: 'string' },
+        'target-org': { type: 'string' },
+      },
+    });
+
+    expect(parsed.values.path).to.include('ldpServerUrl=https://localhost:3333');
+    expect(parsed.values.path).to.include(`ldpServerId=${testLdpServerId}`);
+    expect(parsed.values.path).to.include('specifier=c/myTestComponent');
+    expect(parsed.values['target-org']).to.be.undefined;
+  });
+
+  it('generateComponentPreviewLaunchArguments with only required parameters', async () => {
+    const result = PreviewUtils.generateComponentPreviewLaunchArguments('https://localhost:3333', testLdpServerId);
+
+    const parsed = parseArgs({
+      args: result,
+      options: {
+        path: { type: 'string' },
+        'target-org': { type: 'string' },
+      },
+    });
+
+    expect(parsed.values.path).to.include('ldpServerUrl=https://localhost:3333');
+    expect(parsed.values.path).to.include(`ldpServerId=${testLdpServerId}`);
+    expect(parsed.values.path).to.not.include('specifier=');
+    expect(parsed.values['target-org']).to.be.undefined;
+  });
+
+  it('getTargetOrgFromArguments finds -o flag', async () => {
+    const args = ['command', '-o', 'myOrg', 'otherArg'];
+    const result = PreviewUtils.getTargetOrgFromArguments(args);
+    expect(result).to.equal('myOrg');
+  });
+
+  it('getTargetOrgFromArguments finds --target-org flag', async () => {
+    const args = ['command', '--target-org', 'myOrg', 'otherArg'];
+    const result = PreviewUtils.getTargetOrgFromArguments(args);
+    expect(result).to.equal('myOrg');
+  });
+
+  it('getTargetOrgFromArguments finds --target-org flag case insensitive', async () => {
+    const args = ['command', '--TARGET-ORG', 'myOrg', 'otherArg'];
+    const result = PreviewUtils.getTargetOrgFromArguments(args);
+    expect(result).to.equal('myOrg');
+  });
+
+  it('getTargetOrgFromArguments returns undefined when flag not found', async () => {
+    const args = ['command', 'otherArg'];
+    const result = PreviewUtils.getTargetOrgFromArguments(args);
+    expect(result).to.be.undefined;
+  });
+
+  it('getTargetOrgFromArguments returns undefined when flag is last argument', async () => {
+    const args = ['command', 'otherArg', '--target-org'];
+    const result = PreviewUtils.getTargetOrgFromArguments(args);
+    expect(result).to.be.undefined;
+  });
+
+  it('generateWebSocketUrlForLocalDevServer delegates to core library', async () => {
+    const mockUrl = 'ws://localhost:3333';
+    const platform = 'iOS';
+    const ports = { httpPort: 3333, httpsPort: 3334 };
+
+    const generateWebSocketUrlStub = $$.SANDBOX.stub(
+      LwcDevMobileCorePreviewUtils,
+      'generateWebSocketUrlForLocalDevServer'
+    ).returns(mockUrl);
+
+    const result = PreviewUtils.generateWebSocketUrlForLocalDevServer(platform, ports, {} as Logger);
+
+    expect(result).to.equal(mockUrl);
+    expect(generateWebSocketUrlStub.calledOnceWith(platform, ports, {} as Logger)).to.be.true;
+  });
+
+  it('initializePreviewConnection succeeds with valid org', async () => {
+    const mockOrg = {
+      getConnection: () => ({
+        getUsername: () => testUsername,
+      }),
+    } as Org;
+
+    $$.SANDBOX.stub(OrgUtils, 'isLocalDevEnabled').resolves(true);
+    $$.SANDBOX.stub(OrgUtils, 'ensureMatchingAPIVersion').returns();
+    $$.SANDBOX.stub(PreviewUtils, 'getOrCreateAppServerIdentity').resolves(testIdentityData);
+
+    const result = await PreviewUtils.initializePreviewConnection(mockOrg);
+
+    expect(result.ldpServerId).to.equal(testLdpServerId);
+    expect(result.ldpServerToken).to.equal(testLdpServerToken);
+    expect(result.connection).to.exist;
+  });
+
+  it('initializePreviewConnection rejects when username is not found', async () => {
+    const mockOrg = {
+      getConnection: () => ({
+        getUsername: () => undefined,
+      }),
+    } as Org;
+
+    try {
+      await PreviewUtils.initializePreviewConnection(mockOrg);
+      expect.fail('Should have thrown an error');
+    } catch (error) {
+      expect((error as Error).message).to.include('Org must have a valid user');
+    }
+  });
+
+  it('initializePreviewConnection rejects when local dev is not enabled', async () => {
+    const mockOrg = {
+      getConnection: () => ({
+        getUsername: () => testUsername,
+      }),
+    } as Org;
+
+    $$.SANDBOX.stub(OrgUtils, 'isLocalDevEnabled').resolves(false);
+
+    try {
+      await PreviewUtils.initializePreviewConnection(mockOrg);
+      expect.fail('Should have thrown an error');
+    } catch (error) {
+      expect((error as Error).message).to.include('Local Dev is not enabled');
+    }
+  });
+
+  it('initializePreviewConnection rejects when ldpServerId is not found', async () => {
+    const mockOrg = {
+      getConnection: () => ({
+        getUsername: () => testUsername,
+      }),
+    } as Org;
+
+    const identityDataWithoutEntityId = {
+      identityToken: testLdpServerToken,
+      usernameToServerEntityIdMap: {},
+    };
+
+    $$.SANDBOX.stub(OrgUtils, 'isLocalDevEnabled').resolves(true);
+    $$.SANDBOX.stub(OrgUtils, 'ensureMatchingAPIVersion').returns();
+    $$.SANDBOX.stub(PreviewUtils, 'getOrCreateAppServerIdentity').resolves(identityDataWithoutEntityId);
+
+    try {
+      await PreviewUtils.initializePreviewConnection(mockOrg);
+      expect.fail('Should have thrown an error');
+    } catch (error) {
+      expect((error as Error).message).to.include('entity ID');
+    }
   });
 });

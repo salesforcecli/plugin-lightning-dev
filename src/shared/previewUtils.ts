@@ -13,7 +13,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { Connection, Logger, Messages } from '@salesforce/core';
+import { Connection, Logger, Messages, Org } from '@salesforce/core';
 import {
   AndroidDeviceManager,
   AppleDeviceManager,
@@ -33,7 +33,14 @@ import { PromptUtils } from './promptUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.app');
+const sharedMessages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'shared.utils');
 const DevPreviewAuraMode = 'DEVPREVIEW';
+
+export type PreviewConnection = {
+  connection: Connection;
+  ldpServerId: string;
+  ldpServerToken: string;
+};
 
 export class PreviewUtils {
   public static generateWebSocketUrlForLocalDevServer(
@@ -140,6 +147,37 @@ export class PreviewUtils {
   }
 
   /**
+   * Extracts the target org from command line arguments.
+   *
+   * There are various ways to pass in a target org (as an alias, as a username, etc).
+   * We could have LightningPreviewApp parse its --target-org flag which will be resolved
+   * to an Org object (see https://github.com/forcedotcom/sfdx-core/blob/main/src/org/org.ts)
+   * then write a bunch of code to look at this Org object to try to determine whether
+   * it was initialized using Alias, Username, etc. and get a string representation of the
+   * org to be forwarded to OrgOpenCommand.
+   *
+   * Or we could simply look at the raw arguments passed to the LightningPreviewApp command,
+   * find the raw value for --target-org flag and forward that raw value to OrgOpenCommand.
+   * The OrgOpenCommand will then parse the raw value automatically. If the value is
+   * valid then OrgOpenCommand will consume it and continue. And if the value is invalid then
+   * OrgOpenCommand simply throws an error which will get bubbled up to LightningPreviewApp.
+   *
+   * Here we've chosen the second approach.
+   *
+   * @param args - Array of command line arguments
+   * @returns The target org identifier if found, undefined otherwise
+   */
+  public static getTargetOrgFromArguments(args: string[]): string | undefined {
+    const idx = args.findIndex((item) => item.toLowerCase() === '-o' || item.toLowerCase() === '--target-org');
+    let targetOrg: string | undefined;
+    if (idx >= 0 && idx < args.length - 1) {
+      targetOrg = args[idx + 1];
+    }
+
+    return targetOrg;
+  }
+
+  /**
    * Generates the proper set of arguments to be used for launching desktop browser and navigating to the right location.
    *
    * @param ldpServerUrl The URL for the local dev server
@@ -168,6 +206,38 @@ export class PreviewUtils {
       '--path',
       `${appPath}?0.aura.ldpServerUrl=${ldpServerUrl}&0.aura.ldpServerId=${ldpServerId}&0.aura.mode=${auraMode}`,
     ];
+
+    if (targetOrg) {
+      launchArguments.push('--target-org', targetOrg);
+    }
+
+    return launchArguments;
+  }
+
+  /**
+   * Generates the proper set of arguments to be used for launching a component preview in the browser.
+   *
+   * @param ldpServerUrl The URL for the local dev server
+   * @param ldpServerId Record ID for the identity token
+   * @param componentName The name of the component to preview
+   * @param targetOrg An optional org id
+   * @returns Array of arguments to be used by Org:Open command for launching the component preview
+   */
+  public static generateComponentPreviewLaunchArguments(
+    ldpServerUrl: string,
+    ldpServerId: string,
+    componentName?: string,
+    targetOrg?: string
+  ): string[] {
+    let appPath = `lwr/application/e/devpreview/ai/${encodeURIComponent(
+      'localdev%2Fpreview'
+    )}?ldpServerUrl=${ldpServerUrl}&ldpServerId=${ldpServerId}`;
+    if (componentName) {
+      // TODO: support other namespaces
+      appPath += `&specifier=c/${componentName}`;
+    }
+
+    const launchArguments = ['--path', appPath];
 
     if (targetOrg) {
       launchArguments.push('--target-org', targetOrg);
@@ -322,6 +392,34 @@ export class PreviewUtils {
         resolve(downloadedFilePath);
       });
     });
+  }
+
+  public static async initializePreviewConnection(targetOrg: Org): Promise<PreviewConnection> {
+    const connection = targetOrg.getConnection(undefined);
+    const username = connection.getUsername();
+    if (!username) {
+      return Promise.reject(new Error(sharedMessages.getMessage('error.username')));
+    }
+
+    const localDevEnabled = await OrgUtils.isLocalDevEnabled(connection);
+    if (!localDevEnabled) {
+      return Promise.reject(new Error(sharedMessages.getMessage('error.localdev.not.enabled')));
+    }
+
+    OrgUtils.ensureMatchingAPIVersion(connection);
+
+    const appServerIdentity = await PreviewUtils.getOrCreateAppServerIdentity(connection);
+    const ldpServerToken = appServerIdentity.identityToken;
+    const ldpServerId = appServerIdentity.usernameToServerEntityIdMap[username];
+    if (!ldpServerId) {
+      return Promise.reject(new Error(sharedMessages.getMessage('error.identitydata.entityid')));
+    }
+
+    return {
+      connection,
+      ldpServerId,
+      ldpServerToken,
+    };
   }
 
   public static async getOrCreateAppServerIdentity(connection: Connection): Promise<LocalWebServerIdentityData> {
