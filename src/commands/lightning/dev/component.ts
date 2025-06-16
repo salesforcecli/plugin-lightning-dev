@@ -6,15 +6,17 @@
  */
 
 import path from 'node:path';
-import url from 'node:url';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages, SfProject } from '@salesforce/core';
-import { cmpDev } from '@lwrjs/api';
 import { ComponentUtils } from '../../../shared/componentUtils.js';
 import { PromptUtils } from '../../../shared/promptUtils.js';
+import { PreviewUtils } from '../../../shared/previewUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.component');
+
+// TODO: generate ldp server url
+const ldpServerUrl = 'http://localhost:3000';
 
 export default class LightningDevComponent extends SfCommand<void> {
   public static readonly summary = messages.getMessage('summary');
@@ -32,14 +34,18 @@ export default class LightningDevComponent extends SfCommand<void> {
       char: 'c',
       default: false,
     }),
-    // TODO should this be required or optional?
-    // We don't technically need this if your components are simple / don't need any data from your org
-    'target-org': Flags.optionalOrg(),
+    'target-org': Flags.requiredOrg(),
   };
 
   public async run(): Promise<void> {
     const { flags } = await this.parse(LightningDevComponent);
     const project = await SfProject.resolve();
+
+    let componentName = flags['name'];
+    const clientSelect = flags['client-select'];
+    const targetOrg = flags['target-org'];
+
+    const { ldpServerId } = await PreviewUtils.initializePreviewConnection(targetOrg);
 
     const namespacePaths = await ComponentUtils.getNamespacePaths(project);
     const componentPaths = await ComponentUtils.getAllComponentPaths(namespacePaths);
@@ -63,11 +69,11 @@ export default class LightningDevComponent extends SfCommand<void> {
             return undefined;
           }
 
-          const componentName = path.basename(componentPath);
-          const label = ComponentUtils.componentNameToTitleCase(componentName);
+          const name = path.basename(componentPath);
+          const label = ComponentUtils.componentNameToTitleCase(name);
 
           return {
-            name: componentName,
+            name,
             label: xml.LightningComponentBundle.masterLabel ?? label,
             description: xml.LightningComponentBundle.description ?? '',
           };
@@ -75,35 +81,37 @@ export default class LightningDevComponent extends SfCommand<void> {
       )
     ).filter((component) => !!component);
 
-    let name = flags.name;
-    if (!flags['client-select']) {
-      if (name) {
+    if (!clientSelect) {
+      if (componentName) {
         // validate that the component exists before launching the server
-        const match = components.find((component) => name === component.name || name === component.label);
+        const match = components.find(
+          (component) => componentName === component.name || componentName === component.label
+        );
         if (!match) {
-          throw new Error(messages.getMessage('error.component-not-found', [name]));
+          throw new Error(messages.getMessage('error.component-not-found', [componentName]));
         }
 
-        name = match.name;
+        componentName = match.name;
       } else {
         // prompt the user for a name if one was not provided
-        name = await PromptUtils.promptUserToSelectComponent(components);
-        if (!name) {
+        componentName = await PromptUtils.promptUserToSelectComponent(components);
+        if (!componentName) {
           throw new Error(messages.getMessage('error.component'));
         }
       }
     }
 
-    const dirname = path.dirname(url.fileURLToPath(import.meta.url));
-    const rootDir = path.resolve(dirname, '../../../..');
-    const port = parseInt(process.env.PORT ?? '3000', 10);
+    // TODO: launch the local dev server
 
-    await cmpDev({
-      rootDir,
-      mode: 'dev',
-      port,
-      name: name ? `c/${name}` : undefined,
-      namespacePaths,
-    });
+    const targetOrgArg = PreviewUtils.getTargetOrgFromArguments(this.argv);
+    const launchArguments = PreviewUtils.generateComponentPreviewLaunchArguments(
+      ldpServerUrl,
+      ldpServerId,
+      componentName,
+      targetOrgArg
+    );
+
+    // Open the browser and navigate to the right page
+    await this.config.runCommand('org:open', launchArguments);
   }
 }
