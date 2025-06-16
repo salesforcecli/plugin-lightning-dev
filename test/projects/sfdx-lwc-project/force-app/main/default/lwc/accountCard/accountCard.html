@@ -1,0 +1,88 @@
+<template>
+  <div class="card-container">
+    <template if:true="{isLoading}">
+      <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+    </template>
+
+    <template if:true="{hasError}">
+      <div class="slds-p-around_medium slds-text-color_error">
+        An error occurred while loading the account information.
+      </div>
+    </template>
+
+    <template if:true="{accountData}">
+      <!-- Card Header -->
+      <div class="header">
+        <div class="header-left">
+          <h2 class="company-name">{name}</h2>
+          <div class="subtitle">
+            <span>{website}</span>
+            <span class="dot">•</span>
+            <span>{location}</span>
+          </div>
+        </div>
+        <div class="header-right">
+          <button class="edit-button" onclick="{handleEdit}">
+            <lightning-icon icon-name="utility:edit" size="x-small" class="edit-icon"></lightning-icon>
+            Edit
+          </button>
+        </div>
+      </div>
+
+      <!-- Key Metrics -->
+      <div class="metrics-grid">
+        <div class="metric-box">
+          <div class="metric-label">Annual Revenue</div>
+          <div class="metric-value">{annualRevenue}</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">Employees</div>
+          <div class="metric-value">{employees}</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">Industry</div>
+          <div class="metric-value">{industry}</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">Account Status</div>
+          <div class="status-container">
+            <span class="{statusDotClass}"></span>
+            <span class="metric-value">{status}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contacts Section -->
+      <div class="contacts-section">
+        <h3 class="contacts-header">Key Contacts</h3>
+
+        <div class="contacts-list">
+          <template if:true="{hasContacts}">
+            <template for:each="{contacts}" for:item="contact">
+              <div key="{contact.Id}" class="contact-item">
+                <div class="contact-left">
+                  <div class="contact-avatar">{contact.Initials}</div>
+                  <div class="contact-info">
+                    <div class="contact-name">{contact.Name}</div>
+                    <div class="contact-title">{contact.Title}</div>
+                  </div>
+                </div>
+                <div class="contact-actions">
+                  <button class="icon-button" data-id="{contact.Id}" onclick="{handleCall}">
+                    <lightning-icon icon-name="utility:call" size="x-small"></lightning-icon>
+                  </button>
+                  <button class="icon-button" data-id="{contact.Id}" onclick="{handleEmail}">
+                    <lightning-icon icon-name="utility:email" size="x-small"></lightning-icon>
+                  </button>
+                </div>
+              </div>
+            </template>
+          </template>
+          <template if:false="{hasContacts}">
+            <div class="no-contacts-message">{noContactsMessage}</div>
+          </template>
+        </div>
+      </div>
+    </template>
+  </div>
+</template>
