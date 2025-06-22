@@ -1,3 +1,9 @@
+## [4.0.5](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.0.4...4.0.5) (2025-06-22)
+
+### Bug Fixes
+
+- **deps:** bump @oclif/core from 4.3.3 to 4.4.0 ([#433](https://github.com/salesforcecli/plugin-lightning-dev/issues/433)) ([e313a8b](https://github.com/salesforcecli/plugin-lightning-dev/commit/e313a8bab5a7fd9f48fe6b9d33cdd7e632f72be8))
+
 ## [4.0.4](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.0.3...4.0.4) (2025-06-15)
 
 ### Bug Fixes
