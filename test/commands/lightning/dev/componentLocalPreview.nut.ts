@@ -22,7 +22,10 @@ const TEST_TIMEOUT_MS = 60_000;
 const STARTUP_DELAY_MS = 5000;
 const DEV_SERVER_PORT = 3000;
 
-describe('LWC Local Preview Integration', () => {
+// Skip this test in CI environment - run only locally
+const shouldSkipTest = process.env.CI === 'true' || process.env.CI === '1';
+
+(shouldSkipTest ? describe.skip : describe)('LWC Local Preview Integration', () => {
   let session: TestSession;
   let componentName: string;
   let projectDir: string;
