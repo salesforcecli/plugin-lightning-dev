@@ -32,11 +32,7 @@ export default class LightningDevComponent extends SfCommand<void> {
       char: 'c',
       default: false,
     }),
-    port: Flags.integer({
-      summary: 'Port number for the development server',
-      char: 'p',
-      default: 3000,
-    }),
+
     // TODO should this be required or optional?
     // We don't technically need this if your components are simple / don't need any data from your org
     'target-org': Flags.optionalOrg(),
@@ -101,7 +97,7 @@ export default class LightningDevComponent extends SfCommand<void> {
 
     const dirname = path.dirname(url.fileURLToPath(import.meta.url));
     const rootDir = path.resolve(dirname, '../../../..');
-    const port = flags.port;
+    const port = parseInt(process.env.PORT ?? '3000', 10);
 
     await cmpDev({
       rootDir,
