@@ -26,6 +26,12 @@ export class ComponentUtils {
     return componentName.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
   }
 
+  public static toKebabCase(str: string): string {
+    return str
+      .replace(/([a-z0-9])([A-Z])/g, '$1-$2') // insert dash between camelCase boundaries
+      .toLowerCase();
+  }
+
   public static async getNamespacePaths(project: SfProject): Promise<string[]> {
     const packageDirs = project.getPackageDirectories();
 

@@ -304,4 +304,68 @@ EXAMPLES
 
 _See code: [src/commands/lightning/dev/site.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/4.0.4/src/commands/lightning/dev/site.ts)_
 
+## Integration Testing
+
+This plugin includes integration (NUT) tests for verifying the Lightning Dev Server functionality using SFDX projects and components. Test data like SFDX projects are created at runtime by the testkit.
+
+### Prerequisites
+
+**Connected App Setup**
+Follow the [Connected App Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_connected_app.htm) to:
+
+- Create a connected app
+- Enable JWT OAuth
+- Configure callback URL and OAuth scopes
+
+**JWT Credentials**
+Follow the [Private Key and Certificate Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_key_and_cert.htm) to:
+
+- Generate a private key and certificate
+- Upload certificate to the connected app
+
+Set the environment variables (copy from `.env.template` to `.env`):
+
+- `TESTKIT_JWT_CLIENT_ID` - Your connected app client ID
+- `TESTKIT_JWT_KEY` - Your private key contents
+- `TESTKIT_HUB_INSTANCE` - Salesforce instance URL
+- `TESTKIT_ORG_USERNAME` - Your org username for testing
+- `OPEN_BROWSER` - Control browser opening (true/false)
+
+### Running Tests
+
+Run all or specific integration tests (NUTs) via:
+
+```bash
+# Run all integration tests
+yarn test:nuts
+
+# Run by category
+yarn test:nuts "test/commands/lightning/dev/component*.nut.ts"
+
+# Run with environment variables
+OPEN_BROWSER=false NODE_ENV=production yarn test:nuts
+```
+
+### Test Data Structure
+
+The testkit creates SFDX projects and test data at runtime:
+
+```
+test/
+├── testdata/
+│   ├── lwc/
+│   │   └── helloWorld/
+│   └── project-definition.json
+```
+
+### Automation with TestKit
+
+Tests use [@salesforce/cli-plugins-testkit](https://github.com/salesforcecli/cli-plugins-testkit) for:
+
+- Temporary project creation at runtime
+- JWT-based org login
+- Cleanup after each run
+
+No manual authentication is needed. Set the required environment variables once and run tests headlessly.
+
 <!-- commandsstop -->
