@@ -11,7 +11,7 @@ import { expect } from 'chai';
 import { TestSession } from '@salesforce/cli-plugins-testkit';
 import dotenv from 'dotenv';
 import axios from 'axios';
-import { ComponentUtils } from '../../../../src/shared/componentUtils.js';
+import { toKebabCase } from './helpers/utils.js';
 import { createSfdxProject, createLwcComponent } from './helpers/projectSetup.js';
 import { startLightningDevServer } from './helpers/devServerUtils.js';
 
@@ -78,7 +78,7 @@ describe('LWC Local Preview Integration', () => {
     await new Promise((r) => setTimeout(r, STARTUP_DELAY_MS));
 
     // Test the kebab-case component URL with /c- prefix
-    const componentKebabName = ComponentUtils.toKebabCase(componentName);
+    const componentKebabName = toKebabCase(componentName);
     const componentUrl = `http://localhost:${DEV_SERVER_PORT}/c-${componentKebabName}/`;
     let componentHttpSuccess = false;
 
