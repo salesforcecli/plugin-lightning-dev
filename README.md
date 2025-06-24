@@ -339,12 +339,32 @@ Run all or specific integration tests (NUTs) via:
 # Run all integration tests
 yarn test:nuts
 
+# Run component local preview test (local development only)
+yarn test:nut:local
+
 # Run by category
 yarn test:nuts "test/commands/lightning/dev/component*.nut.ts"
 
 # Run with environment variables
 OPEN_BROWSER=false NODE_ENV=production yarn test:nuts
 ```
+
+### Local-Only Tests
+
+Some NUT tests are designed to run only in local development environments and are automatically skipped in CI pipelines. These tests typically:
+
+- Require specific local setup or resources
+- Are too slow for CI environments
+- Need manual verification or debugging
+- Test features that aren't suitable for automated testing
+
+**Component Local Preview Test**
+The `componentLocalPreview.nut.ts` test verifies that the Lightning Dev Server starts correctly and responds to component URLs. This test:
+
+- Runs only locally (skipped when `CI=true`)
+- Tests server startup and HTTP response
+- Verifies component URL routing (`/c-hello-world/`)
+- Can be run with: `yarn test:nut:local`
 
 ### Test Data Structure
 
