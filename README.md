@@ -201,7 +201,7 @@ EXAMPLES
     $ sf lightning dev app --target-org myOrg --device-type ios --device-id "iPhone 15 Pro Max"
 ```
 
-_See code: [src/commands/lightning/dev/app.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/4.0.4/src/commands/lightning/dev/app.ts)_
+_See code: [src/commands/lightning/dev/app.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/4.0.5/src/commands/lightning/dev/app.ts)_
 
 ## `sf lightning dev component`
 
@@ -247,7 +247,7 @@ EXAMPLES
     $ sf lightning dev component --name myComponent
 ```
 
-_See code: [src/commands/lightning/dev/component.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/4.0.4/src/commands/lightning/dev/component.ts)_
+_See code: [src/commands/lightning/dev/component.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/4.0.5/src/commands/lightning/dev/component.ts)_
 
 ## `sf lightning dev site`
 
@@ -302,7 +302,7 @@ EXAMPLES
     $ sf lightning dev site --name "Partner Central" --target-org myOrg --get-latest
 ```
 
-_See code: [src/commands/lightning/dev/site.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/4.0.4/src/commands/lightning/dev/site.ts)_
+_See code: [src/commands/lightning/dev/site.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/4.0.5/src/commands/lightning/dev/site.ts)_
 
 ## Integration Testing
 
