@@ -104,6 +104,7 @@ export default class LightningDevComponent extends SfCommand<void> {
       port,
       name: name ? `c/${name}` : undefined,
       namespacePaths,
+      open: process.env.OPEN_BROWSER === 'false' ? false : true,
     });
   }
 }
