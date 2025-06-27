@@ -4,7 +4,7 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import select from '@inquirer/select';
+import { select } from '@inquirer/prompts';
 import { confirm } from '@inquirer/prompts';
 import { Connection, Logger, Messages } from '@salesforce/core';
 import {

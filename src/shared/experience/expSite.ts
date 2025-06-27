@@ -258,8 +258,8 @@ export class ExperienceSite {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       response.data.pipe(fileStream);
 
-      await new Promise((resolve, reject) => {
-        fileStream.on('finish', resolve);
+      await new Promise<void>((resolve, reject) => {
+        fileStream.on('finish', () => resolve());
         fileStream.on('error', reject);
       });
       this.saveMetadata(metadata);
