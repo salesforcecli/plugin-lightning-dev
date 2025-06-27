@@ -1,3 +1,9 @@
+# [4.1.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.0.5...4.1.0) (2025-06-27)
+
+### Features
+
+- **component:** add open browser option based on environment variable ([#436](https://github.com/salesforcecli/plugin-lightning-dev/issues/436)) ([501987f](https://github.com/salesforcecli/plugin-lightning-dev/commit/501987f5babc9b9302d401de693d5b35b23c739c))
+
 ## [4.0.5](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.0.4...4.0.5) (2025-06-22)
 
 ### Bug Fixes
