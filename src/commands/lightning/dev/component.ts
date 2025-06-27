@@ -7,16 +7,15 @@
 
 import path from 'node:path';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
-import { Messages, SfProject } from '@salesforce/core';
+import { Messages, SfProject, Logger } from '@salesforce/core';
+import { Platform } from '@salesforce/lwc-dev-mobile-core';
 import { ComponentUtils } from '../../../shared/componentUtils.js';
 import { PromptUtils } from '../../../shared/promptUtils.js';
 import { PreviewUtils } from '../../../shared/previewUtils.js';
+import { startLWCServer } from '../../../lwc-dev-server/index.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.component');
-
-// TODO: generate ldp server url
-const ldpServerUrl = 'http://localhost:3000';
 
 export default class LightningDevComponent extends SfCommand<void> {
   public static readonly summary = messages.getMessage('summary');
@@ -39,13 +38,30 @@ export default class LightningDevComponent extends SfCommand<void> {
 
   public async run(): Promise<void> {
     const { flags } = await this.parse(LightningDevComponent);
+    const logger = await Logger.child(this.ctor.name);
     const project = await SfProject.resolve();
+
+    let sfdxProjectRootPath = '';
+    try {
+      sfdxProjectRootPath = await SfProject.resolveProjectPath();
+    } catch (error) {
+      // return Promise.reject(new Error(messages.getMessage('error.no-project', [(error as Error)?.message ?? ''])));
+      throw new Error('failed to resolve project path');
+    }
 
     let componentName = flags['name'];
     const clientSelect = flags['client-select'];
     const targetOrg = flags['target-org'];
 
-    const { ldpServerId } = await PreviewUtils.initializePreviewConnection(targetOrg);
+    const { ldpServerId, ldpServerToken } = await PreviewUtils.initializePreviewConnection(targetOrg);
+
+    logger.debug('Determining the next available port for Local Dev Server');
+    const serverPorts = await PreviewUtils.getNextAvailablePorts();
+    logger.debug(`Next available ports are http=${serverPorts.httpPort} , https=${serverPorts.httpsPort}`);
+
+    logger.debug('Determining Local Dev Server url');
+    const ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(Platform.desktop, serverPorts, logger);
+    logger.debug(`Local Dev Server url is ${ldpServerUrl}`);
 
     const namespacePaths = await ComponentUtils.getNamespacePaths(project);
     const componentPaths = await ComponentUtils.getAllComponentPaths(namespacePaths);
@@ -101,7 +117,7 @@ export default class LightningDevComponent extends SfCommand<void> {
       }
     }
 
-    // TODO: launch the local dev server
+    await startLWCServer(logger, sfdxProjectRootPath, ldpServerToken, Platform.desktop, serverPorts);
 
     const targetOrgArg = PreviewUtils.getTargetOrgFromArguments(this.argv);
     const launchArguments = PreviewUtils.generateComponentPreviewLaunchArguments(

@@ -230,10 +230,11 @@ export class PreviewUtils {
     targetOrg?: string
   ): string[] {
     // TODO: vanity application target
-    let appPath = `lwr/application/ai/${encodeURIComponent(
+    let appPath = `lwr/application/e/devpreview/ai/${encodeURIComponent(
       'localdev%2Fpreview'
     )}?ldpServerUrl=${ldpServerUrl}&ldpServerId=${ldpServerId}`;
     if (componentName) {
+      // TODO: support other namespaces
       appPath += `&specifier=c/${componentName}`;
     }
 

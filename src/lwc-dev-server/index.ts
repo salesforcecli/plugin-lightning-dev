@@ -30,7 +30,9 @@ async function createLWCServerConfig(
   const { namespace } = projectJson;
 
   // e.g. lwc folders in force-app/main/default/lwc, package-dir/lwc
-  const namespacePaths = (await Promise.all(packageDirs.map((dir) => glob(`${dir.fullPath}/**/lwc`, { absolute: true })))).flat();
+  const namespacePaths = (
+    await Promise.all(packageDirs.map((dir) => glob(`${dir.fullPath}/**/lwc`, { absolute: true })))
+  ).flat();
 
   const ports = serverPorts ??
     (await ConfigUtils.getLocalDevServerPorts()) ?? {
@@ -46,6 +48,7 @@ async function createLWCServerConfig(
     // use custom workspace if any is provided, or fetch from config file (if any), otherwise use the default workspace
     workspace: workspace ?? (await ConfigUtils.getLocalDevServerWorkspace()) ?? LOCAL_DEV_SERVER_DEFAULT_WORKSPACE,
     identityToken: token,
+    // @ts-expect-error - TEMP: there is dependency mismatch when linking a local copy of the lwc-dev-server
     lifecycle: Lifecycle.getInstance(),
     clientType,
     namespace: typeof namespace === 'string' && namespace.trim().length > 0 ? namespace.trim() : undefined,
@@ -74,6 +77,7 @@ export async function startLWCServer(
   const config = await createLWCServerConfig(rootDir, token, clientType, serverPorts, certData, workspace);
 
   logger.trace(`Starting LWC Dev Server with config: ${JSON.stringify(config)}`);
+  // @ts-expect-error - TEMP: there is dependency mismatch when linking a local copy of the lwc-dev-server
   let lwcDevServer: LWCServer | null = await startLwcDevServer(config, logger);
 
   const cleanup = (): void => {
