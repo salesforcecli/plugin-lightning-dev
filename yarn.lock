@@ -2804,10 +2804,10 @@
     ansis "^3.17.0"
     fast-levenshtein "^3.0.0"
 
-"@oclif/plugin-warn-if-update-available@^3.1.38":
-  version "3.1.40"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-warn-if-update-available/-/plugin-warn-if-update-available-3.1.40.tgz#eb00fd7f199e6d08e6e4897560126b3570ecd5cb"
-  integrity sha512-k5FBGxjXsSj56075MFVx5I9MAJa082evyPqLUBOjXL9w91q3k/89U+kTCfFNTQga8DykxhMP/7UTuDFV+d/Dhg==
+"@oclif/plugin-warn-if-update-available@^3.1.41":
+  version "3.1.42"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-warn-if-update-available/-/plugin-warn-if-update-available-3.1.42.tgz#c03e4a9c1b4bca301524d26bf3d94bf5515a08e8"
+  integrity sha512-bcBfON81gYCx6x50HjrcL7gRiz7bEuLdQNifMsMcBtBq3IpOifyS8/l5R3REEy9kHJ1qdcSYehtopMvS4ov9lA==
   dependencies:
     "@oclif/core" "^4"
     ansis "^3.17.0"
@@ -9364,10 +9364,10 @@ object.values@^1.2.0:
     define-properties "^1.2.1"
     es-object-atoms "^1.0.0"
 
-oclif@^4.20.0:
-  version "4.20.0"
-  resolved "https://registry.yarnpkg.com/oclif/-/oclif-4.20.0.tgz#6423733e580ffa13b8bbea825390761a9719b65e"
-  integrity sha512-crfnwuZpbosmaxDCCZ2hSePEwnQS92MrWRpSaOU4TzgvKQfitQL9k2o7zqV12VdxCAI0hB7tYWqS4LMocqBPcQ==
+oclif@^4.20.1:
+  version "4.20.1"
+  resolved "https://registry.yarnpkg.com/oclif/-/oclif-4.20.1.tgz#26caab0b2cd7c6548f3ff94abc1287b17fa04bf8"
+  integrity sha512-XsC6MaYTEtIjkq43sXIrGiq+wtuzxCYWv43gIaFAg8KszOutojqlACwrz1dgCgUAwanwv+BNBNJLnvwQ84dpjg==
   dependencies:
     "@aws-sdk/client-cloudfront" "^3.787.0"
     "@aws-sdk/client-s3" "^3.787.0"
@@ -9377,7 +9377,7 @@ oclif@^4.20.0:
     "@oclif/core" "^4.4.0"
     "@oclif/plugin-help" "^6.2.29"
     "@oclif/plugin-not-found" "^3.2.57"
-    "@oclif/plugin-warn-if-update-available" "^3.1.38"
+    "@oclif/plugin-warn-if-update-available" "^3.1.41"
     ansis "^3.16.0"
     async-retry "^1.3.3"
     change-case "^4"
