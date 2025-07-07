@@ -1,3 +1,9 @@
+## [4.1.5](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.1.4...4.1.5) (2025-07-07)
+
+### Bug Fixes
+
+- eccn compliance ([#441](https://github.com/salesforcecli/plugin-lightning-dev/issues/441)) ([3c8dd4b](https://github.com/salesforcecli/plugin-lightning-dev/commit/3c8dd4b5baffaa5569d6fab6f98483842ddd0acc))
+
 ## [4.1.4](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.1.3...4.1.4) (2025-07-06)
 
 ### Bug Fixes
