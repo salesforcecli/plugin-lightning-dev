@@ -1,3 +1,9 @@
+## [4.1.6](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.1.5...4.1.6) (2025-07-08)
+
+### Bug Fixes
+
+- bump LWC @W-18283826 ([#446](https://github.com/salesforcecli/plugin-lightning-dev/issues/446)) ([d161c35](https://github.com/salesforcecli/plugin-lightning-dev/commit/d161c351842926b12c472ab8d5e5c73219360958))
+
 ## [4.1.5](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.1.4...4.1.5) (2025-07-07)
 
 ### Bug Fixes
