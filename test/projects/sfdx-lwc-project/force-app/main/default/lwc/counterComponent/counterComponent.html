@@ -1,0 +1,38 @@
+<template>
+  <div class="slds-card">
+    <div class="slds-card__header slds-grid">
+      <header class="slds-media slds-media_center slds-has-flexi-truncate">
+        <div class="slds-media__body">
+          <h2 class="slds-card__header-title">
+            <span>Counter Component</span>
+          </h2>
+        </div>
+      </header>
+    </div>
+    <div class="slds-card__body slds-card__body_inner">
+      <div class="slds-align_absolute-center slds-m-bottom_medium">
+        <span class="{countClass}" style="font-size: 3rem; font-weight: bold"> {count} </span>
+      </div>
+      <div class="slds-grid slds-grid_align-center slds-gutters">
+        <div class="slds-col">
+          <lightning-button
+            variant="destructive"
+            label="Decrement"
+            onclick="{decrement}"
+            class="slds-m-horizontal_x-small"
+          >
+          </lightning-button>
+        </div>
+        <div class="slds-col">
+          <lightning-button variant="neutral" label="Reset" onclick="{reset}" class="slds-m-horizontal_x-small">
+          </lightning-button>
+        </div>
+        <div class="slds-col">
+          <lightning-button variant="success" label="Increment" onclick="{increment}" class="slds-m-horizontal_x-small">
+          </lightning-button>
+        </div>
+        <div>test</div>
+      </div>
+    </div>
+  </div>
+</template>
