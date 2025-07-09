@@ -1,3 +1,9 @@
+## [4.1.7](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.1.6...4.1.7) (2025-07-09)
+
+### Bug Fixes
+
+- bump LWC to 13.0.29 @W-18283826 ([#448](https://github.com/salesforcecli/plugin-lightning-dev/issues/448)) ([e40b7fc](https://github.com/salesforcecli/plugin-lightning-dev/commit/e40b7fcdf33ecd1e6f89240eb9e44f568afba6e9))
+
 ## [4.1.6](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.1.5...4.1.6) (2025-07-08)
 
 ### Bug Fixes
