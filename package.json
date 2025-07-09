@@ -7,8 +7,8 @@
   "dependencies": {
     "@inquirer/prompts": "^5.3.8",
     "@inquirer/select": "^2.4.7",
-    "@lwc/lwc-dev-server": "~13.0.27",
-    "@lwc/sfdc-lwc-compiler": "~13.0.27",
+    "@lwc/lwc-dev-server": "~13.0.29",
+    "@lwc/sfdc-lwc-compiler": "~13.0.29",
     "@lwrjs/api": "0.18.3",
     "@oclif/core": "^4.4.1",
     "@salesforce/core": "^8.15.0",
