@@ -6,11 +6,15 @@
  */
 import fs from 'node:fs';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
-import { Messages } from '@salesforce/core';
+import { Logger, Messages, SfProject } from '@salesforce/core';
+import { Platform } from '@salesforce/lwc-dev-mobile-core';
 import { expDev, SitesLocalDevOptions, setupDev } from '@lwrjs/api';
+import open from 'open';
 import { OrgUtils } from '../../../shared/orgUtils.js';
 import { PromptUtils } from '../../../shared/promptUtils.js';
 import { ExperienceSite } from '../../../shared/experience/expSite.js';
+import { PreviewUtils } from '../../../shared/previewUtils.js';
+import { startLWCServer } from '../../../lwc-dev-server/index.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.site');
@@ -36,6 +40,10 @@ export default class LightningDevSite extends SfCommand<void> {
       summary: messages.getMessage('flags.guest.summary'),
       default: false,
     }),
+    ssr: Flags.boolean({
+      summary: messages.getMessage('flags.ssr.summary'),
+      default: false,
+    }),
   };
 
   public async run(): Promise<void> {
@@ -45,6 +53,7 @@ export default class LightningDevSite extends SfCommand<void> {
       const org = flags['target-org'];
       const getLatest = flags['get-latest'];
       const guest = flags.guest;
+      const ssr = flags.ssr;
       let siteName = flags.name;
 
       const connection = org.getConnection(undefined);
@@ -63,6 +72,46 @@ export default class LightningDevSite extends SfCommand<void> {
       }
 
       const selectedSite = new ExperienceSite(org, siteName);
+
+      if (!ssr) {
+        let sfdxProjectRootPath = '';
+        try {
+          sfdxProjectRootPath = await SfProject.resolveProjectPath();
+        } catch (error) {
+          throw new Error(sharedMessages.getMessage('error.no-project', [(error as Error)?.message ?? '']));
+        }
+        const previewUrl = await selectedSite.getPreviewUrl();
+        const username = connection.getUsername();
+        if (!username) {
+          throw new Error(sharedMessages.getMessage('error.username'));
+        }
+
+        this.log('Configuring local web server identity');
+        const appServerIdentity = await PreviewUtils.getOrCreateAppServerIdentity(connection);
+        const ldpServerToken = appServerIdentity.identityToken;
+        const ldpServerId = appServerIdentity.usernameToServerEntityIdMap[username];
+        if (!ldpServerId) {
+          throw new Error(sharedMessages.getMessage('error.identitydata.entityid'));
+        }
+
+        this.log('Determining the next available port for Local Dev Server');
+        const serverPorts = await PreviewUtils.getNextAvailablePorts();
+        this.log(`Next available ports are http=${serverPorts.httpPort} , https=${serverPorts.httpsPort}`);
+
+        this.log('Determining Local Dev Server url');
+        const ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(Platform.desktop, serverPorts);
+        this.log(`Local Dev Server url is ${ldpServerUrl}`);
+
+        const logger = await Logger.child(this.ctor.name);
+        await startLWCServer(logger, sfdxProjectRootPath, ldpServerToken, Platform.desktop, serverPorts);
+        const url = new URL(previewUrl);
+        url.searchParams.set('aura.lwcDevServerUrl', ldpServerUrl);
+        url.searchParams.set('aura.lwcDevServerId', ldpServerId);
+        url.searchParams.set('lwc.mode', 'dev');
+        await open(url.toString());
+        return;
+      }
+
       let siteZip: string | undefined;
 
       // If the site is not setup / is not based on the current release / or get-latest is requested ->

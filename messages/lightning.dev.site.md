@@ -29,6 +29,10 @@ Download the latest version of the specified site from your org, instead of usin
 
 Preview the site as a guest user (rather than an authenticated user).
 
+# flags.ssr.summary
+
+Preview the SSR bundle
+
 # examples
 
 - Select a site to preview from the org "myOrg":

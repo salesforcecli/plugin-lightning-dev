@@ -62,13 +62,13 @@ export class PreviewUtils {
     const userConfiguredPorts = await ConfigUtils.getLocalDevServerPorts();
 
     if (userConfiguredPorts) {
-      return Promise.resolve(userConfiguredPorts);
+      return userConfiguredPorts;
     }
 
     const httpPort = await this.doGetNextAvailablePort(LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT);
     const httpsPort = await this.doGetNextAvailablePort(httpPort + 1);
 
-    return Promise.resolve({ httpPort, httpsPort });
+    return { httpPort, httpsPort };
   }
 
   /**
