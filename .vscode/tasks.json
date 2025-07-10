@@ -3,7 +3,7 @@
   "problemMatcher": "$tsc",
   "tasks": [
     {
-      "label": "Compile tests",
+      "label": "Build CLI Plugin",
       "group": {
         "kind": "build",
         "isDefault": true
