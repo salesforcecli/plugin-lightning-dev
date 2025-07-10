@@ -6,7 +6,7 @@
  */
 import fs from 'node:fs';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
-import { Logger, Messages, SfProject } from '@salesforce/core';
+import { Connection, Logger, Messages, SfProject } from '@salesforce/core';
 import { Platform } from '@salesforce/lwc-dev-mobile-core';
 import { expDev, SitesLocalDevOptions, setupDev } from '@lwrjs/api';
 import open from 'open';
@@ -74,99 +74,110 @@ export default class LightningDevSite extends SfCommand<void> {
       const selectedSite = new ExperienceSite(org, siteName);
 
       if (!ssr) {
-        let sfdxProjectRootPath = '';
-        try {
-          sfdxProjectRootPath = await SfProject.resolveProjectPath();
-        } catch (error) {
-          throw new Error(sharedMessages.getMessage('error.no-project', [(error as Error)?.message ?? '']));
-        }
-        const previewUrl = await selectedSite.getPreviewUrl();
-        const username = connection.getUsername();
-        if (!username) {
-          throw new Error(sharedMessages.getMessage('error.username'));
-        }
-
-        this.log('Configuring local web server identity');
-        const appServerIdentity = await PreviewUtils.getOrCreateAppServerIdentity(connection);
-        const ldpServerToken = appServerIdentity.identityToken;
-        const ldpServerId = appServerIdentity.usernameToServerEntityIdMap[username];
-        if (!ldpServerId) {
-          throw new Error(sharedMessages.getMessage('error.identitydata.entityid'));
-        }
-
-        this.log('Determining the next available port for Local Dev Server');
-        const serverPorts = await PreviewUtils.getNextAvailablePorts();
-        this.log(`Next available ports are http=${serverPorts.httpPort} , https=${serverPorts.httpsPort}`);
-
-        this.log('Determining Local Dev Server url');
-        const ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(Platform.desktop, serverPorts);
-        this.log(`Local Dev Server url is ${ldpServerUrl}`);
-
-        const logger = await Logger.child(this.ctor.name);
-        await startLWCServer(logger, sfdxProjectRootPath, ldpServerToken, Platform.desktop, serverPorts);
-        const url = new URL(previewUrl);
-        url.searchParams.set('aura.lwcDevServerUrl', ldpServerUrl);
-        url.searchParams.set('aura.lwcDevServerId', ldpServerId);
-        url.searchParams.set('lwc.mode', 'dev');
-        await open(url.toString());
-        return;
+        return await this.openPreviewUrl(selectedSite, connection);
       }
-
-      let siteZip: string | undefined;
-
-      // If the site is not setup / is not based on the current release / or get-latest is requested ->
-      // generate and download a new site bundle from the org based on latest builder metadata
-      if (!selectedSite.isSiteSetup() || getLatest) {
-        const startTime = Date.now();
-        this.log(`[local-dev] Initializing: ${siteName}`);
-        this.spinner.start('[local-dev] Downloading site (this may take a few minutes)');
-        siteZip = await selectedSite.downloadSite();
-
-        // delete oldSitePath recursive
-        const oldSitePath = selectedSite.getExtractDirectory();
-        if (fs.existsSync(oldSitePath)) {
-          fs.rmSync(oldSitePath, { recursive: true });
-        }
-        const endTime = Date.now();
-        const duration = (endTime - startTime) / 1000; // Convert to seconds
-        this.spinner.stop('done.');
-        this.log(`[local-dev] Site setup completed in ${duration.toFixed(2)} seconds.`);
-      }
-
-      this.log(`[local-dev] launching browser preview for: ${siteName}`);
-
-      // Establish a valid access token for this site
-      const authToken = guest ? '' : await selectedSite.setupAuth();
-
-      // Start the dev server
-      const port = parseInt(process.env.PORT ?? '3000', 10);
-
-      // Internal vs external mode
-      const internalProject = !fs.existsSync('sfdx-project.json') && fs.existsSync('lwr.config.json');
-      const logLevel = process.env.LOG_LEVEL ?? 'error';
-
-      const startupParams: SitesLocalDevOptions = {
-        sfCLI: !internalProject,
-        authToken,
-        open: process.env.OPEN_BROWSER === 'false' ? false : true,
-        port,
-        logLevel,
-        mode: 'dev',
-        siteZip,
-        siteDir: selectedSite.getSiteDirectory(),
-      };
-
-      // Environment variable used to setup the site rather than setup & start server
-      if (process.env.SETUP_ONLY === 'true') {
-        await setupDev(startupParams);
-        this.log('[local-dev] setup complete!');
-      } else {
-        await expDev(startupParams);
-        this.log('[local-dev] watching for file changes... (CTRL-C to stop)');
-      }
+      await this.serveSSRSite(selectedSite, getLatest, siteName, guest);
     } catch (e) {
       this.spinner.stop('failed.');
       this.log('Local Development setup failed', e);
     }
+  }
+
+  private async serveSSRSite(
+    selectedSite: ExperienceSite,
+    getLatest: boolean,
+    siteName: string,
+    guest: boolean
+  ): Promise<void> {
+    let siteZip: string | undefined;
+
+    // If the site is not setup / is not based on the current release / or get-latest is requested ->
+    // generate and download a new site bundle from the org based on latest builder metadata
+    if (!selectedSite.isSiteSetup() || getLatest) {
+      const startTime = Date.now();
+      this.log(`[local-dev] Initializing: ${siteName}`);
+      this.spinner.start('[local-dev] Downloading site (this may take a few minutes)');
+      siteZip = await selectedSite.downloadSite();
+
+      // delete oldSitePath recursive
+      const oldSitePath = selectedSite.getExtractDirectory();
+      if (fs.existsSync(oldSitePath)) {
+        fs.rmSync(oldSitePath, { recursive: true });
+      }
+      const endTime = Date.now();
+      const duration = (endTime - startTime) / 1000; // Convert to seconds
+      this.spinner.stop('done.');
+      this.log(`[local-dev] Site setup completed in ${duration.toFixed(2)} seconds.`);
+    }
+
+    this.log(`[local-dev] launching browser preview for: ${siteName}`);
+
+    // Establish a valid access token for this site
+    const authToken = guest ? '' : await selectedSite.setupAuth();
+
+    // Start the dev server
+    const port = parseInt(process.env.PORT ?? '3000', 10);
+
+    // Internal vs external mode
+    const internalProject = !fs.existsSync('sfdx-project.json') && fs.existsSync('lwr.config.json');
+    const logLevel = process.env.LOG_LEVEL ?? 'error';
+
+    const startupParams: SitesLocalDevOptions = {
+      sfCLI: !internalProject,
+      authToken,
+      open: process.env.OPEN_BROWSER === 'false' ? false : true,
+      port,
+      logLevel,
+      mode: 'dev',
+      siteZip,
+      siteDir: selectedSite.getSiteDirectory(),
+    };
+
+    // Environment variable used to setup the site rather than setup & start server
+    if (process.env.SETUP_ONLY === 'true') {
+      await setupDev(startupParams);
+      this.log('[local-dev] setup complete!');
+    } else {
+      await expDev(startupParams);
+      this.log('[local-dev] watching for file changes... (CTRL-C to stop)');
+    }
+  }
+
+  private async openPreviewUrl(selectedSite: ExperienceSite, connection: Connection): Promise<void> {
+    let sfdxProjectRootPath = '';
+    try {
+      sfdxProjectRootPath = await SfProject.resolveProjectPath();
+    } catch (error) {
+      throw new Error(sharedMessages.getMessage('error.no-project', [(error as Error)?.message ?? '']));
+    }
+    const previewUrl = await selectedSite.getPreviewUrl();
+    const username = connection.getUsername();
+    if (!username) {
+      throw new Error(sharedMessages.getMessage('error.username'));
+    }
+
+    this.log('Configuring local web server identity');
+    const appServerIdentity = await PreviewUtils.getOrCreateAppServerIdentity(connection);
+    const ldpServerToken = appServerIdentity.identityToken;
+    const ldpServerId = appServerIdentity.usernameToServerEntityIdMap[username];
+    if (!ldpServerId) {
+      throw new Error(sharedMessages.getMessage('error.identitydata.entityid'));
+    }
+
+    this.log('Determining the next available port for Local Dev Server');
+    const serverPorts = await PreviewUtils.getNextAvailablePorts();
+    this.log(`Next available ports are http=${serverPorts.httpPort} , https=${serverPorts.httpsPort}`);
+
+    this.log('Determining Local Dev Server url');
+    const ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(Platform.desktop, serverPorts);
+    this.log(`Local Dev Server url is ${ldpServerUrl}`);
+
+    const logger = await Logger.child(this.ctor.name);
+    await startLWCServer(logger, sfdxProjectRootPath, ldpServerToken, Platform.desktop, serverPorts);
+    const url = new URL(previewUrl);
+    url.searchParams.set('aura.lwcDevServerUrl', ldpServerUrl);
+    url.searchParams.set('aura.lwcDevServerId', ldpServerId);
+    url.searchParams.set('lwc.mode', 'dev');
+    await open(url.toString());
   }
 }
