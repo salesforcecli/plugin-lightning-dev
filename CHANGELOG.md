@@ -1,3 +1,9 @@
+# [4.3.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.2.0...4.3.0) (2025-07-11)
+
+### Features
+
+- move component preview to org ([#447](https://github.com/salesforcecli/plugin-lightning-dev/issues/447)) ([2d9fb17](https://github.com/salesforcecli/plugin-lightning-dev/commit/2d9fb17e09a5fb68356e688335180e36d3a4f1dc))
+
 # [4.2.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.1.7...4.2.0) (2025-07-11)
 
 ### Features
