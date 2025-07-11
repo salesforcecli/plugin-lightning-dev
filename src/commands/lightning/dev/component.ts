@@ -6,15 +6,17 @@
  */
 
 import path from 'node:path';
-import url from 'node:url';
 import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
-import { Messages, SfProject } from '@salesforce/core';
-import { cmpDev } from '@lwrjs/api';
+import { Messages, SfProject, Logger } from '@salesforce/core';
+import { Platform } from '@salesforce/lwc-dev-mobile-core';
 import { ComponentUtils } from '../../../shared/componentUtils.js';
 import { PromptUtils } from '../../../shared/promptUtils.js';
+import { PreviewUtils } from '../../../shared/previewUtils.js';
+import { startLWCServer } from '../../../lwc-dev-server/index.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.component');
+const sharedMessages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'shared.utils');
 
 export default class LightningDevComponent extends SfCommand<void> {
   public static readonly summary = messages.getMessage('summary');
@@ -32,14 +34,36 @@ export default class LightningDevComponent extends SfCommand<void> {
       char: 'c',
       default: false,
     }),
-    // TODO should this be required or optional?
-    // We don't technically need this if your components are simple / don't need any data from your org
-    'target-org': Flags.optionalOrg(),
+    'target-org': Flags.requiredOrg(),
   };
 
   public async run(): Promise<void> {
     const { flags } = await this.parse(LightningDevComponent);
+    const logger = await Logger.child(this.ctor.name);
     const project = await SfProject.resolve();
+
+    let sfdxProjectRootPath = '';
+    try {
+      sfdxProjectRootPath = await SfProject.resolveProjectPath();
+    } catch (error) {
+      return Promise.reject(
+        new Error(sharedMessages.getMessage('error.no-project', [(error as Error)?.message ?? '']))
+      );
+    }
+
+    let componentName = flags['name'];
+    const clientSelect = flags['client-select'];
+    const targetOrg = flags['target-org'];
+
+    const { ldpServerId, ldpServerToken } = await PreviewUtils.initializePreviewConnection(targetOrg);
+
+    logger.debug('Determining the next available port for Local Dev Server');
+    const serverPorts = await PreviewUtils.getNextAvailablePorts();
+    logger.debug(`Next available ports are http=${serverPorts.httpPort} , https=${serverPorts.httpsPort}`);
+
+    logger.debug('Determining Local Dev Server url');
+    const ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(Platform.desktop, serverPorts, logger);
+    logger.debug(`Local Dev Server url is ${ldpServerUrl}`);
 
     const namespacePaths = await ComponentUtils.getNamespacePaths(project);
     const componentPaths = await ComponentUtils.getAllComponentPaths(namespacePaths);
@@ -63,11 +87,11 @@ export default class LightningDevComponent extends SfCommand<void> {
             return undefined;
           }
 
-          const componentName = path.basename(componentPath);
-          const label = ComponentUtils.componentNameToTitleCase(componentName);
+          const name = path.basename(componentPath);
+          const label = ComponentUtils.componentNameToTitleCase(name);
 
           return {
-            name: componentName,
+            name,
             label: xml.LightningComponentBundle.masterLabel ?? label,
             description: xml.LightningComponentBundle.description ?? '',
           };
@@ -75,36 +99,37 @@ export default class LightningDevComponent extends SfCommand<void> {
       )
     ).filter((component) => !!component);
 
-    let name = flags.name;
-    if (!flags['client-select']) {
-      if (name) {
+    if (!clientSelect) {
+      if (componentName) {
         // validate that the component exists before launching the server
-        const match = components.find((component) => name === component.name || name === component.label);
+        const match = components.find(
+          (component) => componentName === component.name || componentName === component.label
+        );
         if (!match) {
-          throw new Error(messages.getMessage('error.component-not-found', [name]));
+          throw new Error(messages.getMessage('error.component-not-found', [componentName]));
         }
 
-        name = match.name;
+        componentName = match.name;
       } else {
         // prompt the user for a name if one was not provided
-        name = await PromptUtils.promptUserToSelectComponent(components);
-        if (!name) {
+        componentName = await PromptUtils.promptUserToSelectComponent(components);
+        if (!componentName) {
           throw new Error(messages.getMessage('error.component'));
         }
       }
     }
 
-    const dirname = path.dirname(url.fileURLToPath(import.meta.url));
-    const rootDir = path.resolve(dirname, '../../../..');
-    const port = parseInt(process.env.PORT ?? '3000', 10);
+    await startLWCServer(logger, sfdxProjectRootPath, ldpServerToken, Platform.desktop, serverPorts);
 
-    await cmpDev({
-      rootDir,
-      mode: 'dev',
-      port,
-      name: name ? `c/${name}` : undefined,
-      namespacePaths,
-      open: process.env.OPEN_BROWSER === 'false' ? false : true,
-    });
+    const targetOrgArg = PreviewUtils.getTargetOrgFromArguments(this.argv);
+    const launchArguments = PreviewUtils.generateComponentPreviewLaunchArguments(
+      ldpServerUrl,
+      ldpServerId,
+      componentName,
+      targetOrgArg
+    );
+
+    // Open the browser and navigate to the right page
+    await this.config.runCommand('org:open', launchArguments);
   }
 }
