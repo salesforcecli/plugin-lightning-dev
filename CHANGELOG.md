@@ -1,3 +1,9 @@
+# [4.2.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.1.7...4.2.0) (2025-07-11)
+
+### Features
+
+- launch site preview @W-18283821 ([#449](https://github.com/salesforcecli/plugin-lightning-dev/issues/449)) ([b8a8844](https://github.com/salesforcecli/plugin-lightning-dev/commit/b8a884405214e79d6d7186d89b658bee447a7cd7))
+
 ## [4.1.7](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.1.6...4.1.7) (2025-07-09)
 
 ### Bug Fixes
