@@ -20,7 +20,7 @@
     "command": "lightning:dev:site",
     "flagAliases": [],
     "flagChars": ["l", "n", "o"],
-    "flags": ["flags-dir", "get-latest", "guest", "name", "target-org"],
+    "flags": ["flags-dir", "get-latest", "guest", "name", "target-org", "ssr"],
     "plugin": "@salesforce/plugin-lightning-dev"
   }
 ]

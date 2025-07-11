@@ -37,3 +37,19 @@ Your org is on API version %s, but this version of the CLI plugin supports API v
 # error.org.api-mismatch.remediation
 
 To use the plugin with this org, you can reinstall or update the plugin using the "%s" tag. For example: "sf plugins install %s".
+
+# error.username
+
+Org must have a valid user
+
+# error.identitydata
+
+Couldn't find identity data while generating preview arguments
+
+# error.identitydata.entityid
+
+Couldn't find entity ID while generating preview arguments
+
+# error.no-project
+
+This command is required to run from within a Salesforce project directory. %s

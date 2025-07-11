@@ -134,7 +134,7 @@ describe('lightning dev app', () => {
       $$.SANDBOX.stub(Connection.prototype, 'getUsername').returns(undefined);
       await MockedLightningPreviewApp.run(['--name', 'blah', '-o', testOrgData.username, '-t', Platform.desktop]);
     } catch (err) {
-      expect(err).to.be.an('error').with.property('message', messages.getMessage('error.username'));
+      expect(err).to.be.an('error').with.property('message', sharedMessages.getMessage('error.username'));
     }
   });
 

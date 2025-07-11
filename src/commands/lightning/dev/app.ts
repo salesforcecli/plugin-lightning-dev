@@ -74,18 +74,18 @@ export default class LightningDevApp extends SfCommand<void> {
     try {
       sfdxProjectRootPath = await SfProject.resolveProjectPath();
     } catch (error) {
-      return Promise.reject(new Error(messages.getMessage('error.no-project', [(error as Error)?.message ?? ''])));
+      throw new Error(sharedMessages.getMessage('error.no-project', [(error as Error)?.message ?? '']));
     }
 
     const connection = targetOrg.getConnection(undefined);
     const username = connection.getUsername();
     if (!username) {
-      return Promise.reject(new Error(messages.getMessage('error.username')));
+      throw new Error(sharedMessages.getMessage('error.username'));
     }
 
     const localDevEnabled = await OrgUtils.isLocalDevEnabled(connection);
     if (!localDevEnabled) {
-      return Promise.reject(new Error(sharedMessages.getMessage('error.localdev.not.enabled')));
+      throw new Error(sharedMessages.getMessage('error.localdev.not.enabled'));
     }
 
     OrgUtils.ensureMatchingAPIVersion(connection);
@@ -97,7 +97,7 @@ export default class LightningDevApp extends SfCommand<void> {
     const ldpServerToken = appServerIdentity.identityToken;
     const ldpServerId = appServerIdentity.usernameToServerEntityIdMap[username];
     if (!ldpServerId) {
-      return Promise.reject(new Error(messages.getMessage('error.identitydata.entityid')));
+      throw new Error(sharedMessages.getMessage('error.identitydata.entityid'));
     }
 
     const appId = await PreviewUtils.getLightningExperienceAppId(connection, appName, logger);
