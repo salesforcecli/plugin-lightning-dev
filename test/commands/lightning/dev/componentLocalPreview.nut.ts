@@ -10,11 +10,13 @@ import fs from 'node:fs';
 import { expect } from 'chai';
 import { TestSession } from '@salesforce/cli-plugins-testkit';
 import axios from 'axios';
+import * as dotenv from 'dotenv';
 import { toKebabCase } from './helpers/utils.js';
 import { createSfdxProject, createLwcComponent } from './helpers/projectSetup.js';
 import { startLightningDevServer } from './helpers/devServerUtils.js';
 
-// Note: dotenv not available, using process.env directly
+// Load environment variables from .env file
+dotenv.config();
 
 const INSTANCE_URL = process.env.TESTKIT_HUB_INSTANCE;
 const TEST_TIMEOUT_MS = 60_000;
