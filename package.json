@@ -24,15 +24,13 @@
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
-    "@oclif/plugin-command-snapshot": "^5.3.2",
-    "@salesforce/cli": "^2.93.7",
+    "@oclif/plugin-command-snapshot": "^5.3.3",
     "@salesforce/cli-plugins-testkit": "^5.3.39",
     "@salesforce/dev-scripts": "^11.0.2",
     "@salesforce/plugin-command-reference": "^3.1.58",
     "@types/node-fetch": "^2.6.12",
     "@types/xml2js": "^0.4.14",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "dotenv": "^16.5.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-header": "^3.1.1",
@@ -105,7 +103,6 @@
     "prepare": "sf-install",
     "test": "wireit",
     "test:nuts": "nyc mocha \"**/*.nut.ts\" --slow 4500 --timeout 600000 --parallel",
-    "test:nut:local": "nyc mocha \"test/commands/lightning/dev/componentLocalPreview.nut.ts\" --slow 4500 --timeout 600000",
     "test:only": "wireit",
     "unlink-lwr": "yarn unlink @lwrjs/api @lwrjs/app-service @lwrjs/asset-registry @lwrjs/asset-transformer @lwrjs/auth-middleware @lwrjs/base-view-provider @lwrjs/base-view-transformer @lwrjs/client-modules @lwrjs/config @lwrjs/core @lwrjs/dev-proxy-server @lwrjs/diagnostics @lwrjs/esbuild @lwrjs/everywhere @lwrjs/fs-asset-provider @lwrjs/fs-watch @lwrjs/html-view-provider @lwrjs/instrumentation @lwrjs/label-module-provider @lwrjs/lambda @lwrjs/legacy-npm-module-provider @lwrjs/loader @lwrjs/lwc-module-provider @lwrjs/lwc-ssr @lwrjs/markdown-view-provider @lwrjs/module-bundler @lwrjs/module-registry @lwrjs/npm-module-provider @lwrjs/nunjucks-view-provider @lwrjs/o11y @lwrjs/resource-registry @lwrjs/router @lwrjs/security @lwrjs/server @lwrjs/shared-utils @lwrjs/static @lwrjs/tools @lwrjs/types @lwrjs/view-registry lwr",
     "update-snapshots": "node --loader ts-node/esm --no-warnings=ExperimentalWarning \"./bin/dev.js\" snapshot:generate",
@@ -261,10 +258,7 @@
   "exports": "./lib/index.js",
   "type": "module",
   "volta": {
-    "node": "20.19.3",
+    "node": "20.11.0",
     "yarn": "1.22.22"
-  },
-  "resolutions": {
-    "@salesforce/core": "^8.15.0"
   }
 }
