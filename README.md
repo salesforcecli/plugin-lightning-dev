@@ -312,6 +312,12 @@ This plugin includes integration (NUT) tests for verifying the Lightning Dev Ser
 
 ### Prerequisites
 
+**Salesforce CLI Installation**
+The Salesforce CLI must be installed and accessible in your system PATH before running integration tests locally. The plugin expects the `sf` command to be available during local test execution.
+
+- Install the Salesforce CLI: https://developer.salesforce.com/tools/sfdxcli
+- Verify installation: `sf --version`
+
 **Connected App Setup**
 Follow the [Connected App Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_connected_app.htm) to:
 
