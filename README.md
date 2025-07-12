@@ -1,7 +1,5 @@
 # plugin-lightning-dev
 
-<!-- CI Test Comment: Testing CI functionality from main branch -->
-
 [![NPM](https://img.shields.io/npm/v/@salesforce/plugin-lightning-dev.svg?label=@salesforce/plugin-lightning-dev)](https://www.npmjs.com/package/@salesforce/plugin-lightning-dev) [![Downloads/week](https://img.shields.io/npm/dw/@salesforce/plugin-lightning-dev.svg)](https://npmjs.org/package/@salesforce/plugin-lightning-dev) [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://opensource.org/license/apache-2-0)
 
 This plugin is bundled with the [Salesforce CLI](https://developer.salesforce.com/tools/sfdxcli). For more information on the CLI, read the [getting started guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm).
@@ -307,5 +305,89 @@ EXAMPLES
 ```
 
 _See code: [src/commands/lightning/dev/site.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/4.3.0/src/commands/lightning/dev/site.ts)_
+
+## Integration Testing
+
+This plugin includes integration (NUT) tests for verifying the Lightning Dev Server functionality using SFDX projects and components. Test data like SFDX projects are created at runtime by the testkit.
+
+### Prerequisites
+
+**Connected App Setup**
+Follow the [Connected App Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_connected_app.htm) to:
+
+- Create a connected app
+- Enable JWT OAuth
+- Configure callback URL and OAuth scopes
+
+**JWT Credentials**
+Follow the [Private Key and Certificate Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_key_and_cert.htm) to:
+
+- Generate a private key and certificate
+- Upload certificate to the connected app
+
+Set the environment variables (copy from `.env.template` to `.env`):
+
+- `TESTKIT_JWT_CLIENT_ID` - Your connected app client ID
+- `TESTKIT_JWT_KEY` - Your private key contents
+- `TESTKIT_HUB_INSTANCE` - Salesforce instance URL
+- `TESTKIT_ORG_USERNAME` - Your org username for testing
+- `OPEN_BROWSER` - Control browser opening (true/false)
+
+### Running Tests
+
+Run all or specific integration tests (NUTs) via:
+
+```bash
+# Run all integration tests
+yarn test:nuts
+
+# Run component local preview test (local development only)
+yarn test:nut:local
+
+# Run by category
+yarn test:nuts "test/commands/lightning/dev/component*.nut.ts"
+
+# Run with environment variables
+OPEN_BROWSER=false NODE_ENV=production yarn test:nuts
+```
+
+### Local-Only Tests
+
+Some NUT tests are designed to run only in local development environments and are automatically skipped in CI pipelines. These tests typically:
+
+- Require specific local setup or resources
+- Are too slow for CI environments
+- Need manual verification or debugging
+- Test features that aren't suitable for automated testing
+
+**Component Local Preview Test**
+The `componentLocalPreview.nut.ts` test verifies that the Lightning Dev Server starts correctly and responds to component URLs. This test:
+
+- Runs only locally (skipped when `CI=true`)
+- Tests server startup and HTTP response
+- Verifies component URL routing (`/c-hello-world/`)
+- Can be run with: `yarn test:nut:local`
+
+### Test Data Structure
+
+The testkit creates SFDX projects and test data at runtime:
+
+```
+test/
+├── testdata/
+│   ├── lwc/
+│   │   └── helloWorld/
+│   └── project-definition.json
+```
+
+### Automation with TestKit
+
+Tests use [@salesforce/cli-plugins-testkit](https://github.com/salesforcecli/cli-plugins-testkit) for:
+
+- Temporary project creation at runtime
+- JWT-based org login
+- Cleanup after each run
+
+No manual authentication is needed. Set the required environment variables once and run tests headlessly.
 
 <!-- commandsstop -->
