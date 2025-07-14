@@ -1,3 +1,21 @@
+## [4.3.3](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.3.2...4.3.3) (2025-07-13)
+
+### Bug Fixes
+
+- **deps:** bump @oclif/core from 4.4.1 to 4.5.0 ([#451](https://github.com/salesforcecli/plugin-lightning-dev/issues/451)) ([a58278d](https://github.com/salesforcecli/plugin-lightning-dev/commit/a58278d6943ca764baf66d85a391be20a1811680))
+
+## [4.3.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.3.1...4.3.2) (2025-07-13)
+
+### Bug Fixes
+
+- **deps:** bump @salesforce/lwc-dev-mobile-core ([#452](https://github.com/salesforcecli/plugin-lightning-dev/issues/452)) ([950b544](https://github.com/salesforcecli/plugin-lightning-dev/commit/950b544b56bf0c00ee319504b719ce6572b88339))
+
+## [4.3.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.3.0...4.3.1) (2025-07-13)
+
+### Bug Fixes
+
+- **deps:** bump @salesforce/core from 8.15.0 to 8.18.1 ([#454](https://github.com/salesforcecli/plugin-lightning-dev/issues/454)) ([0d617a6](https://github.com/salesforcecli/plugin-lightning-dev/commit/0d617a6320c5df58ee2389925f4f994a49e9b6bd))
+
 # [4.3.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.2.0...4.3.0) (2025-07-11)
 
 ### Features
