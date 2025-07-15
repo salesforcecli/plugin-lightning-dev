@@ -57,3 +57,8 @@ bld
 # sf cli
 .sf
 .sfdx
+
+stdout*
+stderr*
+
+.env
