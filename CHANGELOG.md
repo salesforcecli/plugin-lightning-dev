@@ -1,3 +1,9 @@
+# [4.4.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.3.3...4.4.0) (2025-07-15)
+
+### Features
+
+- off-core integration test on your local @W-18852148@ ([#435](https://github.com/salesforcecli/plugin-lightning-dev/issues/435)) ([34ed97f](https://github.com/salesforcecli/plugin-lightning-dev/commit/34ed97f136a8da520e037add61027a7ef6a68ffa))
+
 ## [4.3.3](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.3.2...4.3.3) (2025-07-13)
 
 ### Bug Fixes
