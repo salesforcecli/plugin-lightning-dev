@@ -129,7 +129,23 @@ export default class LightningDevComponent extends SfCommand<void> {
       targetOrgArg
     );
 
-    // Open the browser and navigate to the right page
-    await this.config.runCommand('org:open', launchArguments);
+    // Construct and log the full URL that will be opened
+    const connection = targetOrg.getConnection();
+
+    const decodedFullUrl = PreviewUtils.generateComponentPreviewUrl(
+      connection.instanceUrl,
+      ldpServerUrl,
+      ldpServerId,
+      componentName,
+      false
+    );
+
+    // Open the browser and navigate to the right page (unless OPEN_BROWSER is set to true)
+    if (process.env.OPEN_BROWSER !== 'false') {
+      await this.config.runCommand('org:open', launchArguments);
+    } else {
+      // Otherwise, log the URL to the console
+      this.log(`PreviewURL: ${decodedFullUrl}`);
+    }
   }
 }
