@@ -2,14 +2,14 @@
 
 ## Project Overview
 
-This is a Salesforce CLI plugin for Lightning development tools (LEX, Mobile, and Experience Sites). It's built with TypeScript, uses yarn for package management, and leverages wireit for intelligent build caching and task orchestration.
+This is a Salesforce CLI plugin for Lightning Web Component development (LEX, Mobile, Experience Sites, and Single Component Preview). It's built with TypeScript, uses yarn for package management, and leverages wireit for intelligent build caching and task orchestration.
 
 ## Key Technologies
 
 - **TypeScript**: Primary language for the plugin
 - **Wireit**: Build task orchestration with intelligent caching
 - **Yarn**: Package manager (v1.22.22 as specified in volta config)
-- **Node.js**: Runtime (v20.11.0 as specified in volta config)
+- **Node.js**: This project supports all active and LTS versions of node
 - **Salesforce CLI (sf)**: The platform this plugin extends
 - **Lightning Web Components (LWC)**: Core technology for component development
 - **Jest/Mocha**: Testing frameworks
@@ -86,7 +86,7 @@ Why both commands are needed:
 ### Alternative Cleaning Options
 
 - `yarn clean`: Light cleanup (preserves some caches)
-- Individual task clearing: Delete specific folders in `.wireit/` if you know which task is problematic
+- Individual task clearing: Delete specific folders in `.wireit/` or `.eslintcache` if you know which task is problematic
 
 ## Development Workflow Best Practices
 
@@ -109,21 +109,11 @@ yarn test:only      # Just unit tests
 yarn test:nuts      # Integration tests (slower)
 ```
 
-### Local Development
-
-```bash
-# Use local dev command instead of global sf
-./bin/dev lightning dev component
-./bin/dev lightning dev site
-./bin/dev lightning dev app
-```
-
 ### Linking for Testing
 
 ```bash
 # Link plugin to global sf CLI for testing
 sf plugins link .
-sf plugins  # Verify plugin is linked
 ```
 
 ## Project-Specific Context
@@ -163,7 +153,7 @@ This plugin provides three main commands:
 - `package.json`: Contains all wireit task definitions
 - `tsconfig.json`: TypeScript configuration
 - `lwc.config.json`: Lightning Web Components configuration
-- `.eslintcache`: ESLint cache file
+- `.eslintcache`: ESLint cache file (can be safely deleted)
 
 ## Coding Guidelines
 
@@ -194,25 +184,8 @@ This plugin provides three main commands:
 2. **Don't ignore wireit cache issues**: If builds seem wrong, clean and rebuild
 3. **Don't skip the yarn install step**: After `clean-all`, always reinstall dependencies
 4. **Don't modify generated files**: Focus changes on `src/` directory
-5. **Don't use global sf CLI for development**: Use `./bin/dev` for local testing
+5. **Don't ignore eslint cache issues**: If linting shouldn't be failing, always try deleting the `.eslintcache`
 
 ## Emergency Troubleshooting
-
-If everything seems broken:
-
-```bash
-# Nuclear option - start completely fresh
-rm -rf node_modules .wireit lib *.tsbuildinfo .eslintcache
-yarn install
-yarn build
-```
-
-If wireit tasks seem stuck or corrupted:
-
-```bash
-# Just clear wireit cache
-rm -rf .wireit
-yarn build
-```
 
 Remember: **When in doubt, `yarn clean-all && yarn install && yarn build`** - this solves 90% of build-related issues in this project.
