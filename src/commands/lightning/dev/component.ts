@@ -18,7 +18,15 @@ Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.component');
 const sharedMessages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'shared.utils');
 
-export default class LightningDevComponent extends SfCommand<void> {
+export type ComponentPreviewResult = {
+  instanceUrl: string;
+  ldpServerUrl: string;
+  ldpServerId: string;
+  componentName: string;
+  previewUrl: string;
+};
+
+export default class LightningDevComponent extends SfCommand<ComponentPreviewResult> {
   public static readonly summary = messages.getMessage('summary');
   public static readonly description = messages.getMessage('description');
   public static readonly examples = messages.getMessages('examples');
@@ -29,6 +37,7 @@ export default class LightningDevComponent extends SfCommand<void> {
       char: 'n',
       requiredOrDefaulted: false,
     }),
+    'api-version': Flags.orgApiVersion(),
     'client-select': Flags.boolean({
       summary: messages.getMessage('flags.client-select.summary'),
       char: 'c',
@@ -37,7 +46,7 @@ export default class LightningDevComponent extends SfCommand<void> {
     'target-org': Flags.requiredOrg(),
   };
 
-  public async run(): Promise<void> {
+  public async run(): Promise<ComponentPreviewResult> {
     const { flags } = await this.parse(LightningDevComponent);
     const logger = await Logger.child(this.ctor.name);
     const project = await SfProject.resolve();
@@ -54,6 +63,7 @@ export default class LightningDevComponent extends SfCommand<void> {
     let componentName = flags['name'];
     const clientSelect = flags['client-select'];
     const targetOrg = flags['target-org'];
+    const apiVersion = flags['api-version'];
 
     const { ldpServerId, ldpServerToken } = await PreviewUtils.initializePreviewConnection(targetOrg);
 
@@ -65,41 +75,41 @@ export default class LightningDevComponent extends SfCommand<void> {
     const ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(Platform.desktop, serverPorts, logger);
     logger.debug(`Local Dev Server url is ${ldpServerUrl}`);
 
-    const namespacePaths = await ComponentUtils.getNamespacePaths(project);
-    const componentPaths = await ComponentUtils.getAllComponentPaths(namespacePaths);
-    if (!componentPaths) {
-      throw new Error(messages.getMessage('error.directory'));
-    }
-
-    const components = (
-      await Promise.all(
-        componentPaths.map(async (componentPath) => {
-          let xml;
-
-          try {
-            xml = await ComponentUtils.getComponentMetadata(componentPath);
-          } catch (err) {
-            this.warn(messages.getMessage('error.component-metadata', [componentPath]));
-          }
-
-          // components must have meta xml to be previewed
-          if (!xml) {
-            return undefined;
-          }
-
-          const name = path.basename(componentPath);
-          const label = ComponentUtils.componentNameToTitleCase(name);
-
-          return {
-            name,
-            label: xml.LightningComponentBundle.masterLabel ?? label,
-            description: xml.LightningComponentBundle.description ?? '',
-          };
-        })
-      )
-    ).filter((component) => !!component);
-
     if (!clientSelect) {
+      const namespacePaths = await ComponentUtils.getNamespacePaths(project);
+      const componentPaths = await ComponentUtils.getAllComponentPaths(namespacePaths);
+      if (!componentPaths) {
+        throw new Error(messages.getMessage('error.directory'));
+      }
+
+      const components = (
+        await Promise.all(
+          componentPaths.map(async (componentPath) => {
+            let xml;
+
+            try {
+              xml = await ComponentUtils.getComponentMetadata(componentPath);
+            } catch (err) {
+              this.warn(messages.getMessage('error.component-metadata', [componentPath]));
+            }
+
+            // components must have meta xml to be previewed
+            if (!xml) {
+              return undefined;
+            }
+
+            const name = path.basename(componentPath);
+            const label = ComponentUtils.componentNameToTitleCase(name);
+
+            return {
+              name,
+              label: xml.LightningComponentBundle.masterLabel ?? label,
+              description: xml.LightningComponentBundle.description ?? '',
+            };
+          })
+        )
+      ).filter((component) => !!component);
+
       if (componentName) {
         // validate that the component exists before launching the server
         const match = components.find(
@@ -119,7 +129,9 @@ export default class LightningDevComponent extends SfCommand<void> {
       }
     }
 
-    await startLWCServer(logger, sfdxProjectRootPath, ldpServerToken, Platform.desktop, serverPorts);
+    if (process.env.LAUNCH_SERVER !== 'false') {
+      await startLWCServer(logger, sfdxProjectRootPath, ldpServerToken, Platform.desktop, serverPorts);
+    }
 
     const targetOrgArg = PreviewUtils.getTargetOrgFromArguments(this.argv);
     const launchArguments = PreviewUtils.generateComponentPreviewLaunchArguments(
@@ -130,9 +142,9 @@ export default class LightningDevComponent extends SfCommand<void> {
     );
 
     // Construct and log the full URL that will be opened
-    const connection = targetOrg.getConnection();
+    const connection = targetOrg.getConnection(apiVersion);
 
-    const decodedFullUrl = PreviewUtils.generateComponentPreviewUrl(
+    const previewUrl = PreviewUtils.generateComponentPreviewUrl(
       connection.instanceUrl,
       ldpServerUrl,
       ldpServerId,
@@ -140,12 +152,20 @@ export default class LightningDevComponent extends SfCommand<void> {
       false
     );
 
+    // Prepare the result for JSON output
+    const result: ComponentPreviewResult = {
+      instanceUrl: connection.instanceUrl,
+      ldpServerUrl,
+      ldpServerId,
+      componentName: componentName ?? '',
+      previewUrl,
+    };
+
     // Open the browser and navigate to the right page (unless OPEN_BROWSER is set to true)
     if (process.env.OPEN_BROWSER !== 'false') {
       await this.config.runCommand('org:open', launchArguments);
-    } else {
-      // Otherwise, log the URL to the console
-      this.log(`PreviewURL: ${decodedFullUrl}`);
     }
+
+    return result;
   }
 }
