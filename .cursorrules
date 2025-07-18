@@ -1,0 +1,191 @@
+# Salesforce CLI Plugin Lightning Dev - Cursor Rules
+
+## Project Overview
+
+This is a Salesforce CLI plugin for Lightning Web Component development (LEX, Mobile, Experience Sites, and Single Component Preview). It's built with TypeScript, uses yarn for package management, and leverages wireit for intelligent build caching and task orchestration.
+
+## Key Technologies
+
+- **TypeScript**: Primary language for the plugin
+- **Wireit**: Build task orchestration with intelligent caching
+- **Yarn**: Package manager (v1.22.22 as specified in volta config)
+- **Node.js**: This project supports all active and LTS versions of node
+- **Salesforce CLI (sf)**: The platform this plugin extends
+- **Lightning Web Components (LWC)**: Core technology for component development
+- **Jest/Mocha**: Testing frameworks
+
+## Understanding Wireit Caching
+
+### What is Wireit?
+
+Wireit is a build orchestration tool that provides:
+
+- **Incremental builds**: Only rebuilds what has changed
+- **Intelligent caching**: Stores build outputs in `.wireit/` directory
+- **Task dependencies**: Automatically runs dependent tasks in correct order
+- **Parallel execution**: Runs independent tasks concurrently
+
+### Wireit Cache Location
+
+- Cache is stored in `.wireit/` directory at the project root
+- Contains fingerprints and outputs from previous builds
+- Can become corrupted or inconsistent, leading to build errors
+
+### Common Wireit Tasks in This Project
+
+- `build`: Main build task (depends on compile + lint)
+- `compile`: TypeScript compilation with incremental builds
+- `lint`: ESLint with caching
+- `test`: Comprehensive testing including unit tests, command reference, deprecation policy
+- `format`: Prettier formatting
+
+## Troubleshooting Build Issues
+
+### When to Run `clean-all`
+
+Run `yarn clean-all` when experiencing:
+
+- **Mysterious TypeScript errors** that don't match the actual code
+- **Outdated build outputs** not reflecting recent changes
+- **Wireit dependency errors** or inconsistent cache states
+- **"Cannot find module" errors** for modules that clearly exist
+- **Incremental builds failing** but full rebuilds work
+- **Test failures** that don't reproduce when running tests individually
+- **Linting errors** on unchanged files
+
+### The `clean-all` Process
+
+```bash
+# This command cleans ALL build artifacts and caches
+yarn clean-all
+```
+
+What `clean-all` does:
+
+- Runs `sf-clean all` which removes:
+  - `lib/` directory (compiled output)
+  - `.wireit/` directory (all cached tasks and fingerprints)
+  - `*.tsbuildinfo` files (TypeScript incremental compilation cache)
+  - `.eslintcache` file (ESLint cache)
+  - Other temporary build artifacts
+
+### Post-Cleanup Setup
+
+**CRITICAL**: After running `clean-all`, you must re-setup the environment:
+
+```bash
+# Always run these commands after clean-all
+yarn install && yarn build
+```
+
+Why both commands are needed:
+
+1. `yarn install`: Ensures all dependencies are properly installed and linked
+2. `yarn build`: Rebuilds all artifacts and re-populates wireit cache
+
+### Alternative Cleaning Options
+
+- `yarn clean`: Light cleanup (preserves some caches)
+- Individual task clearing: Delete specific folders in `.wireit/` or `.eslintcache` if you know which task is problematic
+
+## Development Workflow Best Practices
+
+### Starting Development
+
+```bash
+# Fresh start (if needed)
+yarn clean-all
+yarn install && yarn build
+
+# Normal development
+yarn build  # Builds incrementally using wireit cache
+```
+
+### Running Tests
+
+```bash
+yarn test           # Full test suite with all checks
+yarn test:only      # Just unit tests
+yarn test:nuts      # Integration tests (slower)
+```
+
+### Linking for Testing
+
+```bash
+# Link plugin to global sf CLI for testing
+sf plugins link .
+```
+
+## Project-Specific Context
+
+### Lightning Development Commands
+
+This plugin provides three main commands:
+
+- `sf lightning dev component`: Preview LWC components locally
+- `sf lightning dev site`: Preview Experience Cloud sites locally
+- `sf lightning dev app`: Preview Lightning apps locally
+
+### LWR (Lightning Web Runtime) Integration
+
+- Uses LWR for server-side rendering and local development
+- Has special yarn scripts for linking/unlinking LWR dependencies
+- `__lwr_cache__/` directory stores LWR-specific cache
+
+### API Version Management
+
+- Supports multiple Salesforce API versions (62.0-65.0)
+- Has version mappings in `apiVersionMetadata` in package.json
+- Different tags target different org versions
+
+## File Structure Understanding
+
+### Key Directories
+
+- `src/`: Source TypeScript files
+- `lib/`: Compiled JavaScript output (generated)
+- `test/`: All test files (.test.ts, .nut.ts)
+- `messages/`: CLI command help text and internationalization
+- `.wireit/`: Build cache (can be safely deleted)
+
+### Important Files
+
+- `package.json`: Contains all wireit task definitions
+- `tsconfig.json`: TypeScript configuration
+- `lwc.config.json`: Lightning Web Components configuration
+- `.eslintcache`: ESLint cache file (can be safely deleted)
+
+## Coding Guidelines
+
+### TypeScript Standards
+
+- Use strict TypeScript compilation settings
+- Follow Salesforce coding standards
+- Prefer explicit types over `any`
+- Use proper JSDoc comments for CLI commands
+
+### Testing Requirements
+
+- Unit tests for all new functionality
+- Integration tests (nuts) for CLI commands
+- Minimum 95% code coverage requirement
+- Mock external dependencies appropriately
+
+### CLI Command Development
+
+- Follow oclif patterns for command structure
+- Use proper message files for user-facing text
+- Include comprehensive help text and examples
+- Handle errors gracefully with user-friendly messages
+
+## Common Pitfalls to Avoid
+
+1. **Don't commit build artifacts**: `lib/` directory should never be committed
+2. **Don't ignore wireit cache issues**: If builds seem wrong, clean and rebuild
+3. **Don't skip the yarn install step**: After `clean-all`, always reinstall dependencies
+4. **Don't modify generated files**: Focus changes on `src/` directory
+5. **Don't ignore eslint cache issues**: If linting shouldn't be failing, always try deleting the `.eslintcache`
+
+## Emergency Troubleshooting
+
+Remember: **When in doubt, `yarn clean-all && yarn install && yarn build`** - this solves 90% of build-related issues in this project.
