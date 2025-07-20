@@ -39,7 +39,7 @@
     "eslint-plugin-sf-plugin": "^1.20.27",
     "eslint-plugin-unicorn": "^50.0.1",
     "esmock": "^2.7.1",
-    "oclif": "^4.20.1",
+    "oclif": "^4.21.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   },
