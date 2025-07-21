@@ -2345,10 +2345,10 @@
     "@lwc/style-compiler" "8.20.1"
     "@lwc/template-compiler" "8.20.1"
 
-"@lwc/dev-server-plugin-lex@13.0.30":
-  version "13.0.30"
-  resolved "https://registry.yarnpkg.com/@lwc/dev-server-plugin-lex/-/dev-server-plugin-lex-13.0.30.tgz#ba09cf1c4747fb8e2211fc40df3b131d7afcab7a"
-  integrity sha512-hX1cQNFkbR3c3IExK0085bl0IGxFXCztE59yPvSAuOclaijX4tjDTwD/qt5VMC+w02Jxr7U0HIMmRF3l9e6ZWw==
+"@lwc/dev-server-plugin-lex@13.0.31":
+  version "13.0.31"
+  resolved "https://registry.yarnpkg.com/@lwc/dev-server-plugin-lex/-/dev-server-plugin-lex-13.0.31.tgz#5f8d405c30b0e7f1664459860db4ee01d1234232"
+  integrity sha512-udYnD7j8e0kNrlflTycisRqZ5y0vzyVBCHqEf8Hs+ShuUe6BeYgWz1OFuhpf26NK0ykyJrzkZZPkRTeSoeeEYA==
   dependencies:
     magic-string "~0.30.17"
 
@@ -2398,18 +2398,18 @@
   dependencies:
     "@lwc/shared" "8.20.1"
 
-"@lwc/lwc-dev-server-types@13.0.30":
-  version "13.0.30"
-  resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server-types/-/lwc-dev-server-types-13.0.30.tgz#adc1e2c3b3f1b5ff524149e9a0acbe87beb841bb"
-  integrity sha512-N0RFpkuEsuxqs8E0Gq64aUtP2SyXZ1wcKPtiM2PqCrIBh9fBThpexDtVmFNPKrfqUhA9nf+CwPpt9yAH9CYxwQ==
+"@lwc/lwc-dev-server-types@13.0.31":
+  version "13.0.31"
+  resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server-types/-/lwc-dev-server-types-13.0.31.tgz#d10eb43a52fa4ea2a8a2def2adfb22e21e100f48"
+  integrity sha512-yjoYNjb7FKavyHL7JmVQvvFZH+DVU8xeoQN4jQLZX5I9RoZDEhnWaIHjM53V5QlqpMRNKyeOF02nxhm700vwDA==
 
-"@lwc/lwc-dev-server@~13.0.30":
-  version "13.0.30"
-  resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server/-/lwc-dev-server-13.0.30.tgz#321413ec51392205a4e966c1dd6d3f859997ff6c"
-  integrity sha512-rXmg3Q3k6KykH9/JYp7IQeiJB+zO9UqGo6JqSHVwCVlvNwdtJA5D/4x4nlcSGfeHte1trqjMlR4K4JHGuM2gIQ==
+"@lwc/lwc-dev-server@~13.0.31":
+  version "13.0.31"
+  resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server/-/lwc-dev-server-13.0.31.tgz#b2759dee70e1da8530fdd23e79615028a36a6291"
+  integrity sha512-nc+o/N3qJ3QFyDdYYixw9Gu1pJvZ9AtJizW3s24PvVtzWGD8wxqcNKgn+Z62VbbyQmrO0jSTjaIULwB0g564KA==
   dependencies:
-    "@lwc/lwc-dev-server-types" "13.0.30"
-    "@lwc/sfdc-lwc-compiler" "13.0.30"
+    "@lwc/lwc-dev-server-types" "13.0.31"
+    "@lwc/sfdc-lwc-compiler" "13.0.31"
     chalk "~5.4.1"
     chokidar "~3.6.0"
     commander "~10.0.0"
@@ -2417,15 +2417,15 @@
     glob "^10.4.5"
     ws "^8.18.2"
 
-"@lwc/metadata@13.0.30":
-  version "13.0.30"
-  resolved "https://registry.yarnpkg.com/@lwc/metadata/-/metadata-13.0.30.tgz#78afd6138b82003d48d35493aedafc74e0019172"
-  integrity sha512-lHdBhK2viOwCh0T6eh9yjjr6lmnL2Y2UBS+/Gk4duxnDURCxaMJMtU8jLGWoClXohXZ2qu9S3JZKto9AQHm0iQ==
+"@lwc/metadata@13.0.31":
+  version "13.0.31"
+  resolved "https://registry.yarnpkg.com/@lwc/metadata/-/metadata-13.0.31.tgz#bf1bdab2f23add8993e3f48cfc154b57e7be1f77"
+  integrity sha512-UacXEnc+xjWFfp5aLt9IntmqnsBpDgOZpf4v+BuvVwQoDv6IIYxWoatCBOqR/5Bf+kcAtjHSpaysYIDlIi+26A==
   dependencies:
     "@babel/parser" "~7.27.5"
     "@babel/traverse" "~7.27.4"
     "@babel/types" "~7.27.6"
-    "@lwc/sfdc-compiler-utils" "13.0.30"
+    "@lwc/sfdc-compiler-utils" "13.0.31"
     postcss "~8.5.5"
     postcss-selector-parser "~6.1.2"
     postcss-value-parser "~4.2.0"
@@ -2447,15 +2447,15 @@
     "@lwc/shared" "8.20.1"
     "@rollup/pluginutils" "~5.1.4"
 
-"@lwc/sfdc-compiler-utils@13.0.30":
-  version "13.0.30"
-  resolved "https://registry.yarnpkg.com/@lwc/sfdc-compiler-utils/-/sfdc-compiler-utils-13.0.30.tgz#703334c60a8cc944cc7bcb34448c92cf59793c4a"
-  integrity sha512-BkQqdRSaQWnmRBK+jXw6hq2c1lQdo5DvPWzFIJWBBfUpgsuhaENblfT+NSwu2NrUCqG0s60IQS+v1oV3QykHJw==
+"@lwc/sfdc-compiler-utils@13.0.31":
+  version "13.0.31"
+  resolved "https://registry.yarnpkg.com/@lwc/sfdc-compiler-utils/-/sfdc-compiler-utils-13.0.31.tgz#afb7b51aee2646c1bc300c59005e9d6a05146db9"
+  integrity sha512-NdQxSjrSmVPSEdnkfmv7658mFUoQU5jMduUJ9QW9D8VLvnc5ro0rJLvngINkiC3SASr0w9QNOWRXZGJyYWQlQA==
 
-"@lwc/sfdc-lwc-compiler@13.0.30", "@lwc/sfdc-lwc-compiler@~13.0.30":
-  version "13.0.30"
-  resolved "https://registry.yarnpkg.com/@lwc/sfdc-lwc-compiler/-/sfdc-lwc-compiler-13.0.30.tgz#5f4de7de0fa067c050ab8fd466f84ed247902954"
-  integrity sha512-Qw6He3JFMScE8hgIEnvAP+a5ddBx7EnoEKdEZ++txYB4ae6VrTo/DCGc8oD7kDewvrlIVAmvfLX4FYHYbB7zag==
+"@lwc/sfdc-lwc-compiler@13.0.31", "@lwc/sfdc-lwc-compiler@~13.0.31":
+  version "13.0.31"
+  resolved "https://registry.yarnpkg.com/@lwc/sfdc-lwc-compiler/-/sfdc-lwc-compiler-13.0.31.tgz#3d33c04e00be3558b0227a1df500321bff5f3e82"
+  integrity sha512-o5N2WJIbD0ZtpUJxdURYiVWvSJjUxZfryRfwvkKq7UBgb9AE7Wp6hncj2ozHFkOpm5vQVQXPkYLoIYow6VaymQ==
   dependencies:
     "@babel/core" "7.27.4"
     "@babel/parser" "7.27.5"
@@ -2464,11 +2464,11 @@
     "@babel/traverse" "7.27.4"
     "@babel/types" "7.27.6"
     "@komaci/esm-generator" "256.0.1"
-    "@lwc/dev-server-plugin-lex" "13.0.30"
+    "@lwc/dev-server-plugin-lex" "13.0.31"
     "@lwc/eslint-plugin-lwc" "3.0.0-beta.2"
     "@lwc/eslint-plugin-lwc-platform" "6.0.0-beta.7"
-    "@lwc/metadata" "13.0.30"
-    "@lwc/sfdc-compiler-utils" "13.0.30"
+    "@lwc/metadata" "13.0.31"
+    "@lwc/sfdc-compiler-utils" "13.0.31"
     "@rollup/plugin-babel" "^6.0.4"
     "@rollup/plugin-replace" "^6.0.2"
     "@rollup/wasm-node" "4.10.0"
