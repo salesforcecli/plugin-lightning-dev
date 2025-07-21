@@ -175,8 +175,8 @@ export default class LightningDevSite extends SfCommand<void> {
     const logger = await Logger.child(this.ctor.name);
     await startLWCServer(logger, sfdxProjectRootPath, ldpServerToken, Platform.desktop, serverPorts);
     const url = new URL(previewUrl);
-    url.searchParams.set('aura.lwcDevServerUrl', ldpServerUrl);
-    url.searchParams.set('aura.lwcDevServerId', ldpServerId);
+    url.searchParams.set('aura.ldpServerUrl', ldpServerUrl);
+    url.searchParams.set('aura.ldpServerId', ldpServerId);
     url.searchParams.set('lwc.mode', 'dev');
     await open(url.toString());
   }
