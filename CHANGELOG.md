@@ -1,3 +1,9 @@
+## [4.4.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.0...4.4.1) (2025-07-21)
+
+### Bug Fixes
+
+- query params for site ([#464](https://github.com/salesforcecli/plugin-lightning-dev/issues/464)) ([4c7081c](https://github.com/salesforcecli/plugin-lightning-dev/commit/4c7081cd8bf2d78da274990feca18ecff3fda2a4))
+
 # [4.4.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.3.3...4.4.0) (2025-07-15)
 
 ### Features
