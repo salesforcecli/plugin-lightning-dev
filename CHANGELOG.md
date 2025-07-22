@@ -1,3 +1,9 @@
+## [4.4.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.1...4.4.2) (2025-07-22)
+
+### Bug Fixes
+
+- **deps:** bump form-data from 4.0.0 to 4.0.4 in the npm_and_yarn group ([#466](https://github.com/salesforcecli/plugin-lightning-dev/issues/466)) ([c3e8106](https://github.com/salesforcecli/plugin-lightning-dev/commit/c3e810634e1e24eb9b89f087a56f6614a582058f))
+
 ## [4.4.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.0...4.4.1) (2025-07-21)
 
 ### Bug Fixes
