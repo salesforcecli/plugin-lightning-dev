@@ -1,3 +1,9 @@
+## [4.4.3](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.2...4.4.3) (2025-07-24)
+
+### Bug Fixes
+
+- **deps:** bump axios from 1.10.0 to 1.11.0 in the npm_and_yarn group ([#467](https://github.com/salesforcecli/plugin-lightning-dev/issues/467)) ([4f8d713](https://github.com/salesforcecli/plugin-lightning-dev/commit/4f8d713e3a67c6e88991bc78d6b5bab357bfa891))
+
 ## [4.4.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.1...4.4.2) (2025-07-22)
 
 ### Bug Fixes
