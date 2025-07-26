@@ -2352,10 +2352,10 @@
     "@lwc/style-compiler" "8.20.1"
     "@lwc/template-compiler" "8.20.1"
 
-"@lwc/dev-server-plugin-lex@13.0.31":
-  version "13.0.31"
-  resolved "https://registry.yarnpkg.com/@lwc/dev-server-plugin-lex/-/dev-server-plugin-lex-13.0.31.tgz#5f8d405c30b0e7f1664459860db4ee01d1234232"
-  integrity sha512-udYnD7j8e0kNrlflTycisRqZ5y0vzyVBCHqEf8Hs+ShuUe6BeYgWz1OFuhpf26NK0ykyJrzkZZPkRTeSoeeEYA==
+"@lwc/dev-server-plugin-lex@13.0.32":
+  version "13.0.32"
+  resolved "https://registry.yarnpkg.com/@lwc/dev-server-plugin-lex/-/dev-server-plugin-lex-13.0.32.tgz#77ada03665e3ec4df76febc7842a2806722bf779"
+  integrity sha512-526OaIItJVAP6esh8u0vyYMyw1medJsYTlqbhxrwJbc2aj0iudaKKgMX9NJAud0pleZaCIhM2S3/SO9RoGXWtw==
   dependencies:
     magic-string "~0.30.17"
 
@@ -2405,18 +2405,18 @@
   dependencies:
     "@lwc/shared" "8.20.1"
 
-"@lwc/lwc-dev-server-types@13.0.31":
-  version "13.0.31"
-  resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server-types/-/lwc-dev-server-types-13.0.31.tgz#d10eb43a52fa4ea2a8a2def2adfb22e21e100f48"
-  integrity sha512-yjoYNjb7FKavyHL7JmVQvvFZH+DVU8xeoQN4jQLZX5I9RoZDEhnWaIHjM53V5QlqpMRNKyeOF02nxhm700vwDA==
+"@lwc/lwc-dev-server-types@13.0.32":
+  version "13.0.32"
+  resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server-types/-/lwc-dev-server-types-13.0.32.tgz#54b599c79e74723d9b928e71b90dd84290ecbcde"
+  integrity sha512-k/2zOdI7AtRjwcgMq8mwlP9YjYqTM2D7SbkAZPVNZlvxCEODlbpnd0bjgK8qAQL6xPbipKXNW6gfuCq7HTwk7A==
 
-"@lwc/lwc-dev-server@~13.0.31":
-  version "13.0.31"
-  resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server/-/lwc-dev-server-13.0.31.tgz#b2759dee70e1da8530fdd23e79615028a36a6291"
-  integrity sha512-nc+o/N3qJ3QFyDdYYixw9Gu1pJvZ9AtJizW3s24PvVtzWGD8wxqcNKgn+Z62VbbyQmrO0jSTjaIULwB0g564KA==
+"@lwc/lwc-dev-server@~13.0.32":
+  version "13.0.32"
+  resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server/-/lwc-dev-server-13.0.32.tgz#f4fda42744f25c4eed505a919203fe515203e834"
+  integrity sha512-dN+KSvGtLZjmmOuHpKlFEX18SjjvipszKM5YqyJ4yKwNH/53HyIlm0p3P74lyZi0n0rkJSRUbFRDPyGhvmd2gA==
   dependencies:
-    "@lwc/lwc-dev-server-types" "13.0.31"
-    "@lwc/sfdc-lwc-compiler" "13.0.31"
+    "@lwc/lwc-dev-server-types" "13.0.32"
+    "@lwc/sfdc-lwc-compiler" "13.0.32"
     chalk "~5.4.1"
     chokidar "~3.6.0"
     commander "~10.0.0"
@@ -2424,15 +2424,15 @@
     glob "^10.4.5"
     ws "^8.18.2"
 
-"@lwc/metadata@13.0.31":
-  version "13.0.31"
-  resolved "https://registry.yarnpkg.com/@lwc/metadata/-/metadata-13.0.31.tgz#bf1bdab2f23add8993e3f48cfc154b57e7be1f77"
-  integrity sha512-UacXEnc+xjWFfp5aLt9IntmqnsBpDgOZpf4v+BuvVwQoDv6IIYxWoatCBOqR/5Bf+kcAtjHSpaysYIDlIi+26A==
+"@lwc/metadata@13.0.32":
+  version "13.0.32"
+  resolved "https://registry.yarnpkg.com/@lwc/metadata/-/metadata-13.0.32.tgz#410e1e07d8f4d673f3b348f858ec5714cc154ff7"
+  integrity sha512-iCNhU0rhQSAOUtXy841SWa6Yh2Ow0F4NamQu5dB1ySFDbzT2vPNwAS3G47lvGTsmmRpRHf/ySakcRb+NWEOJiQ==
   dependencies:
     "@babel/parser" "~7.27.5"
     "@babel/traverse" "~7.27.4"
     "@babel/types" "~7.27.6"
-    "@lwc/sfdc-compiler-utils" "13.0.31"
+    "@lwc/sfdc-compiler-utils" "13.0.32"
     postcss "~8.5.5"
     postcss-selector-parser "~6.1.2"
     postcss-value-parser "~4.2.0"
@@ -2454,15 +2454,15 @@
     "@lwc/shared" "8.20.1"
     "@rollup/pluginutils" "~5.1.4"
 
-"@lwc/sfdc-compiler-utils@13.0.31":
-  version "13.0.31"
-  resolved "https://registry.yarnpkg.com/@lwc/sfdc-compiler-utils/-/sfdc-compiler-utils-13.0.31.tgz#afb7b51aee2646c1bc300c59005e9d6a05146db9"
-  integrity sha512-NdQxSjrSmVPSEdnkfmv7658mFUoQU5jMduUJ9QW9D8VLvnc5ro0rJLvngINkiC3SASr0w9QNOWRXZGJyYWQlQA==
+"@lwc/sfdc-compiler-utils@13.0.32":
+  version "13.0.32"
+  resolved "https://registry.yarnpkg.com/@lwc/sfdc-compiler-utils/-/sfdc-compiler-utils-13.0.32.tgz#c67da1063d8b023982003dc1ac07cc73cda160b6"
+  integrity sha512-tpTlrPCtwMHYqru4A5Hm6BFW/uvJp48EbdAVNmbF0RcPuVN1qCW29zZde1oks0MvEU1bDu6+/vGOdHVg+qgGEQ==
 
-"@lwc/sfdc-lwc-compiler@13.0.31", "@lwc/sfdc-lwc-compiler@~13.0.31":
-  version "13.0.31"
-  resolved "https://registry.yarnpkg.com/@lwc/sfdc-lwc-compiler/-/sfdc-lwc-compiler-13.0.31.tgz#3d33c04e00be3558b0227a1df500321bff5f3e82"
-  integrity sha512-o5N2WJIbD0ZtpUJxdURYiVWvSJjUxZfryRfwvkKq7UBgb9AE7Wp6hncj2ozHFkOpm5vQVQXPkYLoIYow6VaymQ==
+"@lwc/sfdc-lwc-compiler@13.0.32", "@lwc/sfdc-lwc-compiler@~13.0.31":
+  version "13.0.32"
+  resolved "https://registry.yarnpkg.com/@lwc/sfdc-lwc-compiler/-/sfdc-lwc-compiler-13.0.32.tgz#41edfd433794acd5d38e97980193871f5666b762"
+  integrity sha512-qAVfQS0KVFk301Dy4i1Zc3VFb/9Nbkfy+XPBG/TTpOJId/5hP8f42kWyIXG8IX17X2veHpiOitY/dzA4WEDWOQ==
   dependencies:
     "@babel/core" "7.27.4"
     "@babel/parser" "7.27.5"
@@ -2471,11 +2471,11 @@
     "@babel/traverse" "7.27.4"
     "@babel/types" "7.27.6"
     "@komaci/esm-generator" "256.0.1"
-    "@lwc/dev-server-plugin-lex" "13.0.31"
+    "@lwc/dev-server-plugin-lex" "13.0.32"
     "@lwc/eslint-plugin-lwc" "3.0.0-beta.2"
     "@lwc/eslint-plugin-lwc-platform" "6.0.0-beta.7"
-    "@lwc/metadata" "13.0.31"
-    "@lwc/sfdc-compiler-utils" "13.0.31"
+    "@lwc/metadata" "13.0.32"
+    "@lwc/sfdc-compiler-utils" "13.0.32"
     "@rollup/plugin-babel" "^6.0.4"
     "@rollup/plugin-replace" "^6.0.2"
     "@rollup/wasm-node" "4.10.0"
@@ -12072,17 +12072,7 @@ write-file-atomic@^3.0.0:
     signal-exit "^3.0.2"
     typedarray-to-buffer "^3.1.5"
 
-ws@^8.15.0:
-  version "8.18.2"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-8.18.2.tgz#42738b2be57ced85f46154320aabb51ab003705a"
-  integrity sha512-DMricUmwGZUVr++AEAe2uiVM7UoO9MAVZMDu05UQOaUII0lp+zOzLLU4Xqh/JvTqklB1T4uELaaPBKyjE1r4fQ==
-
-ws@^8.18.0:
-  version "8.18.0"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-8.18.0.tgz#0d7505a6eafe2b0e712d232b42279f53bc289bbc"
-  integrity sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw==
-
-ws@^8.18.2:
+ws@^8.15.0, ws@^8.18.0, ws@^8.18.2:
   version "8.18.3"
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.18.3.tgz#b56b88abffde62791c639170400c93dcb0c95472"
   integrity sha512-PEIGCY5tSlUt50cqyMXfCzX+oOPqN0vuGqWzbcJ2xvnkzkq46oOpz7dQaTDBdfICb4N14+GARUDw2XV2N4tvzg==
