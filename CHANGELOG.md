@@ -1,3 +1,9 @@
+## [4.4.5](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.4...4.4.5) (2025-07-27)
+
+### Bug Fixes
+
+- **deps:** bump open from 10.1.2 to 10.2.0 ([#470](https://github.com/salesforcecli/plugin-lightning-dev/issues/470)) ([c81b695](https://github.com/salesforcecli/plugin-lightning-dev/commit/c81b69558a21bd11f5e2de63ad419e0401086198))
+
 ## [4.4.4](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.3...4.4.4) (2025-07-27)
 
 ### Bug Fixes
