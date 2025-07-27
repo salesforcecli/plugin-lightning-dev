@@ -1,3 +1,9 @@
+## [4.4.6](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.5...4.4.6) (2025-07-27)
+
+### Bug Fixes
+
+- **deps:** bump @lwc/lwc-dev-server from 13.0.31 to 13.0.32 ([#469](https://github.com/salesforcecli/plugin-lightning-dev/issues/469)) ([7378fb9](https://github.com/salesforcecli/plugin-lightning-dev/commit/7378fb93057d0703ee9358682e52fcb68b1da0e5))
+
 ## [4.4.5](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.4...4.4.5) (2025-07-27)
 
 ### Bug Fixes
