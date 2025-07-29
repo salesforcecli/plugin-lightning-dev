@@ -1,3 +1,9 @@
+## [4.4.7](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.6...4.4.7) (2025-07-29)
+
+### Bug Fixes
+
+- **deps:** bump @eslint/plugin-kit in the npm_and_yarn group ([#472](https://github.com/salesforcecli/plugin-lightning-dev/issues/472)) ([600f57c](https://github.com/salesforcecli/plugin-lightning-dev/commit/600f57ca7ddf41d7597b1b0afe1963897be9fd69))
+
 ## [4.4.6](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.5...4.4.6) (2025-07-27)
 
 ### Bug Fixes
