@@ -1,3 +1,9 @@
+## [4.4.9](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.8...4.4.9) (2025-08-03)
+
+### Bug Fixes
+
+- **deps:** bump lwc from 8.20.1 to 8.20.2 ([#474](https://github.com/salesforcecli/plugin-lightning-dev/issues/474)) ([3831eda](https://github.com/salesforcecli/plugin-lightning-dev/commit/3831eda5129c637063abbeb627f96f406d6675d0))
+
 ## [4.4.8](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.7...4.4.8) (2025-08-03)
 
 ### Bug Fixes
