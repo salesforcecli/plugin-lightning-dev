@@ -1,3 +1,9 @@
+## [4.4.10](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.9...4.4.10) (2025-08-08)
+
+### Bug Fixes
+
+- bump version number on next ([#478](https://github.com/salesforcecli/plugin-lightning-dev/issues/478)) ([9644d76](https://github.com/salesforcecli/plugin-lightning-dev/commit/9644d76ead0f618cd1a3850670d6ed084d9ba6c0))
+
 ## [4.4.9](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.8...4.4.9) (2025-08-03)
 
 ### Bug Fixes
