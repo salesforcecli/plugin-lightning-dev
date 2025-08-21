@@ -1,3 +1,69 @@
+## [4.4.12](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.11...4.4.12) (2025-08-10)
+
+### Bug Fixes
+
+- **deps:** bump lwc from 8.20.2 to 8.20.4 ([#480](https://github.com/salesforcecli/plugin-lightning-dev/issues/480)) ([90b5bd8](https://github.com/salesforcecli/plugin-lightning-dev/commit/90b5bd894e9ceb0d0b3022ff6d7157f05a46d0d7))
+
+## [4.4.11](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.10...4.4.11) (2025-08-10)
+
+### Bug Fixes
+
+- **deps:** bump @salesforce/core from 8.18.7 to 8.19.1 ([#482](https://github.com/salesforcecli/plugin-lightning-dev/issues/482)) ([2c5b4f2](https://github.com/salesforcecli/plugin-lightning-dev/commit/2c5b4f2f1da8b4b5637148bcb7d0cd5c1308b46a))
+
+## [4.4.10](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.9...4.4.10) (2025-08-08)
+
+### Bug Fixes
+
+- bump version number on next ([#478](https://github.com/salesforcecli/plugin-lightning-dev/issues/478)) ([9644d76](https://github.com/salesforcecli/plugin-lightning-dev/commit/9644d76ead0f618cd1a3850670d6ed084d9ba6c0))
+
+## [4.4.9](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.8...4.4.9) (2025-08-03)
+
+### Bug Fixes
+
+- **deps:** bump lwc from 8.20.1 to 8.20.2 ([#474](https://github.com/salesforcecli/plugin-lightning-dev/issues/474)) ([3831eda](https://github.com/salesforcecli/plugin-lightning-dev/commit/3831eda5129c637063abbeb627f96f406d6675d0))
+
+## [4.4.8](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.7...4.4.8) (2025-08-03)
+
+### Bug Fixes
+
+- **deps:** bump @salesforce/core from 8.18.5 to 8.18.7 ([#475](https://github.com/salesforcecli/plugin-lightning-dev/issues/475)) ([132dcb2](https://github.com/salesforcecli/plugin-lightning-dev/commit/132dcb24f4465e8ad309798d943b8f327f2093aa))
+
+## [4.4.7](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.6...4.4.7) (2025-07-29)
+
+### Bug Fixes
+
+- **deps:** bump @eslint/plugin-kit in the npm_and_yarn group ([#472](https://github.com/salesforcecli/plugin-lightning-dev/issues/472)) ([600f57c](https://github.com/salesforcecli/plugin-lightning-dev/commit/600f57ca7ddf41d7597b1b0afe1963897be9fd69))
+
+## [4.4.6](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.5...4.4.6) (2025-07-27)
+
+### Bug Fixes
+
+- **deps:** bump @lwc/lwc-dev-server from 13.0.31 to 13.0.32 ([#469](https://github.com/salesforcecli/plugin-lightning-dev/issues/469)) ([7378fb9](https://github.com/salesforcecli/plugin-lightning-dev/commit/7378fb93057d0703ee9358682e52fcb68b1da0e5))
+
+## [4.4.5](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.4...4.4.5) (2025-07-27)
+
+### Bug Fixes
+
+- **deps:** bump open from 10.1.2 to 10.2.0 ([#470](https://github.com/salesforcecli/plugin-lightning-dev/issues/470)) ([c81b695](https://github.com/salesforcecli/plugin-lightning-dev/commit/c81b69558a21bd11f5e2de63ad419e0401086198))
+
+## [4.4.4](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.3...4.4.4) (2025-07-27)
+
+### Bug Fixes
+
+- **deps:** bump @salesforce/core from 8.18.1 to 8.18.5 ([#471](https://github.com/salesforcecli/plugin-lightning-dev/issues/471)) ([72587fe](https://github.com/salesforcecli/plugin-lightning-dev/commit/72587fe292b35a7c6d74b9b2d6c5211d6ec8f20a))
+
+## [4.4.3](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.2...4.4.3) (2025-07-24)
+
+### Bug Fixes
+
+- **deps:** bump axios from 1.10.0 to 1.11.0 in the npm_and_yarn group ([#467](https://github.com/salesforcecli/plugin-lightning-dev/issues/467)) ([4f8d713](https://github.com/salesforcecli/plugin-lightning-dev/commit/4f8d713e3a67c6e88991bc78d6b5bab357bfa891))
+
+## [4.4.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.1...4.4.2) (2025-07-22)
+
+### Bug Fixes
+
+- **deps:** bump form-data from 4.0.0 to 4.0.4 in the npm_and_yarn group ([#466](https://github.com/salesforcecli/plugin-lightning-dev/issues/466)) ([c3e8106](https://github.com/salesforcecli/plugin-lightning-dev/commit/c3e810634e1e24eb9b89f087a56f6614a582058f))
+
 ## [4.4.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.0...4.4.1) (2025-07-21)
 
 ### Bug Fixes
