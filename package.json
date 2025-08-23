@@ -36,7 +36,7 @@
     "eslint-config-prettier": "^9.1.2",
     "eslint-plugin-header": "^3.1.1",
     "eslint-plugin-jsdoc": "^46.10.1",
-    "eslint-plugin-sf-plugin": "^1.20.30",
+    "eslint-plugin-sf-plugin": "^1.20.31",
     "eslint-plugin-unicorn": "^50.0.1",
     "esmock": "^2.7.1",
     "oclif": "^4.22.11",
