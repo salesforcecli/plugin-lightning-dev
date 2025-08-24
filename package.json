@@ -26,7 +26,7 @@
   "devDependencies": {
     "@oclif/plugin-command-snapshot": "^5.3.5",
     "@salesforce/cli-plugins-testkit": "^5.3.39",
-    "@salesforce/dev-scripts": "^11.0.2",
+    "@salesforce/dev-scripts": "^11.0.3",
     "@salesforce/plugin-command-reference": "^3.1.65",
     "@types/node-fetch": "^2.6.13",
     "@types/xml2js": "^0.4.14",
