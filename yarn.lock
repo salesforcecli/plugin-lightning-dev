@@ -2056,16 +2056,6 @@
     methods "^1.1.2"
     path-to-regexp "^6.1.0"
 
-"@komaci/common-shared@256.0.1":
-  version "256.0.1"
-  resolved "https://registry.yarnpkg.com/@komaci/common-shared/-/common-shared-256.0.1.tgz#55dc793359f3730870172b175264f0f8e92e9366"
-  integrity sha512-eU/bsugYTxenie9yDiZkxO0ex/sfhSWjamfFWWIZs2jHAO0rkl3DFbHWpTV7nFTal7t8DLsoCFEHM77owlIK4Q==
-  dependencies:
-    "@babel/core" "^7.9.0"
-    "@babel/generator" "^7.9.0"
-    "@babel/parser" "^7.9.0"
-    "@babel/types" "^7.9.0"
-
 "@komaci/common-shared@258.0.0":
   version "258.0.0"
   resolved "https://registry.yarnpkg.com/@komaci/common-shared/-/common-shared-258.0.0.tgz#996feeaffc7ded5cf283bf1e63f506e032cb086b"
@@ -2075,17 +2065,6 @@
     "@babel/generator" "^7.9.0"
     "@babel/parser" "^7.9.0"
     "@babel/types" "^7.9.0"
-
-"@komaci/esm-generator@256.0.1":
-  version "256.0.1"
-  resolved "https://registry.yarnpkg.com/@komaci/esm-generator/-/esm-generator-256.0.1.tgz#88e525a7bc4569cb9996e8d34821dae49f39d619"
-  integrity sha512-KLlKeb/4MI/jBBJdZSbsdrQgoYzAQDQ/5nTbcRT63TOCZ7hMXBBbOI3Zd1oizCTguvSHO1YXJmE5UXLcPKPptA==
-  dependencies:
-    "@babel/core" "^7.9.0"
-    "@babel/generator" "^7.9.0"
-    "@babel/types" "^7.9.0"
-    "@komaci/common-shared" "256.0.1"
-    "@komaci/static-analyzer" "256.0.1"
 
 "@komaci/esm-generator@258.0.0":
   version "258.0.0"
@@ -2097,14 +2076,6 @@
     "@babel/types" "^7.9.0"
     "@komaci/common-shared" "258.0.0"
     "@komaci/static-analyzer" "258.0.0"
-
-"@komaci/static-analyzer@256.0.1":
-  version "256.0.1"
-  resolved "https://registry.yarnpkg.com/@komaci/static-analyzer/-/static-analyzer-256.0.1.tgz#dc2343d17eaa07504f745f4ce8e9ea2292d61244"
-  integrity sha512-K5plJ1bVWZ1Zwl9KPyVtCNg+XRwVqSo7rC+QqWNHnnN/rg5MsMczUU/gBESNwbJtJez0RR2QYdplpaQBYZyzgA==
-  dependencies:
-    "@babel/types" "^7.9.0"
-    "@komaci/common-shared" "256.0.1"
 
 "@komaci/static-analyzer@258.0.0":
   version "258.0.0"
@@ -2229,13 +2200,6 @@
     "@lwc/style-compiler" "8.21.2"
     "@lwc/template-compiler" "8.21.2"
 
-"@lwc/dev-server-plugin-lex@13.0.32":
-  version "13.0.32"
-  resolved "https://registry.yarnpkg.com/@lwc/dev-server-plugin-lex/-/dev-server-plugin-lex-13.0.32.tgz#77ada03665e3ec4df76febc7842a2806722bf779"
-  integrity sha512-526OaIItJVAP6esh8u0vyYMyw1medJsYTlqbhxrwJbc2aj0iudaKKgMX9NJAud0pleZaCIhM2S3/SO9RoGXWtw==
-  dependencies:
-    magic-string "~0.30.17"
-
 "@lwc/dev-server-plugin-lex@13.2.2":
   version "13.2.2"
   resolved "https://registry.yarnpkg.com/@lwc/dev-server-plugin-lex/-/dev-server-plugin-lex-13.2.2.tgz#7375cd2a76e4822f703850f545749ff22c1536d8"
@@ -2308,19 +2272,6 @@
     glob "^10.4.5"
     ws "^8.18.2"
 
-"@lwc/metadata@13.0.32":
-  version "13.0.32"
-  resolved "https://registry.yarnpkg.com/@lwc/metadata/-/metadata-13.0.32.tgz#410e1e07d8f4d673f3b348f858ec5714cc154ff7"
-  integrity sha512-iCNhU0rhQSAOUtXy841SWa6Yh2Ow0F4NamQu5dB1ySFDbzT2vPNwAS3G47lvGTsmmRpRHf/ySakcRb+NWEOJiQ==
-  dependencies:
-    "@babel/parser" "~7.27.5"
-    "@babel/traverse" "~7.27.4"
-    "@babel/types" "~7.27.6"
-    "@lwc/sfdc-compiler-utils" "13.0.32"
-    postcss "~8.5.5"
-    postcss-selector-parser "~6.1.2"
-    postcss-value-parser "~4.2.0"
-
 "@lwc/metadata@13.2.2":
   version "13.2.2"
   resolved "https://registry.yarnpkg.com/@lwc/metadata/-/metadata-13.2.2.tgz#0001a2c69327aeb3c291a223f140c85c7c66fce5"
@@ -2351,17 +2302,12 @@
     "@lwc/shared" "8.21.2"
     "@rollup/pluginutils" "~5.2.0"
 
-"@lwc/sfdc-compiler-utils@13.0.32":
-  version "13.0.32"
-  resolved "https://registry.yarnpkg.com/@lwc/sfdc-compiler-utils/-/sfdc-compiler-utils-13.0.32.tgz#c67da1063d8b023982003dc1ac07cc73cda160b6"
-  integrity sha512-tpTlrPCtwMHYqru4A5Hm6BFW/uvJp48EbdAVNmbF0RcPuVN1qCW29zZde1oks0MvEU1bDu6+/vGOdHVg+qgGEQ==
-
 "@lwc/sfdc-compiler-utils@13.2.2":
   version "13.2.2"
   resolved "https://registry.yarnpkg.com/@lwc/sfdc-compiler-utils/-/sfdc-compiler-utils-13.2.2.tgz#1344375899a58dc3460aca3ef2172f640fc5961d"
   integrity sha512-tJZIpJIyLSAZhKiNaart+d1+xQ9Ju3D7MuKmfZoKHlitB3Fv3M6eRT3xpGOUV/5mPbqdEtBANpCMWfy/ECnMOA==
 
-"@lwc/sfdc-lwc-compiler@13.2.2":
+"@lwc/sfdc-lwc-compiler@13.2.2", "@lwc/sfdc-lwc-compiler@~13.2.2":
   version "13.2.2"
   resolved "https://registry.yarnpkg.com/@lwc/sfdc-lwc-compiler/-/sfdc-lwc-compiler-13.2.2.tgz#219cd3126d77450fe4c67669702e228c90fdb4be"
   integrity sha512-kWcj6ZeC7nuEi066le92JxzhQ56J9zHW7qMkmd1bajXhkOl55zHaj9PRCZtJumq+dy8TE5JQdWqJRjHQ7vYKlg==
@@ -2378,43 +2324,6 @@
     "@lwc/eslint-plugin-lwc-platform" "6.0.0-beta.7"
     "@lwc/metadata" "13.2.2"
     "@lwc/sfdc-compiler-utils" "13.2.2"
-    "@rollup/plugin-babel" "^6.0.4"
-    "@rollup/plugin-replace" "^6.0.2"
-    "@rollup/wasm-node" "4.10.0"
-    "@salesforce/eslint-config-lwc" "4.0.0-beta.5"
-    "@salesforce/eslint-plugin-lightning" "2.0.0-beta.1"
-    "@swc/wasm" "1.4.16"
-    astring "~1.8.6"
-    doctrine "~3.0.0"
-    eslint "~9.29.0"
-    eslint-plugin-import "~2.31.0"
-    eslint-plugin-jest "~28.13.5"
-    gray-matter "~4.0.3"
-    line-column "~1.0.2"
-    magic-string "~0.30.17"
-    markdown-it "~14.1.0"
-    parse5-sax-parser "~6.0.1"
-    postcss "~8.5.5"
-    postcss-selector-parser "~6.1.2"
-    terser "~5.36.0"
-
-"@lwc/sfdc-lwc-compiler@~13.0.31":
-  version "13.0.32"
-  resolved "https://registry.yarnpkg.com/@lwc/sfdc-lwc-compiler/-/sfdc-lwc-compiler-13.0.32.tgz#41edfd433794acd5d38e97980193871f5666b762"
-  integrity sha512-qAVfQS0KVFk301Dy4i1Zc3VFb/9Nbkfy+XPBG/TTpOJId/5hP8f42kWyIXG8IX17X2veHpiOitY/dzA4WEDWOQ==
-  dependencies:
-    "@babel/core" "7.27.4"
-    "@babel/parser" "7.27.5"
-    "@babel/plugin-syntax-decorators" "7.27.1"
-    "@babel/preset-typescript" "7.27.1"
-    "@babel/traverse" "7.27.4"
-    "@babel/types" "7.27.6"
-    "@komaci/esm-generator" "256.0.1"
-    "@lwc/dev-server-plugin-lex" "13.0.32"
-    "@lwc/eslint-plugin-lwc" "3.0.0-beta.2"
-    "@lwc/eslint-plugin-lwc-platform" "6.0.0-beta.7"
-    "@lwc/metadata" "13.0.32"
-    "@lwc/sfdc-compiler-utils" "13.0.32"
     "@rollup/plugin-babel" "^6.0.4"
     "@rollup/plugin-replace" "^6.0.2"
     "@rollup/wasm-node" "4.10.0"
