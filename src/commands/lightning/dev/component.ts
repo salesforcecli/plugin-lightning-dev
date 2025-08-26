@@ -34,6 +34,11 @@ export default class LightningDevComponent extends SfCommand<void> {
       char: 'c',
       default: false,
     }),
+    performance: Flags.boolean({
+      summary: messages.getMessage('flags.performance.summary'),
+      char: 'p',
+      default: false,
+    }),
     'target-org': Flags.requiredOrg(),
   };
 
@@ -53,7 +58,12 @@ export default class LightningDevComponent extends SfCommand<void> {
 
     let componentName = flags['name'];
     const clientSelect = flags['client-select'];
+    const performanceMode = flags['performance'];
     const targetOrg = flags['target-org'];
+
+    if (performanceMode && clientSelect) {
+      throw new Error(messages.getMessage('error.performance-client-select-conflict'));
+    }
 
     const { ldpServerId, ldpServerToken } = await PreviewUtils.initializePreviewConnection(targetOrg);
 
@@ -126,7 +136,8 @@ export default class LightningDevComponent extends SfCommand<void> {
       ldpServerUrl,
       ldpServerId,
       componentName,
-      targetOrgArg
+      targetOrgArg,
+      performanceMode
     );
 
     // Open the browser and navigate to the right page

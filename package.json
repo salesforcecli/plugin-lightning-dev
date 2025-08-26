@@ -238,7 +238,7 @@
     ],
     "target": {
       "versionNumber": "66.0",
-      "matchingDevServerVersion": "~13.0.27"
+      "matchingDevServerVersion": "~13.2.2"
     },
     "versionToTagMappings": [
       {
