@@ -65,7 +65,7 @@ There should be no differences when running via the Salesforce CLI or using the 
 ```bash
 # Link your plugin to the sf cli
 sf plugins link .
-# To verify
+# To verify the plugin is properly linked
 sf plugins
 ```
 
