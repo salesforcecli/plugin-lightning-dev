@@ -17,7 +17,6 @@
     "@salesforce/sf-plugins-core": "^11.2.4",
     "axios": "^1.11.0",
     "glob": "^10.4.5",
-    "lightning-base-components": "1.27.2-alpha",
     "lwc": "~8.21.2",
     "node-fetch": "^3.3.2",
     "open": "^10.2.0",
