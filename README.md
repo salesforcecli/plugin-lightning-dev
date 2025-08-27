@@ -65,7 +65,7 @@ There should be no differences when running via the Salesforce CLI or using the 
 ```bash
 # Link your plugin to the sf cli
 sf plugins link .
-# To verify
+# To verify the plugin is properly linked
 sf plugins
 ```
 
@@ -201,7 +201,7 @@ EXAMPLES
     $ sf lightning dev app --target-org myOrg --device-type ios --device-id "iPhone 15 Pro Max"
 ```
 
-_See code: [src/commands/lightning/dev/app.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/4.4.12/src/commands/lightning/dev/app.ts)_
+_See code: [src/commands/lightning/dev/app.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/5.0.0/src/commands/lightning/dev/app.ts)_
 
 ## `sf lightning dev component`
 
@@ -248,7 +248,7 @@ EXAMPLES
     $ sf lightning dev component --name myComponent
 ```
 
-_See code: [src/commands/lightning/dev/component.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/4.4.12/src/commands/lightning/dev/component.ts)_
+_See code: [src/commands/lightning/dev/component.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/5.0.0/src/commands/lightning/dev/component.ts)_
 
 ## `sf lightning dev site`
 
@@ -304,6 +304,6 @@ EXAMPLES
     $ sf lightning dev site --name "Partner Central" --target-org myOrg --get-latest
 ```
 
-_See code: [src/commands/lightning/dev/site.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/4.4.12/src/commands/lightning/dev/site.ts)_
+_See code: [src/commands/lightning/dev/site.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/5.0.0/src/commands/lightning/dev/site.ts)_
 
 <!-- commandsstop -->
