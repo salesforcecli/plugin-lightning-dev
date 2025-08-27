@@ -247,10 +247,14 @@
       },
       {
         "versionNumber": "63.0",
-        "tagName": "latest"
+        "tagName": "v2"
       },
       {
         "versionNumber": "64.0",
+        "tagName": "latest"
+      },
+      {
+        "versionNumber": "65.0",
         "tagName": "prerelease"
       },
       {
