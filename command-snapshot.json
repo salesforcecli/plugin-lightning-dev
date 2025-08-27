@@ -11,8 +11,8 @@
     "alias": [],
     "command": "lightning:dev:component",
     "flagAliases": [],
-    "flagChars": ["c", "n", "o"],
-    "flags": ["client-select", "flags-dir", "json", "name", "target-org"],
+    "flagChars": ["c", "n", "o", "p"],
+    "flags": ["client-select", "flags-dir", "json", "name", "performance", "target-org"],
     "plugin": "@salesforce/plugin-lightning-dev"
   },
   {
@@ -20,7 +20,7 @@
     "command": "lightning:dev:site",
     "flagAliases": [],
     "flagChars": ["l", "n", "o"],
-    "flags": ["flags-dir", "get-latest", "guest", "name", "target-org", "ssr"],
+    "flags": ["flags-dir", "get-latest", "guest", "name", "ssr", "target-org"],
     "plugin": "@salesforce/plugin-lightning-dev"
   }
 ]

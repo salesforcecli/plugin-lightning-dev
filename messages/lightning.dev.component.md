@@ -24,6 +24,10 @@ Name of a component to preview.
 
 Launch component preview without selecting a component
 
+# flags.performance.summary
+
+Open the component preview in performance mode
+
 # error.directory
 
 Unable to find components
@@ -40,9 +44,15 @@ Failed to parse component metadata at: %s
 
 Unable to find component with name: %s
 
+# error.performance-client-select-conflict
+
+Cannot use --performance flag when --client-select is enabled
+
 # examples
 
 - Select a component and launch the component preview:
   <%= config.bin %> <%= command.id %>
 - Launch component preview for "myComponent":
   <%= config.bin %> <%= command.id %> --name myComponent
+- Launch component preview for "myComponent" in performance mode:
+  <%= config.bin %> <%= command.id %> --name myComponent --performance

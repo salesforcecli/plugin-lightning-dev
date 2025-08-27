@@ -273,6 +273,77 @@ describe('previewUtils', () => {
     expect(parsed.values['target-org']).to.be.undefined;
   });
 
+  it('generateComponentPreviewLaunchArguments with performance mode enabled', async () => {
+    const result = PreviewUtils.generateComponentPreviewLaunchArguments(
+      'https://localhost:3333',
+      testLdpServerId,
+      'myTestComponent',
+      'myTargetOrg',
+      true
+    );
+
+    const parsed = parseArgs({
+      args: result,
+      options: {
+        path: { type: 'string' },
+        'target-org': { type: 'string' },
+      },
+    });
+
+    expect(parsed.values.path).to.include('ldpServerUrl=https://localhost:3333');
+    expect(parsed.values.path).to.include(`ldpServerId=${testLdpServerId}`);
+    expect(parsed.values.path).to.include('specifier=c/myTestComponent');
+    expect(parsed.values.path).to.include('mode=performance');
+    expect(parsed.values['target-org']).to.equal('myTargetOrg');
+  });
+
+  it('generateComponentPreviewLaunchArguments with performance mode disabled', async () => {
+    const result = PreviewUtils.generateComponentPreviewLaunchArguments(
+      'https://localhost:3333',
+      testLdpServerId,
+      'myTestComponent',
+      'myTargetOrg',
+      false
+    );
+
+    const parsed = parseArgs({
+      args: result,
+      options: {
+        path: { type: 'string' },
+        'target-org': { type: 'string' },
+      },
+    });
+
+    expect(parsed.values.path).to.include('ldpServerUrl=https://localhost:3333');
+    expect(parsed.values.path).to.include(`ldpServerId=${testLdpServerId}`);
+    expect(parsed.values.path).to.include('specifier=c/myTestComponent');
+    expect(parsed.values.path).to.not.include('mode=performance');
+    expect(parsed.values['target-org']).to.equal('myTargetOrg');
+  });
+
+  it('generateComponentPreviewLaunchArguments with performance mode undefined (default)', async () => {
+    const result = PreviewUtils.generateComponentPreviewLaunchArguments(
+      'https://localhost:3333',
+      testLdpServerId,
+      'myTestComponent',
+      'myTargetOrg'
+    );
+
+    const parsed = parseArgs({
+      args: result,
+      options: {
+        path: { type: 'string' },
+        'target-org': { type: 'string' },
+      },
+    });
+
+    expect(parsed.values.path).to.include('ldpServerUrl=https://localhost:3333');
+    expect(parsed.values.path).to.include(`ldpServerId=${testLdpServerId}`);
+    expect(parsed.values.path).to.include('specifier=c/myTestComponent');
+    expect(parsed.values.path).to.not.include('mode=performance');
+    expect(parsed.values['target-org']).to.equal('myTargetOrg');
+  });
+
   it('getTargetOrgFromArguments finds -o flag', async () => {
     const args = ['command', '-o', 'myOrg', 'otherArg'];
     const result = PreviewUtils.getTargetOrgFromArguments(args);

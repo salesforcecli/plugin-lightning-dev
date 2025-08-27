@@ -221,20 +221,23 @@ export class PreviewUtils {
    * @param ldpServerId Record ID for the identity token
    * @param componentName The name of the component to preview
    * @param targetOrg An optional org id
+   * @param performanceMode Whether to enable performance mode
    * @returns Array of arguments to be used by Org:Open command for launching the component preview
    */
   public static generateComponentPreviewLaunchArguments(
     ldpServerUrl: string,
     ldpServerId: string,
     componentName?: string,
-    targetOrg?: string
+    targetOrg?: string,
+    performanceMode?: boolean
   ): string[] {
-    let appPath = `lwr/application/e/devpreview/ai/${encodeURIComponent(
-      'localdev%2Fpreview'
-    )}?ldpServerUrl=${ldpServerUrl}&ldpServerId=${ldpServerId}`;
+    let appPath = `lwr/application/e/devpreview/ai/localdev%252Fpreview?ldpServerUrl=${ldpServerUrl}&ldpServerId=${ldpServerId}`;
     if (componentName) {
       // TODO: support other namespaces
       appPath += `&specifier=c/${componentName}`;
+    }
+    if (performanceMode) {
+      appPath += '&mode=performance';
     }
 
     const launchArguments = ['--path', appPath];
