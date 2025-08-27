@@ -1,3 +1,19 @@
+# [5.0.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.12...5.0.0) (2025-08-27)
+
+### Bug Fixes
+
+- **deps:** bump @lwc/lwc-dev-server from 13.0.32 to 13.2.1 ([#479](https://github.com/salesforcecli/plugin-lightning-dev/issues/479)) ([f4a77d2](https://github.com/salesforcecli/plugin-lightning-dev/commit/f4a77d24b26ee280ee7e93e51ea960af7dedfcea))
+- **deps:** bump @lwc/lwc-dev-server from 13.2.1 to 13.2.2 ([#489](https://github.com/salesforcecli/plugin-lightning-dev/issues/489)) ([47589f8](https://github.com/salesforcecli/plugin-lightning-dev/commit/47589f8750a329af9c6baa82b9377c176f5213dc))
+- **deps:** bump @lwc/sfdc-lwc-compiler from 13.0.32 to 13.2.2 ([#487](https://github.com/salesforcecli/plugin-lightning-dev/issues/487)) ([916b13d](https://github.com/salesforcecli/plugin-lightning-dev/commit/916b13d7a62ccae6219c44af3283eb85fda0dc42))
+- **deps:** bump @salesforce/core from 8.19.1 to 8.21.2 ([#488](https://github.com/salesforcecli/plugin-lightning-dev/issues/488)) ([8336604](https://github.com/salesforcecli/plugin-lightning-dev/commit/83366048c681b697ea68a260a94c5977796519b0))
+- **deps:** bump lwc from 8.20.4 to 8.21.2 ([#486](https://github.com/salesforcecli/plugin-lightning-dev/issues/486)) ([0f95ebd](https://github.com/salesforcecli/plugin-lightning-dev/commit/0f95ebda44e8da7ce40c50d4604ecd398a233220))
+
+- fix!: trigger npm publish (v5.0.0) (#496) ([2b10b06](https://github.com/salesforcecli/plugin-lightning-dev/commit/2b10b060278190d681aabc54cac325a9b7c9dcad)), closes [#496](https://github.com/salesforcecli/plugin-lightning-dev/issues/496)
+
+### BREAKING CHANGES
+
+- this version works with 260 release and newer
+
 ## [4.4.12](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.11...4.4.12) (2025-08-10)
 
 ### Bug Fixes
