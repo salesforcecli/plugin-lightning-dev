@@ -1,3 +1,9 @@
+## [3.5.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.5.0...3.5.1) (2025-08-27)
+
+### Bug Fixes
+
+- ensure 256 is published with latest tag @W-19436974 ([#497](https://github.com/salesforcecli/plugin-lightning-dev/issues/497)) ([d253690](https://github.com/salesforcecli/plugin-lightning-dev/commit/d253690c51fbacadfcef7a2168a851c7ee10798a))
+
 # [3.5.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/3.4.0...3.5.0) (2025-06-02)
 
 ### Features
