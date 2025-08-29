@@ -1,3 +1,9 @@
+## [5.0.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/5.0.0...5.0.1) (2025-08-29)
+
+### Bug Fixes
+
+- remove base components package ([#498](https://github.com/salesforcecli/plugin-lightning-dev/issues/498)) ([c867d0c](https://github.com/salesforcecli/plugin-lightning-dev/commit/c867d0c3c1484850bb98c100e38bd71c084d412a))
+
 # [5.0.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.12...5.0.0) (2025-08-27)
 
 ### Bug Fixes
