@@ -2055,10 +2055,10 @@
   resolved "https://registry.yarnpkg.com/@js-sdsl/ordered-map/-/ordered-map-4.4.2.tgz#9299f82874bab9e4c7f9c48d865becbfe8d6907c"
   integrity sha512-iUKgm52T8HOE/makSxjqoWhe95ZJA1/G1sYsGev2JDKUSS14KAgg1LHb+Ba+IPow0xflbnSkOsZcO08C7w1gYw==
 
-"@jsforce/jsforce-node@^3.10.1":
-  version "3.10.1"
-  resolved "https://registry.yarnpkg.com/@jsforce/jsforce-node/-/jsforce-node-3.10.1.tgz#790a0ecc89ce3b2c91aca16d9f84534d7d4bdd55"
-  integrity sha512-HZcekfFFGOIIqdkCVI5wmP+Nxpmbhwj8CJH5fAii6dcdMhFgTp0sMGwWZe2Br74Nmp7GEESFVuTcIjk+NX5ajA==
+"@jsforce/jsforce-node@^3.10.4":
+  version "3.10.4"
+  resolved "https://registry.yarnpkg.com/@jsforce/jsforce-node/-/jsforce-node-3.10.4.tgz#8241205d03993de8dc3266bda164c7898b17c86e"
+  integrity sha512-do5a2GfvlctifYL4q41WvHiLtVFfk/eUyVsJw0mkyX+mgSg9KXLOrsXK4zpZPcIa+HUJ+ccF6fDs/vwkXlZ3tQ==
   dependencies:
     "@sindresorhus/is" "^4"
     base64url "^3.0.1"
@@ -3422,12 +3422,12 @@
     strip-ansi "6.0.1"
     ts-retry-promise "^0.8.1"
 
-"@salesforce/core@^8.15.0", "@salesforce/core@^8.19.1", "@salesforce/core@^8.21.2", "@salesforce/core@^8.5.1", "@salesforce/core@^8.8.0":
-  version "8.21.2"
-  resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-8.21.2.tgz#92538bbcdf2a185ca9f3b58760da60da0b933d07"
-  integrity sha512-DUoArD9jf8slp78JmJI+c3DLpZ79VyQ4ftyYzL8qe/hww9Nf5/L4shezo1IoI3FvnVuXwwRQ6oUnwxdcVJqbKQ==
+"@salesforce/core@^8.15.0", "@salesforce/core@^8.19.1", "@salesforce/core@^8.22.0", "@salesforce/core@^8.5.1", "@salesforce/core@^8.8.0":
+  version "8.22.0"
+  resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-8.22.0.tgz#7c4dc70b6a00c7b17230dc91bba8c2e36a995d87"
+  integrity sha512-TK9kODqvgIUuCP9L3jqrR1e5JLMzPGnAsCXwdtQrD/AjKMj7bT+NRQeuF+55X7aiEtcedO/fs49ldPvBf9bkOA==
   dependencies:
-    "@jsforce/jsforce-node" "^3.10.1"
+    "@jsforce/jsforce-node" "^3.10.4"
     "@salesforce/kit" "^3.2.2"
     "@salesforce/schemas" "^1.9.1"
     "@salesforce/ts-types" "^2.0.11"
