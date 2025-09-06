@@ -3353,14 +3353,14 @@
     strip-ansi "6.0.1"
     ts-retry-promise "^0.8.1"
 
-"@salesforce/core@^8.15.0", "@salesforce/core@^8.19.1", "@salesforce/core@^8.22.0", "@salesforce/core@^8.5.1", "@salesforce/core@^8.8.0":
-  version "8.22.0"
-  resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-8.22.0.tgz#7c4dc70b6a00c7b17230dc91bba8c2e36a995d87"
-  integrity sha512-TK9kODqvgIUuCP9L3jqrR1e5JLMzPGnAsCXwdtQrD/AjKMj7bT+NRQeuF+55X7aiEtcedO/fs49ldPvBf9bkOA==
+"@salesforce/core@^8.15.0", "@salesforce/core@^8.19.1", "@salesforce/core@^8.22.0", "@salesforce/core@^8.23.0", "@salesforce/core@^8.5.1", "@salesforce/core@^8.8.0":
+  version "8.23.0"
+  resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-8.23.0.tgz#19e9effb2175507538157255d969e08925f91f76"
+  integrity sha512-njdJlo+SYtmuCBE1p8lwbcQF6oRsE1ZkcEQUElpu4WhB+DT/0mv7oN3eeYfh9Ss9Px95sSgzPJhEFLsZLwGJ4w==
   dependencies:
     "@jsforce/jsforce-node" "^3.10.4"
     "@salesforce/kit" "^3.2.2"
-    "@salesforce/schemas" "^1.9.1"
+    "@salesforce/schemas" "^1.10.0"
     "@salesforce/ts-types" "^2.0.11"
     ajv "^8.17.1"
     change-case "^4.1.2"
@@ -3472,10 +3472,10 @@
   resolved "https://registry.yarnpkg.com/@salesforce/prettier-config/-/prettier-config-0.0.3.tgz#ba648d4886bb38adabe073dbea0b3a91b3753bb0"
   integrity sha512-hYOhoPTCSYMDYn+U1rlEk16PoBeAJPkrdg4/UtAzupM1mRRJOwEPMG1d7U8DxJFKuXW3DMEYWr2MwAIBDaHmFg==
 
-"@salesforce/schemas@^1.9.1":
-  version "1.9.1"
-  resolved "https://registry.yarnpkg.com/@salesforce/schemas/-/schemas-1.9.1.tgz#ea843c732068c4ac2dadbe1d22b44e714cfe661d"
-  integrity sha512-9I8kZBYT7HFXsbz2ukkSyZDRPjSsfRyx3pKGCsjWe2av8wuNm6tYUnmuXzMH5JoVSu3MvtOeIlwp5fFURdsNjg==
+"@salesforce/schemas@^1.10.0":
+  version "1.10.3"
+  resolved "https://registry.yarnpkg.com/@salesforce/schemas/-/schemas-1.10.3.tgz#52c867fdd60679cf216110aa49542b7ad391f5d1"
+  integrity sha512-FKfvtrYTcvTXE9advzS25/DEY9yJhEyLvStm++eQFtnAaX1pe4G3oGHgiQ0q55BM5+0AlCh0+0CVtQv1t4oJRA==
 
 "@salesforce/sf-plugins-core@^11.2.4", "@salesforce/sf-plugins-core@^11.3.12":
   version "11.3.12"
@@ -6339,12 +6339,12 @@ eslint-plugin-jsdoc@^46.10.1:
     semver "^7.5.4"
     spdx-expression-parse "^4.0.0"
 
-eslint-plugin-sf-plugin@^1.20.31:
-  version "1.20.31"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-sf-plugin/-/eslint-plugin-sf-plugin-1.20.31.tgz#d655ea3bf2f41376021d93612ee1e99c28415b3d"
-  integrity sha512-vFVhmiUVbiqvbD6wa/+O0xNHNhP+zlNMlDEHDNelKwNzEKnI8lrL5CzJKsKOw1r9aa0iEEUuaaHplRUeanflGQ==
+eslint-plugin-sf-plugin@^1.20.32:
+  version "1.20.32"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-sf-plugin/-/eslint-plugin-sf-plugin-1.20.32.tgz#9a3c1c84295090088addcf801abc082bb4980e35"
+  integrity sha512-laSlqqFgJEbffPw5XOxIgIdswsM7JxHqI0F7azKVmezIC0+ceEw0fkbIY1cI9cE/Ihu57/46GM5+fXRUYrodzw==
   dependencies:
-    "@salesforce/core" "^8.19.1"
+    "@salesforce/core" "^8.23.0"
     "@typescript-eslint/utils" "^7.18.0"
 
 eslint-plugin-unicorn@^50.0.1:
