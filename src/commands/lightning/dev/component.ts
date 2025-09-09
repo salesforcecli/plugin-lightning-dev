@@ -72,7 +72,7 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
     logger.debug(`Next available ports are http=${serverPorts.httpPort} , https=${serverPorts.httpsPort}`);
 
     logger.debug('Determining Local Dev Server url');
-    const ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(Platform.desktop, serverPorts, logger);
+    let ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(Platform.desktop, serverPorts, logger);
     if (process.env.CODE_BUILDER_URI) {
       ldpServerUrl = ldpServerUrl.replace('localhost', process.env.CODE_BUILDER_URI);
     }
