@@ -72,9 +72,18 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
     logger.debug(`Next available ports are http=${serverPorts.httpPort} , https=${serverPorts.httpsPort}`);
 
     logger.debug('Determining Local Dev Server url');
-    let ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(Platform.desktop, serverPorts, logger);
-    if (process.env.CODE_BUILDER_URI) {
-      ldpServerUrl = ldpServerUrl.replace('localhost', process.env.CODE_BUILDER_URI);
+    let ldpServerUrl;
+
+    // In Code Builder, we cannot go to localhost - we need to use a proxy URI to get to the ldpServer
+    if (process.env.SF_CONTAINER_MODE && process.env.VSCODE_PROXY_URI) {
+      logger.debug('In Code Builder Mode - using proxy URI');
+      ldpServerUrl = process.env.VSCODE_PROXY_URI.replace('https://', 'ws://').replace(
+        '{{port}}',
+        `${serverPorts.httpPort}`
+      );
+    } else {
+      // Default behavior
+      ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(Platform.desktop, serverPorts, logger);
     }
     logger.debug(`Local Dev Server url is ${ldpServerUrl}`);
 
