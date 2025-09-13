@@ -2818,10 +2818,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@oclif/core@^4", "@oclif/core@^4.0.27", "@oclif/core@^4.3.0", "@oclif/core@^4.4.0", "@oclif/core@^4.5.0", "@oclif/core@^4.5.2":
-  version "4.5.2"
-  resolved "https://registry.yarnpkg.com/@oclif/core/-/core-4.5.2.tgz#4db8a365fa7e9e33af272294f710a7f3f25538e2"
-  integrity sha512-eQcKyrEcDYeZJKu4vUWiu0ii/1Gfev6GF4FsLSgNez5/+aQyAUCjg3ZWlurf491WiYZTXCWyKAxyPWk8DKv2MA==
+"@oclif/core@^4", "@oclif/core@^4.0.27", "@oclif/core@^4.3.0", "@oclif/core@^4.4.0", "@oclif/core@^4.5.2", "@oclif/core@^4.5.3":
+  version "4.5.3"
+  resolved "https://registry.yarnpkg.com/@oclif/core/-/core-4.5.3.tgz#2b913879e1673d95e63254573b67326b62f5f309"
+  integrity sha512-ISoFlfmsuxJvNKXhabCO4/KqNXDQdLHchZdTPfZbtqAsQbqTw5IKitLVZq9Sz1LWizN37HILp4u0350B8scBjg==
   dependencies:
     ansi-escapes "^4.3.2"
     ansis "^3.17.0"
@@ -3353,7 +3353,7 @@
     strip-ansi "6.0.1"
     ts-retry-promise "^0.8.1"
 
-"@salesforce/core@^8.15.0", "@salesforce/core@^8.19.1", "@salesforce/core@^8.22.0", "@salesforce/core@^8.23.0", "@salesforce/core@^8.5.1", "@salesforce/core@^8.8.0":
+"@salesforce/core@^8.15.0", "@salesforce/core@^8.22.0", "@salesforce/core@^8.23.0", "@salesforce/core@^8.5.1", "@salesforce/core@^8.8.0":
   version "8.23.0"
   resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-8.23.0.tgz#19e9effb2175507538157255d969e08925f91f76"
   integrity sha512-njdJlo+SYtmuCBE1p8lwbcQF6oRsE1ZkcEQUElpu4WhB+DT/0mv7oN3eeYfh9Ss9Px95sSgzPJhEFLsZLwGJ4w==
