@@ -1,3 +1,9 @@
+## [5.0.9](https://github.com/salesforcecli/plugin-lightning-dev/compare/5.0.8...5.0.9) (2025-09-21)
+
+### Bug Fixes
+
+- **deps:** bump @salesforce/kit from 3.2.3 to 3.2.4 ([#514](https://github.com/salesforcecli/plugin-lightning-dev/issues/514)) ([01a0185](https://github.com/salesforcecli/plugin-lightning-dev/commit/01a0185b528502bdf262a752e4c5d29ba5f19c22))
+
 ## [5.0.8](https://github.com/salesforcecli/plugin-lightning-dev/compare/5.0.7...5.0.8) (2025-09-21)
 
 ### Bug Fixes
