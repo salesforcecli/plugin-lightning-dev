@@ -6572,10 +6572,10 @@ eslint@~9.29.0:
     natural-compare "^1.4.0"
     optionator "^0.9.3"
 
-esmock@^2.7.1:
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/esmock/-/esmock-2.7.1.tgz#b425fe78c41163d92a74c245ad151c45b224bc0b"
-  integrity sha512-YgtZ6TSwRbdqFLkJwxVCYkt0rzKpjHb0tbDqSjWvbkm8Uy5Tm5W6ixICb3FVRkAd1uQlLOXiIn7OPY4F4f18cw==
+esmock@^2.7.3:
+  version "2.7.3"
+  resolved "https://registry.yarnpkg.com/esmock/-/esmock-2.7.3.tgz#25d8fd57b9608f9430185c501e7dab91fb1247bc"
+  integrity sha512-/M/YZOjgyLaVoY6K83pwCsGE1AJQnj4S4GyXLYgi/Y79KL8EeW6WU7Rmjc89UO7jv6ec8+j34rKeWOfiLeEu0A==
 
 espree@^10.0.1, espree@^10.4.0:
   version "10.4.0"
