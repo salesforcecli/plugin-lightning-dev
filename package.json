@@ -7,8 +7,8 @@
   "dependencies": {
     "@inquirer/prompts": "^5.3.8",
     "@inquirer/select": "^2.4.7",
-    "@lwc/lwc-dev-server": "~13.1.4-alpha.3+7d2e56a",
-    "@lwc/sfdc-lwc-compiler": "~13.1.4-alpha.3+7d2e56a",
+    "@lwc/lwc-dev-server": "~13.1.5-alpha.1+9de6b34",
+    "@lwc/sfdc-lwc-compiler": "~13.1.5-alpha.1+9de6b34",
     "@lwrjs/api": "0.18.3",
     "@oclif/core": "^4.5.0",
     "@salesforce/core": "^8.19.1",
@@ -238,7 +238,7 @@
     ],
     "target": {
       "versionNumber": "65.0",
-      "matchingDevServerVersion": "~13.1.4-alpha.3+7d2e56a"
+      "matchingDevServerVersion": "~13.1.5-alpha.1+9de6b34"
     },
     "versionToTagMappings": [
       {
