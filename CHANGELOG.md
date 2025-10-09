@@ -1,3 +1,9 @@
+## [4.4.14](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.13...4.4.14) (2025-10-09)
+
+### Bug Fixes
+
+- remove lightning-base-components dependency @W-19861266@ ([#527](https://github.com/salesforcecli/plugin-lightning-dev/issues/527)) ([2e70cb6](https://github.com/salesforcecli/plugin-lightning-dev/commit/2e70cb6e3b09b659b1b233e0a142b7e891066b1f))
+
 ## [4.4.13](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.12...4.4.13) (2025-08-27)
 
 ### Bug Fixes
