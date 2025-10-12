@@ -1,3 +1,9 @@
+# [4.5.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.14...4.5.0) (2025-10-12)
+
+### Features
+
+- vscode extension support @W-19820472 ([#524](https://github.com/salesforcecli/plugin-lightning-dev/issues/524)) ([44d3fc1](https://github.com/salesforcecli/plugin-lightning-dev/commit/44d3fc1cbf594602c0bc663ab32ed26c53c10331))
+
 ## [4.4.14](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.13...4.4.14) (2025-10-09)
 
 ### Bug Fixes
