@@ -1,3 +1,15 @@
+## [4.5.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.5.2-alpha.1...4.5.2) (2025-10-12)
+
+### Bug Fixes
+
+- versions ([02e1bbd](https://github.com/salesforcecli/plugin-lightning-dev/commit/02e1bbdfae33cfa955fc4b92a41387f756316855))
+
+## [4.5.2-alpha.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.5.1...4.5.2-alpha.1) (2025-10-12)
+
+### Bug Fixes
+
+- auto enable local dev for Agentforce Vibes @W-19250167 ([#533](https://github.com/salesforcecli/plugin-lightning-dev/issues/533)) ([93da505](https://github.com/salesforcecli/plugin-lightning-dev/commit/93da5054d7ab7f0bd9c54a1df51de95e8bf2e11e))
+
 ## [4.5.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.5.0...4.5.1) (2025-10-12)
 
 ### Bug Fixes
