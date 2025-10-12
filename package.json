@@ -7,8 +7,8 @@
   "dependencies": {
     "@inquirer/prompts": "^5.3.8",
     "@inquirer/select": "^2.4.7",
-    "@lwc/lwc-dev-server": "~13.1.2",
-    "@lwc/sfdc-lwc-compiler": "~13.1.2",
+    "@lwc/lwc-dev-server": "~13.1.5-alpha.3+007b30e",
+    "@lwc/sfdc-lwc-compiler": "~13.1.5-alpha.3+007b30e",
     "@lwrjs/api": "0.18.3",
     "@oclif/core": "^4.5.0",
     "@salesforce/core": "^8.21.2",
@@ -237,7 +237,7 @@
     ],
     "target": {
       "versionNumber": "65.0",
-      "matchingDevServerVersion": "~13.1.2"
+      "matchingDevServerVersion": "~13.1.5-alpha.3+007b30e"
     },
     "versionToTagMappings": [
       {
@@ -257,7 +257,7 @@
         "tagName": "prerelease"
       },
       {
-        "versionNumber": "66.0",
+        "versionNumber": "65.0",
         "tagName": "next"
       }
     ]
