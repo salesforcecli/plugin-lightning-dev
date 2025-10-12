@@ -13,6 +13,7 @@ import { ComponentUtils } from '../../../shared/componentUtils.js';
 import { PromptUtils } from '../../../shared/promptUtils.js';
 import { PreviewUtils } from '../../../shared/previewUtils.js';
 import { startLWCServer } from '../../../lwc-dev-server/index.js';
+import { MetaUtils } from '../../../shared/metaUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.component');
@@ -64,6 +65,15 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
     const clientSelect = flags['client-select'];
     const targetOrg = flags['target-org'];
     const apiVersion = flags['api-version'];
+
+    // Auto enable local dev
+    if (process.env.AUTO_ENABLE_LOCAL_DEV === 'true') {
+      try {
+        await MetaUtils.ensureLightningPreviewEnabled(targetOrg.getConnection(undefined));
+      } catch (error) {
+        this.log('Error autoenabling local dev', error);
+      }
+    }
 
     const { ldpServerId, ldpServerToken } = await PreviewUtils.initializePreviewConnection(targetOrg);
 
