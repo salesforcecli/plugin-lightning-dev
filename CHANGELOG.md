@@ -1,3 +1,9 @@
+## [4.5.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.5.0...4.5.1) (2025-10-12)
+
+### Bug Fixes
+
+- promote version 4 to latest tag @W-19861266@ ([#532](https://github.com/salesforcecli/plugin-lightning-dev/issues/532)) ([2959c81](https://github.com/salesforcecli/plugin-lightning-dev/commit/2959c81513c408c60284266b86c5b6922306bb7e))
+
 # [4.5.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.4.14...4.5.0) (2025-10-12)
 
 ### Features
