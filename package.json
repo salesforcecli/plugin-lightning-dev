@@ -8,7 +8,7 @@
     "@inquirer/prompts": "^5.3.8",
     "@inquirer/select": "^2.4.7",
     "@lwc/lwc-dev-server": "~13.2.2",
-    "@lwc/sfdc-lwc-compiler": "~13.2.5",
+    "@lwc/sfdc-lwc-compiler": "~13.2.7",
     "@lwrjs/api": "0.18.3",
     "@oclif/core": "^4.5.5",
     "@salesforce/core": "^8.23.2",
