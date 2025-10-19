@@ -2229,13 +2229,6 @@
     "@lwc/style-compiler" "8.22.4"
     "@lwc/template-compiler" "8.22.4"
 
-"@lwc/dev-server-plugin-lex@13.2.2":
-  version "13.2.2"
-  resolved "https://registry.yarnpkg.com/@lwc/dev-server-plugin-lex/-/dev-server-plugin-lex-13.2.2.tgz#7375cd2a76e4822f703850f545749ff22c1536d8"
-  integrity sha512-if4UDn9Dkk8IZDmv59jY344h2vay9HbkOW6AIBobtAJ+yjohjQkIW0jzfd3BDNuwJuhbLwI9aoq+JKdu5AA6qg==
-  dependencies:
-    magic-string "~0.30.17"
-
 "@lwc/dev-server-plugin-lex@13.2.7":
   version "13.2.7"
   resolved "https://registry.yarnpkg.com/@lwc/dev-server-plugin-lex/-/dev-server-plugin-lex-13.2.7.tgz#78dc9a2018bdfa4646accb1478c2b58fe7ba4f9d"
@@ -2267,13 +2260,6 @@
   resolved "https://registry.yarnpkg.com/@lwc/errors/-/errors-8.22.4.tgz#b4d0fc9f2952171c9567e7e9950579dc26164184"
   integrity sha512-JdNPVeh/9g3rq7pgZ1AaV46l6XBrZRnnKiq5uAtyleWfjv63fYHDIDpaaUyIlvg13DnqhNcXOPlhinNGLPHAKw==
 
-"@lwc/eslint-plugin-lwc-platform@6.0.0-beta.7":
-  version "6.0.0-beta.7"
-  resolved "https://registry.yarnpkg.com/@lwc/eslint-plugin-lwc-platform/-/eslint-plugin-lwc-platform-6.0.0-beta.7.tgz#49770568373fb2861b5073a62b18509de067f844"
-  integrity sha512-MyrgfsZYxWNjl3qHhCh+wegZ6Jp8OqhfhcBDV6E6QmwI0RfwYrgIT8VcjtHWxlqGBS4OcQdYFFKx8VKRYzuI7w==
-  dependencies:
-    minimatch "~5.1.1"
-
 "@lwc/eslint-plugin-lwc-platform@6.2.0":
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/@lwc/eslint-plugin-lwc-platform/-/eslint-plugin-lwc-platform-6.2.0.tgz#f6d8ccfcb2683d1ba8c8fedd0a5ef22c2a1e928e"
@@ -2296,37 +2282,24 @@
   dependencies:
     "@lwc/shared" "8.22.4"
 
-"@lwc/lwc-dev-server-types@13.2.2":
-  version "13.2.2"
-  resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server-types/-/lwc-dev-server-types-13.2.2.tgz#42c4153b77e698ab1a05991f91a8a5a9d62cc531"
-  integrity sha512-Ur/sXh8n27sbG4QCC1IEkml0nc5Zm0YgP+f0NrPGzh5unNz0eGAfex1hOtBWtF4ZgFhkmPRZJ+MqUnEins11uQ==
+"@lwc/lwc-dev-server-types@13.2.7":
+  version "13.2.7"
+  resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server-types/-/lwc-dev-server-types-13.2.7.tgz#e6f9750b27b9a8b8dce87630a96e5c49d0e8d8a3"
+  integrity sha512-yAyzyGRqYqWCrNqbG5Oq/1PUALaB63u+gChczswdnua80X2QbJ5Oos7bniDAKE9kXaGkbCkqI9xnGSZRn6kPfQ==
 
-"@lwc/lwc-dev-server@~13.2.2":
-  version "13.2.2"
-  resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server/-/lwc-dev-server-13.2.2.tgz#8e9e21ad0a235c8618510fc0de19b65926e6cdab"
-  integrity sha512-WG9ZkWlFn9kmgi0sXyR3Cd+Yke2Fb9sgpQecICF9y5vu2q7EAjLjRb2ehJSPDcFYJRORcexHlZ1QGeiyj099Ag==
+"@lwc/lwc-dev-server@~13.2.7":
+  version "13.2.7"
+  resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server/-/lwc-dev-server-13.2.7.tgz#21d4456e981ccdb737c9f131172fea48d1e69ff7"
+  integrity sha512-1DwXCVXKIUo1DBlrxtFxjrdJcwNUsZDrjYzlluF8dJ8T/qG8RhXmGnzOBqMrTq3SJ02y1yU3hRhiEMPfOtyb1g==
   dependencies:
-    "@lwc/lwc-dev-server-types" "13.2.2"
-    "@lwc/sfdc-lwc-compiler" "13.2.2"
+    "@lwc/lwc-dev-server-types" "13.2.7"
+    "@lwc/sfdc-lwc-compiler" "13.2.7"
     chalk "~5.4.1"
     chokidar "~3.6.0"
     commander "~10.0.0"
     fast-xml-parser "^5.2.5"
     glob "^10.4.5"
     ws "^8.18.2"
-
-"@lwc/metadata@13.2.2":
-  version "13.2.2"
-  resolved "https://registry.yarnpkg.com/@lwc/metadata/-/metadata-13.2.2.tgz#0001a2c69327aeb3c291a223f140c85c7c66fce5"
-  integrity sha512-qKcf86q/dRBN8ivwiBNhmF2al+kE4SC5xIPiKE7B6oBKzIh60s4wjY2b21xGtJ8sCuZgC7C5F8IVPLL1GBSG9g==
-  dependencies:
-    "@babel/parser" "~7.27.5"
-    "@babel/traverse" "~7.27.4"
-    "@babel/types" "~7.27.6"
-    "@lwc/sfdc-compiler-utils" "13.2.2"
-    postcss "~8.5.5"
-    postcss-selector-parser "~6.1.2"
-    postcss-value-parser "~4.2.0"
 
 "@lwc/metadata@13.2.7":
   version "13.2.7"
@@ -2358,54 +2331,12 @@
     "@lwc/shared" "8.22.4"
     "@rollup/pluginutils" "~5.3.0"
 
-"@lwc/sfdc-compiler-utils@13.2.2":
-  version "13.2.2"
-  resolved "https://registry.yarnpkg.com/@lwc/sfdc-compiler-utils/-/sfdc-compiler-utils-13.2.2.tgz#1344375899a58dc3460aca3ef2172f640fc5961d"
-  integrity sha512-tJZIpJIyLSAZhKiNaart+d1+xQ9Ju3D7MuKmfZoKHlitB3Fv3M6eRT3xpGOUV/5mPbqdEtBANpCMWfy/ECnMOA==
-
 "@lwc/sfdc-compiler-utils@13.2.7":
   version "13.2.7"
   resolved "https://registry.yarnpkg.com/@lwc/sfdc-compiler-utils/-/sfdc-compiler-utils-13.2.7.tgz#0e4580d7b0e5799137fac524201c1b546697e833"
   integrity sha512-vONz/KO8K8edhNeCHOMqImwvqNoAZYWyu0rcvH1IsoQo6EjAClz2qTWNGFGycCnhAOKrDAPxI/odzVoS1sw8Ew==
 
-"@lwc/sfdc-lwc-compiler@13.2.2":
-  version "13.2.2"
-  resolved "https://registry.yarnpkg.com/@lwc/sfdc-lwc-compiler/-/sfdc-lwc-compiler-13.2.2.tgz#219cd3126d77450fe4c67669702e228c90fdb4be"
-  integrity sha512-kWcj6ZeC7nuEi066le92JxzhQ56J9zHW7qMkmd1bajXhkOl55zHaj9PRCZtJumq+dy8TE5JQdWqJRjHQ7vYKlg==
-  dependencies:
-    "@babel/core" "7.27.4"
-    "@babel/parser" "7.27.5"
-    "@babel/plugin-syntax-decorators" "7.27.1"
-    "@babel/preset-typescript" "7.27.1"
-    "@babel/traverse" "7.27.4"
-    "@babel/types" "7.27.6"
-    "@komaci/esm-generator" "258.0.0"
-    "@lwc/dev-server-plugin-lex" "13.2.2"
-    "@lwc/eslint-plugin-lwc" "3.0.0-beta.2"
-    "@lwc/eslint-plugin-lwc-platform" "6.0.0-beta.7"
-    "@lwc/metadata" "13.2.2"
-    "@lwc/sfdc-compiler-utils" "13.2.2"
-    "@rollup/plugin-babel" "^6.0.4"
-    "@rollup/plugin-replace" "^6.0.2"
-    "@rollup/wasm-node" "4.10.0"
-    "@salesforce/eslint-config-lwc" "4.0.0-beta.5"
-    "@salesforce/eslint-plugin-lightning" "2.0.0-beta.1"
-    "@swc/wasm" "1.4.16"
-    astring "~1.8.6"
-    doctrine "~3.0.0"
-    eslint "~9.29.0"
-    eslint-plugin-import "~2.31.0"
-    eslint-plugin-jest "~28.13.5"
-    gray-matter "~4.0.3"
-    line-column "~1.0.2"
-    magic-string "~0.30.17"
-    markdown-it "~14.1.0"
-    parse5-sax-parser "~6.0.1"
-    postcss "~8.5.5"
-    postcss-selector-parser "~6.1.2"
-    terser "~5.36.0"
-
-"@lwc/sfdc-lwc-compiler@~13.2.7":
+"@lwc/sfdc-lwc-compiler@13.2.7", "@lwc/sfdc-lwc-compiler@~13.2.7":
   version "13.2.7"
   resolved "https://registry.yarnpkg.com/@lwc/sfdc-lwc-compiler/-/sfdc-lwc-compiler-13.2.7.tgz#07b3921e50712a6367be1fa3a1d9256efb8927a7"
   integrity sha512-FQLpvzZ1RFTRLWAf76cps7T7NMCkpo30MKztWzjTDcHuIZSQe1HKVosHc7db3Y/uOb9QIJSgkVx5GudBmWtXtw==
