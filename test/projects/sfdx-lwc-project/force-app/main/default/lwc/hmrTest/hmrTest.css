@@ -1,12 +1,12 @@
 .important-text {
   font-weight: bold;
-  color: blue;
+  color: rgb(190, 30, 121); 
   padding-bottom: 10px;
 }
 
 .footer-text {
   font-style: italic;
-  color: grey;
+  color: rgb(193, 12, 12);
   font-size: 0.8rem;
 }
 

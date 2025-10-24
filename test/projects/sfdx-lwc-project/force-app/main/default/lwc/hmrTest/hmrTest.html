@@ -1,13 +1,15 @@
 <template>
-  <lightning-card title="HMR Test Component - Enhanced" icon-name="custom:custom14">
+  <lightning-card title="HMR Test Component - ok" icon-name="custom:custom14">
     <div class="slds-m-around_medium">
       <p class="important-text">Hello from HMR Test!</p>
       <p>Current Count: {counter}</p>
-      <lightning-button label="Increment" onclick="{handleIncrement}"></lightning-button>
+      <lightning-button label="Increment" onclick={handleIncrement}></lightning-button>
       <br /><br />
       <lightning-badge label="HMR Active"></lightning-badge>
       <br /><br />
       <lightning-input label="Sample Input" placeholder="Type something..."></lightning-input>
+      <br /><br />
+      <div class="slds-text-color_weak">Env → Browser: {env.isBrowser} | VS Code: {env.isVSCode} | Origin: {env.origin}</div>
     </div>
     <p class="footer-text slds-m-around_medium">Some text to modify for HMR.</p>
   </lightning-card>
