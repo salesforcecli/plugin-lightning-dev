@@ -1,0 +1,53 @@
+<template>
+  <lightning-card title="Preview Error" icon-name="utility:warning">
+    <div class="slds-p-around_medium">
+      <div class="title">{view.title}</div>
+      <div class="section-title">Details</div>
+      <div class="kv">
+        <div class="kv-row">
+          <span class="kv-label">Message</span>
+          <span class="kv-value">{view.title}</span>
+        </div>
+        <div class="kv-row">
+          <span class="kv-label">Error ID</span>
+          <span class="kv-value">{view.errorId}</span>
+        </div>
+        <div class="kv-row">
+          <span class="kv-label">Component</span>
+          <span class="kv-value">{view.componentName}</span>
+        </div>
+        <div class="kv-row">
+          <span class="kv-label">Timestamp</span>
+          <span class="kv-value">{view.timestamp}</span>
+        </div>
+      </div>
+      <div class="section-title">Stack Trace</div>
+      <template if:true={view.stackLines}>
+        <div class="stack">
+          <template for:each={view.stackLines} for:item="line">
+            <div key={line} class="stack-line">{line}</div>
+          </template>
+        </div>
+      </template>
+      <template if:false={view.stackLines}>
+        <div class="stack empty">No stack trace available.</div>
+      </template>
+      <template if:true={hasProps}>
+        <div class="props">
+          <div class="props-title">Props</div>
+          <template for:each={propEntries} for:item="entry">
+            <div key={entry.key} class="prop-row">
+              <span class="k">{entry.key}</span>
+              <span class="v">{entry.value}</span>
+            </div>
+          </template>
+        </div>
+      </template>
+      <div class="actions">
+        <lightning-button variant="brand" label="Copy Details" onclick={handleCopy}></lightning-button>
+      </div>
+    </div>
+  </lightning-card>
+</template>
+
+

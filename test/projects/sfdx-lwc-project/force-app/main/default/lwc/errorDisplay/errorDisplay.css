@@ -1,0 +1,59 @@
+.title {
+  font-weight: 700;
+  font-size: 14px;
+  color: #c23934;
+  margin-bottom: 8px;
+}
+.kv { margin-bottom: 12px; }
+.kv-row { display: flex; gap: 8px; margin: 2px 0; font-size: 12px; }
+.kv-label { width: 90px; color: #6b6d70; font-weight: 600; }
+.kv-value { color: #080707; }
+.meta {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.pill {
+  background: #f3f2f2;
+  border-radius: 10px;
+  padding: 2px 8px;
+  font-size: 12px;
+}
+.stack {
+  background: #fffbe6;
+  border: 1px solid #ece0a1;
+  padding: 8px;
+  margin-bottom: 12px;
+  max-height: 180px;
+  overflow: auto;
+}
+.stack.empty {
+  color: #6b6d70;
+  background: #fafafa;
+  border: 1px dashed #d8dde6;
+}
+.section-title {
+  font-weight: 600;
+  font-size: 12px;
+  color: #3e3e3c;
+  margin: 6px 0 4px;
+}
+.stack-line {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 12px;
+  white-space: pre-wrap;
+}
+.props-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.prop-row {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+}
+.k { color: #6b6d70; }
+.v { color: #080707; }
+.actions { margin-top: 12px; }
+
+
