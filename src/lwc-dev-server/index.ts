@@ -24,6 +24,8 @@ import {
   LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT,
   LOCAL_DEV_SERVER_DEFAULT_WORKSPACE,
 } from '../shared/configUtils.js';
+import { getErrorStore } from './errorStore.js';
+import { startErrorCaptureServer, type ErrorCaptureServer } from './errorHttpServer.js';
 
 async function createLWCServerConfig(
   rootDir: string,
@@ -87,9 +89,78 @@ export async function startLWCServer(
   logger.trace(`Starting LWC Dev Server with config: ${JSON.stringify(config)}`);
   let lwcDevServer: LWCServer | null = await startLwcDevServer(config, logger);
 
+  // ============================================================
+  // Start standalone error capture HTTP server
+  // ============================================================
+  const errorStore = getErrorStore();
+  const errorCapturePort = (serverPorts?.httpPort ?? LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT) + 1;
+
+  let errorCaptureServer: ErrorCaptureServer | null = null;
+
+  try {
+    errorCaptureServer = await startErrorCaptureServer({
+      port: errorCapturePort,
+      errorStore,
+      logger,
+      projectRoot: rootDir,
+      logToConsole: true,
+      localhostOnly: true, // Bind to localhost only for security
+    });
+
+    // eslint-disable-next-line no-console
+    console.log('\n✅ [ErrorCapture] Error capture system initialized');
+    // eslint-disable-next-line no-console
+    console.log(`📡 [ErrorCapture] LWC Dev Server (WebSocket): ws://localhost:${config.port}`);
+    // eslint-disable-next-line no-console
+    console.log(`🔍 [ErrorCapture] Error Capture Server (HTTP): http://localhost:${errorCapturePort}`);
+    // eslint-disable-next-line no-console
+    console.log('💡 [ErrorCapture] Tip: Errors clear automatically on server restart');
+    // eslint-disable-next-line no-console
+    console.log(`   Or manually: curl -X DELETE http://localhost:${errorCapturePort}/_dev/errors\n`);
+    logger.info('[ErrorCapture] Error capture system initialized');
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.log(
+      `\n⚠️  [ErrorCapture] Failed to start error capture server on port ${errorCapturePort}: ${
+        err instanceof Error ? err.message : String(err)
+      }`
+    );
+    // eslint-disable-next-line no-console
+    console.log(
+      '⚠️  [ErrorCapture] Error capture will not be available. This does not affect LWC dev server functionality.\n'
+    );
+    logger.warn(
+      `[ErrorCapture] Failed to start error capture server on port ${errorCapturePort}: ${
+        err instanceof Error ? err.message : String(err)
+      }`
+    );
+  }
+
   const cleanup = (): void => {
     if (lwcDevServer) {
-      logger.trace('Stopping LWC Dev Server');
+      logger.trace('Stopping LWC Dev Server and Error Capture Server');
+
+      // Show error statistics before shutdown
+      const stats = errorStore.getStatistics();
+      if (stats.totalErrors > 0) {
+        // eslint-disable-next-line no-console
+        console.log(`\n📊 [ErrorCapture] Captured ${stats.totalErrors} unique error(s) during this session`);
+        // eslint-disable-next-line no-console
+        console.log(`📊 [ErrorCapture] Total occurrences: ${stats.totalOccurrences}\n`);
+        logger.info(`[ErrorCapture] Captured ${stats.totalErrors} errors during this session`);
+      }
+
+      // Stop error capture server first
+      if (errorCaptureServer) {
+        errorCaptureServer.stop().catch((err) => {
+          logger.error(
+            `[ErrorCapture] Error stopping error capture server: ${err instanceof Error ? err.message : String(err)}`
+          );
+        });
+        errorCaptureServer = null;
+      }
+
+      // Then stop LWC dev server
       lwcDevServer.stopServer();
       lwcDevServer = null;
     }
@@ -103,3 +174,8 @@ export async function startLWCServer(
 
   return lwcDevServer;
 }
+
+/**
+ * Exports the error store for external access (e.g., for testing or CLI commands)
+ */
+export { getErrorStore, resetErrorStore } from './errorStore.js';
