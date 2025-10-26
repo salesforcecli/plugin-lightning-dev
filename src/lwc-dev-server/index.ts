@@ -47,9 +47,9 @@ async function createLWCServerConfig(
 
   const ports = serverPorts ??
     (await ConfigUtils.getLocalDevServerPorts()) ?? {
-      httpPort: LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT,
-      httpsPort: LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT + 1,
-    };
+    httpPort: LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT,
+    httpsPort: LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT + 1,
+  };
 
   const serverConfig: ServerConfig = {
     rootDir,
@@ -107,22 +107,11 @@ export async function startLWCServer(
       localhostOnly: true, // Bind to localhost only for security
     });
 
-    // eslint-disable-next-line no-console
-    console.log('\n✅ [ErrorCapture] Error capture system initialized');
-    // eslint-disable-next-line no-console
-    console.log(`📡 [ErrorCapture] LWC Dev Server (WebSocket): ws://localhost:${config.port}`);
-    // eslint-disable-next-line no-console
-    console.log(`🔍 [ErrorCapture] Error Capture Server (HTTP): http://localhost:${errorCapturePort}`);
-    // eslint-disable-next-line no-console
-    console.log('💡 [ErrorCapture] Tip: Errors clear automatically on server restart');
-    // eslint-disable-next-line no-console
-    console.log(`   Or manually: curl -X DELETE http://localhost:${errorCapturePort}/_dev/errors\n`);
     logger.info('[ErrorCapture] Error capture system initialized');
   } catch (err) {
     // eslint-disable-next-line no-console
     console.log(
-      `\n⚠️  [ErrorCapture] Failed to start error capture server on port ${errorCapturePort}: ${
-        err instanceof Error ? err.message : String(err)
+      `\n⚠️  [ErrorCapture] Failed to start error capture server on port ${errorCapturePort}: ${err instanceof Error ? err.message : String(err)
       }`
     );
     // eslint-disable-next-line no-console
@@ -130,8 +119,7 @@ export async function startLWCServer(
       '⚠️  [ErrorCapture] Error capture will not be available. This does not affect LWC dev server functionality.\n'
     );
     logger.warn(
-      `[ErrorCapture] Failed to start error capture server on port ${errorCapturePort}: ${
-        err instanceof Error ? err.message : String(err)
+      `[ErrorCapture] Failed to start error capture server on port ${errorCapturePort}: ${err instanceof Error ? err.message : String(err)
       }`
     );
   }

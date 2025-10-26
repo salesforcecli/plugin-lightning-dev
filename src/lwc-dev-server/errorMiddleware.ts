@@ -72,6 +72,13 @@ export function createErrorMiddleware(
 
       const error = payload;
 
+      // Clean up client-only fields (used for browser logging, not needed on server)
+      // eslint-disable-next-line no-underscore-dangle
+      if ('_clientParsedStack' in error.error) {
+        // eslint-disable-next-line no-underscore-dangle
+        delete (error.error as Record<string, unknown>)._clientParsedStack;
+      }
+
       // Enhance stack trace with project context
       if (error.error.stack && error.error.sanitizedStack.length === 0) {
         error.error.sanitizedStack = parseStackTrace(error.error.stack, projectRoot);
@@ -84,7 +91,7 @@ export function createErrorMiddleware(
       if (logToConsole) {
         const formatted = formatErrorForCLI(error, {
           colorize: true,
-          showFullStack: false,
+          showFullStack: false, // Only show local source frames, hide framework/library code
           compact: false,
         });
         // eslint-disable-next-line no-console
