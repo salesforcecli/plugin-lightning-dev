@@ -1,3 +1,9 @@
+## [5.0.20](https://github.com/salesforcecli/plugin-lightning-dev/compare/5.0.19...5.0.20) (2025-10-26)
+
+### Bug Fixes
+
+- **deps:** bump @salesforce/lwc-dev-mobile-core from 4.0.0-alpha.12 to 4.0.0-alpha.13 ([#542](https://github.com/salesforcecli/plugin-lightning-dev/issues/542)) ([72bb6ca](https://github.com/salesforcecli/plugin-lightning-dev/commit/72bb6ca0423806c97f47b9ae4a91d527dd6d6568))
+
 ## [5.0.19](https://github.com/salesforcecli/plugin-lightning-dev/compare/5.0.18...5.0.19) (2025-10-19)
 
 ### Bug Fixes
