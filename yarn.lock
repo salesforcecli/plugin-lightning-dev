@@ -2196,25 +2196,25 @@
   dependencies:
     "@locker/shared" "0.24.6"
 
-"@lwc/aria-reflection@8.22.4":
-  version "8.22.4"
-  resolved "https://registry.yarnpkg.com/@lwc/aria-reflection/-/aria-reflection-8.22.4.tgz#5730bbdd52270d1cf062476009e3deb916867bc6"
-  integrity sha512-O+u7oBdrTsdWhK2MI5tEGshT8mgEeajlIqwbcTH6vKw4HLansTSIh+YkgGxUvZ2smmMYm+r/oGfXl9QmNNQW4w==
+"@lwc/aria-reflection@8.23.0":
+  version "8.23.0"
+  resolved "https://registry.yarnpkg.com/@lwc/aria-reflection/-/aria-reflection-8.23.0.tgz#b4d1f31e5f380d49e28b6dfe07c505d0657024e4"
+  integrity sha512-WGaMjNc84art9cYtkMf15dCKZ7M1x1yldsbqctiKOTl6mN6d7EDRaV+046EkFMkC/FwQbspWTHF9x1UGqWV8pw==
 
-"@lwc/babel-plugin-component@8.22.4":
-  version "8.22.4"
-  resolved "https://registry.yarnpkg.com/@lwc/babel-plugin-component/-/babel-plugin-component-8.22.4.tgz#e8420520c7215cca93b6180be86a4a923f14e35d"
-  integrity sha512-7pjQE+ACilzosoBjebvPGxoU++7Cu0NFP48EJICmLx5g54bvBT6T2PVXQPG0MOxkGQU+OslFANQY2pkjAFA8VA==
+"@lwc/babel-plugin-component@8.23.0":
+  version "8.23.0"
+  resolved "https://registry.yarnpkg.com/@lwc/babel-plugin-component/-/babel-plugin-component-8.23.0.tgz#756762acb6c5ba17f18614d8a858f377a4e55fbc"
+  integrity sha512-Dct16w1mSoL0gIZFNSQI6EQjOAnOkmdbCBAf2PMD7mJXQKNYYgb4RcA4BDIoZZJwe5nH7rd6q47YaeD7pdxCvg==
   dependencies:
     "@babel/helper-module-imports" "7.27.1"
-    "@lwc/errors" "8.22.4"
-    "@lwc/shared" "8.22.4"
+    "@lwc/errors" "8.23.0"
+    "@lwc/shared" "8.23.0"
     line-column "~1.0.2"
 
-"@lwc/compiler@8.22.4":
-  version "8.22.4"
-  resolved "https://registry.yarnpkg.com/@lwc/compiler/-/compiler-8.22.4.tgz#308e3c9221a3120333bb905f17aa59e0ac975054"
-  integrity sha512-88IMkysEOoWekTZDGWN/Xl7AoG2yfpkEifaX6uElzweS16KCMbCAeJhFjC9yJdB51CYp7ASe1jpJMwhcmM5+TQ==
+"@lwc/compiler@8.23.0":
+  version "8.23.0"
+  resolved "https://registry.yarnpkg.com/@lwc/compiler/-/compiler-8.23.0.tgz#bc5f5406e8d71d4675cfe7276b2443544116f0a7"
+  integrity sha512-ejGsAR9c+Lv3Xtu6XC8RbNl7XUIt3tIES3g4r3FanrU5FHQ2fsqXdLTT2I9jxlTiKHiRnvpq49pQQLWQcUPr0Q==
   dependencies:
     "@babel/core" "7.28.4"
     "@babel/plugin-transform-async-generator-functions" "7.28.0"
@@ -2222,12 +2222,12 @@
     "@babel/plugin-transform-class-properties" "7.27.1"
     "@babel/plugin-transform-object-rest-spread" "7.28.4"
     "@locker/babel-plugin-transform-unforgeables" "0.22.0"
-    "@lwc/babel-plugin-component" "8.22.4"
-    "@lwc/errors" "8.22.4"
-    "@lwc/shared" "8.22.4"
-    "@lwc/ssr-compiler" "8.22.4"
-    "@lwc/style-compiler" "8.22.4"
-    "@lwc/template-compiler" "8.22.4"
+    "@lwc/babel-plugin-component" "8.23.0"
+    "@lwc/errors" "8.23.0"
+    "@lwc/shared" "8.23.0"
+    "@lwc/ssr-compiler" "8.23.0"
+    "@lwc/style-compiler" "8.23.0"
+    "@lwc/template-compiler" "8.23.0"
 
 "@lwc/dev-server-plugin-lex@13.2.7":
   version "13.2.7"
@@ -2236,29 +2236,29 @@
   dependencies:
     magic-string "~0.30.17"
 
-"@lwc/engine-core@8.22.4":
-  version "8.22.4"
-  resolved "https://registry.yarnpkg.com/@lwc/engine-core/-/engine-core-8.22.4.tgz#4f636d4575d4724b136c2db6e04350a14bbad48d"
-  integrity sha512-HMH9zCYv8aAypdUhDpfa1CUG3E9KGGskDrV4M+vbYRxtyyZVqTdYlstsh98I7wz4h59210LBM8hR7D3xlufOwg==
+"@lwc/engine-core@8.23.0":
+  version "8.23.0"
+  resolved "https://registry.yarnpkg.com/@lwc/engine-core/-/engine-core-8.23.0.tgz#04ac9204140685c5d4f69cc3fe8c8bb6d7ffe4df"
+  integrity sha512-YFobCuGRv0me1FLhJqtSDm/WxTpRyPtdHbfBe/6AKWDFfYYPk83tcMFTTS7ndE3LrYno2aP9ABHdg5BtAl55iA==
   dependencies:
-    "@lwc/features" "8.22.4"
-    "@lwc/shared" "8.22.4"
-    "@lwc/signals" "8.22.4"
+    "@lwc/features" "8.23.0"
+    "@lwc/shared" "8.23.0"
+    "@lwc/signals" "8.23.0"
 
-"@lwc/engine-dom@8.22.4":
-  version "8.22.4"
-  resolved "https://registry.yarnpkg.com/@lwc/engine-dom/-/engine-dom-8.22.4.tgz#1676bed938dd2ef4ee8fcfa7992c6bedbaedcf8b"
-  integrity sha512-OXFrQ5JQt9JGC/8c9lw9q27Ka5+R0zZnUUN5/33o1c2sy5AXhpSItlFTwzFdPULxC8/UvpAxPQ6vbU29+AqrkA==
+"@lwc/engine-dom@8.23.0":
+  version "8.23.0"
+  resolved "https://registry.yarnpkg.com/@lwc/engine-dom/-/engine-dom-8.23.0.tgz#dd45d7c33a318dcdf600796478a7e03e759122df"
+  integrity sha512-cbMVwFkYmhFFmCpnSYBePk8wnpdhqESVFDZJqFgeR4Tb0LBVlI18gGqHn9MmjxT3SnurDp1EW/ArH8QFYJgf1g==
 
-"@lwc/engine-server@8.22.4":
-  version "8.22.4"
-  resolved "https://registry.yarnpkg.com/@lwc/engine-server/-/engine-server-8.22.4.tgz#054c44de0686f0aaa0e768a7fc377360fd25afff"
-  integrity sha512-4pOlI79OiQogSFfccvCFnT8/4PHFjhnKDXEh+Oi7+3dE3FNXYoz35oUnIcTksxr/eM+zYXQZWwU6j2XvDfgA+g==
+"@lwc/engine-server@8.23.0":
+  version "8.23.0"
+  resolved "https://registry.yarnpkg.com/@lwc/engine-server/-/engine-server-8.23.0.tgz#6675516060b8886c23e18faf92ab31b69d6c7053"
+  integrity sha512-h4HOYAoHWAPEwITroai8yAy6YSlqMXRLdVZNRNH/ZEXkz5Hom+h16BbnGGeGCNqZgGrm58LnCPYmmzeXIZ1aPQ==
 
-"@lwc/errors@8.22.4":
-  version "8.22.4"
-  resolved "https://registry.yarnpkg.com/@lwc/errors/-/errors-8.22.4.tgz#b4d0fc9f2952171c9567e7e9950579dc26164184"
-  integrity sha512-JdNPVeh/9g3rq7pgZ1AaV46l6XBrZRnnKiq5uAtyleWfjv63fYHDIDpaaUyIlvg13DnqhNcXOPlhinNGLPHAKw==
+"@lwc/errors@8.23.0":
+  version "8.23.0"
+  resolved "https://registry.yarnpkg.com/@lwc/errors/-/errors-8.23.0.tgz#7c230010e197062a0eae04a4caa4abe4e7df4af3"
+  integrity sha512-cqziHl/aDg0pgAIm9HhNz2OrR0t08vML7+FNrqgrnaSwLgYCYp2WPNmvMjD5ZRy/bIBESwA/dCWf9Cs7Vo/ZGw==
 
 "@lwc/eslint-plugin-lwc-platform@6.2.0":
   version "6.2.0"
@@ -2275,12 +2275,12 @@
     globals "~15.14.0"
     minimatch "~9.0.4"
 
-"@lwc/features@8.22.4":
-  version "8.22.4"
-  resolved "https://registry.yarnpkg.com/@lwc/features/-/features-8.22.4.tgz#be0441f46f27dd5af34143912c8427f1a2278189"
-  integrity sha512-PlRH5sy+aRTZhLq8oaGF/n1KrcBuGXB04ugFa+iEHdzeHBHcKJVmthKPGvpCSoeChkZNwj3df3lqDpJ6ad+ypg==
+"@lwc/features@8.23.0":
+  version "8.23.0"
+  resolved "https://registry.yarnpkg.com/@lwc/features/-/features-8.23.0.tgz#7e0578c89dc39e62d50b732facca7e9e969539e9"
+  integrity sha512-Y1yVOH6LAJMWJaeUHJwjx7OHjbRxycdSSZKewhQlRTGLrmca1Rtpi31nfrRtcCdOkxfF3oPMFlPlA4ZKDyA6aA==
   dependencies:
-    "@lwc/shared" "8.22.4"
+    "@lwc/shared" "8.23.0"
 
 "@lwc/lwc-dev-server-types@13.2.7":
   version "13.2.7"
@@ -2314,21 +2314,21 @@
     postcss-selector-parser "~6.1.2"
     postcss-value-parser "~4.2.0"
 
-"@lwc/module-resolver@8.22.4":
-  version "8.22.4"
-  resolved "https://registry.yarnpkg.com/@lwc/module-resolver/-/module-resolver-8.22.4.tgz#c1b9c0c1039cf62af087c2d7fca58bda324c910f"
-  integrity sha512-COqwmkwTWhFRWBpuznOrLHS54zRQuJUFsoFw53mLtW49aaPWKsNOIPOHjj+wEo5sfau8ObTjM8nJEuxLwwp9cQ==
+"@lwc/module-resolver@8.23.0":
+  version "8.23.0"
+  resolved "https://registry.yarnpkg.com/@lwc/module-resolver/-/module-resolver-8.23.0.tgz#f98581796558d484516097b7b04121453846f9d1"
+  integrity sha512-ZqZ/402NvVswMK2HMhwH6Fmkzn19xn5Yx7VZr1QmIefKXr8OKqFSlsySujN3CSwNH9XHybyREWe4TXlkT7LHFw==
   dependencies:
     resolve "~1.22.10"
 
-"@lwc/rollup-plugin@8.22.4":
-  version "8.22.4"
-  resolved "https://registry.yarnpkg.com/@lwc/rollup-plugin/-/rollup-plugin-8.22.4.tgz#0c2fc7b6fd0f79a0b13896ef7dddddfdc4fe5332"
-  integrity sha512-zIk1HgHgJPBokJu5PUbhAWM5jEXqPqh9Q3kDGMvx8WiSfUPz5jIyeV9j3vLe+/+wMOqaQfecM0d55TiUtEi1EA==
+"@lwc/rollup-plugin@8.23.0":
+  version "8.23.0"
+  resolved "https://registry.yarnpkg.com/@lwc/rollup-plugin/-/rollup-plugin-8.23.0.tgz#6821076f721f4b298b2c40d81832ffb55a37c9f6"
+  integrity sha512-bDlnRXWOVN4VE+/h1dj2KXuej9bED2A07CtxHPepCH4iIwpN6w+s/495zDndJgO/VppnZ3ZUiUooUrcDOrOmBA==
   dependencies:
-    "@lwc/compiler" "8.22.4"
-    "@lwc/module-resolver" "8.22.4"
-    "@lwc/shared" "8.22.4"
+    "@lwc/compiler" "8.23.0"
+    "@lwc/module-resolver" "8.23.0"
+    "@lwc/shared" "8.23.0"
     "@rollup/pluginutils" "~5.3.0"
 
 "@lwc/sfdc-compiler-utils@13.2.7":
@@ -2373,73 +2373,73 @@
     postcss-selector-parser "~6.1.2"
     terser "~5.36.0"
 
-"@lwc/shared@8.22.4":
-  version "8.22.4"
-  resolved "https://registry.yarnpkg.com/@lwc/shared/-/shared-8.22.4.tgz#8aaf9eaaf233cf47e057404c1571c7ebfb7732b9"
-  integrity sha512-NWv1FCKVi7zMiz6fX21wzSbER6pddO0VlYGD1DEJCtut5B7CEZQgHA4EIKIZZvMqeUy0aoNpYLcNkyetknA8aQ==
+"@lwc/shared@8.23.0":
+  version "8.23.0"
+  resolved "https://registry.yarnpkg.com/@lwc/shared/-/shared-8.23.0.tgz#c9304f7fd8db4256094e5cbf1960dd4f027aa599"
+  integrity sha512-g6teckOlRJgPkqFJjjrMWoXwEbP3E0PByVIbrxfvv7gN/d8INL+TOA/Deg5ZgRMwuYUGO0Elr5rGcAK5jj/bhA==
 
-"@lwc/signals@8.22.4":
-  version "8.22.4"
-  resolved "https://registry.yarnpkg.com/@lwc/signals/-/signals-8.22.4.tgz#adade65013e66959b0a49466480c0d22ad194aab"
-  integrity sha512-BrEd4bZ3iRVgGpLY1d/wXnfHvwLuVfFOWItc+FbXrKRDeiSg9JxRMnD1e0TNpKAP+BiyZByeb5hvK2FlwI9z+w==
+"@lwc/signals@8.23.0":
+  version "8.23.0"
+  resolved "https://registry.yarnpkg.com/@lwc/signals/-/signals-8.23.0.tgz#c38177c9ccd20803392a99715e4770a9e9001104"
+  integrity sha512-mdW1i0i4RBFracnevRN8YQtkUDI/WuWHsQXGQC2kluQAveM/qmVIkvMCPfehBsMwbXpEnYneUEe58XXnuCsAvA==
 
-"@lwc/ssr-compiler@8.22.4":
-  version "8.22.4"
-  resolved "https://registry.yarnpkg.com/@lwc/ssr-compiler/-/ssr-compiler-8.22.4.tgz#ec8cc142f881fcd7ae69b7a6508ae21e36d34ae9"
-  integrity sha512-fUL1dGdzOZGSsa/8YE3slpdhF8F58OOTSfSSfEFuDeNaeq9dGf93Jpb0jBU7VXd5tblCKsBimOg1exH+PbYSdw==
+"@lwc/ssr-compiler@8.23.0":
+  version "8.23.0"
+  resolved "https://registry.yarnpkg.com/@lwc/ssr-compiler/-/ssr-compiler-8.23.0.tgz#cd3ff236701824188e7b9675e927092ffb34d1b2"
+  integrity sha512-JucwFx+bjVsnyJnfJIbcX2DpaKO+h3vGEBlDPgI6cdaRfymtkxklxZojzc1HTcN+0XSGSiAmBcDn3MKxsNMrMQ==
   dependencies:
     "@babel/types" "7.28.4"
-    "@lwc/errors" "8.22.4"
-    "@lwc/shared" "8.22.4"
-    "@lwc/template-compiler" "8.22.4"
+    "@lwc/errors" "8.23.0"
+    "@lwc/shared" "8.23.0"
+    "@lwc/template-compiler" "8.23.0"
     acorn "8.15.0"
     astring "^1.9.0"
     estree-toolkit "^1.7.13"
     immer "^10.1.3"
     meriyah "^5.0.0"
 
-"@lwc/ssr-runtime@8.22.4":
-  version "8.22.4"
-  resolved "https://registry.yarnpkg.com/@lwc/ssr-runtime/-/ssr-runtime-8.22.4.tgz#401e74f5d8eaf19d4a827fb3f6b72c88dc703e10"
-  integrity sha512-cxBhP8PcQGW7TmpIy9h0BRNvV6v+3NowvgfZx9cRc8lkj40ZwyXInG5uJ5ZiRHjNH1eRBdc4kEI548pBAESR+w==
+"@lwc/ssr-runtime@8.23.0":
+  version "8.23.0"
+  resolved "https://registry.yarnpkg.com/@lwc/ssr-runtime/-/ssr-runtime-8.23.0.tgz#29da9702f09992a3cf721fa88057c53dcdd7680a"
+  integrity sha512-J4JSyEGX+DiBUoMIRBUTcrsc0GGI+LuczO4uSLoMIjFQJXjh5dmI058pVBYq5cCXJHTv2vbtUILzQtX3xcFb0A==
 
-"@lwc/style-compiler@8.22.4":
-  version "8.22.4"
-  resolved "https://registry.yarnpkg.com/@lwc/style-compiler/-/style-compiler-8.22.4.tgz#c40c212586d1685326a85b2bb52da69d05caa79f"
-  integrity sha512-UBocYP1wgpnTeuA1KjMMJsOUTHHPIx5umS3aaAcYitzkC4Mx+lCjlxUuWbN1H8o74J1erxNhWiYUaafgw0lZsQ==
+"@lwc/style-compiler@8.23.0":
+  version "8.23.0"
+  resolved "https://registry.yarnpkg.com/@lwc/style-compiler/-/style-compiler-8.23.0.tgz#508faaea6cd4b5df990cc2c0d91b5bbbe3fa905e"
+  integrity sha512-hIsmMgKyFQ3VSozQtHuU1BcAbbWyk/8BFygB2WdadM/cBrHfNCy+PGLofv8xkyvhDPrfbWBtwFrP9VIRXDdLNA==
   dependencies:
-    "@lwc/shared" "8.22.4"
+    "@lwc/shared" "8.23.0"
     postcss "~8.5.6"
     postcss-selector-parser "~7.1.0"
     postcss-value-parser "~4.2.0"
 
-"@lwc/synthetic-shadow@8.22.4":
-  version "8.22.4"
-  resolved "https://registry.yarnpkg.com/@lwc/synthetic-shadow/-/synthetic-shadow-8.22.4.tgz#e487672a91b288fffff7220be8c01a6c70cd3743"
-  integrity sha512-CcP75JowlqQ3APz2FubdBZQg8P1D8Wt3UtVMpRgNkeDwcl0mfKUCr4SdFU/MQRC5JHh+nh3VAor+1jqe1DULXg==
+"@lwc/synthetic-shadow@8.23.0":
+  version "8.23.0"
+  resolved "https://registry.yarnpkg.com/@lwc/synthetic-shadow/-/synthetic-shadow-8.23.0.tgz#b209293ac9e1b03f778b71c802c5f2095e814067"
+  integrity sha512-wmFB6nMKlsH47+YW+Wr3HdhPdUbHor6yPzbsai85St8+xSlrCzQWuXPWuqv6raFyHg6YnWAiF2Hf5e2h9sdCig==
 
-"@lwc/template-compiler@8.22.4":
-  version "8.22.4"
-  resolved "https://registry.yarnpkg.com/@lwc/template-compiler/-/template-compiler-8.22.4.tgz#c05d276812d8e3b9d257be872a0f6d0386b38391"
-  integrity sha512-PkWTkkyj9vvBCo1UIONmjNwRR6allg/SHjfhOnR2IhQfAKsQctCCq4nWuafBo790O8z4mMN2Mq/zqPwiftGpLw==
+"@lwc/template-compiler@8.23.0":
+  version "8.23.0"
+  resolved "https://registry.yarnpkg.com/@lwc/template-compiler/-/template-compiler-8.23.0.tgz#323ee9d6476b94421b3041ae359b32ec5bfc0d91"
+  integrity sha512-E24VtNe4Ej307ui8BuQncBzcd6MdzOjXjrhIOQDnGLzNnGL7I3cuGA2wVwTuV8WNrPg7JkgpJghUduEkN3kubw==
   dependencies:
-    "@lwc/errors" "8.22.4"
-    "@lwc/shared" "8.22.4"
+    "@lwc/errors" "8.23.0"
+    "@lwc/shared" "8.23.0"
     acorn "~8.15.0"
     astring "~1.9.0"
     he "~1.2.0"
 
-"@lwc/types@8.22.4":
-  version "8.22.4"
-  resolved "https://registry.yarnpkg.com/@lwc/types/-/types-8.22.4.tgz#58ffd835a835badb4c917f0cdbbd3a62e18d2d6d"
-  integrity sha512-8NMQTv47dqKGaEFRocQAvPZyEDnoTgf8hi81D1RrL9PLiVL251nrpDPLzuhMmuyOAxuSo73rVdiO0Aeoh2aSCQ==
+"@lwc/types@8.23.0":
+  version "8.23.0"
+  resolved "https://registry.yarnpkg.com/@lwc/types/-/types-8.23.0.tgz#f7a3dca0e4c3a6649dbaf9e41eac9f3b99a6ae86"
+  integrity sha512-MqRqq/eQu36/lI3MnPn4EAIW5JgYXIorlzpnQYLA6kBnViSCYcaDeJJil/FDIzKSF8HgHf7CuXVJ5MUkcXbqJw==
   dependencies:
-    "@lwc/engine-core" "8.22.4"
+    "@lwc/engine-core" "8.23.0"
 
-"@lwc/wire-service@8.22.4":
-  version "8.22.4"
-  resolved "https://registry.yarnpkg.com/@lwc/wire-service/-/wire-service-8.22.4.tgz#1120dff4324c64443907e53e986b0be53ffcce93"
-  integrity sha512-uC33goqoCpUBZUyPnwNd9KdDCokg9BZK1+2+p1Uh3Q5THmPaRycIuSBhqVcHw2fvvR2foKlv0yGlRF1epH441g==
+"@lwc/wire-service@8.23.0":
+  version "8.23.0"
+  resolved "https://registry.yarnpkg.com/@lwc/wire-service/-/wire-service-8.23.0.tgz#c44f5197d921b5fbfa213cb954cccd11b78b9978"
+  integrity sha512-vAwzn6gSrC/C0FMIXUWl/Ieyg7xaY4SMoMuBiL36ChvtXfSJjHPhmeVjhMGkkGCXyDHS/3f5/9LhplaIi60EfQ==
 
 "@lwrjs/api@0.18.3":
   version "0.18.3"
@@ -8777,29 +8777,29 @@ lunr@^2.3.9:
   resolved "https://registry.yarnpkg.com/lunr/-/lunr-2.3.9.tgz#18b123142832337dd6e964df1a5a7707b25d35e1"
   integrity sha512-zTU3DaZaF3Rt9rhN3uBMGQD3dD2/vFQqnvZCDv4dl5iOzq2IZQqTxu90r4E5J+nP70J3ilqVCrbho2eWaeW8Ow==
 
-lwc@~8.22.4:
-  version "8.22.4"
-  resolved "https://registry.yarnpkg.com/lwc/-/lwc-8.22.4.tgz#05bb4b760ba643db03e59c2a075f5df4c11c2829"
-  integrity sha512-mKneWe6JWc/Dh6EFYPTN1d0KThl7ziER6JMw1waHREOJ4pwWuB6v7S/MLyVA3LBbjv1wwhakxFY0IxBNor1/8g==
+lwc@~8.23.0:
+  version "8.23.0"
+  resolved "https://registry.yarnpkg.com/lwc/-/lwc-8.23.0.tgz#1123a559700aa8bb437f54258efa1ed2be8e94f1"
+  integrity sha512-XeNx83aT0NZJ8ORfR4bHWIgL5m+XoDJvIX0Og+8ZAr9YYMmZJuBd83tmdhrneYXaJTaGbX54TVbvRY90k+/noA==
   dependencies:
-    "@lwc/aria-reflection" "8.22.4"
-    "@lwc/babel-plugin-component" "8.22.4"
-    "@lwc/compiler" "8.22.4"
-    "@lwc/engine-core" "8.22.4"
-    "@lwc/engine-dom" "8.22.4"
-    "@lwc/engine-server" "8.22.4"
-    "@lwc/errors" "8.22.4"
-    "@lwc/features" "8.22.4"
-    "@lwc/module-resolver" "8.22.4"
-    "@lwc/rollup-plugin" "8.22.4"
-    "@lwc/shared" "8.22.4"
-    "@lwc/ssr-compiler" "8.22.4"
-    "@lwc/ssr-runtime" "8.22.4"
-    "@lwc/style-compiler" "8.22.4"
-    "@lwc/synthetic-shadow" "8.22.4"
-    "@lwc/template-compiler" "8.22.4"
-    "@lwc/types" "8.22.4"
-    "@lwc/wire-service" "8.22.4"
+    "@lwc/aria-reflection" "8.23.0"
+    "@lwc/babel-plugin-component" "8.23.0"
+    "@lwc/compiler" "8.23.0"
+    "@lwc/engine-core" "8.23.0"
+    "@lwc/engine-dom" "8.23.0"
+    "@lwc/engine-server" "8.23.0"
+    "@lwc/errors" "8.23.0"
+    "@lwc/features" "8.23.0"
+    "@lwc/module-resolver" "8.23.0"
+    "@lwc/rollup-plugin" "8.23.0"
+    "@lwc/shared" "8.23.0"
+    "@lwc/ssr-compiler" "8.23.0"
+    "@lwc/ssr-runtime" "8.23.0"
+    "@lwc/style-compiler" "8.23.0"
+    "@lwc/synthetic-shadow" "8.23.0"
+    "@lwc/template-compiler" "8.23.0"
+    "@lwc/types" "8.23.0"
+    "@lwc/wire-service" "8.23.0"
 
 magic-string@^0.25.3:
   version "0.25.9"
