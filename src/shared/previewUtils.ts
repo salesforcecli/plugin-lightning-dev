@@ -256,6 +256,34 @@ export class PreviewUtils {
   }
 
   /**
+   * Generates the full URL for a component preview.
+   *
+   * @param instanceUrl The URL of the Salesforce instance
+   * @param ldpServerUrl The URL for the local dev server
+   * @param ldpServerId Record ID for the identity token
+   * @param componentName The name of the component to preview
+   * @param encodePath Whether to encode the path
+   * @returns The full URL for the component preview
+   */
+  public static generateComponentPreviewUrl(
+    instanceUrl: string,
+    ldpServerUrl: string,
+    ldpServerId: string,
+    componentName?: string,
+    encodePath = false
+  ): string {
+    let url = `${instanceUrl}/lwr/application/e/devpreview/ai/${
+      encodePath ? encodeURIComponent('localdev%2Fpreview') : 'localdev%2Fpreview'
+    }?ldpServerUrl=${ldpServerUrl}&ldpServerId=${ldpServerId}`;
+    if (componentName) {
+      // TODO: support other namespaces
+      url += `&specifier=c/${componentName}`;
+    }
+
+    return url;
+  }
+
+  /**
    * Generates the proper set of arguments to be used for launching a mobile app with custom launch arguments.
    *
    * @param ldpServerUrl The URL for the local dev server
