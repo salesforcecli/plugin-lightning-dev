@@ -344,19 +344,51 @@ Modify `src/shared/orgUtils.ts` to replace `ensureMatchingAPIVersion`:
  * Determines the version channel for the connected org
  *
  * @param connection - The connection to the org
+ * @param overrideChannel - Optional manual override from flag or env var
  * @returns The version channel to use for dependencies
- * @throws Error if the org version is not supported
+ * @throws Error if the org version is not supported or invalid override provided
  */
-public static getVersionChannel(connection: Connection): VersionChannel {
-  // Testing purposes only - using this flag will return default channel
+public static getVersionChannel(
+  connection: Connection,
+  overrideChannel?: VersionChannel
+): VersionChannel {
+  // Priority 1: Explicit override parameter (from --version-channel flag)
+  if (overrideChannel) {
+    Messages.getInstance().log(`Using manually specified version channel: ${overrideChannel}`);
+    return overrideChannel;
+  }
+
+  // Priority 2: Environment variable override
+  const envOverride = process.env.FORCE_VERSION_CHANNEL;
+  if (envOverride) {
+    const validChannels: VersionChannel[] = ['latest', 'prerelease'];
+    if (validChannels.includes(envOverride as VersionChannel)) {
+      Messages.getInstance().log(
+        `Using version channel from FORCE_VERSION_CHANNEL: ${envOverride}`
+      );
+      return envOverride as VersionChannel;
+    } else {
+      throw new Error(
+        `Invalid FORCE_VERSION_CHANNEL value: "${envOverride}". ` +
+        `Valid values are: ${validChannels.join(', ')}`
+      );
+    }
+  }
+
+  // Priority 3: Skip check for testing (legacy compatibility)
   if (process.env.SKIP_API_VERSION_CHECK === 'true') {
     return VersionResolver.getDefaultChannel();
   }
 
+  // Priority 4: Automatic detection based on org version
   const orgVersion = connection.version;
 
   try {
-    return VersionResolver.resolveChannel(orgVersion);
+    const channel = VersionResolver.resolveChannel(orgVersion);
+    Messages.getInstance().log(
+      `Auto-detected version channel '${channel}' for org API version ${orgVersion}`
+    );
+    return channel;
   } catch (error) {
     // Enhance error with helpful message
     throw new Error(
@@ -393,10 +425,11 @@ export async function startLWCServer(
   clientType: string,
   serverPorts?: { httpPort: number; httpsPort: number },
   certData?: SSLCertificateData,
-  workspace?: Workspace
+  workspace?: Workspace,
+  versionChannelOverride?: VersionChannel // NEW: optional manual override
 ): Promise<LWCServer> {
-  // NEW: Determine which version channel to use
-  const channel: VersionChannel = OrgUtils.getVersionChannel(connection);
+  // NEW: Determine which version channel to use (with optional override)
+  const channel: VersionChannel = OrgUtils.getVersionChannel(connection, versionChannelOverride);
   logger.trace(`Using version channel: ${channel}`);
 
   // NEW: Load the appropriate version of the dev server
@@ -417,39 +450,154 @@ export async function startLWCServer(
     }
   };
 
-  // ... rest of the function remains the same
+  [
+    'exit', // normal exit flow
+    'SIGINT', // when a user presses ctrl+c
+    'SIGTERM', // when a user kills the process
+  ].forEach((signal) => process.on(signal, cleanup));
+
+  return lwcDevServer;
 }
 ```
 
 ### 7. Update Command Files
 
-Each command (app.ts, component.ts, site.ts) needs to pass the connection to startLWCServer:
+Each command (app.ts, component.ts, site.ts) needs to:
+
+1. Add the `--version-channel` flag
+2. Pass the connection to startLWCServer
+3. Support manual override
 
 ```typescript
 // In src/commands/lightning/dev/component.ts (and similar for app.ts, site.ts)
 
-public async run(): Promise<void> {
-  const { flags } = await this.parse(Component);
+import { Flags } from '@oclif/core';
 
-  // ... existing code to get connection
-  const conn = flags['target-org'].getConnection();
+export default class Component extends SfCommand<void> {
+  public static readonly flags = {
+    // ... existing flags
+    'version-channel': Flags.string({
+      summary: 'Manually specify which version channel to use (latest or prerelease)',
+      description:
+        'Override automatic version detection and force a specific dependency channel. ' +
+        'Useful for testing and debugging. Valid values: "latest", "prerelease".',
+      options: ['latest', 'prerelease'],
+      required: false,
+    }),
+  };
 
-  // Remove or comment out the old API version check
-  // OrgUtils.ensureMatchingAPIVersion(conn);
+  public async run(): Promise<void> {
+    const { flags } = await this.parse(Component);
 
-  // ... existing code
+    // ... existing code to get connection
+    const conn = flags['target-org'].getConnection();
 
-  // Pass connection to startLWCServer (it will determine version internally)
-  const server = await startLWCServer(
-    this.logger,
-    conn, // NEW: pass connection
-    projectDir,
-    identityToken,
-    'sfdx-component',
-    // ... rest of parameters
-  );
+    // Remove or comment out the old API version check
+    // OrgUtils.ensureMatchingAPIVersion(conn);
+
+    // ... existing code
+
+    // Pass connection and optional channel override to startLWCServer
+    const server = await startLWCServer(
+      this.logger,
+      conn, // NEW: pass connection
+      projectDir,
+      identityToken,
+      'sfdx-component',
+      serverPorts,
+      certData,
+      workspace,
+      flags['version-channel'] as VersionChannel | undefined // NEW: pass override
+    );
+  }
 }
 ```
+
+### 8. Optional: Version Channel Caching
+
+For performance optimization, implement simple caching to avoid repeatedly querying the org:
+
+```typescript
+// In src/shared/versionResolver.ts
+
+interface CacheEntry {
+  apiVersion: string;
+  channel: VersionChannel;
+  timestamp: number;
+}
+
+export class VersionResolver {
+  private static channelMetadata: Map<VersionChannel, ChannelConfig> | null = null;
+  private static versionCache: Map<string, CacheEntry> = new Map();
+  private static readonly CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+  /**
+   * Resolves channel with caching support
+   *
+   * @param orgId - Unique identifier for the org
+   * @param orgApiVersion - The API version from the org
+   * @returns The channel to use
+   */
+  public static resolveChannelWithCache(orgId: string, orgApiVersion: string): VersionChannel {
+    // Check cache first
+    const cached = this.versionCache.get(orgId);
+    if (cached) {
+      const age = Date.now() - cached.timestamp;
+      if (age < this.CACHE_TTL_MS && cached.apiVersion === orgApiVersion) {
+        return cached.channel;
+      }
+      // Cache expired or version changed, remove it
+      this.versionCache.delete(orgId);
+    }
+
+    // Resolve and cache
+    const channel = this.resolveChannel(orgApiVersion);
+    this.versionCache.set(orgId, {
+      apiVersion: orgApiVersion,
+      channel,
+      timestamp: Date.now(),
+    });
+
+    return channel;
+  }
+
+  /**
+   * Clears the version cache (useful for testing or when orgs are upgraded)
+   */
+  public static clearCache(): void {
+    this.versionCache.clear();
+  }
+
+  /**
+   * Removes a specific org from the cache
+   */
+  public static removeCacheEntry(orgId: string): void {
+    this.versionCache.delete(orgId);
+  }
+
+  // ... rest of existing methods
+}
+```
+
+**Usage in OrgUtils:**
+
+```typescript
+public static getVersionChannel(
+  connection: Connection,
+  overrideChannel?: VersionChannel
+): VersionChannel {
+  // ... existing override logic ...
+
+  // Use cached resolution if available
+  const orgId = connection.getAuthInfoFields().orgId;
+  const orgVersion = connection.version;
+
+  const channel = VersionResolver.resolveChannelWithCache(orgId, orgVersion);
+  // ... rest of logic
+}
+```
+
+**Note**: This caching is optional and can be added in a follow-up iteration if performance testing shows it's needed.
 
 ## TypeScript Considerations
 
@@ -553,6 +701,55 @@ In `tsconfig.json`:
 - [ ] Test component preview with both versions
 - [ ] Test app preview with both versions
 - [ ] Test site preview with both versions
+- [ ] Test manual override flag: `--version-channel=latest` and `--version-channel=prerelease`
+- [ ] Test environment variable override: `FORCE_VERSION_CHANNEL=latest` and `FORCE_VERSION_CHANNEL=prerelease`
+- [ ] Verify that flag override takes precedence over env var
+- [ ] Test invalid channel values and verify error messages
+
+### User Documentation for Manual Override
+
+**Using the `--version-channel` Flag:**
+
+For developers who need to test with a specific version or work around automatic detection:
+
+```bash
+# Force use of latest channel
+sf lightning dev component --target-org my-org --version-channel latest
+
+# Force use of prerelease channel
+sf lightning dev app --target-org my-org --version-channel prerelease
+
+# Works with all lightning dev commands
+sf lightning dev site --target-org my-org --version-channel latest
+```
+
+**Using the `FORCE_VERSION_CHANNEL` Environment Variable:**
+
+For persistent override during a development session:
+
+```bash
+# Set environment variable (bash/zsh)
+export FORCE_VERSION_CHANNEL=prerelease
+sf lightning dev component --target-org my-org
+
+# Set for single command
+FORCE_VERSION_CHANNEL=latest sf lightning dev component --target-org my-org
+```
+
+**Override Priority (highest to lowest):**
+
+1. `--version-channel` flag
+2. `FORCE_VERSION_CHANNEL` environment variable
+3. `SKIP_API_VERSION_CHECK=true` (legacy, returns default channel)
+4. Automatic detection based on org API version
+
+**Use Cases for Manual Override:**
+
+- **Testing**: Test your components with different LWC runtime versions
+- **Debugging**: Isolate whether an issue is version-specific
+- **Preview Upgrades**: Test with prerelease version before org upgrade
+- **Workarounds**: If automatic detection fails or org metadata is incorrect
+- **Development**: Plugin developers testing against specific versions
 
 ## Migration Strategy
 
@@ -651,6 +848,80 @@ When a new Salesforce release comes out:
 - Set up CI/CD to test against both org types
 - Create alerts when new LWC package versions are published
 
+### Extending to 3 Channels (Future)
+
+If needed, the design can easily support 3 channels. Here's how:
+
+**1. Update package.json:**
+
+```json
+{
+  "dependencies": {
+    // Previous release (n-2)
+    "@lwc/lwc-dev-server-previous": "npm:@lwc/lwc-dev-server@~13.1.x",
+
+    // Latest release (n-1)
+    "@lwc/lwc-dev-server-latest": "npm:@lwc/lwc-dev-server@~13.2.x",
+
+    // Prerelease (n)
+    "@lwc/lwc-dev-server-prerelease": "npm:@lwc/lwc-dev-server@~13.3.x"
+  }
+}
+```
+
+**2. Update apiVersionMetadata:**
+
+```json
+{
+  "apiVersionMetadata": {
+    "channels": {
+      "previous": {
+        "supportedApiVersions": ["64.0"]
+      },
+      "latest": {
+        "supportedApiVersions": ["65.0"]
+      },
+      "prerelease": {
+        "supportedApiVersions": ["66.0"]
+      }
+    }
+  }
+}
+```
+
+**3. Update VersionChannel type:**
+
+```typescript
+export type VersionChannel = 'previous' | 'latest' | 'prerelease';
+```
+
+**4. Update command flag options:**
+
+```typescript
+'version-channel': Flags.string({
+  options: ['previous', 'latest', 'prerelease'],
+  // ...
+})
+```
+
+**5. Update type declarations:**
+
+Add declarations for `@lwc/lwc-dev-server-previous`, `@lwc/sfdc-lwc-compiler-previous`, and `lwc-previous`.
+
+**When to use 3 channels:**
+
+- During transition periods when some orgs haven't upgraded yet
+- When supporting extended compatibility windows
+- For beta testing environments
+
+**Trade-offs:**
+
+- Increases bundle size by ~50%
+- Slightly more complex maintenance
+- More testing surface area
+
+The channel-based architecture makes this extension straightforward with minimal code changes.
+
 ## Potential Issues & Mitigations
 
 ### Issue 1: Type Compatibility
@@ -748,33 +1019,41 @@ Build two separate distributions of the plugin, one for each version
 4. **Maintenance**: Version updates can be done in < 30 minutes
 5. **Adoption**: 90%+ of users upgrade to new version within 3 months
 
-## Open Questions
+## Decisions on Key Questions
 
 1. **Should we support more than 2 versions?**
 
-   - Currently assuming Latest + Prerelease is sufficient
-   - Could extend to support 3-4 versions if needed
-   - Trade-off: bundle size vs. compatibility window
+   - **Decision**: Start with 2 versions (latest + prerelease) for initial implementation
+   - Architecture should be extensible to support 3 versions if needed in the future
+   - Using a channel-based approach makes this straightforward to extend
 
 2. **How do we handle version deprecation?**
 
-   - When should we drop support for older versions?
-   - Proposal: Keep 2 most recent, drop older versions
+   - **Decision**: Rotate versions with each Salesforce release cycle
+   - When a new release happens: prerelease → latest, new version → prerelease
+   - No need to maintain old versions since all orgs are upgraded
+   - Simple update process: update package.json dependencies and apiVersionMetadata
 
 3. **Should we cache the version resolution per org?**
 
-   - Could store in `.sf/` config to avoid querying every time
-   - Trade-off: speed vs. staleness if org is upgraded
+   - **Decision**: Implement optional short-term caching
+   - Cache org API version in memory during command execution
+   - Consider adding a TTL-based cache (e.g., 5 minutes) to `.sf/` config to reduce org queries
+   - Cache key: org ID → { apiVersion, channel, timestamp }
+   - Keep implementation simple initially, can enhance if performance issues arise
 
 4. **Do we need a manual override flag?**
 
-   - Allow users to force a specific channel for testing
-   - e.g., `sf lightning dev component --version-channel=prerelease`
+   - **Decision**: Yes, add manual override for testing and debugging
+   - Add flag: `--version-channel` to all commands
+   - Add environment variable: `FORCE_VERSION_CHANNEL`
+   - Useful for developers, testing, and troubleshooting edge cases
 
 5. **What about @lwrjs/api dependency?**
-   - Currently pinned to specific version (0.18.3)
-   - Does this also need dual versions?
-   - Need to investigate LWR versioning strategy
+   - **Decision**: No action needed - LWRJS is deprecated
+   - Functionality is being removed from sites
+   - Will be removed in future release, so don't invest in versioning it
+   - Keep current pinned version (0.18.3) for now
 
 ## Next Steps
 
@@ -803,7 +1082,22 @@ Build two separate distributions of the plugin, one for each version
 
 ---
 
-**Document Version**: 1.0  
+## Summary
+
+This design proposal introduces dual-version support for LWC dependencies using NPM aliasing and runtime branching. Key decisions have been finalized:
+
+✅ **Approved Approach**: NPM aliasing with 2 channels (latest + prerelease)  
+✅ **Extensibility**: Architecture supports 3+ channels if needed  
+✅ **Manual Override**: Flag (`--version-channel`) and environment variable (`FORCE_VERSION_CHANNEL`)  
+✅ **Caching**: Optional short-term caching with 5-minute TTL  
+✅ **Version Rotation**: Simple rotation model (prerelease → latest) with each release  
+✅ **LWRJS**: No versioning needed (deprecated, being removed)
+
+**Next Step**: Begin Phase 1 Implementation
+
+---
+
+**Document Version**: 2.0  
 **Last Updated**: 2025-11-05  
 **Author**: Design Proposal  
-**Status**: Draft - Awaiting Review
+**Status**: ✅ Approved - Ready for Implementation
