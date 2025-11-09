@@ -1,3 +1,9 @@
+## [5.0.26](https://github.com/salesforcecli/plugin-lightning-dev/compare/5.0.25...5.0.26) (2025-11-09)
+
+### Bug Fixes
+
+- **deps:** bump axios from 1.13.1 to 1.13.2 ([#552](https://github.com/salesforcecli/plugin-lightning-dev/issues/552)) ([a74f418](https://github.com/salesforcecli/plugin-lightning-dev/commit/a74f418070e3863f65e8873bdeb7a24ab7df1392))
+
 ## [5.0.25](https://github.com/salesforcecli/plugin-lightning-dev/compare/5.0.24...5.0.25) (2025-11-09)
 
 ### Bug Fixes
