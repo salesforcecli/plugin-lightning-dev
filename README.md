@@ -69,59 +69,22 @@ sf plugins link .
 sf plugins
 ```
 
-## LWR Sites Development Environment
+## Debugging
 
-Follow these instructions if you want to setup a dev environment for the `sf lightning dev site` command.
-
-## Setup
-
-1. [Enable Local Development](https://developer.salesforce.com/docs/platform/lwc/guide/get-started-test-components.html#enable-local-dev)
-
-2. Deploy some source files to your org from your SFDX project
+To debug the plugin, you can use the Node.js debugger:
 
 ```bash
-sf org login web --alias dev --instance-url ${orgfarmUrl}
-
+# Run with debugger attached
+NODE_OPTIONS="--inspect-brk" sf lightning dev site --target-org <your-org>
 ```
 
-3. Add those source files to an LWR site in the Experience Builder and Publish the site (basePath: '/')
+Now you can attach to the process from your IDE's debugger using the "Attach" launch configuration.
 
-4. Follow the [Build the plugin locally](#build) instructions
-
-5. [optional] Linking / Debugging LWR Source
-
-```bash
-# build and link lwr source
-cd lwr
-yarn && yarn link-lwr
-
-# build and link plugin-lightning-dev source
-cd plugin-lightning-dev
-yarn && yarn build
-yarn link-lwr
-
-# SFDX Project
-cd sfdx-project
-
-# Login to your org
-sf org login web --alias dev --instance-url https://login.test1.pc-rnd.salesforce.com/ (orgfarm needs instance url)
-
-# run/debug the sf cli command (attach to the CLI from the LWR repo in VS Code)
-NODE_OPTIONS="--inspect-brk" sf lightning dev site --target-org dev
-```
-
-Now you can Remote Attach to the CLI from the vscode debugger:
-
-- Use the "Attach" launch configuration
-- Run launch config from LWR repo if you want to debug LWR source
-- Run launch config from plugin-lightning-dev source if you want to debug the SFDX plugin source specifically
-
-If this doesn't work for whatever reason, you can always alias the build output directly like so:
+Alternatively, you can alias the build output directly:
 
 ```bash
 alias sfdev="/{pathToGitDir}/plugin-lightning-dev/bin/run.js"
-# SFDX Project
-NODE_OPTIONS="--inspect-brk" sfdev lightning dev site --target-org dev
+NODE_OPTIONS="--inspect-brk" sfdev lightning dev site --target-org <your-org>
 ```
 
 6. Make changes to your c-namespace components and you should see the browser refresh with those changes!
