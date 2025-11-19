@@ -108,14 +108,6 @@ export class ExperienceSite {
     return new Date(remoteMetadata.bundleLastModified) > new Date(localMetadata.bundleLastModified);
   }
 
-  // Is the site extracted locally
-  public isSiteSetup(): boolean {
-    if (fs.existsSync(path.join(this.getExtractDirectory(), 'ssr.js'))) {
-      return this.getLocalMetadata()?.coreVersion === '254';
-    }
-    return false;
-  }
-
   // Is the static resource available on the server
   public async isSitePublished(): Promise<boolean> {
     const remoteMetadata = await this.getRemoteMetadata();

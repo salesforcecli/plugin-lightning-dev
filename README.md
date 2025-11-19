@@ -256,17 +256,13 @@ _See code: [src/commands/lightning/dev/component.ts](https://github.com/salesfor
 
 ```
 USAGE
-  $ sf lightning dev site -o <value> [--flags-dir <value>] [-n <value>] [-l] [--guest] [--ssr]
+  $ sf lightning dev site -o <value> [--flags-dir <value>] [-n <value>]
 
 FLAGS
-  -l, --get-latest          Download the latest version of the specified site from your org, instead of using any local
-                            cache.
   -n, --name=<value>        Name of the Experience Builder site to preview. It has to match a site name from the current
                             org.
   -o, --target-org=<value>  (required) Username or alias of the target org. Not required if the `target-org`
                             configuration variable is already set.
-      --guest               Preview the site as a guest user (rather than an authenticated user).
-      --ssr                 Preview the SSR bundle
 
 GLOBAL FLAGS
   --flags-dir=<value>  Import flag values from a directory.

@@ -1,26 +1,54 @@
 [
-  {
-    "alias": [],
-    "command": "lightning:dev:app",
-    "flagAliases": [],
-    "flagChars": ["i", "n", "o", "t"],
-    "flags": ["device-id", "device-type", "flags-dir", "name", "target-org"],
-    "plugin": "@salesforce/plugin-lightning-dev"
-  },
-  {
-    "alias": [],
-    "command": "lightning:dev:component",
-    "flagAliases": [],
-    "flagChars": ["c", "n", "o"],
-    "flags": ["client-select", "flags-dir", "json", "name", "target-org"],
-    "plugin": "@salesforce/plugin-lightning-dev"
-  },
-  {
-    "alias": [],
-    "command": "lightning:dev:site",
-    "flagAliases": [],
-    "flagChars": ["l", "n", "o"],
-    "flags": ["flags-dir", "get-latest", "guest", "name", "target-org", "ssr"],
-    "plugin": "@salesforce/plugin-lightning-dev"
-  }
+    {
+        "alias": [],
+        "command": "lightning:dev:app",
+        "flagAliases": [],
+        "flagChars": [
+            "i",
+            "n",
+            "o",
+            "t"
+        ],
+        "flags": [
+            "device-id",
+            "device-type",
+            "flags-dir",
+            "name",
+            "target-org"
+        ],
+        "plugin": "@salesforce/plugin-lightning-dev"
+    },
+    {
+        "alias": [],
+        "command": "lightning:dev:component",
+        "flagAliases": [],
+        "flagChars": [
+            "c",
+            "n",
+            "o"
+        ],
+        "flags": [
+            "client-select",
+            "flags-dir",
+            "json",
+            "name",
+            "target-org"
+        ],
+        "plugin": "@salesforce/plugin-lightning-dev"
+    },
+    {
+        "alias": [],
+        "command": "lightning:dev:site",
+        "flagAliases": [],
+        "flagChars": [
+            "n",
+            "o"
+        ],
+        "flags": [
+            "flags-dir",
+            "name",
+            "target-org"
+        ],
+        "plugin": "@salesforce/plugin-lightning-dev"
+    }
 ]
