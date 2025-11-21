@@ -1,4 +1,4 @@
 # Comment line immediately above ownership line is reserved for related other information. Please be careful while editing.
 
 #GUSINFO:Application Fabric Services, Application Fabric Services
-* @salesforcecli/lwr @salesforcecli/lex @salesforcecli/mobile-platform-experience
+* @salesforcecli/local-dev @salesforcecli/lex @salesforcecli/mobile-platform-experience
