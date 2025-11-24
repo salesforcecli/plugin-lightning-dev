@@ -1,32 +1,32 @@
 {
   "name": "@salesforce/plugin-lightning-dev",
   "description": "Lightning development tools for LEX, Mobile, and Experience Sites",
-  "version": "5.0.25-alpha.0",
+  "version": "5.0.29",
   "author": "Salesforce",
   "bugs": "https://github.com/forcedotcom/cli/issues",
   "dependencies": {
     "@inquirer/prompts": "^5.3.8",
     "@inquirer/select": "^2.4.7",
-    "@lwc/lwc-dev-server": "~13.2.19",
+    "@lwc/lwc-dev-server": "~13.3.0",
     "@lwc/sfdc-lwc-compiler": "~13.2.19",
     "@lwrjs/api": "0.18.3",
     "@oclif/core": "^4.5.6",
     "@salesforce/core": "^8.23.3",
     "@salesforce/kit": "^3.2.4",
-    "@salesforce/lwc-dev-mobile-core": "4.0.0-alpha.13",
+    "@salesforce/lwc-dev-mobile-core": "4.0.0-alpha.14",
     "@salesforce/sf-plugins-core": "^11.2.4",
-    "axios": "^1.13.1",
-    "glob": "^10.4.5",
-    "lwc": "~8.24.0",
+    "axios": "^1.13.2",
+    "glob": "^10.5.0",
+    "lwc": "~8.26.0",
     "node-fetch": "^3.3.2",
     "open": "^10.2.0",
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
-    "@oclif/plugin-command-snapshot": "^5.3.6",
+    "@oclif/plugin-command-snapshot": "^5.3.8",
     "@salesforce/cli-plugins-testkit": "^5.3.41",
     "@salesforce/dev-scripts": "^11.0.4",
-    "@salesforce/plugin-command-reference": "^3.1.77",
+    "@salesforce/plugin-command-reference": "^3.1.78",
     "@types/node-fetch": "^2.6.13",
     "@types/xml2js": "^0.4.14",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
@@ -38,7 +38,7 @@
     "eslint-plugin-sf-plugin": "^1.20.33",
     "eslint-plugin-unicorn": "^50.0.1",
     "esmock": "^2.7.3",
-    "oclif": "^4.22.35",
+    "oclif": "^4.22.44",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   },
@@ -265,7 +265,7 @@
   "exports": "./lib/index.js",
   "type": "module",
   "volta": {
-    "node": "20.12.0",
+    "node": "20.19.5",
     "yarn": "1.22.22"
   }
 }

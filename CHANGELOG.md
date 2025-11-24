@@ -1,3 +1,33 @@
+## [5.0.29](https://github.com/salesforcecli/plugin-lightning-dev/compare/5.0.28...5.0.29) (2025-11-16)
+
+### Bug Fixes
+
+- **deps:** bump @lwc/lwc-dev-server from 13.2.18 to 13.2.19 ([#558](https://github.com/salesforcecli/plugin-lightning-dev/issues/558)) ([9d10aa8](https://github.com/salesforcecli/plugin-lightning-dev/commit/9d10aa8d1675b413a3dddcd3a50f06d40853b038))
+
+## [5.0.28](https://github.com/salesforcecli/plugin-lightning-dev/compare/5.0.27...5.0.28) (2025-11-09)
+
+### Bug Fixes
+
+- **deps:** bump @lwc/sfdc-lwc-compiler from 13.2.18 to 13.2.19 ([#550](https://github.com/salesforcecli/plugin-lightning-dev/issues/550)) ([f6723be](https://github.com/salesforcecli/plugin-lightning-dev/commit/f6723bedeb795cebe6567313f4fdd96d44f101e6))
+
+## [5.0.27](https://github.com/salesforcecli/plugin-lightning-dev/compare/5.0.26...5.0.27) (2025-11-09)
+
+### Bug Fixes
+
+- **deps:** bump lwc from 8.23.0 to 8.24.0 ([#551](https://github.com/salesforcecli/plugin-lightning-dev/issues/551)) ([260813a](https://github.com/salesforcecli/plugin-lightning-dev/commit/260813a133ddc736fcba5849beaef93a746d505b))
+
+## [5.0.26](https://github.com/salesforcecli/plugin-lightning-dev/compare/5.0.25...5.0.26) (2025-11-09)
+
+### Bug Fixes
+
+- **deps:** bump axios from 1.13.1 to 1.13.2 ([#552](https://github.com/salesforcecli/plugin-lightning-dev/issues/552)) ([a74f418](https://github.com/salesforcecli/plugin-lightning-dev/commit/a74f418070e3863f65e8873bdeb7a24ab7df1392))
+
+## [5.0.25](https://github.com/salesforcecli/plugin-lightning-dev/compare/5.0.24...5.0.25) (2025-11-09)
+
+### Bug Fixes
+
+- **deps:** bump @salesforce/lwc-dev-mobile-core from 4.0.0-alpha.13 to 4.0.0-alpha.14 ([#553](https://github.com/salesforcecli/plugin-lightning-dev/issues/553)) ([af834b4](https://github.com/salesforcecli/plugin-lightning-dev/commit/af834b42b3ea272fa6ce9eb754806127552f6abe))
+
 ## [5.0.24](https://github.com/salesforcecli/plugin-lightning-dev/compare/5.0.23...5.0.24) (2025-11-02)
 
 ### Bug Fixes
