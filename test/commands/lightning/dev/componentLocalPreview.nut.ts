@@ -20,6 +20,7 @@ import { expect } from 'chai';
 import { TestSession } from '@salesforce/cli-plugins-testkit';
 import axios from 'axios';
 import * as dotenv from 'dotenv';
+import { chromium, Browser, Page } from 'playwright';
 import { toKebabCase } from './helpers/utils.js';
 import { createSfdxProject, createLwcComponent } from './helpers/projectSetup.js';
 import { startLightningDevServer } from './helpers/devServerUtils.js';
@@ -31,6 +32,7 @@ const INSTANCE_URL = process.env.TESTKIT_HUB_INSTANCE;
 const TEST_TIMEOUT_MS = 60_000;
 const STARTUP_DELAY_MS = 5000;
 const DEV_SERVER_PORT = 3000;
+const HMR_WAIT_MS = 3000; // Time to wait for HMR to apply changes
 
 // Skip this test in CI environment - run only locally
 const shouldSkipTest = process.env.CI === 'true' || process.env.CI === '1';
@@ -104,6 +106,88 @@ const shouldSkipTest = process.env.CI === 'true' || process.env.CI === '1';
       componentHttpSuccess = false;
     }
 
+    // Launch browser and test HMR
+    let browser: Browser | null = null;
+    let page: Page | null = null;
+    let hmrTestPassed = false;
+
+    try {
+      browser = await chromium.launch({ headless: true });
+      page = await browser.newPage();
+
+      // Navigate to component URL
+      await page.goto(componentUrl, { waitUntil: 'networkidle' });
+
+      // Get initial content - check for the greeting text
+      const initialGreeting = await page.locator('h1').textContent();
+      expect(initialGreeting).to.include('Hello, World!');
+
+      // Get the component file path
+      const componentJsPath = path.join(
+        projectDir,
+        'force-app',
+        'main',
+        'default',
+        'lwc',
+        componentName,
+        `${componentName}.js`
+      );
+
+      // Read current component file
+      const originalJsContent = await fs.promises.readFile(componentJsPath, 'utf8');
+
+      // Modify the component - change greeting text
+      const modifiedJsContent = originalJsContent.replace(
+        "greeting = 'Hello, World!';",
+        "greeting = 'Hello, HMR Test!';"
+      );
+      await fs.promises.writeFile(componentJsPath, modifiedJsContent);
+
+      // Wait for HMR to detect and apply changes
+      await new Promise((r) => setTimeout(r, HMR_WAIT_MS));
+
+      // Wait for the page content to update (HMR should update without full reload)
+      try {
+        // Wait for the h1 element to contain the new text (HMR should update without full reload)
+        // eslint-disable-next-line unicorn/numeric-separators-style
+        await page.locator('h1').waitFor({ state: 'visible', timeout: 10000 });
+
+        // Poll for the updated content with retries
+        let retries = 20;
+        let foundUpdatedContent = false;
+        while (retries > 0 && !foundUpdatedContent) {
+          // eslint-disable-next-line no-await-in-loop
+          const currentGreeting = await page.locator('h1').textContent();
+          if (currentGreeting?.includes('Hello, HMR Test!')) {
+            foundUpdatedContent = true;
+          } else {
+            // eslint-disable-next-line no-await-in-loop
+            await new Promise((r) => setTimeout(r, 500));
+            retries--;
+          }
+        }
+
+        // Verify the change is reflected
+        const updatedGreeting = await page.locator('h1').textContent();
+        expect(updatedGreeting).to.include('Hello, HMR Test!');
+        expect(foundUpdatedContent, 'HMR did not update the component within the timeout period').to.be.true;
+        hmrTestPassed = true;
+      } catch (hmrError) {
+        stderrOutput += `HMR test failed: ${String(hmrError)}\n`;
+        hmrTestPassed = false;
+      }
+
+      // Restore original content
+      await fs.promises.writeFile(componentJsPath, originalJsContent);
+    } catch (browserError) {
+      const err = browserError as { message?: string };
+      stderrOutput += `Browser automation error: ${err.message ?? 'Unknown error'}\n`;
+      hmrTestPassed = false;
+    } finally {
+      if (page) await page.close();
+      if (browser) await browser.close();
+    }
+
     // Clean up
     try {
       if (serverProcess.pid && process.kill(serverProcess.pid, 0)) {
@@ -133,5 +217,7 @@ const shouldSkipTest = process.env.CI === 'true' || process.env.CI === '1';
       componentHttpSuccess,
       `Dev server did not respond with HTTP 200 for component URL. Tried URL: ${componentUrl}`
     ).to.be.true;
+    expect(hmrTestPassed, `HMR test failed. Component changes were not hot-swapped. Full stderr: ${stderrOutput}`).to.be
+      .true;
   });
 });

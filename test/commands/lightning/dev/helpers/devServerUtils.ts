@@ -22,10 +22,19 @@ const currentFile = fileURLToPath(import.meta.url);
 const currentDir = path.dirname(currentFile);
 const pluginRoot = path.resolve(currentDir, '../../../../..');
 
-export const startLightningDevServer = (projectDir: string, componentName: string): ChildProcess => {
+export const startLightningDevServer = (
+  projectDir: string,
+  componentName: string,
+  orgUsername?: string
+): ChildProcess => {
   const devScriptPath = path.join(pluginRoot, 'bin', 'run.js');
 
-  return spawn('node', [devScriptPath, 'lightning', 'dev', 'component', '--name', componentName], {
+  const args = [devScriptPath, 'lightning', 'dev', 'component', '--name', componentName];
+  if (orgUsername) {
+    args.push('--target-org', orgUsername);
+  }
+
+  return spawn('node', args, {
     cwd: projectDir,
     env: { ...process.env, NODE_ENV: 'production', PORT: '3000', OPEN_BROWSER: process.env.OPEN_BROWSER ?? 'false' },
   });
