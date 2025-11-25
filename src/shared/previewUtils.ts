@@ -238,9 +238,7 @@ export class PreviewUtils {
     componentName?: string,
     targetOrg?: string
   ): string[] {
-    let appPath = `lwr/application/e/devpreview/ai/${encodeURIComponent(
-      'localdev%2Fpreview'
-    )}?ldpServerUrl=${ldpServerUrl}&ldpServerId=${ldpServerId}`;
+    let appPath = `lwr/application/e/devpreview/ai/localdev-preview?ldpServerUrl=${ldpServerUrl}&ldpServerId=${ldpServerId}`;
     if (componentName) {
       // TODO: support other namespaces
       appPath += `&specifier=c/${componentName}`;
@@ -253,6 +251,31 @@ export class PreviewUtils {
     }
 
     return launchArguments;
+  }
+
+  /**
+   * Generates the full URL for a component preview.
+   *
+   * @param instanceUrl The URL of the Salesforce instance
+   * @param ldpServerUrl The URL for the local dev server
+   * @param ldpServerId Record ID for the identity token
+   * @param componentName The name of the component to preview
+   * @param encodePath Whether to encode the path
+   * @returns The full URL for the component preview
+   */
+  public static generateComponentPreviewUrl(
+    instanceUrl: string,
+    ldpServerUrl: string,
+    ldpServerId: string,
+    componentName?: string
+  ): string {
+    let url = `${instanceUrl}/lwr/application/e/devpreview/ai/localdev-preview?ldpServerUrl=${ldpServerUrl}&ldpServerId=${ldpServerId}`;
+    if (componentName) {
+      // TODO: support other namespaces
+      url += `&specifier=c/${componentName}`;
+    }
+
+    return url;
   }
 
   /**
