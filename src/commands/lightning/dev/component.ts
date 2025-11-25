@@ -79,6 +79,7 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
     if (process.env.AUTO_ENABLE_LOCAL_DEV === 'true') {
       try {
         await MetaUtils.ensureLightningPreviewEnabled(targetOrg.getConnection(undefined));
+        await MetaUtils.ensureFirstPartyCookiesNotRequired(targetOrg.getConnection(undefined));
       } catch (error) {
         this.log('Error autoenabling local dev', error);
       }
@@ -176,13 +177,7 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
     // strip trailing slashes
     const instanceUrl = connection.instanceUrl.replace(/\/$/, '');
 
-    const previewUrl = PreviewUtils.generateComponentPreviewUrl(
-      instanceUrl,
-      ldpServerUrl,
-      ldpServerId,
-      componentName,
-      false
-    );
+    const previewUrl = PreviewUtils.generateComponentPreviewUrl(instanceUrl, ldpServerUrl, ldpServerId, componentName);
 
     // Prepare the result for JSON output
     const result: ComponentPreviewResult = {
