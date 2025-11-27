@@ -239,7 +239,7 @@ export class PreviewUtils {
     targetOrg?: string
   ): string[] {
     let appPath = `lwr/application/e/devpreview/ai/${encodeURIComponent(
-      'localdev%2Fpreview'
+      'localdev/preview'
     )}?ldpServerUrl=${ldpServerUrl}&ldpServerId=${ldpServerId}`;
     if (componentName) {
       // TODO: support other namespaces
