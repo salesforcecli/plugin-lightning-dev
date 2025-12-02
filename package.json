@@ -7,8 +7,8 @@
   "dependencies": {
     "@inquirer/prompts": "^5.3.8",
     "@inquirer/select": "^2.4.7",
-    "@lwc/lwc-dev-server": "~13.2.19",
-    "@lwc/sfdc-lwc-compiler": "~13.2.19",
+    "@lwc/lwc-dev-server": "~13.3.0",
+    "@lwc/sfdc-lwc-compiler": "~13.3.0",
     "@lwrjs/api": "0.18.3",
     "@oclif/core": "^4.5.6",
     "@salesforce/core": "^8.23.3",
@@ -16,8 +16,8 @@
     "@salesforce/lwc-dev-mobile-core": "4.0.0-alpha.14",
     "@salesforce/sf-plugins-core": "^11.2.4",
     "axios": "^1.13.2",
-    "glob": "^10.4.5",
-    "lwc": "~8.24.0",
+    "glob": "^11.1.0",
+    "lwc": "~8.26.0",
     "node-fetch": "^3.3.2",
     "open": "^10.2.0",
     "xml2js": "^0.6.2"
@@ -38,7 +38,7 @@
     "eslint-plugin-sf-plugin": "^1.20.33",
     "eslint-plugin-unicorn": "^50.0.1",
     "esmock": "^2.7.3",
-    "oclif": "^4.22.44",
+    "oclif": "^4.22.50",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   },
@@ -265,7 +265,7 @@
   "exports": "./lib/index.js",
   "type": "module",
   "volta": {
-    "node": "20.11.0",
+    "node": "20.19.5",
     "yarn": "1.22.22"
   }
 }
