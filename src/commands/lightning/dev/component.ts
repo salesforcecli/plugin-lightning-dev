@@ -167,13 +167,7 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
     // strip trailing slashes
     const instanceUrl = connection.instanceUrl.replace(/\/$/, '');
 
-    const previewUrl = PreviewUtils.generateComponentPreviewUrl(
-      instanceUrl,
-      ldpServerUrl,
-      ldpServerId,
-      componentName,
-      false
-    );
+    const previewUrl = PreviewUtils.generateComponentPreviewUrl(instanceUrl, ldpServerUrl, ldpServerId, componentName);
 
     // Prepare the result for JSON output
     const result: ComponentPreviewResult = {
