@@ -1,3 +1,9 @@
+## [4.5.3](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.5.2...4.5.3) (2025-12-08)
+
+### Bug Fixes
+
+- preview URL @W-20474734 ([#576](https://github.com/salesforcecli/plugin-lightning-dev/issues/576)) ([9338a24](https://github.com/salesforcecli/plugin-lightning-dev/commit/9338a24a5441467fec0a20a5970a6a1a437583aa))
+
 ## [4.5.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/4.5.2-alpha.1...4.5.2) (2025-10-12)
 
 ### Bug Fixes
