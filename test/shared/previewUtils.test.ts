@@ -282,6 +282,25 @@ describe('previewUtils', () => {
     expect(parsed.values['target-org']).to.be.undefined;
   });
 
+  it('generatedComponentPreviewLaunchArguments propertly encodes parameters', async () => {
+    const result = PreviewUtils.generateComponentPreviewLaunchArguments('https://localhost:3333', testLdpServerId);
+
+    const parsed = parseArgs({
+      args: result,
+      options: {
+        path: { type: 'string' },
+        'target-org': { type: 'string' },
+      },
+    });
+
+    for (const v in parsed.values) {
+      if (v.length === 0) {
+        continue;
+      }
+      expect(decodeURIComponent(v) === decodeURIComponent(decodeURIComponent(v)));
+    }
+  });
+
   it('getTargetOrgFromArguments finds -o flag', async () => {
     const args = ['command', '-o', 'myOrg', 'otherArg'];
     const result = PreviewUtils.getTargetOrgFromArguments(args);
