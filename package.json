@@ -7,8 +7,8 @@
   "dependencies": {
     "@inquirer/prompts": "^5.3.8",
     "@inquirer/select": "^2.4.7",
-    "@lwc/lwc-dev-server": "~13.3.6",
-    "@lwc/sfdc-lwc-compiler": "~13.3.0",
+    "@lwc/lwc-dev-server": "~13.2.20",
+    "@lwc/sfdc-lwc-compiler": "~13.2.20",
     "@lwrjs/api": "0.18.3",
     "@oclif/core": "^4.5.6",
     "@salesforce/core": "^8.23.3",
@@ -17,7 +17,7 @@
     "@salesforce/sf-plugins-core": "^11.2.4",
     "axios": "^1.13.2",
     "glob": "^11.1.0",
-    "lwc": "~8.26.1",
+    "lwc": "~8.25.1",
     "node-fetch": "^3.3.2",
     "open": "^10.2.0",
     "xml2js": "^0.6.2"
@@ -237,7 +237,7 @@
     ],
     "target": {
       "versionNumber": "66.0",
-      "matchingDevServerVersion": "~13.2.2"
+      "matchingDevServerVersion": "~13.2.20"
     },
     "versionToTagMappings": [
       {
