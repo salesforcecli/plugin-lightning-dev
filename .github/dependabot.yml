@@ -16,6 +16,12 @@ updates:
       prefix: fix(deps)
       # no release for dev-deps
       prefix-development: chore(dev-deps)
+    groups:
+      lwc-packages:
+        patterns:
+          - 'lwc'
+          - '@lwc/lwc-dev-server'
+          - '@lwc/sfdc-lwc-compiler'
     ignore:
       - dependency-name: '@salesforce/dev-scripts'
       - dependency-name: '*'
