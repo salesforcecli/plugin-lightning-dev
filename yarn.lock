@@ -1504,19 +1504,12 @@
     debug "^4.3.1"
     minimatch "^3.1.2"
 
-"@eslint/config-helpers@^0.4.1", "@eslint/config-helpers@^0.4.2":
+"@eslint/config-helpers@^0.4.2":
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/@eslint/config-helpers/-/config-helpers-0.4.2.tgz#1bd006ceeb7e2e55b2b773ab318d300e1a66aeda"
   integrity sha512-gBrxN88gOIf3R7ja5K9slwNayVcZgK6SOUORm2uBzTeIEfeVaIhOpCtTox3P6R7o2jLFwLFTLnC7kU/RGcYEgw==
   dependencies:
     "@eslint/core" "^0.17.0"
-
-"@eslint/core@^0.16.0":
-  version "0.16.0"
-  resolved "https://registry.yarnpkg.com/@eslint/core/-/core-0.16.0.tgz#490254f275ba9667ddbab344f4f0a6b7a7bd7209"
-  integrity sha512-nmC8/totwobIiFcGkDza3GIKfAw1+hLiYVrh3I1nIomQ8PEr5cxg34jnkmGawul/ep52wGRAcyeDCNtWKSOj4Q==
-  dependencies:
-    "@types/json-schema" "^7.0.15"
 
 "@eslint/core@^0.17.0":
   version "0.17.0"
@@ -1560,11 +1553,6 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.57.1.tgz#de633db3ec2ef6a3c89e2f19038063e8a122e2c2"
   integrity sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==
 
-"@eslint/js@9.38.0":
-  version "9.38.0"
-  resolved "https://registry.yarnpkg.com/@eslint/js/-/js-9.38.0.tgz#f7aa9c7577577f53302c1d795643589d7709ebd1"
-  integrity sha512-UZ1VpFvXf9J06YG9xQBdnzU+kthors6KjhMAl6f4gH4usHyh31rUf2DLGInT8RFYIReYXNSydgPY0V2LuWgl7A==
-
 "@eslint/js@9.39.2":
   version "9.39.2"
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-9.39.2.tgz#2d4b8ec4c3ea13c1b3748e0c97ecd766bdd80599"
@@ -1580,7 +1568,7 @@
   resolved "https://registry.yarnpkg.com/@eslint/object-schema/-/object-schema-2.1.7.tgz#6e2126a1347e86a4dedf8706ec67ff8e107ebbad"
   integrity sha512-VtAOaymWVfZcmZbp6E2mympDIHvyjXs/12LqWYjVw6qjrfF+VK+fyG33kChz3nnK+SU5/NeHOqrTEHS8sXO3OA==
 
-"@eslint/plugin-kit@^0.4.0", "@eslint/plugin-kit@^0.4.1":
+"@eslint/plugin-kit@^0.4.1":
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/@eslint/plugin-kit/-/plugin-kit-0.4.1.tgz#9779e3fd9b7ee33571a57435cf4335a1794a6cb2"
   integrity sha512-43/qtrDUokr7LJqoF2c3+RInu/t4zfrpYdoSDfYyhg52rwLV6TnOvdG4fXm7IkSB3wErkcmJS9iEhjVtOSEjjA==
@@ -2246,13 +2234,6 @@
     "@lwc/style-compiler" "8.26.1"
     "@lwc/template-compiler" "8.26.1"
 
-"@lwc/dev-server-plugin-lex@13.2.20":
-  version "13.2.20"
-  resolved "https://registry.yarnpkg.com/@lwc/dev-server-plugin-lex/-/dev-server-plugin-lex-13.2.20.tgz#f48e0d43f42e4316f18eb1ed26fcbfb5cff1749a"
-  integrity sha512-+VvN5sLILmT2KIWRolx8S9aGFV3mPqn2u78Q0g7UAXVqT2ld/4ZSfEUDVXSrTGNu+4MZbBxU31WZzeuxc8vkmA==
-  dependencies:
-    magic-string "~0.30.21"
-
 "@lwc/dev-server-plugin-lex@13.3.6":
   version "13.3.6"
   resolved "https://registry.yarnpkg.com/@lwc/dev-server-plugin-lex/-/dev-server-plugin-lex-13.3.6.tgz#06a69499cb68dc1a6480b42150f91ade9fc90fc7"
@@ -2307,37 +2288,24 @@
   dependencies:
     "@lwc/shared" "8.26.1"
 
-"@lwc/lwc-dev-server-types@13.2.20":
-  version "13.2.20"
-  resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server-types/-/lwc-dev-server-types-13.2.20.tgz#aedf477c6b451db452c109729e13de6662fb1585"
-  integrity sha512-6nMFOoNvusOEjFyQ1YoXzKTGJsTdj/IcneJ3W0ac4B4xxz2twcZybeG4jXZhy970sjdWcaWpqp3Vu5kGtJsnJA==
+"@lwc/lwc-dev-server-types@13.3.6":
+  version "13.3.6"
+  resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server-types/-/lwc-dev-server-types-13.3.6.tgz#7f5ea5fab7bbe35ae7fc9d8fa18e7720c9891b0c"
+  integrity sha512-+4VpVgK0+oSa2U8KqmTVo7OguRh4RlFgL+wV7uMwLUCiN2cXIpvn8PSHDv5FmXQWKuWBiCSRLPG0SehEwsyb9Q==
 
-"@lwc/lwc-dev-server@~13.2.20":
-  version "13.2.20"
-  resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server/-/lwc-dev-server-13.2.20.tgz#fef34e855aa947a76f4f80365be9b7e2a930229b"
-  integrity sha512-7I3u3pINBWFvhejEjvxhLGmaGko0y4Mw9ean0mf4F9d90jX+t4SIN9rtN2In9Fi+uhmZAG66/QqqldKVul8PFQ==
+"@lwc/lwc-dev-server@~13.3.6":
+  version "13.3.6"
+  resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server/-/lwc-dev-server-13.3.6.tgz#76c135e2ba49cc3b8f2466926126e8697e606258"
+  integrity sha512-amoqzkW8U3f/oS7yXLWuaPNvaIEUvDr+Ho/X/iYCFNKWL8LajeWAvm80dUIwJVV/ExbzadvvbeLyyOFobUP6mQ==
   dependencies:
-    "@lwc/lwc-dev-server-types" "13.2.20"
-    "@lwc/sfdc-lwc-compiler" "13.2.20"
+    "@lwc/lwc-dev-server-types" "13.3.6"
+    "@lwc/sfdc-lwc-compiler" "13.3.6"
     chalk "~5.6.2"
     chokidar "~3.6.0"
     commander "~14.0.2"
     fast-xml-parser "^5.3.0"
     glob "^11.0.3"
     ws "^8.18.3"
-
-"@lwc/metadata@13.2.20":
-  version "13.2.20"
-  resolved "https://registry.yarnpkg.com/@lwc/metadata/-/metadata-13.2.20.tgz#ff04e6ad34eb8d6f93178d57cc5e1df6a9eb7572"
-  integrity sha512-Y/SfQTseaO+EqHMFV9yBtaxyUYnAA8FRHrQBfJ/y8oeS7jRr+DSyiOFHJpx5NqsyAtmx2KTjggmWow6GgfjD+A==
-  dependencies:
-    "@babel/parser" "~7.28.5"
-    "@babel/traverse" "~7.28.5"
-    "@babel/types" "~7.28.5"
-    "@lwc/sfdc-compiler-utils" "13.2.20"
-    postcss "~8.5.6"
-    postcss-selector-parser "~7.1.0"
-    postcss-value-parser "~4.2.0"
 
 "@lwc/metadata@13.3.6":
   version "13.3.6"
@@ -2369,54 +2337,12 @@
     "@lwc/shared" "8.26.1"
     "@rollup/pluginutils" "~5.3.0"
 
-"@lwc/sfdc-compiler-utils@13.2.20":
-  version "13.2.20"
-  resolved "https://registry.yarnpkg.com/@lwc/sfdc-compiler-utils/-/sfdc-compiler-utils-13.2.20.tgz#1d5985a7169ce5f6192ede48405a3b53cfa3423f"
-  integrity sha512-IeorL44CtqnOQhqe8QHqaotOp5uWlraeRJHcRhb0Ssz32LAyIf/4rL+9nleVACfSSiKEyVnkBb7ZTo7TD1edkg==
-
 "@lwc/sfdc-compiler-utils@13.3.6":
   version "13.3.6"
   resolved "https://registry.yarnpkg.com/@lwc/sfdc-compiler-utils/-/sfdc-compiler-utils-13.3.6.tgz#2038bf1551229f30151d2aa071106ce3cde7dfe6"
   integrity sha512-xYakZmn9miIIoEX1C45Bv6pkdtdpSUeBbFFh+20++N5K5cU93yKz80rbTUGaqNfxCtX/cRHxQosbbvWa/1dZaQ==
 
-"@lwc/sfdc-lwc-compiler@13.2.20":
-  version "13.2.20"
-  resolved "https://registry.yarnpkg.com/@lwc/sfdc-lwc-compiler/-/sfdc-lwc-compiler-13.2.20.tgz#a07a58d08098e752967a70102ff296cd700114a8"
-  integrity sha512-c1TNMX0lS4K8NdtfEdQSmj1gVYD3Bk+JTikWJK8VyWPN55La+2NZ1+Lf+f0bYUyFOYesJa1OTpiScGLnZzQTmQ==
-  dependencies:
-    "@babel/core" "7.28.5"
-    "@babel/parser" "7.28.5"
-    "@babel/plugin-syntax-decorators" "7.27.1"
-    "@babel/preset-typescript" "7.28.5"
-    "@babel/traverse" "7.28.5"
-    "@babel/types" "7.28.5"
-    "@komaci/esm-generator" "260.31.0"
-    "@lwc/dev-server-plugin-lex" "13.2.20"
-    "@lwc/eslint-plugin-lwc" "3.3.0"
-    "@lwc/eslint-plugin-lwc-platform" "6.3.0"
-    "@lwc/metadata" "13.2.20"
-    "@lwc/sfdc-compiler-utils" "13.2.20"
-    "@rollup/plugin-babel" "^6.1.0"
-    "@rollup/plugin-replace" "^6.0.3"
-    "@rollup/wasm-node" "4.52.5"
-    "@salesforce/eslint-config-lwc" "4.1.1"
-    "@salesforce/eslint-plugin-lightning" "2.0.0"
-    "@swc/wasm" "1.14.0"
-    astring "~1.9.0"
-    doctrine "~3.0.0"
-    eslint "~9.38.0"
-    eslint-plugin-import "~2.32.0"
-    eslint-plugin-jest "~29.0.1"
-    gray-matter "~4.0.3"
-    line-column "~1.0.2"
-    magic-string "~0.30.21"
-    markdown-it "~14.1.0"
-    parse5-sax-parser "~8.0.0"
-    postcss "~8.5.6"
-    postcss-selector-parser "~7.1.0"
-    terser "~5.44.0"
-
-"@lwc/sfdc-lwc-compiler@~13.3.6":
+"@lwc/sfdc-lwc-compiler@13.3.6", "@lwc/sfdc-lwc-compiler@~13.3.6":
   version "13.3.6"
   resolved "https://registry.yarnpkg.com/@lwc/sfdc-lwc-compiler/-/sfdc-lwc-compiler-13.3.6.tgz#767a3472b72ed4fe75d4bcc06824e7b2b1914fbe"
   integrity sha512-eE6f0ihFH12BFAiOh+1WPcI2qCERpLdFiLzpdF/jscNqH3tyP7PyfQQ9uFYL1da+CNiSWS7yEWTxW+HXE0Yj/A==
@@ -6659,46 +6585,6 @@ eslint@^8.56.0, eslint@^8.57.0:
     optionator "^0.9.3"
     strip-ansi "^6.0.1"
     text-table "^0.2.0"
-
-eslint@~9.38.0:
-  version "9.38.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-9.38.0.tgz#3957d2af804e5cf6cc503c618f60acc71acb2e7e"
-  integrity sha512-t5aPOpmtJcZcz5UJyY2GbvpDlsK5E8JqRqoKtfiKE3cNh437KIqfJr3A3AKf5k64NPx6d0G3dno6XDY05PqPtw==
-  dependencies:
-    "@eslint-community/eslint-utils" "^4.8.0"
-    "@eslint-community/regexpp" "^4.12.1"
-    "@eslint/config-array" "^0.21.1"
-    "@eslint/config-helpers" "^0.4.1"
-    "@eslint/core" "^0.16.0"
-    "@eslint/eslintrc" "^3.3.1"
-    "@eslint/js" "9.38.0"
-    "@eslint/plugin-kit" "^0.4.0"
-    "@humanfs/node" "^0.16.6"
-    "@humanwhocodes/module-importer" "^1.0.1"
-    "@humanwhocodes/retry" "^0.4.2"
-    "@types/estree" "^1.0.6"
-    ajv "^6.12.4"
-    chalk "^4.0.0"
-    cross-spawn "^7.0.6"
-    debug "^4.3.2"
-    escape-string-regexp "^4.0.0"
-    eslint-scope "^8.4.0"
-    eslint-visitor-keys "^4.2.1"
-    espree "^10.4.0"
-    esquery "^1.5.0"
-    esutils "^2.0.2"
-    fast-deep-equal "^3.1.3"
-    file-entry-cache "^8.0.0"
-    find-up "^5.0.0"
-    glob-parent "^6.0.2"
-    ignore "^5.2.0"
-    imurmurhash "^0.1.4"
-    is-glob "^4.0.0"
-    json-stable-stringify-without-jsonify "^1.0.1"
-    lodash.merge "^4.6.2"
-    minimatch "^3.1.2"
-    natural-compare "^1.4.0"
-    optionator "^0.9.3"
 
 eslint@~9.39.1:
   version "9.39.2"
