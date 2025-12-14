@@ -1,3 +1,9 @@
+## [5.1.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/5.1.0...5.1.1) (2025-12-14)
+
+### Bug Fixes
+
+- **deps:** bump @lwc/sfdc-lwc-compiler from 13.2.20 to 13.3.6 ([#582](https://github.com/salesforcecli/plugin-lightning-dev/issues/582)) ([7d94f72](https://github.com/salesforcecli/plugin-lightning-dev/commit/7d94f72d2a136abd95aed53c06701d21f7e95754))
+
 # [5.1.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/5.0.29...5.1.0) (2025-12-10)
 
 ### Bug Fixes
