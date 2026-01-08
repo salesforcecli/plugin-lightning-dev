@@ -1,3 +1,33 @@
+## [5.1.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/5.1.1...5.1.2) (2025-12-14)
+
+### Bug Fixes
+
+- **deps:** bump lwc from 8.25.1 to 8.26.1 ([#581](https://github.com/salesforcecli/plugin-lightning-dev/issues/581)) ([9487a22](https://github.com/salesforcecli/plugin-lightning-dev/commit/9487a22ac5295a1753e60d21c44a02a6dac6aa8a))
+
+## [5.1.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/5.1.0...5.1.1) (2025-12-14)
+
+### Bug Fixes
+
+- **deps:** bump @lwc/sfdc-lwc-compiler from 13.2.20 to 13.3.6 ([#582](https://github.com/salesforcecli/plugin-lightning-dev/issues/582)) ([7d94f72](https://github.com/salesforcecli/plugin-lightning-dev/commit/7d94f72d2a136abd95aed53c06701d21f7e95754))
+
+# [5.1.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/5.0.29...5.1.0) (2025-12-10)
+
+### Bug Fixes
+
+- **deps:** bump @lwc/lwc-dev-server from 13.2.19 to 13.3.0 ([#566](https://github.com/salesforcecli/plugin-lightning-dev/issues/566)) ([6de16a2](https://github.com/salesforcecli/plugin-lightning-dev/commit/6de16a292d5e926aa1e893a4e86c13ad407d0647))
+- **deps:** bump @lwc/lwc-dev-server from 13.3.0 to 13.3.6 ([#572](https://github.com/salesforcecli/plugin-lightning-dev/issues/572)) ([b616cad](https://github.com/salesforcecli/plugin-lightning-dev/commit/b616cad88f566c6464010b00a5eaaeca9711c423))
+- **deps:** bump @lwc/sfdc-lwc-compiler from 13.2.19 to 13.3.0 ([#570](https://github.com/salesforcecli/plugin-lightning-dev/issues/570)) ([9b03c80](https://github.com/salesforcecli/plugin-lightning-dev/commit/9b03c80a79c1b8b7f3b81b215070fb6700461402))
+- **deps:** bump glob from 10.4.5 to 10.5.0 ([#565](https://github.com/salesforcecli/plugin-lightning-dev/issues/565)) ([65895f8](https://github.com/salesforcecli/plugin-lightning-dev/commit/65895f8e5c88cb4e39682b71d0fd9058d276af8a))
+- **deps:** bump jws from 3.2.2 to 3.2.3 in the npm_and_yarn group across 1 directory ([#571](https://github.com/salesforcecli/plugin-lightning-dev/issues/571)) ([29f6daf](https://github.com/salesforcecli/plugin-lightning-dev/commit/29f6daf097d35e70544aaef93a2c6ddc4c21d26c))
+- **deps:** bump lwc from 8.24.0 to 8.26.0 ([#564](https://github.com/salesforcecli/plugin-lightning-dev/issues/564)) ([ebb96f9](https://github.com/salesforcecli/plugin-lightning-dev/commit/ebb96f9d64321fbb02fd2d09baf7bb1f54315a4c))
+- **deps:** bump lwc from 8.26.0 to 8.26.1 ([#574](https://github.com/salesforcecli/plugin-lightning-dev/issues/574)) ([d398f86](https://github.com/salesforcecli/plugin-lightning-dev/commit/d398f8658c54c85d0506c781bc139ccc433b4c73))
+- **deps:** bump node-forge from 1.3.1 to 1.3.2 in the npm_and_yarn group across 1 directory ([#568](https://github.com/salesforcecli/plugin-lightning-dev/issues/568)) ([cbffc1c](https://github.com/salesforcecli/plugin-lightning-dev/commit/cbffc1c5998b26ca1ab211a61752444811aaf082))
+- **deps:** bump the npm_and_yarn group across 1 directory with 2 updates ([#577](https://github.com/salesforcecli/plugin-lightning-dev/issues/577)) ([9055433](https://github.com/salesforcecli/plugin-lightning-dev/commit/9055433b0a9c6b4aa95fc2c8d3ddbb6281422a64))
+
+### Features
+
+- add json flag / preview url encoding fixes / auto enable / fix 260 dependencies @W-20141594 ([#549](https://github.com/salesforcecli/plugin-lightning-dev/issues/549)) ([eb4d6ce](https://github.com/salesforcecli/plugin-lightning-dev/commit/eb4d6ce9ded1577fbb57bd4643947906a2d936ea))
+
 ## [5.0.29](https://github.com/salesforcecli/plugin-lightning-dev/compare/5.0.28...5.0.29) (2025-11-16)
 
 ### Bug Fixes
