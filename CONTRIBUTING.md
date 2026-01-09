@@ -31,29 +31,30 @@ R2b Release
 
 ### Branch / Release / API Version Reference
 
-| Core Branch | Release Name | API Version |
-| ----------- | ------------ | ----------- |
-| 254-patch   | spring25     | 63          |
-| 256-patch   | summer25     | 64          |
-| 258-patch   | winter26     | 65          |
-| 260-patch   | spring26     | 66          |
-| 262-patch   | summer26     | 67          |
-| 264-patch   | winter27     | 68          |
-| 266-patch   | spring27     | 69          |
-| 268-patch   | summer27     | 70          |
-| 270-patch   | winter28     | 71          |
-| 272-patch   | spring28     | 72          |
-| 274-patch   | summer28     | 73          |
-| 276-patch   | winter29     | 74          |
-| 278-patch   | spring29     | 75          |
-| 280-patch   | summer29     | 76          |
-| 282-patch   | winter30     | 77          |
-| 284-patch   | spring30     | 78          |
-| 286-patch   | summer30     | 79          |
-| 288-patch   | winter31     | 80          |
-| 290-patch   | spring31     | 81          |
-| 292-patch   | summer31     | 82          |
-| 294-patch   | winter32     | 83          |
-| 296-patch   | spring32     | 84          |
-| 298-patch   | summer32     | 85          |
-| 300-patch   | winter33     | 86          |
+| Core Branch | Release Name | API Version | Plugin Version |
+| ----------- | ------------ | ----------- | -------------- |
+| 252-patch   | winter25     | 62          | 1              |
+| 254-patch   | spring25     | 63          | 2              |
+| 256-patch   | summer25     | 64          | 3              |
+| 258-patch   | winter26     | 65          | 4              |
+| 260-patch   | spring26     | 66          | 5              |
+| 262-patch   | summer26     | 67          | 6              |
+| 264-patch   | winter27     | 68          | 7              |
+| 266-patch   | spring27     | 69          | 8              |
+| 268-patch   | summer27     | 70          | 9              |
+| 270-patch   | winter28     | 71          | 10             |
+| 272-patch   | spring28     | 72          | 11             |
+| 274-patch   | summer28     | 73          | 12             |
+| 276-patch   | winter29     | 74          | 13             |
+| 278-patch   | spring29     | 75          | 14             |
+| 280-patch   | summer29     | 76          | 15             |
+| 282-patch   | winter30     | 77          | 16             |
+| 284-patch   | spring30     | 78          | 17             |
+| 286-patch   | summer30     | 79          | 18             |
+| 288-patch   | winter31     | 80          | 19             |
+| 290-patch   | spring31     | 81          | 20             |
+| 292-patch   | summer31     | 82          | 21             |
+| 294-patch   | winter32     | 83          | 22             |
+| 296-patch   | spring32     | 84          | 23             |
+| 298-patch   | summer32     | 85          | 24             |
+| 300-patch   | winter33     | 86          | 25             |
