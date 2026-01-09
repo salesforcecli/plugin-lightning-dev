@@ -1,3 +1,9 @@
+## [5.1.4](https://github.com/salesforcecli/plugin-lightning-dev/compare/5.1.3...5.1.4) (2026-01-09)
+
+### Bug Fixes
+
+- 260 prerelease @W-20826542 ([#594](https://github.com/salesforcecli/plugin-lightning-dev/issues/594)) ([42b337d](https://github.com/salesforcecli/plugin-lightning-dev/commit/42b337d1ad1a24f858ebc27300ff3fc36379cf43))
+
 ## [5.1.3](https://github.com/salesforcecli/plugin-lightning-dev/compare/5.1.2...5.1.3) (2026-01-09)
 
 ### Bug Fixes
