@@ -48,7 +48,7 @@ jobs:
       #ctc: true
       sign: true
       # At CLCO, the new patch branch's version will be released as 'prerelease'. After R2b, delete the logic below for 'latest' and update 'prerelease' candidate to 'latest'
-      tag: ${{ needs.getDistTag.outputs.tag || (needs.getMajorVersion.outputs.major == '4' && 'latest') || 'next' }}
+      tag: ${{ needs.getDistTag.outputs.tag || (needs.getMajorVersion.outputs.major == '4' && 'latest') || (needs.getMajorVersion.outputs.major == '5' && 'prerelease') || 'next' }}
       githubTag: ${{ github.event.release.tag_name || inputs.tag }}
 
     secrets: inherit
