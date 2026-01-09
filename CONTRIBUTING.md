@@ -28,3 +28,33 @@ R2b Release
 
 - Create a [patch branch pull request](https://github.com/salesforcecli/plugin-lightning-dev/commit/150bcfa3036018ea49ab73da10d1b470cab0ad43).
 - Ensure this step completes successfully and has released a newly tagged "latest" version of the plugin to NPM.
+
+### Branch / Release / API Version Reference
+
+| Core Branch | Release Name | API Version | Plugin Version |
+| ----------- | ------------ | ----------- | -------------- |
+| 252-patch   | winter25     | 62          | 1              |
+| 254-patch   | spring25     | 63          | 2              |
+| 256-patch   | summer25     | 64          | 3              |
+| 258-patch   | winter26     | 65          | 4              |
+| 260-patch   | spring26     | 66          | 5              |
+| 262-patch   | summer26     | 67          | 6              |
+| 264-patch   | winter27     | 68          | 7              |
+| 266-patch   | spring27     | 69          | 8              |
+| 268-patch   | summer27     | 70          | 9              |
+| 270-patch   | winter28     | 71          | 10             |
+| 272-patch   | spring28     | 72          | 11             |
+| 274-patch   | summer28     | 73          | 12             |
+| 276-patch   | winter29     | 74          | 13             |
+| 278-patch   | spring29     | 75          | 14             |
+| 280-patch   | summer29     | 76          | 15             |
+| 282-patch   | winter30     | 77          | 16             |
+| 284-patch   | spring30     | 78          | 17             |
+| 286-patch   | summer30     | 79          | 18             |
+| 288-patch   | winter31     | 80          | 19             |
+| 290-patch   | spring31     | 81          | 20             |
+| 292-patch   | summer31     | 82          | 21             |
+| 294-patch   | winter32     | 83          | 22             |
+| 296-patch   | spring32     | 84          | 23             |
+| 298-patch   | summer32     | 85          | 24             |
+| 300-patch   | winter33     | 86          | 25             |
