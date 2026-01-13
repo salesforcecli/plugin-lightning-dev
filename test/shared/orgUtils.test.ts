@@ -35,6 +35,10 @@ describe('orgUtils', () => {
           supportedApiVersions: ['66.0'],
           dependencies: {},
         },
+        next: {
+          supportedApiVersions: ['67.0'],
+          dependencies: {},
+        },
       },
       defaultChannel: 'latest',
     },
@@ -61,6 +65,11 @@ describe('orgUtils', () => {
       const conn = new Connection({ authInfo: new AuthInfo() });
       const channel = OrgUtils.getVersionChannel(conn);
       expect(channel).to.equal('prerelease');
+
+      process.env.FORCE_VERSION_CHANNEL = 'next';
+      const channelNext = OrgUtils.getVersionChannel(conn);
+      expect(channelNext).to.equal('next');
+
       delete process.env.FORCE_VERSION_CHANNEL;
     });
 

@@ -144,7 +144,7 @@ export class OrgUtils {
     // Priority 2: Environment variable override
     const envOverride = process.env.FORCE_VERSION_CHANNEL;
     if (envOverride) {
-      const validChannels: VersionChannel[] = ['latest', 'prerelease'];
+      const validChannels: VersionChannel[] = ['latest', 'prerelease', 'next'];
       if (validChannels.includes(envOverride as VersionChannel)) {
         return envOverride as VersionChannel;
       } else {
