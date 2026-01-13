@@ -31,7 +31,7 @@ import {
   SSLCertificateData,
   Version,
 } from '@salesforce/lwc-dev-mobile-core';
-import { AuthInfo, Connection, Logger, Org } from '@salesforce/core';
+import { AuthInfo, Connection, Org } from '@salesforce/core';
 import { PreviewUtils as LwcDevMobileCorePreviewUtils } from '@salesforce/lwc-dev-mobile-core';
 import {
   ConfigUtils,
@@ -70,7 +70,12 @@ describe('previewUtils', () => {
   };
   testIdentityData.usernameToServerEntityIdMap[testUsername] = testLdpServerId;
 
+  beforeEach(() => {
+    process.env.SKIP_API_VERSION_CHECK = 'true';
+  });
+
   afterEach(() => {
+    delete process.env.SKIP_API_VERSION_CHECK;
     $$.restore();
   });
 
@@ -322,10 +327,12 @@ describe('previewUtils', () => {
       'generateWebSocketUrlForLocalDevServer'
     ).returns(mockUrl);
 
-    const result = PreviewUtils.generateWebSocketUrlForLocalDevServer(platform, ports, {} as Logger);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
+    const result = PreviewUtils.generateWebSocketUrlForLocalDevServer(platform, ports, {} as any);
 
     expect(result).to.equal(mockUrl);
-    expect(generateWebSocketUrlStub.calledOnceWith(platform, ports, {} as Logger)).to.be.true;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
+    expect(generateWebSocketUrlStub.calledOnceWith(platform, ports, {} as any)).to.be.true;
   });
 
   it('initializePreviewConnection succeeds with valid org', async () => {

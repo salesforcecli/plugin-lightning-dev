@@ -90,6 +90,7 @@ describe('lightning dev app', () => {
   testIdentityData.usernameToServerEntityIdMap[testUsername] = testLdpServerId;
 
   beforeEach(async () => {
+    process.env.SKIP_API_VERSION_CHECK = 'true';
     stubUx($$.SANDBOX);
     stubSpinner($$.SANDBOX);
     await $$.stubAuths(testOrgData);
@@ -112,6 +113,7 @@ describe('lightning dev app', () => {
   });
 
   afterEach(() => {
+    delete process.env.SKIP_API_VERSION_CHECK;
     $$.restore();
   });
 

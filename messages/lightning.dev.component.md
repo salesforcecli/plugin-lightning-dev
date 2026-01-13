@@ -24,6 +24,14 @@ Name of a component to preview.
 
 Launch component preview without selecting a component
 
+# flags.version-channel.summary
+
+Manually specify which version channel to use (latest, prerelease, or next).
+
+# flags.version-channel.description
+
+Override automatic version detection and force a specific dependency channel. Useful for testing and debugging. Valid values: "latest", "prerelease", "next".
+
 # error.directory
 
 Unable to find components

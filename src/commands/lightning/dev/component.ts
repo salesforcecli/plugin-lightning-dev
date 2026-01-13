@@ -23,6 +23,7 @@ import { PromptUtils } from '../../../shared/promptUtils.js';
 import { PreviewUtils } from '../../../shared/previewUtils.js';
 import { startLWCServer } from '../../../lwc-dev-server/index.js';
 import { MetaUtils } from '../../../shared/metaUtils.js';
+import { VersionChannel } from '../../../shared/versionResolver.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.component');
@@ -54,6 +55,12 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
       default: false,
     }),
     'target-org': Flags.requiredOrg(),
+    'version-channel': Flags.string({
+      summary: messages.getMessage('flags.version-channel.summary'),
+      description: messages.getMessage('flags.version-channel.description'),
+      options: ['latest', 'prerelease', 'next'],
+      required: false,
+    }),
   };
 
   public async run(): Promise<ComponentPreviewResult> {
@@ -161,7 +168,19 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
       }
     }
 
-    await startLWCServer(logger, sfdxProjectRootPath, ldpServerToken, Platform.desktop, serverPorts);
+    const conn = targetOrg.getConnection(apiVersion);
+
+    await startLWCServer(
+      logger,
+      conn,
+      sfdxProjectRootPath,
+      ldpServerToken,
+      Platform.desktop,
+      serverPorts,
+      undefined,
+      undefined,
+      flags['version-channel'] as VersionChannel | undefined
+    );
 
     const targetOrgArg = PreviewUtils.getTargetOrgFromArguments(this.argv);
     const launchArguments = PreviewUtils.generateComponentPreviewLaunchArguments(

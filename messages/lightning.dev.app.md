@@ -31,6 +31,14 @@ Type of device to display the app preview.
 
 ID of the mobile device to display the preview if device type is set to `ios` or `android`. The default value is the ID of the first available mobile device.
 
+# flags.version-channel.summary
+
+Manually specify which version channel to use (latest, prerelease, or next).
+
+# flags.version-channel.description
+
+Override automatic version detection and force a specific dependency channel. Useful for testing and debugging. Valid values: "latest", "prerelease", "next".
+
 # error.fetching.app-id
 
 Unable to determine App Id for %s

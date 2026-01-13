@@ -57,7 +57,8 @@ export class PreviewUtils {
     ports: { httpPort: number; httpsPort: number },
     logger?: Logger
   ): string {
-    return LwcDevMobileCorePreviewUtils.generateWebSocketUrlForLocalDevServer(platform, ports, logger);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
+    return LwcDevMobileCorePreviewUtils.generateWebSocketUrlForLocalDevServer(platform, ports, logger as any);
   }
 
   /**
@@ -109,8 +110,10 @@ export class PreviewUtils {
 
       device =
         platform === Platform.ios
-          ? await new AppleDeviceManager(logger).getDevice(deviceId)
-          : await new AndroidDeviceManager(logger).getDevice(deviceId);
+          ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
+            await new AppleDeviceManager(logger as any).getDevice(deviceId)
+          : // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
+            await new AndroidDeviceManager(logger as any).getDevice(deviceId);
     } else {
       logger?.debug('Prompting the user to select a device.');
 
@@ -438,7 +441,7 @@ export class PreviewUtils {
       return Promise.reject(new Error(sharedMessages.getMessage('error.localdev.not.enabled')));
     }
 
-    OrgUtils.ensureMatchingAPIVersion(connection);
+    OrgUtils.getVersionChannel(connection);
 
     const appServerIdentity = await PreviewUtils.getOrCreateAppServerIdentity(connection);
     const ldpServerToken = appServerIdentity.identityToken;

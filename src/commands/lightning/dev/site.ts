@@ -24,6 +24,8 @@ import { PromptUtils } from '../../../shared/promptUtils.js';
 import { ExperienceSite } from '../../../shared/experience/expSite.js';
 import { PreviewUtils } from '../../../shared/previewUtils.js';
 import { startLWCServer } from '../../../lwc-dev-server/index.js';
+import { MetaUtils } from '../../../shared/metaUtils.js';
+import { VersionChannel } from '../../../shared/versionResolver.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.site');
@@ -53,6 +55,12 @@ export default class LightningDevSite extends SfCommand<void> {
       summary: messages.getMessage('flags.ssr.summary'),
       default: false,
     }),
+    'version-channel': Flags.string({
+      summary: messages.getMessage('flags.version-channel.summary'),
+      description: messages.getMessage('flags.version-channel.description'),
+      options: ['latest', 'prerelease', 'next'],
+      required: false,
+    }),
   };
 
   public async run(): Promise<void> {
@@ -67,12 +75,22 @@ export default class LightningDevSite extends SfCommand<void> {
 
       const connection = org.getConnection(undefined);
 
+      // Auto enable local dev
+      if (process.env.AUTO_ENABLE_LOCAL_DEV === 'true') {
+        try {
+          await MetaUtils.ensureLightningPreviewEnabled(connection);
+          await MetaUtils.ensureFirstPartyCookiesNotRequired(connection);
+        } catch (error) {
+          this.log('Error autoenabling local dev', error);
+        }
+      }
+
       const localDevEnabled = await OrgUtils.isLocalDevEnabled(connection);
       if (!localDevEnabled) {
         throw new Error(sharedMessages.getMessage('error.localdev.not.enabled'));
       }
 
-      OrgUtils.ensureMatchingAPIVersion(connection);
+      OrgUtils.getVersionChannel(connection, flags['version-channel'] as VersionChannel | undefined);
 
       // If user doesn't specify a site, prompt the user for one
       if (!siteName) {
@@ -83,7 +101,11 @@ export default class LightningDevSite extends SfCommand<void> {
       const selectedSite = new ExperienceSite(org, siteName);
 
       if (!ssr) {
-        return await this.openPreviewUrl(selectedSite, connection);
+        return await this.openPreviewUrl(
+          selectedSite,
+          connection,
+          flags['version-channel'] as VersionChannel | undefined
+        );
       }
       await this.serveSSRSite(selectedSite, getLatest, siteName, guest);
     } catch (e) {
@@ -152,7 +174,11 @@ export default class LightningDevSite extends SfCommand<void> {
     }
   }
 
-  private async openPreviewUrl(selectedSite: ExperienceSite, connection: Connection): Promise<void> {
+  private async openPreviewUrl(
+    selectedSite: ExperienceSite,
+    connection: Connection,
+    versionChannelOverride?: VersionChannel
+  ): Promise<void> {
     let sfdxProjectRootPath = '';
     try {
       sfdxProjectRootPath = await SfProject.resolveProjectPath();
@@ -182,7 +208,17 @@ export default class LightningDevSite extends SfCommand<void> {
     this.log(`Local Dev Server url is ${ldpServerUrl}`);
 
     const logger = await Logger.child(this.ctor.name);
-    await startLWCServer(logger, sfdxProjectRootPath, ldpServerToken, Platform.desktop, serverPorts);
+    await startLWCServer(
+      logger,
+      connection,
+      sfdxProjectRootPath,
+      ldpServerToken,
+      Platform.desktop,
+      serverPorts,
+      undefined,
+      undefined,
+      versionChannelOverride
+    );
     const url = new URL(previewUrl);
     url.searchParams.set('aura.ldpServerUrl', ldpServerUrl);
     url.searchParams.set('aura.ldpServerId', ldpServerId);
