@@ -57,8 +57,7 @@ export class PreviewUtils {
     ports: { httpPort: number; httpsPort: number },
     logger?: Logger
   ): string {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
-    return LwcDevMobileCorePreviewUtils.generateWebSocketUrlForLocalDevServer(platform, ports, logger as any);
+    return LwcDevMobileCorePreviewUtils.generateWebSocketUrlForLocalDevServer(platform, ports, logger);
   }
 
   /**
@@ -110,10 +109,8 @@ export class PreviewUtils {
 
       device =
         platform === Platform.ios
-          ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
-            await new AppleDeviceManager(logger as any).getDevice(deviceId)
-          : // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
-            await new AndroidDeviceManager(logger as any).getDevice(deviceId);
+          ? await new AppleDeviceManager(logger).getDevice(deviceId)
+          : await new AndroidDeviceManager(logger).getDevice(deviceId);
     } else {
       logger?.debug('Prompting the user to select a device.');
 
@@ -399,8 +396,7 @@ export class PreviewUtils {
 
     return new Promise((resolve, reject) => {
       if (progress && totalSize) {
-        response.body?.on('data', (chunk) => {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        response.body?.on('data', (chunk: string) => {
           downloadedSize += chunk.length;
           const percentage = parseFloat(Math.min((downloadedSize / totalSize) * 100, 100).toFixed(1));
           progress.update(percentage);
