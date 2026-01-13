@@ -200,25 +200,6 @@ export class MetaUtils {
   }
 
   /**
-   * Ensures Lightning Preview is enabled for the org. If it's not enabled, this method will enable it.
-   *
-   * @param connection the connection to the org
-   * @returns boolean indicating whether Lightning Preview was already enabled (true) or had to be enabled (false)
-   */
-  public static async ensureLightningPreviewEnabled(connection: Connection): Promise<boolean> {
-    const isEnabled = await this.isLightningPreviewEnabled(connection);
-
-    if (!isEnabled) {
-      this.logger.info('Lightning Preview is not enabled. Enabling it now...');
-      await this.setLightningPreviewEnabled(connection, true);
-      return false;
-    }
-
-    this.logger.debug('Lightning Preview is already enabled');
-    return true;
-  }
-
-  /**
    * Ensures first-party cookies are not required for the org. If they are required, this method will disable the requirement.
    *
    * @param connection the connection to the org
