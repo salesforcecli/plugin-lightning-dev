@@ -1,7 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-# Run the custom version check script
-node .husky/check-versions.js
-
 yarn lint && yarn pretty-quick --staged

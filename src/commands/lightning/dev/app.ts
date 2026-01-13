@@ -286,8 +286,7 @@ export default class LightningDevApp extends SfCommand<void> {
           this.spinner.start(messages.getMessage('spinner.extract.archive'));
           const outputDir = path.dirname(bundlePath);
           const finalBundlePath = path.join(outputDir, 'Chatter.app');
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
-          await CommonUtils.extractZIPArchive(bundlePath, outputDir, logger as any);
+          await CommonUtils.extractZIPArchive(bundlePath, outputDir, logger);
           this.spinner.stop();
           bundlePath = finalBundlePath;
         }

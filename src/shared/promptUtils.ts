@@ -79,10 +79,8 @@ export class PromptUtils {
   ): Promise<BaseDevice> {
     const availableDevices =
       platform === Platform.ios
-        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
-          await new AppleDeviceManager(logger as any).enumerateDevices()
-        : // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
-          await new AndroidDeviceManager(logger as any).enumerateDevices();
+        ? await new AppleDeviceManager(logger).enumerateDevices()
+        : await new AndroidDeviceManager(logger).enumerateDevices();
 
     if (!availableDevices || availableDevices.length === 0) {
       throw new Error(messages.getMessage('error.device.enumeration'));

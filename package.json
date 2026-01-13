@@ -272,10 +272,6 @@
       }
     },
     "defaultChannel": "latest",
-    "target": {
-      "versionNumber": "67.0",
-      "matchingDevServerVersion": "~13.3.8"
-    },
     "versionToTagMappings": [
       {
         "versionNumber": "62.0",

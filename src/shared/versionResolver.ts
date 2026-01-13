@@ -41,7 +41,7 @@ type PackageJson = {
     channels: {
       [key in VersionChannel]: ChannelConfig;
     };
-    defaultChannel: string;
+    defaultChannel: VersionChannel;
   };
 };
 
@@ -116,7 +116,7 @@ export class VersionResolver {
    */
   public static getDefaultChannel(): VersionChannel {
     const packageJson = this.getPackageJson();
-    return packageJson.apiVersionMetadata.defaultChannel as VersionChannel;
+    return packageJson.apiVersionMetadata.defaultChannel;
   }
 
   /**
