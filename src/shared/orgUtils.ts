@@ -15,7 +15,7 @@
  */
 
 import { Connection } from '@salesforce/core';
-import { VersionChannel, VersionResolver } from './versionResolver.js';
+import { VersionChannel, resolveChannel, getDefaultChannel } from './versionResolver.js';
 
 type LightningPreviewMetadataResponse = {
   enableLightningPreviewPref?: string;
@@ -77,7 +77,7 @@ export class OrgUtils {
     const appMenuItemsQuery =
       'SELECT Label,Description,Name FROM AppMenuItem WHERE IsAccessible=true AND IsVisible=true';
     const appMenuItems = await connection.query<{ Label: string; Description: string; Name: string }>(
-      appMenuItemsQuery
+      appMenuItemsQuery,
     );
 
     const appDefinitionsQuery = "SELECT DeveloperName,DurableId FROM AppDefinition WHERE UiType='Lightning'";
@@ -149,31 +149,27 @@ export class OrgUtils {
         return envOverride as VersionChannel;
       } else {
         throw new Error(
-          `Invalid FORCE_VERSION_CHANNEL value: "${envOverride}". ` + `Valid values are: ${validChannels.join(', ')}`
+          `Invalid FORCE_VERSION_CHANNEL value: "${envOverride}". ` + `Valid values are: ${validChannels.join(', ')}`,
         );
       }
     }
 
     // Priority 3: Skip check for testing (legacy compatibility)
     if (process.env.SKIP_API_VERSION_CHECK === 'true') {
-      return VersionResolver.getDefaultChannel();
+      return getDefaultChannel();
     }
 
     // Priority 4: Automatic detection based on org version
     const orgVersion = connection.version;
 
     try {
-      const orgId = connection.getAuthInfoFields().orgId;
-      if (!orgId) {
-        throw new Error('Could not determine org ID from connection.');
-      }
-      return VersionResolver.resolveChannelWithCache(orgId, orgVersion);
+      return resolveChannel(orgVersion);
     } catch (error) {
       // Enhance error with helpful message
       throw new Error(
         `${error instanceof Error ? error.message : String(error)}\n` +
           `Your org is on API version ${orgVersion}. ` +
-          'Please ensure you are using the correct version of the CLI and this plugin.'
+          'Please ensure you are using the correct version of the CLI and this plugin.',
       );
     }
   }

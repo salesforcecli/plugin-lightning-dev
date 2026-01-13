@@ -9,12 +9,12 @@
     "@inquirer/select": "^2.4.7",
     "@lwc/lwc-dev-server": "~13.3.8",
     "@lwc/lwc-dev-server-latest": "npm:@lwc/lwc-dev-server@~13.2.x",
-    "@lwc/lwc-dev-server-prerelease": "npm:@lwc/lwc-dev-server@~13.3.x",
     "@lwc/lwc-dev-server-next": "npm:@lwc/lwc-dev-server@~13.3.x",
+    "@lwc/lwc-dev-server-prerelease": "npm:@lwc/lwc-dev-server@~13.3.x",
     "@lwc/sfdc-lwc-compiler": "~13.3.8",
     "@lwc/sfdc-lwc-compiler-latest": "npm:@lwc/sfdc-lwc-compiler@~13.2.x",
-    "@lwc/sfdc-lwc-compiler-prerelease": "npm:@lwc/sfdc-lwc-compiler@~13.3.x",
     "@lwc/sfdc-lwc-compiler-next": "npm:@lwc/sfdc-lwc-compiler@~13.3.x",
+    "@lwc/sfdc-lwc-compiler-prerelease": "npm:@lwc/sfdc-lwc-compiler@~13.3.x",
     "@lwrjs/api": "0.18.3",
     "@oclif/core": "^4.5.6",
     "@salesforce/core": "^8.24.0",
@@ -25,8 +25,8 @@
     "glob": "^13.0.0",
     "lwc": "~8.27.0",
     "lwc-latest": "npm:lwc@~8.23.x",
-    "lwc-prerelease": "npm:lwc@~8.24.x",
     "lwc-next": "npm:lwc@~8.24.x",
+    "lwc-prerelease": "npm:lwc@~8.24.x",
     "node-fetch": "^3.3.2",
     "open": "^10.2.0",
     "xml2js": "^0.6.2"
@@ -121,7 +121,9 @@
     "access": "public"
   },
   "resolutions": {
-    "cliui": "7.0.4"
+    "cliui": "7.0.4",
+    "prettier": "^3.7.4",
+    "pretty-quick": "^4.2.2"
   },
   "wireit": {
     "build": {

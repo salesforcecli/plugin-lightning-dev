@@ -17,37 +17,10 @@
 import { TestContext } from '@salesforce/core/testSetup';
 import { expect } from 'chai';
 import { AuthInfo, Connection } from '@salesforce/core';
-import { CommonUtils } from '@salesforce/lwc-dev-mobile-core';
 import { OrgUtils } from '../../src/shared/orgUtils.js';
-import { VersionResolver } from '../../src/shared/versionResolver.js';
 
 describe('orgUtils', () => {
   const $$ = new TestContext();
-
-  const mockPackageJson = {
-    apiVersionMetadata: {
-      channels: {
-        latest: {
-          supportedApiVersions: ['65.0'],
-          dependencies: {},
-        },
-        prerelease: {
-          supportedApiVersions: ['66.0'],
-          dependencies: {},
-        },
-        next: {
-          supportedApiVersions: ['67.0'],
-          dependencies: {},
-        },
-      },
-      defaultChannel: 'latest',
-    },
-  };
-
-  beforeEach(() => {
-    $$.SANDBOX.stub(CommonUtils, 'loadJsonFromFile').returns(mockPackageJson);
-    VersionResolver.clearCache();
-  });
 
   afterEach(() => {
     $$.restore();
@@ -91,7 +64,6 @@ describe('orgUtils', () => {
     it('auto-detects channel based on org version', async () => {
       const conn = new Connection({ authInfo: new AuthInfo() });
       $$.SANDBOX.stub(conn, 'version').get(() => '65.0');
-      $$.SANDBOX.stub(conn, 'getAuthInfoFields').returns({ orgId: 'org1' });
 
       const channel = OrgUtils.getVersionChannel(conn);
       expect(channel).to.equal('latest');
@@ -100,7 +72,6 @@ describe('orgUtils', () => {
     it('throws error for unsupported org version', async () => {
       const conn = new Connection({ authInfo: new AuthInfo() });
       $$.SANDBOX.stub(conn, 'version').get(() => '64.0');
-      $$.SANDBOX.stub(conn, 'getAuthInfoFields').returns({ orgId: 'org1' });
 
       expect(() => OrgUtils.getVersionChannel(conn)).to.throw(/Unsupported org API version: 64.0/);
     });
