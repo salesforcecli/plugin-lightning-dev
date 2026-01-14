@@ -27,85 +27,62 @@ export type LwcDevServerModule = {
 };
 
 /**
- * Dynamically loads LWC dependencies based on version channel
+ * Loads the LWC dev server module for the specified channel
+ * Uses dynamic import to load the aliased package at runtime
+ *
+ * @param channel - The version channel ('latest', 'prerelease', or 'next')
+ * @returns The loaded module
  */
-export class DependencyLoader {
-  private static loadedModules: Map<VersionChannel, LwcDevServerModule> = new Map();
+export async function loadLwcDevServer(channel: VersionChannel): Promise<LwcDevServerModule> {
+  const packageName = `@lwc/lwc-dev-server-${channel}`;
 
-  /**
-   * Loads the LWC dev server module for the specified channel
-   * Uses dynamic import to load the aliased package at runtime
-   *
-   * @param channel - The version channel ('latest' or 'prerelease')
-   * @returns The loaded module
-   */
-  public static async loadLwcDevServer(channel: VersionChannel): Promise<LwcDevServerModule> {
-    // Check cache first
-    if (this.loadedModules.has(channel)) {
-      return this.loadedModules.get(channel)!;
-    }
-
-    // Construct the aliased package name
-    const packageName = `@lwc/lwc-dev-server-${channel}`;
-
-    try {
-      // Dynamic import of the aliased package
-      const module = (await import(packageName)) as LwcDevServerModule;
-      this.loadedModules.set(channel, module);
-      return module;
-    } catch (error) {
-      throw new Error(
-        `Failed to load LWC dev server for channel '${channel}'. ` +
-          `Package '${packageName}' could not be imported. ` +
-          `Error: ${error instanceof Error ? error.message : String(error)}`
-      );
-    }
+  try {
+    return (await import(packageName)) as LwcDevServerModule;
+  } catch (error) {
+    throw new Error(
+      `Failed to load LWC dev server for channel '${channel}'. ` +
+        `Package '${packageName}' could not be imported. ` +
+        `Error: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
+}
 
-  /**
-   * Loads the LWC compiler module for the specified channel
-   *
-   * @param channel - The version channel ('latest' or 'prerelease')
-   * @returns The loaded compiler module
-   */
-  public static async loadLwcCompiler(channel: VersionChannel): Promise<unknown> {
-    const packageName = `@lwc/sfdc-lwc-compiler-${channel}`;
+/**
+ * Loads the LWC compiler module for the specified channel
+ *
+ * @param channel - The version channel ('latest', 'prerelease', or 'next')
+ * @returns The loaded compiler module
+ */
+export async function loadLwcCompiler(channel: VersionChannel): Promise<unknown> {
+  const packageName = `@lwc/sfdc-lwc-compiler-${channel}`;
 
-    try {
-      return (await import(packageName)) as unknown;
-    } catch (error) {
-      throw new Error(
-        `Failed to load LWC compiler for channel '${channel}'. ` +
-          `Package '${packageName}' could not be imported. ` +
-          `Error: ${error instanceof Error ? error.message : String(error)}`
-      );
-    }
+  try {
+    return (await import(packageName)) as unknown;
+  } catch (error) {
+    throw new Error(
+      `Failed to load LWC compiler for channel '${channel}'. ` +
+        `Package '${packageName}' could not be imported. ` +
+        `Error: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
+}
 
-  /**
-   * Loads the base LWC module for the specified channel
-   *
-   * @param channel - The version channel ('latest' or 'prerelease')
-   * @returns The loaded LWC module
-   */
-  public static async loadLwc(channel: VersionChannel): Promise<unknown> {
-    const packageName = `lwc-${channel}`;
+/**
+ * Loads the base LWC module for the specified channel
+ *
+ * @param channel - The version channel ('latest', 'prerelease', or 'next')
+ * @returns The loaded LWC module
+ */
+export async function loadLwc(channel: VersionChannel): Promise<unknown> {
+  const packageName = `lwc-${channel}`;
 
-    try {
-      return (await import(packageName)) as unknown;
-    } catch (error) {
-      throw new Error(
-        `Failed to load LWC for channel '${channel}'. ` +
-          `Package '${packageName}' could not be imported. ` +
-          `Error: ${error instanceof Error ? error.message : String(error)}`
-      );
-    }
-  }
-
-  /**
-   * Clears the module cache (useful for testing)
-   */
-  public static clearCache(): void {
-    this.loadedModules.clear();
+  try {
+    return (await import(packageName)) as unknown;
+  } catch (error) {
+    throw new Error(
+      `Failed to load LWC for channel '${channel}'. ` +
+        `Package '${packageName}' could not be imported. ` +
+        `Error: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
 }

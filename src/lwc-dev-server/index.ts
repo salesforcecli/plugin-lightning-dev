@@ -19,7 +19,7 @@ import type { LWCServer, ServerConfig, Workspace } from '@lwc/lwc-dev-server';
 import { Connection, Lifecycle, Logger, SfProject } from '@salesforce/core';
 import { SSLCertificateData } from '@salesforce/lwc-dev-mobile-core';
 import { glob } from 'glob';
-import { DependencyLoader } from '../shared/dependencyLoader.js';
+import { loadLwcDevServer } from '../shared/dependencyLoader.js';
 import { OrgUtils } from '../shared/orgUtils.js';
 import { VersionChannel } from '../shared/versionResolver.js';
 import {
@@ -34,7 +34,7 @@ async function createLWCServerConfig(
   clientType: string,
   serverPorts?: { httpPort: number; httpsPort: number },
   certData?: SSLCertificateData,
-  workspace?: Workspace
+  workspace?: Workspace,
 ): Promise<ServerConfig> {
   const project = await SfProject.resolve();
   const packageDirs = project.getPackageDirectories();
@@ -85,12 +85,12 @@ export async function startLWCServer(
   serverPorts?: { httpPort: number; httpsPort: number },
   certData?: SSLCertificateData,
   workspace?: Workspace,
-  versionChannelOverride?: VersionChannel
+  versionChannelOverride?: VersionChannel,
 ): Promise<LWCServer> {
   const channel = OrgUtils.getVersionChannel(connection, versionChannelOverride);
   logger.trace(`Using version channel: ${channel}`);
 
-  const lwcDevServerModule = await DependencyLoader.loadLwcDevServer(channel);
+  const lwcDevServerModule = await loadLwcDevServer(channel);
 
   const config = await createLWCServerConfig(rootDir, token, clientType, serverPorts, certData, workspace);
 

@@ -15,18 +15,13 @@
  */
 
 import { expect } from 'chai';
-import { DependencyLoader } from '../../src/shared/dependencyLoader.js';
+import { loadLwcDevServer, loadLwcCompiler, loadLwc } from '../../src/shared/dependencyLoader.js';
 
 describe('DependencyLoader', () => {
-  beforeEach(() => {
-    DependencyLoader.clearCache();
-  });
-
   it('exists and has expected methods', () => {
-    expect(typeof DependencyLoader.loadLwcDevServer).to.equal('function');
-    expect(typeof DependencyLoader.loadLwcCompiler).to.equal('function');
-    expect(typeof DependencyLoader.loadLwc).to.equal('function');
-    expect(typeof DependencyLoader.clearCache).to.equal('function');
+    expect(typeof loadLwcDevServer).to.equal('function');
+    expect(typeof loadLwcCompiler).to.equal('function');
+    expect(typeof loadLwc).to.equal('function');
   });
 
   it('loads the aliased package (real import call)', async () => {
@@ -34,7 +29,7 @@ describe('DependencyLoader', () => {
     // However, loading LWC modules in Node might still trigger ReferenceErrors if browser globals are missing.
     // We use a try-catch to handle both cases and just verify the attempt was made.
     try {
-      const module = await DependencyLoader.loadLwcDevServer('latest');
+      const module = await loadLwcDevServer('latest');
       expect(module).to.exist;
     } catch (error) {
       // If it fails with a ReferenceError or similar, it's still "working" in terms of
