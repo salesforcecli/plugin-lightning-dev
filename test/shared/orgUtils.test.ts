@@ -73,7 +73,7 @@ describe('orgUtils', () => {
       const conn = new Connection({ authInfo: new AuthInfo() });
       $$.SANDBOX.stub(conn, 'version').get(() => '64.0');
 
-      expect(() => OrgUtils.getVersionChannel(conn)).to.throw(/Unsupported org API version: 64.0/);
+      expect(() => OrgUtils.getVersionChannel(conn)).to.throw(/Your org is on API Version 64.0/);
     });
   });
 

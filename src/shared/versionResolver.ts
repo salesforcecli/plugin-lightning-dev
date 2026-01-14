@@ -33,7 +33,7 @@ function getMajorMinor(version: string): string {
 /**
  * Returns a formatted list of all supported API versions
  */
-function getSupportedVersionsList(): string {
+export function getSupportedVersionsList(): string {
   const channels = packageJson.apiVersionMetadata.channels;
   const allVersions: string[] = [];
 

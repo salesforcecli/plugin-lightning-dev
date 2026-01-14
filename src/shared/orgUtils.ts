@@ -14,8 +14,17 @@
  * limitations under the License.
  */
 
-import { Connection } from '@salesforce/core';
-import { VersionChannel, resolveChannel, getDefaultChannel, getAllChannels } from './versionResolver.js';
+import { Connection, Messages, Logger } from '@salesforce/core';
+import {
+  VersionChannel,
+  resolveChannel,
+  getDefaultChannel,
+  getAllChannels,
+  getSupportedVersionsList,
+} from './versionResolver.js';
+
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'shared.utils');
 
 type LightningPreviewMetadataResponse = {
   enableLightningPreviewPref?: string;
@@ -33,6 +42,8 @@ export type AppDefinition = {
  * the local dev server matches with Org API versions, we rely on defining a metadata section in package.json
  */
 export class OrgUtils {
+  private static logger = Logger.childFromRoot('OrgUtils');
+
   /**
    * Given an app name, it queries the AppDefinition table in the org to find
    * the DurableId for the app. To do so, it will first attempt at finding the
@@ -148,9 +159,10 @@ export class OrgUtils {
       if (validChannels.includes(envOverride as VersionChannel)) {
         return envOverride as VersionChannel;
       } else {
-        throw new Error(
-          `Invalid FORCE_VERSION_CHANNEL value: "${envOverride}". ` + `Valid values are: ${validChannels.join(', ')}`,
-        );
+        const message =
+          `Invalid FORCE_VERSION_CHANNEL value: "${envOverride}". ` + `Valid values are: ${validChannels.join(', ')}`;
+        this.logger.error(message);
+        throw new Error(message);
       }
     }
 
@@ -165,12 +177,9 @@ export class OrgUtils {
     try {
       return resolveChannel(orgVersion);
     } catch (error) {
-      // Enhance error with helpful message
-      throw new Error(
-        `${error instanceof Error ? error.message : String(error)}\n` +
-          `Your org is on API version ${orgVersion}. ` +
-          'Please ensure you are using the correct version of the CLI and this plugin.',
-      );
+      const message = messages.getMessage('error.org.api-unsupported', [orgVersion, getSupportedVersionsList()]);
+      this.logger.error(message);
+      throw new Error(message);
     }
   }
 }
