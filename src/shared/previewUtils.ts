@@ -433,11 +433,6 @@ export class PreviewUtils {
       return Promise.reject(new Error(sharedMessages.getMessage('error.username')));
     }
 
-    const localDevEnabled = await OrgUtils.isLocalDevEnabled(connection);
-    if (!localDevEnabled) {
-      return Promise.reject(new Error(sharedMessages.getMessage('error.localdev.not.enabled')));
-    }
-
     OrgUtils.ensureMatchingAPIVersion(connection);
 
     const appServerIdentity = await PreviewUtils.getOrCreateAppServerIdentity(connection);

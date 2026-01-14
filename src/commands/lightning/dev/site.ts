@@ -24,6 +24,7 @@ import { PromptUtils } from '../../../shared/promptUtils.js';
 import { ExperienceSite } from '../../../shared/experience/expSite.js';
 import { PreviewUtils } from '../../../shared/previewUtils.js';
 import { startLWCServer } from '../../../lwc-dev-server/index.js';
+import { MetaUtils } from '../../../shared/metaUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.site');
@@ -67,9 +68,8 @@ export default class LightningDevSite extends SfCommand<void> {
 
       const connection = org.getConnection(undefined);
 
-      const localDevEnabled = await OrgUtils.isLocalDevEnabled(connection);
-      if (!localDevEnabled) {
-        throw new Error(sharedMessages.getMessage('error.localdev.not.enabled'));
+      if (await MetaUtils.handleLocalDevEnablement(connection)) {
+        this.log(sharedMessages.getMessage('localdev.enabled'));
       }
 
       OrgUtils.ensureMatchingAPIVersion(connection);

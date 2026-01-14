@@ -29,6 +29,7 @@ import { Flags, SfCommand } from '@salesforce/sf-plugins-core';
 import { startLWCServer } from '../../../lwc-dev-server/index.js';
 import { PreviewUtils } from '../../../shared/previewUtils.js';
 import { PromptUtils } from '../../../shared/promptUtils.js';
+import { MetaUtils } from '../../../shared/metaUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.app');
@@ -86,6 +87,11 @@ export default class LightningDevApp extends SfCommand<void> {
     }
 
     logger.debug('Initalizing preview connection and configuring local web server identity');
+
+    if (await MetaUtils.handleLocalDevEnablement(targetOrg.getConnection(undefined))) {
+      this.log(sharedMessages.getMessage('localdev.enabled'));
+    }
+
     const { connection, ldpServerId, ldpServerToken } = await PreviewUtils.initializePreviewConnection(targetOrg);
 
     const platform = flags['device-type'] ?? (await PromptUtils.promptUserToSelectPlatform());

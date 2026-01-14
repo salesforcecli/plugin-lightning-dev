@@ -31,7 +31,7 @@ import {
   SSLCertificateData,
   Version,
 } from '@salesforce/lwc-dev-mobile-core';
-import { AuthInfo, Connection, Logger, Org } from '@salesforce/core';
+import { AuthInfo, Connection, Logger, Messages, Org } from '@salesforce/core';
 import { PreviewUtils as LwcDevMobileCorePreviewUtils } from '@salesforce/lwc-dev-mobile-core';
 import {
   ConfigUtils,
@@ -40,6 +40,9 @@ import {
 } from '../../src/shared/configUtils.js';
 import { PreviewUtils } from '../../src/shared/previewUtils.js';
 import { OrgUtils } from '../../src/shared/orgUtils.js';
+
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const sharedMessages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'shared.utils');
 
 describe('previewUtils', () => {
   const $$ = new TestContext();
@@ -368,7 +371,10 @@ describe('previewUtils', () => {
       }),
     } as Org;
 
-    $$.SANDBOX.stub(OrgUtils, 'isLocalDevEnabled').resolves(false);
+    $$.SANDBOX.stub(OrgUtils, 'ensureMatchingAPIVersion').returns();
+    $$.SANDBOX.stub(PreviewUtils, 'getOrCreateAppServerIdentity').rejects(
+      new Error(sharedMessages.getMessage('error.localdev.not.enabled'))
+    );
 
     try {
       await PreviewUtils.initializePreviewConnection(mockOrg);

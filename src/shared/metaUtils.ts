@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { Connection, Logger } from '@salesforce/core';
+import { Connection, Logger, Messages } from '@salesforce/core';
+import { PromptUtils } from './promptUtils.js';
 
 type LightningExperienceSettingsMetadata = {
   [key: string]: unknown;
@@ -33,6 +34,8 @@ type MetadataUpdateResult = {
   fullName: string;
   errors?: Array<{ message: string }>;
 };
+
+const sharedMessages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'shared.utils');
 
 /**
  * Utility class for managing Salesforce metadata settings related to Lightning Development.
@@ -216,5 +219,37 @@ export class MetaUtils {
 
     this.logger.debug('First-party cookies are not required');
     return true;
+  }
+
+  /**
+   * Enables local dev if required and permitted. If executed via VSCode command
+   * the user's response is already assigned to AUTO_ENABLE_LOCAL_DEV and it will be used.
+   * If executed via command line, this method will prompt the user.
+   *
+   * @param connection the connection to the org
+   * @returns true if enabled
+   * @throws local dev not enabled error if not enabled
+   */
+  public static async handleLocalDevEnablement(connection: Connection): Promise<boolean | undefined> {
+    const isLightningPreviewEnabled = await this.isLightningPreviewEnabled(connection);
+
+    if (!isLightningPreviewEnabled) {
+      const autoEnableLocalDev = process.env.AUTO_ENABLE_LOCAL_DEV;
+
+      // If executed via VSCode command, autoEnableLocalDev will contain the users choice, provided via UI.
+      // Else, prompt the user on the command line.
+      const enableLocalDev =
+        autoEnableLocalDev !== undefined
+          ? autoEnableLocalDev === 'true'
+          : await PromptUtils.promptUserToEnableLocalDev();
+
+      if (enableLocalDev) {
+        await this.setLightningPreviewEnabled(connection, true);
+        await this.ensureFirstPartyCookiesNotRequired(connection);
+        return true;
+      } else {
+        throw new Error(sharedMessages.getMessage('error.localdev.not.enabled'));
+      }
+    }
   }
 }
