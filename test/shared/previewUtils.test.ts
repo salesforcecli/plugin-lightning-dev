@@ -49,7 +49,7 @@ describe('previewUtils', () => {
     'iPhone 15 Pro Max',
     DeviceType.mobile,
     AppleOSType.iOS,
-    new Version(17, 5, 0)
+    new Version(17, 5, 0),
   );
   const testAndroidDevice = new AndroidDevice(
     'Pixel_5_API_34',
@@ -57,7 +57,7 @@ describe('previewUtils', () => {
     DeviceType.mobile,
     AndroidOSType.googleAPIs,
     new Version(34, 0, 0),
-    false
+    false,
   );
 
   const testUsername = 'SalesforceDeveloper';
@@ -126,8 +126,8 @@ describe('previewUtils', () => {
         testLdpServerId,
         'MyAppId',
         'MyTargetOrg',
-        'MyAuraMode'
-      )
+        'MyAuraMode',
+      ),
     ).to.deep.equal([
       '--path',
       `lightning/app/MyAppId?0.aura.ldpServerUrl=MyLdpServerUrl&0.aura.ldpServerId=${testLdpServerId}&0.aura.mode=MyAuraMode`,
@@ -148,8 +148,8 @@ describe('previewUtils', () => {
         testLdpServerId,
         'MyAppName',
         'MyAppId',
-        'MyAuraMode'
-      )
+        'MyAuraMode',
+      ),
     ).to.deep.equal([
       { name: 'LightningExperienceAppName', value: 'MyAppName' },
       { name: 'LightningExperienceAppID', value: 'MyAppId' },
@@ -210,7 +210,7 @@ describe('previewUtils', () => {
       'https://localhost:3333',
       testLdpServerId,
       'myTestComponent',
-      'myTargetOrg'
+      'myTargetOrg',
     );
 
     const parsed = parseArgs({
@@ -232,7 +232,7 @@ describe('previewUtils', () => {
       'https://localhost:3333',
       testLdpServerId,
       undefined,
-      'myTargetOrg'
+      'myTargetOrg',
     );
 
     const parsed = parseArgs({
@@ -253,7 +253,7 @@ describe('previewUtils', () => {
     const result = PreviewUtils.generateComponentPreviewLaunchArguments(
       'https://localhost:3333',
       testLdpServerId,
-      'myTestComponent'
+      'myTestComponent',
     );
 
     const parsed = parseArgs({
@@ -324,7 +324,7 @@ describe('previewUtils', () => {
 
     const generateWebSocketUrlStub = $$.SANDBOX.stub(
       LwcDevMobileCorePreviewUtils,
-      'generateWebSocketUrlForLocalDevServer'
+      'generateWebSocketUrlForLocalDevServer',
     ).returns(mockUrl);
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
@@ -343,7 +343,7 @@ describe('previewUtils', () => {
     } as Org;
 
     $$.SANDBOX.stub(OrgUtils, 'isLocalDevEnabled').resolves(true);
-    $$.SANDBOX.stub(OrgUtils, 'ensureMatchingAPIVersion').returns();
+    $$.SANDBOX.stub(OrgUtils, 'getVersionChannel').returns('latest');
     $$.SANDBOX.stub(PreviewUtils, 'getOrCreateAppServerIdentity').resolves(testIdentityData);
 
     const result = await PreviewUtils.initializePreviewConnection(mockOrg);
@@ -398,7 +398,7 @@ describe('previewUtils', () => {
     };
 
     $$.SANDBOX.stub(OrgUtils, 'isLocalDevEnabled').resolves(true);
-    $$.SANDBOX.stub(OrgUtils, 'ensureMatchingAPIVersion').returns();
+    $$.SANDBOX.stub(OrgUtils, 'getVersionChannel').returns('latest');
     $$.SANDBOX.stub(PreviewUtils, 'getOrCreateAppServerIdentity').resolves(identityDataWithoutEntityId);
 
     try {

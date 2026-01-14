@@ -173,16 +173,4 @@ export class OrgUtils {
       );
     }
   }
-
-  /**
-   * Given a connection to an Org, it ensures that org API version matches what the local dev server expects.
-   * To do this, it compares the org API version with the meta data stored in package.json under apiVersionMetadata.
-   * If the API versions do not match then this method will throw an exception.
-   *
-   * @param connection the connection to the org
-   * @deprecated Use getVersionChannel instead
-   */
-  public static ensureMatchingAPIVersion(connection: Connection): void {
-    this.getVersionChannel(connection);
-  }
 }
