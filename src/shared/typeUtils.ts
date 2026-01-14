@@ -17,7 +17,22 @@
 type ValueOf<T> = T[keyof T];
 type Entries<T> = Array<[keyof T, ValueOf<T>]>;
 
-// Same as `Object.entries()` but with type inference
+/**
+ * Same as `Object.entries()` but with type inference
+ *
+ * @param obj the object to get the entries of
+ * @returns the entries of the object
+ */
 export function objectEntries<T extends object>(obj: T): Entries<T> {
   return Object.entries(obj) as Entries<T>;
+}
+
+/**
+ * Same as `Object.keys()` but with type inference
+ *
+ * @param obj the object to get the keys of
+ * @returns the keys of the object
+ */
+export function objectKeys<T extends object>(obj: T): Array<keyof T> {
+  return Object.keys(obj) as unknown as Array<keyof T>;
 }

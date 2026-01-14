@@ -15,7 +15,7 @@
  */
 
 import { Connection } from '@salesforce/core';
-import { VersionChannel, resolveChannel, getDefaultChannel } from './versionResolver.js';
+import { VersionChannel, resolveChannel, getDefaultChannel, getAllChannels } from './versionResolver.js';
 
 type LightningPreviewMetadataResponse = {
   enableLightningPreviewPref?: string;
@@ -144,7 +144,7 @@ export class OrgUtils {
     // Priority 2: Environment variable override
     const envOverride = process.env.FORCE_VERSION_CHANNEL;
     if (envOverride) {
-      const validChannels: VersionChannel[] = ['latest', 'prerelease', 'next'];
+      const validChannels = getAllChannels();
       if (validChannels.includes(envOverride as VersionChannel)) {
         return envOverride as VersionChannel;
       } else {

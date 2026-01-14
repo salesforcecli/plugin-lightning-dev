@@ -15,7 +15,7 @@
  */
 
 import packageJson from '../../package.json' with { type: 'json' };
-import { objectEntries } from './typeUtils.js';
+import { objectEntries, objectKeys } from './typeUtils.js';
 
 /**
  * Resolves org API version to appropriate dependency channel
@@ -78,4 +78,11 @@ export function resolveChannel(orgApiVersion: string): VersionChannel {
  */
 export function getDefaultChannel(): VersionChannel {
   return packageJson.apiVersionMetadata.defaultChannel as VersionChannel;
+}
+
+/**
+ * Returns a list of all valid version channels
+ */
+export function getAllChannels(): VersionChannel[] {
+  return objectKeys(packageJson.apiVersionMetadata.channels);
 }
