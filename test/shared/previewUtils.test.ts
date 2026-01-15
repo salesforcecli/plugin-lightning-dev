@@ -332,11 +332,13 @@ describe('previewUtils', () => {
   });
 
   it('initializePreviewConnection succeeds with valid org', async () => {
+    const mockConnection = {
+      getUsername: () => testUsername,
+    };
+    const getConnectionStub = $$.SANDBOX.stub().returns(mockConnection);
     const mockOrg = {
-      getConnection: () => ({
-        getUsername: () => testUsername,
-      }),
-    } as Org;
+      getConnection: getConnectionStub,
+    } as unknown as Org;
 
     $$.SANDBOX.stub(OrgUtils, 'isLocalDevEnabled').resolves(true);
     $$.SANDBOX.stub(OrgUtils, 'ensureMatchingAPIVersion').returns();
@@ -347,14 +349,38 @@ describe('previewUtils', () => {
     expect(result.ldpServerId).to.equal(testLdpServerId);
     expect(result.ldpServerToken).to.equal(testLdpServerToken);
     expect(result.connection).to.exist;
+    expect(getConnectionStub.calledWith(undefined)).to.be.true;
+  });
+
+  it('initializePreviewConnection succeeds with valid org and apiVersion', async () => {
+    const testApiVersion = '67.0';
+    const mockConnection = {
+      getUsername: () => testUsername,
+    };
+    const getConnectionStub = $$.SANDBOX.stub().returns(mockConnection);
+    const mockOrg = {
+      getConnection: getConnectionStub,
+    } as unknown as Org;
+
+    $$.SANDBOX.stub(OrgUtils, 'isLocalDevEnabled').resolves(true);
+    $$.SANDBOX.stub(OrgUtils, 'ensureMatchingAPIVersion').returns();
+    $$.SANDBOX.stub(PreviewUtils, 'getOrCreateAppServerIdentity').resolves(testIdentityData);
+
+    const result = await PreviewUtils.initializePreviewConnection(mockOrg, testApiVersion);
+
+    expect(result.ldpServerId).to.equal(testLdpServerId);
+    expect(result.ldpServerToken).to.equal(testLdpServerToken);
+    expect(result.connection).to.exist;
+    expect(getConnectionStub.calledWith(testApiVersion)).to.be.true;
   });
 
   it('initializePreviewConnection rejects when username is not found', async () => {
+    const mockConnection = {
+      getUsername: () => undefined,
+    };
     const mockOrg = {
-      getConnection: () => ({
-        getUsername: () => undefined,
-      }),
-    } as Org;
+      getConnection: $$.SANDBOX.stub().returns(mockConnection),
+    } as unknown as Org;
 
     try {
       await PreviewUtils.initializePreviewConnection(mockOrg);
@@ -364,12 +390,32 @@ describe('previewUtils', () => {
     }
   });
 
-  it('initializePreviewConnection rejects when local dev is not enabled', async () => {
+  it('initializePreviewConnection rejects when username is not found with apiVersion', async () => {
+    const testApiVersion = '67.0';
+    const mockConnection = {
+      getUsername: () => undefined,
+    };
+    const getConnectionStub = $$.SANDBOX.stub().returns(mockConnection);
     const mockOrg = {
-      getConnection: () => ({
-        getUsername: () => testUsername,
-      }),
-    } as Org;
+      getConnection: getConnectionStub,
+    } as unknown as Org;
+
+    try {
+      await PreviewUtils.initializePreviewConnection(mockOrg, testApiVersion);
+      expect.fail('Should have thrown an error');
+    } catch (error) {
+      expect((error as Error).message).to.include('Org must have a valid user');
+      expect(getConnectionStub.calledWith(testApiVersion)).to.be.true;
+    }
+  });
+
+  it('initializePreviewConnection rejects when local dev is not enabled', async () => {
+    const mockConnection = {
+      getUsername: () => testUsername,
+    };
+    const mockOrg = {
+      getConnection: $$.SANDBOX.stub().returns(mockConnection),
+    } as unknown as Org;
 
     $$.SANDBOX.stub(OrgUtils, 'ensureMatchingAPIVersion').returns();
     $$.SANDBOX.stub(PreviewUtils, 'getOrCreateAppServerIdentity').rejects(
@@ -384,12 +430,37 @@ describe('previewUtils', () => {
     }
   });
 
-  it('initializePreviewConnection rejects when ldpServerId is not found', async () => {
+  it('initializePreviewConnection rejects when local dev is not enabled with apiVersion', async () => {
+    const testApiVersion = '67.0';
+    const mockConnection = {
+      getUsername: () => testUsername,
+    };
+    const getConnectionStub = $$.SANDBOX.stub().returns(mockConnection);
     const mockOrg = {
-      getConnection: () => ({
-        getUsername: () => testUsername,
-      }),
-    } as Org;
+      getConnection: getConnectionStub,
+    } as unknown as Org;
+
+    $$.SANDBOX.stub(OrgUtils, 'ensureMatchingAPIVersion').returns();
+    $$.SANDBOX.stub(PreviewUtils, 'getOrCreateAppServerIdentity').rejects(
+      new Error(sharedMessages.getMessage('error.localdev.not.enabled'))
+    );
+
+    try {
+      await PreviewUtils.initializePreviewConnection(mockOrg, testApiVersion);
+      expect.fail('Should have thrown an error');
+    } catch (error) {
+      expect((error as Error).message).to.include('Local Dev is not enabled');
+      expect(getConnectionStub.calledWith(testApiVersion)).to.be.true;
+    }
+  });
+
+  it('initializePreviewConnection rejects when ldpServerId is not found', async () => {
+    const mockConnection = {
+      getUsername: () => testUsername,
+    };
+    const mockOrg = {
+      getConnection: $$.SANDBOX.stub().returns(mockConnection),
+    } as unknown as Org;
 
     const identityDataWithoutEntityId = {
       identityToken: testLdpServerToken,
@@ -405,6 +476,34 @@ describe('previewUtils', () => {
       expect.fail('Should have thrown an error');
     } catch (error) {
       expect((error as Error).message).to.include('entity ID');
+    }
+  });
+
+  it('initializePreviewConnection rejects when ldpServerId is not found with apiVersion', async () => {
+    const testApiVersion = '67.0';
+    const mockConnection = {
+      getUsername: () => testUsername,
+    };
+    const getConnectionStub = $$.SANDBOX.stub().returns(mockConnection);
+    const mockOrg = {
+      getConnection: getConnectionStub,
+    } as unknown as Org;
+
+    const identityDataWithoutEntityId = {
+      identityToken: testLdpServerToken,
+      usernameToServerEntityIdMap: {},
+    };
+
+    $$.SANDBOX.stub(OrgUtils, 'isLocalDevEnabled').resolves(true);
+    $$.SANDBOX.stub(OrgUtils, 'ensureMatchingAPIVersion').returns();
+    $$.SANDBOX.stub(PreviewUtils, 'getOrCreateAppServerIdentity').resolves(identityDataWithoutEntityId);
+
+    try {
+      await PreviewUtils.initializePreviewConnection(mockOrg, testApiVersion);
+      expect.fail('Should have thrown an error');
+    } catch (error) {
+      expect((error as Error).message).to.include('entity ID');
+      expect(getConnectionStub.calledWith(testApiVersion)).to.be.true;
     }
   });
 });

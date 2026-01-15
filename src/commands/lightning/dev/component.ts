@@ -79,7 +79,7 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
       this.log(sharedMessages.getMessage('localdev.enabled'));
     }
 
-    const { ldpServerId, ldpServerToken } = await PreviewUtils.initializePreviewConnection(targetOrg);
+    const { ldpServerId, ldpServerToken } = await PreviewUtils.initializePreviewConnection(targetOrg, apiVersion);
 
     logger.debug('Determining the next available port for Local Dev Server');
     const serverPorts = await PreviewUtils.getNextAvailablePorts();

@@ -69,6 +69,7 @@ export default class LightningDevApp extends SfCommand<void> {
       summary: messages.getMessage('flags.device-id.summary'),
       char: 'i',
     }),
+    'api-version': Flags.orgApiVersion(),
   };
 
   public async run(): Promise<void> {
@@ -78,6 +79,7 @@ export default class LightningDevApp extends SfCommand<void> {
     const targetOrg = flags['target-org'];
     const appName = flags['name'];
     const deviceId = flags['device-id'];
+    const apiVersion = flags['api-version'];
 
     let sfdxProjectRootPath = '';
     try {
@@ -88,11 +90,14 @@ export default class LightningDevApp extends SfCommand<void> {
 
     logger.debug('Initalizing preview connection and configuring local web server identity');
 
-    if (await MetaUtils.handleLocalDevEnablement(targetOrg.getConnection(undefined))) {
+    if (await MetaUtils.handleLocalDevEnablement(targetOrg.getConnection(apiVersion))) {
       this.log(sharedMessages.getMessage('localdev.enabled'));
     }
 
-    const { connection, ldpServerId, ldpServerToken } = await PreviewUtils.initializePreviewConnection(targetOrg);
+    const { connection, ldpServerId, ldpServerToken } = await PreviewUtils.initializePreviewConnection(
+      targetOrg,
+      apiVersion
+    );
 
     const platform = flags['device-type'] ?? (await PromptUtils.promptUserToSelectPlatform());
 

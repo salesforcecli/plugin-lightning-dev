@@ -54,6 +54,7 @@ export default class LightningDevSite extends SfCommand<void> {
       summary: messages.getMessage('flags.ssr.summary'),
       default: false,
     }),
+    'api-version': Flags.orgApiVersion(),
   };
 
   public async run(): Promise<void> {
@@ -62,11 +63,12 @@ export default class LightningDevSite extends SfCommand<void> {
     try {
       const org = flags['target-org'];
       const getLatest = flags['get-latest'];
+      const apiVersion = flags['api-version'];
       const guest = flags.guest;
       const ssr = flags.ssr;
       let siteName = flags.name;
 
-      const connection = org.getConnection(undefined);
+      const connection = org.getConnection(apiVersion);
 
       if (await MetaUtils.handleLocalDevEnablement(connection)) {
         this.log(sharedMessages.getMessage('localdev.enabled'));
