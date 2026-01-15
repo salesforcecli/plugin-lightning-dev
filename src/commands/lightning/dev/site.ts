@@ -24,6 +24,7 @@ import { PromptUtils } from '../../../shared/promptUtils.js';
 import { ExperienceSite } from '../../../shared/experience/expSite.js';
 import { PreviewUtils } from '../../../shared/previewUtils.js';
 import { startLWCServer } from '../../../lwc-dev-server/index.js';
+import { MetaUtils } from '../../../shared/metaUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.site');
@@ -53,6 +54,7 @@ export default class LightningDevSite extends SfCommand<void> {
       summary: messages.getMessage('flags.ssr.summary'),
       default: false,
     }),
+    'api-version': Flags.orgApiVersion(),
   };
 
   public async run(): Promise<void> {
@@ -61,15 +63,15 @@ export default class LightningDevSite extends SfCommand<void> {
     try {
       const org = flags['target-org'];
       const getLatest = flags['get-latest'];
+      const apiVersion = flags['api-version'];
       const guest = flags.guest;
       const ssr = flags.ssr;
       let siteName = flags.name;
 
-      const connection = org.getConnection(undefined);
+      const connection = org.getConnection(apiVersion);
 
-      const localDevEnabled = await OrgUtils.isLocalDevEnabled(connection);
-      if (!localDevEnabled) {
-        throw new Error(sharedMessages.getMessage('error.localdev.not.enabled'));
+      if (await MetaUtils.handleLocalDevEnablement(connection)) {
+        this.log(sharedMessages.getMessage('localdev.enabled'));
       }
 
       OrgUtils.ensureMatchingAPIVersion(connection);

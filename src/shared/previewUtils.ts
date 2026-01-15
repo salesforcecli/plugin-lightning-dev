@@ -426,16 +426,11 @@ export class PreviewUtils {
     });
   }
 
-  public static async initializePreviewConnection(targetOrg: Org): Promise<PreviewConnection> {
-    const connection = targetOrg.getConnection(undefined);
+  public static async initializePreviewConnection(targetOrg: Org, apiVersion?: string): Promise<PreviewConnection> {
+    const connection = targetOrg.getConnection(apiVersion);
     const username = connection.getUsername();
     if (!username) {
       return Promise.reject(new Error(sharedMessages.getMessage('error.username')));
-    }
-
-    const localDevEnabled = await OrgUtils.isLocalDevEnabled(connection);
-    if (!localDevEnabled) {
-      return Promise.reject(new Error(sharedMessages.getMessage('error.localdev.not.enabled')));
     }
 
     OrgUtils.ensureMatchingAPIVersion(connection);

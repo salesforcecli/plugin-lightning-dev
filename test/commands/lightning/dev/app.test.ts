@@ -42,6 +42,7 @@ import { AppDefinition, OrgUtils } from '../../../../src/shared/orgUtils.js';
 import { PreviewUtils } from '../../../../src/shared/previewUtils.js';
 import { ConfigUtils, LocalWebServerIdentityData } from '../../../../src/shared/configUtils.js';
 import { PromptUtils } from '../../../../src/shared/promptUtils.js';
+import { MetaUtils } from '../../../../src/shared/metaUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 
@@ -50,6 +51,40 @@ describe('lightning dev app', () => {
   const sharedMessages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'shared.utils');
   const $$ = new TestContext();
   const testOrgData = new MockTestOrgData();
+
+  // Helper function to safely stub handleLocalDevEnablement (restores if already stubbed)
+  const stubHandleLocalDevEnablement = (returnValue?: boolean | undefined): sinon.SinonStub => {
+    // Restore if already stubbed - use try/catch to handle case where it's not stubbed
+    /* eslint-disable @typescript-eslint/unbound-method */
+    try {
+      const existingStub = MetaUtils.handleLocalDevEnablement as unknown as sinon.SinonStub;
+      if (existingStub && typeof existingStub.restore === 'function') {
+        existingStub.restore();
+      }
+    } catch {
+      // Not stubbed, continue
+    }
+    /* eslint-enable @typescript-eslint/unbound-method */
+    // Stub with the desired return value
+    if (returnValue === undefined) {
+      return $$.SANDBOX.stub(MetaUtils, 'handleLocalDevEnablement').resolves(undefined);
+    }
+    return $$.SANDBOX.stub(MetaUtils, 'handleLocalDevEnablement').resolves(returnValue);
+  };
+
+  // Helper to restore handleLocalDevEnablement stub (for cases where we need to stub with rejects)
+  const restoreHandleLocalDevEnablement = (): void => {
+    /* eslint-disable @typescript-eslint/unbound-method */
+    try {
+      const existingStub = MetaUtils.handleLocalDevEnablement as unknown as sinon.SinonStub;
+      if (existingStub && typeof existingStub.restore === 'function') {
+        existingStub.restore();
+      }
+    } catch {
+      // Not stubbed, continue
+    }
+    /* eslint-enable @typescript-eslint/unbound-method */
+  };
   const testAppDefinition: AppDefinition = {
     DeveloperName: 'TestApp',
     DurableId: '06m8b000002vpFSAAY',
@@ -90,6 +125,8 @@ describe('lightning dev app', () => {
   testIdentityData.usernameToServerEntityIdMap[testUsername] = testLdpServerId;
 
   beforeEach(async () => {
+    // Set environment variable early to skip prompts
+    process.env.AUTO_ENABLE_LOCAL_DEV = 'true';
     stubUx($$.SANDBOX);
     stubSpinner($$.SANDBOX);
     await $$.stubAuths(testOrgData);
@@ -103,6 +140,9 @@ describe('lightning dev app', () => {
     $$.SANDBOX.stub(PreviewUtils, 'getOrCreateAppServerIdentity').resolves(testIdentityData);
     $$.SANDBOX.stub(OrgUtils, 'isLocalDevEnabled').resolves(true);
     $$.SANDBOX.stub(OrgUtils, 'ensureMatchingAPIVersion').returns();
+    $$.SANDBOX.stub(MetaUtils, 'handleLocalDevEnablement').resolves(undefined);
+    // Stub prompt function as safety net to prevent hanging if handleLocalDevEnablement stub is removed
+    $$.SANDBOX.stub(PromptUtils, 'promptUserToEnableLocalDev').resolves(true);
 
     MockedLightningPreviewApp = await esmock<typeof LightningDevApp>('../../../../src/commands/lightning/dev/app.js', {
       '../../../../src/lwc-dev-server/index.js': {
@@ -113,12 +153,18 @@ describe('lightning dev app', () => {
 
   afterEach(() => {
     $$.restore();
+    delete process.env.AUTO_ENABLE_LOCAL_DEV;
   });
 
   it('throws when local dev not enabled', async () => {
     try {
       $$.SANDBOX.restore();
-      $$.SANDBOX.stub(OrgUtils, 'isLocalDevEnabled').resolves(false);
+      // Re-stub everything needed after restore
+      $$.SANDBOX.stub(MetaUtils, 'handleLocalDevEnablement').resolves(undefined);
+      $$.SANDBOX.stub(PromptUtils, 'promptUserToEnableLocalDev').resolves(true);
+      $$.SANDBOX.stub(PreviewUtils, 'initializePreviewConnection').rejects(
+        new Error(sharedMessages.getMessage('error.localdev.not.enabled'))
+      );
       await MockedLightningPreviewApp.run(['--name', 'blah', '-o', testOrgData.username, '-t', Platform.desktop]);
     } catch (err) {
       expect(err).to.be.an('error').with.property('message', sharedMessages.getMessage('error.localdev.not.enabled'));
@@ -127,6 +173,7 @@ describe('lightning dev app', () => {
 
   it('throws when app not found', async () => {
     try {
+      stubHandleLocalDevEnablement(undefined);
       $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(undefined);
       await MockedLightningPreviewApp.run(['--name', 'blah', '-o', testOrgData.username, '-t', Platform.desktop]);
     } catch (err) {
@@ -139,8 +186,12 @@ describe('lightning dev app', () => {
   it('throws when username not found', async () => {
     try {
       $$.SANDBOX.restore();
-      $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(undefined);
-      $$.SANDBOX.stub(Connection.prototype, 'getUsername').returns(undefined);
+      // Re-stub everything needed after restore
+      $$.SANDBOX.stub(MetaUtils, 'handleLocalDevEnablement').resolves(undefined);
+      $$.SANDBOX.stub(PromptUtils, 'promptUserToEnableLocalDev').resolves(true);
+      $$.SANDBOX.stub(PreviewUtils, 'initializePreviewConnection').rejects(
+        new Error(sharedMessages.getMessage('error.username'))
+      );
       await MockedLightningPreviewApp.run(['--name', 'blah', '-o', testOrgData.username, '-t', Platform.desktop]);
     } catch (err) {
       expect(err).to.be.an('error').with.property('message', sharedMessages.getMessage('error.username'));
@@ -149,6 +200,7 @@ describe('lightning dev app', () => {
 
   it('throws when cannot determine ldp server url', async () => {
     try {
+      stubHandleLocalDevEnablement(undefined);
       $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').throws(
         new Error('Cannot determine LDP url.')
@@ -157,6 +209,120 @@ describe('lightning dev app', () => {
     } catch (err) {
       expect(err).to.be.an('error').with.property('message', 'Cannot determine LDP url.');
     }
+  });
+
+  describe('handleLocalDevEnablement', () => {
+    it('does not enable when local dev is already enabled', async () => {
+      const handleLocalDevStub = stubHandleLocalDevEnablement(undefined);
+      $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
+      $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
+      $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(testIdentityData);
+      $$.SANDBOX.stub(OclifConfig.prototype, 'runCommand').resolves();
+
+      const logStub = $$.SANDBOX.stub(MockedLightningPreviewApp.prototype, 'log');
+
+      await MockedLightningPreviewApp.run(['--name', 'Sales', '-o', testOrgData.username, '-t', Platform.desktop]);
+
+      expect(handleLocalDevStub.calledOnce).to.be.true;
+      expect(logStub.calledWith(sharedMessages.getMessage('localdev.enabled'))).to.be.false;
+    });
+
+    it('enables local dev when AUTO_ENABLE_LOCAL_DEV is "true"', async () => {
+      process.env.AUTO_ENABLE_LOCAL_DEV = 'true';
+      restoreHandleLocalDevEnablement();
+      // Stub internal methods to verify ensureFirstPartyCookiesNotRequired is called
+      $$.SANDBOX.stub(MetaUtils, 'isLightningPreviewEnabled').resolves(false);
+      $$.SANDBOX.stub(MetaUtils, 'setLightningPreviewEnabled').resolves();
+      const ensureCookiesStub = $$.SANDBOX.stub(MetaUtils, 'ensureFirstPartyCookiesNotRequired').resolves(true);
+      $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
+      $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
+      $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(testIdentityData);
+      $$.SANDBOX.stub(OclifConfig.prototype, 'runCommand').resolves();
+
+      const logStub = $$.SANDBOX.stub(MockedLightningPreviewApp.prototype, 'log');
+
+      await MockedLightningPreviewApp.run(['--name', 'Sales', '-o', testOrgData.username, '-t', Platform.desktop]);
+
+      expect(ensureCookiesStub.calledOnce).to.be.true;
+      expect(logStub.calledWith(sharedMessages.getMessage('localdev.enabled'))).to.be.true;
+    });
+
+    it('does not enable when AUTO_ENABLE_LOCAL_DEV is "false"', async () => {
+      process.env.AUTO_ENABLE_LOCAL_DEV = 'false';
+      restoreHandleLocalDevEnablement();
+      const handleLocalDevStub = $$.SANDBOX.stub(MetaUtils, 'handleLocalDevEnablement').rejects(
+        new Error(sharedMessages.getMessage('error.localdev.not.enabled'))
+      );
+      $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
+      $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
+      $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(testIdentityData);
+      $$.SANDBOX.stub(OclifConfig.prototype, 'runCommand').resolves();
+
+      const logStub = $$.SANDBOX.stub(MockedLightningPreviewApp.prototype, 'log');
+
+      try {
+        await MockedLightningPreviewApp.run(['--name', 'Sales', '-o', testOrgData.username, '-t', Platform.desktop]);
+        expect.fail('Should have thrown an error');
+      } catch (err) {
+        expect(err).to.be.an('error').with.property('message', sharedMessages.getMessage('error.localdev.not.enabled'));
+      }
+
+      expect(handleLocalDevStub.calledOnce).to.be.true;
+      expect(logStub.calledWith(sharedMessages.getMessage('localdev.enabled'))).to.be.false;
+    });
+
+    it('prompts user and enables when AUTO_ENABLE_LOCAL_DEV is undefined and user accepts', async () => {
+      delete process.env.AUTO_ENABLE_LOCAL_DEV;
+      restoreHandleLocalDevEnablement();
+      // Restore promptUserToEnableLocalDev if it was stubbed in beforeEach
+      try {
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        const existingPromptStub = PromptUtils.promptUserToEnableLocalDev as unknown as sinon.SinonStub;
+        if (existingPromptStub && typeof existingPromptStub.restore === 'function') {
+          // eslint-disable-next-line @typescript-eslint/unbound-method
+          existingPromptStub.restore();
+        }
+      } catch {
+        // Not stubbed, continue
+      }
+      // Stub internal methods to verify ensureFirstPartyCookiesNotRequired is NOT called when AUTO_ENABLE_LOCAL_DEV is undefined
+      $$.SANDBOX.stub(MetaUtils, 'isLightningPreviewEnabled').resolves(false);
+      $$.SANDBOX.stub(MetaUtils, 'setLightningPreviewEnabled').resolves();
+      const ensureCookiesStub = $$.SANDBOX.stub(MetaUtils, 'ensureFirstPartyCookiesNotRequired').resolves(true);
+      $$.SANDBOX.stub(PromptUtils, 'promptUserToEnableLocalDev').resolves(true);
+      $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
+      $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
+      $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(testIdentityData);
+      $$.SANDBOX.stub(OclifConfig.prototype, 'runCommand').resolves();
+
+      const logStub = $$.SANDBOX.stub(MockedLightningPreviewApp.prototype, 'log');
+
+      await MockedLightningPreviewApp.run(['--name', 'Sales', '-o', testOrgData.username, '-t', Platform.desktop]);
+
+      // ensureFirstPartyCookiesNotRequired should NOT be called when AUTO_ENABLE_LOCAL_DEV is undefined
+      expect(ensureCookiesStub.called).to.be.false;
+      expect(logStub.calledWith(sharedMessages.getMessage('localdev.enabled'))).to.be.true;
+    });
+
+    it('handles error when enabling local dev fails', async () => {
+      restoreHandleLocalDevEnablement();
+      const handleLocalDevStub = $$.SANDBOX.stub(MetaUtils, 'handleLocalDevEnablement').rejects(
+        new Error('Enable failed')
+      );
+      $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
+      $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
+      $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(testIdentityData);
+      $$.SANDBOX.stub(OclifConfig.prototype, 'runCommand').resolves();
+
+      try {
+        await MockedLightningPreviewApp.run(['--name', 'Sales', '-o', testOrgData.username, '-t', Platform.desktop]);
+        expect.fail('Should have thrown an error');
+      } catch (err) {
+        expect(err).to.be.an('error').with.property('message', 'Enable failed');
+      }
+
+      expect(handleLocalDevStub.calledOnce).to.be.true;
+    });
   });
 
   describe('desktop dev', () => {
@@ -180,6 +346,7 @@ describe('lightning dev app', () => {
     });
 
     async function verifyOrgOpen(expectedAppPath: string, deviceType?: Platform, appName?: string): Promise<void> {
+      stubHandleLocalDevEnablement(undefined);
       $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
       $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(testIdentityData);
@@ -223,6 +390,7 @@ describe('lightning dev app', () => {
     });
 
     it('throws when unable to fetch mobile device', async () => {
+      stubHandleLocalDevEnablement(undefined);
       $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
 
@@ -236,6 +404,7 @@ describe('lightning dev app', () => {
     });
 
     it('throws when device fails to boot', async () => {
+      stubHandleLocalDevEnablement(undefined);
       $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
 
@@ -251,6 +420,7 @@ describe('lightning dev app', () => {
     });
 
     it('throws when cannot generate certificate', async () => {
+      stubHandleLocalDevEnablement(undefined);
       $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
 
@@ -271,6 +441,7 @@ describe('lightning dev app', () => {
     });
 
     it('throws if user chooses not to install app on mobile device', async () => {
+      stubHandleLocalDevEnablement(undefined);
       $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
 
@@ -289,6 +460,7 @@ describe('lightning dev app', () => {
     });
 
     it('prompts user to select mobile device when not provided', async () => {
+      stubHandleLocalDevEnablement(undefined);
       $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
       $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(testIdentityData);
@@ -305,6 +477,7 @@ describe('lightning dev app', () => {
     });
 
     it('installs and launches app on mobile device', async () => {
+      stubHandleLocalDevEnablement(undefined);
       $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
       $$.SANDBOX.stub(ConfigUtils, 'getIdentityData').resolves(testIdentityData);
@@ -324,6 +497,7 @@ describe('lightning dev app', () => {
     });
 
     async function verifyMobileThrowsWithUnmetRequirements(platform: Platform.ios | Platform.android) {
+      stubHandleLocalDevEnablement(undefined);
       try {
         await MockedLightningPreviewApp.run(['-n', 'Sales', '-o', testOrgData.username, '-t', platform]);
       } catch (err) {
@@ -332,6 +506,7 @@ describe('lightning dev app', () => {
     }
 
     async function verifyMobileThrowsWhenDeviceNotFound(platform: Platform.ios | Platform.android) {
+      stubHandleLocalDevEnablement(undefined);
       try {
         await MockedLightningPreviewApp.run([
           '-n',
@@ -351,6 +526,7 @@ describe('lightning dev app', () => {
     }
 
     async function verifyMobileThrowsWhenDeviceFailsToBoot(platform: Platform.ios | Platform.android) {
+      stubHandleLocalDevEnablement(undefined);
       const bootStub =
         platform === Platform.ios
           ? $$.SANDBOX.stub(AppleDevice.prototype, 'boot').rejects(new Error('Failed to boot device'))
@@ -365,6 +541,7 @@ describe('lightning dev app', () => {
     }
 
     async function verifyMobileThrowsWhenFailedToGenerateCert(platform: Platform.ios | Platform.android) {
+      stubHandleLocalDevEnablement(undefined);
       try {
         await MockedLightningPreviewApp.run(['-n', 'Sales', '-o', testOrgData.username, '-t', platform]);
       } catch (err) {
@@ -373,6 +550,7 @@ describe('lightning dev app', () => {
     }
 
     async function verifyMobileThrowsWhenUserDeclinesToInstallApp(platform: Platform.ios | Platform.android) {
+      stubHandleLocalDevEnablement(undefined);
       if (platform === Platform.ios) {
         $$.SANDBOX.stub(AppleDevice.prototype, 'boot').resolves();
         $$.SANDBOX.stub(AppleDevice.prototype, 'installCert').resolves();
@@ -396,6 +574,7 @@ describe('lightning dev app', () => {
     }
 
     async function verifyAppInstallAndLaunch(platform: Platform.ios | Platform.android) {
+      stubHandleLocalDevEnablement(undefined);
       const testBundleArchive = platform === Platform.ios ? '/path/to/bundle.zip' : '/path/to/bundle.apk';
       const expectedOutputDir = path.dirname(testBundleArchive);
       const expectedFinalBundlePath =

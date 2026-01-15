@@ -75,17 +75,11 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
     const targetOrg = flags['target-org'];
     const apiVersion = flags['api-version'];
 
-    // Auto enable local dev
-    if (process.env.AUTO_ENABLE_LOCAL_DEV === 'true') {
-      try {
-        await MetaUtils.ensureLightningPreviewEnabled(targetOrg.getConnection(undefined));
-        await MetaUtils.ensureFirstPartyCookiesNotRequired(targetOrg.getConnection(undefined));
-      } catch (error) {
-        this.log('Error autoenabling local dev', error);
-      }
+    if (await MetaUtils.handleLocalDevEnablement(targetOrg.getConnection(apiVersion))) {
+      this.log(sharedMessages.getMessage('localdev.enabled'));
     }
 
-    const { ldpServerId, ldpServerToken } = await PreviewUtils.initializePreviewConnection(targetOrg);
+    const { ldpServerId, ldpServerToken } = await PreviewUtils.initializePreviewConnection(targetOrg, apiVersion);
 
     logger.debug('Determining the next available port for Local Dev Server');
     const serverPorts = await PreviewUtils.getNextAvailablePorts();
