@@ -50,6 +50,10 @@ Couldn't find identity data while generating preview arguments
 
 Couldn't find entity ID while generating preview arguments
 
+# error.org.api-unsupported
+
+Your org is on API Version %s. This version of the plugin supports only %s. Please update your plugin.
+
 # error.no-project
 
 This command is required to run from within a Salesforce project directory. %s

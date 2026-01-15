@@ -15,10 +15,11 @@
  */
 
 import process from 'node:process';
-import { LWCServer, ServerConfig, startLwcDevServer, Workspace } from '@lwc/lwc-dev-server';
-import { Lifecycle, Logger, SfProject } from '@salesforce/core';
+import type { LWCServer, ServerConfig, Workspace } from '@lwc/lwc-dev-server';
+import { Connection, Lifecycle, Logger, SfProject } from '@salesforce/core';
 import { SSLCertificateData } from '@salesforce/lwc-dev-mobile-core';
 import { glob } from 'glob';
+import { loadLwcDevServer } from '../shared/dependencyLoader.js';
 import {
   ConfigUtils,
   LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT,
@@ -31,7 +32,7 @@ async function createLWCServerConfig(
   clientType: string,
   serverPorts?: { httpPort: number; httpsPort: number },
   certData?: SSLCertificateData,
-  workspace?: Workspace
+  workspace?: Workspace,
 ): Promise<ServerConfig> {
   const project = await SfProject.resolve();
   const packageDirs = project.getPackageDirectories();
@@ -75,17 +76,23 @@ async function createLWCServerConfig(
 
 export async function startLWCServer(
   logger: Logger,
+  connection: Connection,
   rootDir: string,
   token: string,
   clientType: string,
   serverPorts?: { httpPort: number; httpsPort: number },
   certData?: SSLCertificateData,
-  workspace?: Workspace
+  workspace?: Workspace,
 ): Promise<LWCServer> {
+  const orgApiVersion = connection.version;
+  logger.trace(`Starting LWC server for org API version: ${orgApiVersion}`);
+
+  const lwcDevServerModule = await loadLwcDevServer(orgApiVersion);
+
   const config = await createLWCServerConfig(rootDir, token, clientType, serverPorts, certData, workspace);
 
   logger.trace(`Starting LWC Dev Server with config: ${JSON.stringify(config)}`);
-  let lwcDevServer: LWCServer | null = await startLwcDevServer(config, logger);
+  let lwcDevServer = (await lwcDevServerModule.startLwcDevServer(config, logger)) as LWCServer | null;
 
   const cleanup = (): void => {
     if (lwcDevServer) {
@@ -101,5 +108,5 @@ export async function startLWCServer(
     'SIGTERM', // when a user kills the process
   ].forEach((signal) => process.on(signal, cleanup));
 
-  return lwcDevServer;
+  return lwcDevServer as LWCServer;
 }

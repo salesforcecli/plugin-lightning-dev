@@ -31,7 +31,7 @@ import {
   SSLCertificateData,
   Version,
 } from '@salesforce/lwc-dev-mobile-core';
-import { AuthInfo, Connection, Logger, Org } from '@salesforce/core';
+import { AuthInfo, Connection, Org } from '@salesforce/core';
 import { PreviewUtils as LwcDevMobileCorePreviewUtils } from '@salesforce/lwc-dev-mobile-core';
 import {
   ConfigUtils,
@@ -49,7 +49,7 @@ describe('previewUtils', () => {
     'iPhone 15 Pro Max',
     DeviceType.mobile,
     AppleOSType.iOS,
-    new Version(17, 5, 0)
+    new Version(17, 5, 0),
   );
   const testAndroidDevice = new AndroidDevice(
     'Pixel_5_API_34',
@@ -57,7 +57,7 @@ describe('previewUtils', () => {
     DeviceType.mobile,
     AndroidOSType.googleAPIs,
     new Version(34, 0, 0),
-    false
+    false,
   );
 
   const testUsername = 'SalesforceDeveloper';
@@ -70,7 +70,12 @@ describe('previewUtils', () => {
   };
   testIdentityData.usernameToServerEntityIdMap[testUsername] = testLdpServerId;
 
+  beforeEach(() => {
+    process.env.SKIP_API_VERSION_CHECK = 'true';
+  });
+
   afterEach(() => {
+    delete process.env.SKIP_API_VERSION_CHECK;
     $$.restore();
   });
 
@@ -121,8 +126,8 @@ describe('previewUtils', () => {
         testLdpServerId,
         'MyAppId',
         'MyTargetOrg',
-        'MyAuraMode'
-      )
+        'MyAuraMode',
+      ),
     ).to.deep.equal([
       '--path',
       `lightning/app/MyAppId?0.aura.ldpServerUrl=MyLdpServerUrl&0.aura.ldpServerId=${testLdpServerId}&0.aura.mode=MyAuraMode`,
@@ -143,8 +148,8 @@ describe('previewUtils', () => {
         testLdpServerId,
         'MyAppName',
         'MyAppId',
-        'MyAuraMode'
-      )
+        'MyAuraMode',
+      ),
     ).to.deep.equal([
       { name: 'LightningExperienceAppName', value: 'MyAppName' },
       { name: 'LightningExperienceAppID', value: 'MyAppId' },
@@ -205,7 +210,7 @@ describe('previewUtils', () => {
       'https://localhost:3333',
       testLdpServerId,
       'myTestComponent',
-      'myTargetOrg'
+      'myTargetOrg',
     );
 
     const parsed = parseArgs({
@@ -227,7 +232,7 @@ describe('previewUtils', () => {
       'https://localhost:3333',
       testLdpServerId,
       undefined,
-      'myTargetOrg'
+      'myTargetOrg',
     );
 
     const parsed = parseArgs({
@@ -248,7 +253,7 @@ describe('previewUtils', () => {
     const result = PreviewUtils.generateComponentPreviewLaunchArguments(
       'https://localhost:3333',
       testLdpServerId,
-      'myTestComponent'
+      'myTestComponent',
     );
 
     const parsed = parseArgs({
@@ -319,13 +324,15 @@ describe('previewUtils', () => {
 
     const generateWebSocketUrlStub = $$.SANDBOX.stub(
       LwcDevMobileCorePreviewUtils,
-      'generateWebSocketUrlForLocalDevServer'
+      'generateWebSocketUrlForLocalDevServer',
     ).returns(mockUrl);
 
-    const result = PreviewUtils.generateWebSocketUrlForLocalDevServer(platform, ports, {} as Logger);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
+    const result = PreviewUtils.generateWebSocketUrlForLocalDevServer(platform, ports, {} as any);
 
     expect(result).to.equal(mockUrl);
-    expect(generateWebSocketUrlStub.calledOnceWith(platform, ports, {} as Logger)).to.be.true;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
+    expect(generateWebSocketUrlStub.calledOnceWith(platform, ports, {} as any)).to.be.true;
   });
 
   it('initializePreviewConnection succeeds with valid org', async () => {
@@ -336,7 +343,6 @@ describe('previewUtils', () => {
     } as Org;
 
     $$.SANDBOX.stub(OrgUtils, 'isLocalDevEnabled').resolves(true);
-    $$.SANDBOX.stub(OrgUtils, 'ensureMatchingAPIVersion').returns();
     $$.SANDBOX.stub(PreviewUtils, 'getOrCreateAppServerIdentity').resolves(testIdentityData);
 
     const result = await PreviewUtils.initializePreviewConnection(mockOrg);
@@ -391,7 +397,6 @@ describe('previewUtils', () => {
     };
 
     $$.SANDBOX.stub(OrgUtils, 'isLocalDevEnabled').resolves(true);
-    $$.SANDBOX.stub(OrgUtils, 'ensureMatchingAPIVersion').returns();
     $$.SANDBOX.stub(PreviewUtils, 'getOrCreateAppServerIdentity').resolves(identityDataWithoutEntityId);
 
     try {
