@@ -4,7 +4,7 @@
     "command": "lightning:dev:app",
     "flagAliases": [],
     "flagChars": ["i", "n", "o", "t"],
-    "flags": ["device-id", "device-type", "flags-dir", "name", "target-org", "version-channel"],
+    "flags": ["device-id", "device-type", "flags-dir", "name", "target-org"],
     "plugin": "@salesforce/plugin-lightning-dev"
   },
   {
@@ -12,7 +12,7 @@
     "command": "lightning:dev:component",
     "flagAliases": [],
     "flagChars": ["c", "n", "o"],
-    "flags": ["api-version", "client-select", "flags-dir", "json", "name", "target-org", "version-channel"],
+    "flags": ["api-version", "client-select", "flags-dir", "json", "name", "target-org"],
     "plugin": "@salesforce/plugin-lightning-dev"
   },
   {
@@ -20,7 +20,7 @@
     "command": "lightning:dev:site",
     "flagAliases": [],
     "flagChars": ["l", "n", "o"],
-    "flags": ["flags-dir", "get-latest", "guest", "name", "ssr", "target-org", "version-channel"],
+    "flags": ["flags-dir", "get-latest", "guest", "name", "ssr", "target-org"],
     "plugin": "@salesforce/plugin-lightning-dev"
   }
 ]

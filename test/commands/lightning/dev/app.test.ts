@@ -103,7 +103,6 @@ describe('lightning dev app', () => {
     $$.SANDBOX.stub(Connection.prototype, 'getUsername').returns(testUsername);
     $$.SANDBOX.stub(PreviewUtils, 'getOrCreateAppServerIdentity').resolves(testIdentityData);
     $$.SANDBOX.stub(OrgUtils, 'isLocalDevEnabled').resolves(true);
-    $$.SANDBOX.stub(OrgUtils, 'getVersionChannel').returns('latest');
 
     MockedLightningPreviewApp = await esmock<typeof LightningDevApp>('../../../../src/commands/lightning/dev/app.js', {
       '../../../../src/lwc-dev-server/index.js': {

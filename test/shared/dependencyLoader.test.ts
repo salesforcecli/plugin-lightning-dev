@@ -29,14 +29,14 @@ describe('DependencyLoader', () => {
     // However, loading LWC modules in Node might still trigger ReferenceErrors if browser globals are missing.
     // We use a try-catch to handle both cases and just verify the attempt was made.
     try {
-      const module = await loadLwcDevServer('latest');
+      const module = await loadLwcDevServer('65.0');
       expect(module).to.exist;
     } catch (error) {
       // If it fails with a ReferenceError or similar, it's still "working" in terms of
       // attempting to load the right package name.
       const errorMessage = (error as Error).message;
       if (errorMessage.includes('could not be imported')) {
-        expect(errorMessage).to.include('@lwc/lwc-dev-server-latest');
+        expect(errorMessage).to.include('@lwc/lwc-dev-server-65.0');
       } else {
         // Other errors (like ReferenceError: Element is not defined) mean the package WAS found and loaded
         expect(errorMessage).to.not.include('could not be imported');

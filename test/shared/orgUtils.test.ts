@@ -26,57 +26,6 @@ describe('orgUtils', () => {
     $$.restore();
   });
 
-  describe('getVersionChannel', () => {
-    it('returns override channel if provided', async () => {
-      const conn = new Connection({ authInfo: new AuthInfo() });
-      const channel = OrgUtils.getVersionChannel(conn, 'prerelease');
-      expect(channel).to.equal('prerelease');
-    });
-
-    it('returns channel from FORCE_VERSION_CHANNEL env var', async () => {
-      process.env.FORCE_VERSION_CHANNEL = 'prerelease';
-      const conn = new Connection({ authInfo: new AuthInfo() });
-      const channel = OrgUtils.getVersionChannel(conn);
-      expect(channel).to.equal('prerelease');
-
-      process.env.FORCE_VERSION_CHANNEL = 'next';
-      const channelNext = OrgUtils.getVersionChannel(conn);
-      expect(channelNext).to.equal('next');
-
-      delete process.env.FORCE_VERSION_CHANNEL;
-    });
-
-    it('throws error for invalid FORCE_VERSION_CHANNEL', async () => {
-      process.env.FORCE_VERSION_CHANNEL = 'invalid';
-      const conn = new Connection({ authInfo: new AuthInfo() });
-      expect(() => OrgUtils.getVersionChannel(conn)).to.throw(/Invalid FORCE_VERSION_CHANNEL/);
-      delete process.env.FORCE_VERSION_CHANNEL;
-    });
-
-    it('returns default channel when SKIP_API_VERSION_CHECK is true', async () => {
-      process.env.SKIP_API_VERSION_CHECK = 'true';
-      const conn = new Connection({ authInfo: new AuthInfo() });
-      const channel = OrgUtils.getVersionChannel(conn);
-      expect(channel).to.equal('latest');
-      delete process.env.SKIP_API_VERSION_CHECK;
-    });
-
-    it('auto-detects channel based on org version', async () => {
-      const conn = new Connection({ authInfo: new AuthInfo() });
-      $$.SANDBOX.stub(conn, 'version').get(() => '65.0');
-
-      const channel = OrgUtils.getVersionChannel(conn);
-      expect(channel).to.equal('latest');
-    });
-
-    it('throws error for unsupported org version', async () => {
-      const conn = new Connection({ authInfo: new AuthInfo() });
-      $$.SANDBOX.stub(conn, 'version').get(() => '64.0');
-
-      expect(() => OrgUtils.getVersionChannel(conn)).to.throw(/Your org is on API Version 64.0/);
-    });
-  });
-
   it('getAppDefinitionDurableId returns undefined when no matches found', async () => {
     $$.SANDBOX.stub(Connection.prototype, 'query').resolves({ records: [], done: true, totalSize: 0 });
     const appId = await OrgUtils.getAppDefinitionDurableId(new Connection({ authInfo: new AuthInfo() }), 'blah');

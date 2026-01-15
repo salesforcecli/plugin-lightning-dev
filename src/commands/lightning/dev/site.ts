@@ -25,7 +25,6 @@ import { ExperienceSite } from '../../../shared/experience/expSite.js';
 import { PreviewUtils } from '../../../shared/previewUtils.js';
 import { startLWCServer } from '../../../lwc-dev-server/index.js';
 import { MetaUtils } from '../../../shared/metaUtils.js';
-import { VersionChannel } from '../../../shared/versionResolver.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.site');
@@ -54,12 +53,6 @@ export default class LightningDevSite extends SfCommand<void> {
     ssr: Flags.boolean({
       summary: messages.getMessage('flags.ssr.summary'),
       default: false,
-    }),
-    'version-channel': Flags.string({
-      summary: messages.getMessage('flags.version-channel.summary'),
-      description: messages.getMessage('flags.version-channel.description'),
-      options: ['latest', 'prerelease', 'next'],
-      required: false,
     }),
   };
 
@@ -90,8 +83,6 @@ export default class LightningDevSite extends SfCommand<void> {
         throw new Error(sharedMessages.getMessage('error.localdev.not.enabled'));
       }
 
-      OrgUtils.getVersionChannel(connection, flags['version-channel'] as VersionChannel | undefined);
-
       // If user doesn't specify a site, prompt the user for one
       if (!siteName) {
         const allSites = await ExperienceSite.getAllExpSites(org);
@@ -101,11 +92,7 @@ export default class LightningDevSite extends SfCommand<void> {
       const selectedSite = new ExperienceSite(org, siteName);
 
       if (!ssr) {
-        return await this.openPreviewUrl(
-          selectedSite,
-          connection,
-          flags['version-channel'] as VersionChannel | undefined
-        );
+        return await this.openPreviewUrl(selectedSite, connection);
       }
       await this.serveSSRSite(selectedSite, getLatest, siteName, guest);
     } catch (e) {
@@ -118,7 +105,7 @@ export default class LightningDevSite extends SfCommand<void> {
     selectedSite: ExperienceSite,
     getLatest: boolean,
     siteName: string,
-    guest: boolean
+    guest: boolean,
   ): Promise<void> {
     let siteZip: string | undefined;
 
@@ -174,11 +161,7 @@ export default class LightningDevSite extends SfCommand<void> {
     }
   }
 
-  private async openPreviewUrl(
-    selectedSite: ExperienceSite,
-    connection: Connection,
-    versionChannelOverride?: VersionChannel
-  ): Promise<void> {
+  private async openPreviewUrl(selectedSite: ExperienceSite, connection: Connection): Promise<void> {
     let sfdxProjectRootPath = '';
     try {
       sfdxProjectRootPath = await SfProject.resolveProjectPath();
@@ -217,7 +200,6 @@ export default class LightningDevSite extends SfCommand<void> {
       serverPorts,
       undefined,
       undefined,
-      versionChannelOverride
     );
     const url = new URL(previewUrl);
     url.searchParams.set('aura.ldpServerUrl', ldpServerUrl);

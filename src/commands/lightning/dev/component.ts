@@ -23,7 +23,6 @@ import { PromptUtils } from '../../../shared/promptUtils.js';
 import { PreviewUtils } from '../../../shared/previewUtils.js';
 import { startLWCServer } from '../../../lwc-dev-server/index.js';
 import { MetaUtils } from '../../../shared/metaUtils.js';
-import { VersionChannel } from '../../../shared/versionResolver.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.component');
@@ -55,12 +54,6 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
       default: false,
     }),
     'target-org': Flags.requiredOrg(),
-    'version-channel': Flags.string({
-      summary: messages.getMessage('flags.version-channel.summary'),
-      description: messages.getMessage('flags.version-channel.description'),
-      options: ['latest', 'prerelease', 'next'],
-      required: false,
-    }),
   };
 
   public async run(): Promise<ComponentPreviewResult> {
@@ -73,7 +66,7 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
       sfdxProjectRootPath = await SfProject.resolveProjectPath();
     } catch (error) {
       return Promise.reject(
-        new Error(sharedMessages.getMessage('error.no-project', [(error as Error)?.message ?? '']))
+        new Error(sharedMessages.getMessage('error.no-project', [(error as Error)?.message ?? ''])),
       );
     }
 
@@ -106,7 +99,7 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
       logger.debug('In Code Builder Mode - using proxy URI');
       ldpServerUrl = process.env.VSCODE_PROXY_URI.replace('https://', 'ws://').replace(
         '{{port}}',
-        `${serverPorts.httpPort}`
+        `${serverPorts.httpPort}`,
       );
     } else {
       // Default behavior
@@ -145,14 +138,14 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
               label: xml.LightningComponentBundle.masterLabel ?? label,
               description: xml.LightningComponentBundle.description ?? '',
             };
-          })
+          }),
         )
       ).filter((component) => !!component);
 
       if (componentName) {
         // validate that the component exists before launching the server
         const match = components.find(
-          (component) => componentName === component.name || componentName === component.label
+          (component) => componentName === component.name || componentName === component.label,
         );
         if (!match) {
           throw new Error(messages.getMessage('error.component-not-found', [componentName]));
@@ -179,7 +172,6 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
       serverPorts,
       undefined,
       undefined,
-      flags['version-channel'] as VersionChannel | undefined
     );
 
     const targetOrgArg = PreviewUtils.getTargetOrgFromArguments(this.argv);
@@ -187,7 +179,7 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
       ldpServerUrl,
       ldpServerId,
       componentName,
-      targetOrgArg
+      targetOrgArg,
     );
 
     // Construct and log the full URL that will be opened

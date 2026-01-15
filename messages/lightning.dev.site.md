@@ -33,14 +33,6 @@ Preview the site as a guest user (rather than an authenticated user).
 
 Preview the SSR bundle
 
-# flags.version-channel.summary
-
-Manually specify which version channel to use (latest, prerelease, or next).
-
-# flags.version-channel.description
-
-Override automatic version detection and force a specific dependency channel. Useful for testing and debugging. Valid values: "latest", "prerelease", "next".
-
 # examples
 
 - Select a site to preview from the org "myOrg":

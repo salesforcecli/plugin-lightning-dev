@@ -343,7 +343,6 @@ describe('previewUtils', () => {
     } as Org;
 
     $$.SANDBOX.stub(OrgUtils, 'isLocalDevEnabled').resolves(true);
-    $$.SANDBOX.stub(OrgUtils, 'getVersionChannel').returns('latest');
     $$.SANDBOX.stub(PreviewUtils, 'getOrCreateAppServerIdentity').resolves(testIdentityData);
 
     const result = await PreviewUtils.initializePreviewConnection(mockOrg);
@@ -398,7 +397,6 @@ describe('previewUtils', () => {
     };
 
     $$.SANDBOX.stub(OrgUtils, 'isLocalDevEnabled').resolves(true);
-    $$.SANDBOX.stub(OrgUtils, 'getVersionChannel').returns('latest');
     $$.SANDBOX.stub(PreviewUtils, 'getOrCreateAppServerIdentity').resolves(identityDataWithoutEntityId);
 
     try {

@@ -14,38 +14,38 @@
  * limitations under the License.
  */
 
-declare module '@lwc/lwc-dev-server-latest' {
+declare module '@lwc/lwc-dev-server-65.0' {
   export * from '@lwc/lwc-dev-server';
 }
 
-declare module '@lwc/lwc-dev-server-prerelease' {
+declare module '@lwc/lwc-dev-server-66.0' {
   export * from '@lwc/lwc-dev-server';
 }
 
-declare module '@lwc/lwc-dev-server-next' {
+declare module '@lwc/lwc-dev-server-67.0' {
   export * from '@lwc/lwc-dev-server';
 }
 
-declare module '@lwc/sfdc-lwc-compiler-latest' {
+declare module '@lwc/sfdc-lwc-compiler-65.0' {
   export * from '@lwc/sfdc-lwc-compiler';
 }
 
-declare module '@lwc/sfdc-lwc-compiler-prerelease' {
+declare module '@lwc/sfdc-lwc-compiler-66.0' {
   export * from '@lwc/sfdc-lwc-compiler';
 }
 
-declare module '@lwc/sfdc-lwc-compiler-next' {
+declare module '@lwc/sfdc-lwc-compiler-67.0' {
   export * from '@lwc/sfdc-lwc-compiler';
 }
 
-declare module 'lwc-latest' {
+declare module 'lwc-65.0' {
   export * from 'lwc';
 }
 
-declare module 'lwc-prerelease' {
+declare module 'lwc-66.0' {
   export * from 'lwc';
 }
 
-declare module 'lwc-next' {
+declare module 'lwc-67.0' {
   export * from 'lwc';
 }

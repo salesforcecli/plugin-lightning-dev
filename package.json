@@ -8,13 +8,13 @@
     "@inquirer/prompts": "^5.3.8",
     "@inquirer/select": "^2.4.7",
     "@lwc/lwc-dev-server": "~13.3.8",
-    "@lwc/lwc-dev-server-latest": "npm:@lwc/lwc-dev-server@~13.2.x",
-    "@lwc/lwc-dev-server-next": "npm:@lwc/lwc-dev-server@~13.3.x",
-    "@lwc/lwc-dev-server-prerelease": "npm:@lwc/lwc-dev-server@~13.3.x",
+    "@lwc/lwc-dev-server-65.0": "npm:@lwc/lwc-dev-server@~13.2.x",
+    "@lwc/lwc-dev-server-66.0": "npm:@lwc/lwc-dev-server@~13.3.x",
+    "@lwc/lwc-dev-server-67.0": "npm:@lwc/lwc-dev-server@~13.3.x",
     "@lwc/sfdc-lwc-compiler": "~13.3.8",
-    "@lwc/sfdc-lwc-compiler-latest": "npm:@lwc/sfdc-lwc-compiler@~13.2.x",
-    "@lwc/sfdc-lwc-compiler-next": "npm:@lwc/sfdc-lwc-compiler@~13.3.x",
-    "@lwc/sfdc-lwc-compiler-prerelease": "npm:@lwc/sfdc-lwc-compiler@~13.3.x",
+    "@lwc/sfdc-lwc-compiler-65.0": "npm:@lwc/sfdc-lwc-compiler@~13.2.x",
+    "@lwc/sfdc-lwc-compiler-66.0": "npm:@lwc/sfdc-lwc-compiler@~13.3.x",
+    "@lwc/sfdc-lwc-compiler-67.0": "npm:@lwc/sfdc-lwc-compiler@~13.3.x",
     "@lwrjs/api": "0.18.3",
     "@oclif/core": "^4.5.6",
     "@salesforce/core": "^8.24.0",
@@ -24,9 +24,9 @@
     "axios": "^1.13.2",
     "glob": "^13.0.0",
     "lwc": "~8.27.0",
-    "lwc-latest": "npm:lwc@~8.23.x",
-    "lwc-next": "npm:lwc@~8.24.x",
-    "lwc-prerelease": "npm:lwc@~8.24.x",
+    "lwc-65.0": "npm:lwc@~8.23.x",
+    "lwc-66.0": "npm:lwc@~8.24.x",
+    "lwc-67.0": "npm:lwc@~8.24.x",
     "node-fetch": "^3.3.2",
     "open": "^10.2.0",
     "xml2js": "^0.6.2"
@@ -52,7 +52,7 @@
     "typescript": "^5.5.4"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.0.0"
   },
   "files": [
     "/lib",
@@ -241,65 +241,27 @@
     }
   },
   "apiVersionMetadata": {
-    "channels": {
-      "latest": {
-        "supportedApiVersions": [
-          "65.0"
-        ],
-        "dependencies": {
-          "@lwc/lwc-dev-server": "~13.2.x",
-          "@lwc/sfdc-lwc-compiler": "~13.2.x",
-          "lwc": "~8.23.x"
-        }
-      },
-      "prerelease": {
-        "supportedApiVersions": [
-          "66.0"
-        ],
-        "dependencies": {
-          "@lwc/lwc-dev-server": "~13.3.x",
-          "@lwc/sfdc-lwc-compiler": "~13.3.x",
-          "lwc": "~8.24.x"
-        }
-      },
-      "next": {
-        "supportedApiVersions": [
-          "67.0"
-        ],
-        "dependencies": {
-          "@lwc/lwc-dev-server": "~13.3.x",
-          "@lwc/sfdc-lwc-compiler": "~13.3.x",
-          "lwc": "~8.24.x"
-        }
+    "65.0": {
+      "dependencies": {
+        "@lwc/lwc-dev-server": "~13.2.x",
+        "@lwc/sfdc-lwc-compiler": "~13.2.x",
+        "lwc": "~8.23.x"
       }
     },
-    "defaultChannel": "latest",
-    "versionToTagMappings": [
-      {
-        "versionNumber": "62.0",
-        "tagName": "v1"
-      },
-      {
-        "versionNumber": "63.0",
-        "tagName": "v2"
-      },
-      {
-        "versionNumber": "64.0",
-        "tagName": "v3"
-      },
-      {
-        "versionNumber": "65.0",
-        "tagName": "latest"
-      },
-      {
-        "versionNumber": "66.0",
-        "tagName": "prerelease"
-      },
-      {
-        "versionNumber": "67.0",
-        "tagName": "next"
+    "66.0": {
+      "dependencies": {
+        "@lwc/lwc-dev-server": "~13.3.x",
+        "@lwc/sfdc-lwc-compiler": "~13.3.x",
+        "lwc": "~8.24.x"
       }
-    ]
+    },
+    "67.0": {
+      "dependencies": {
+        "@lwc/lwc-dev-server": "~13.3.x",
+        "@lwc/sfdc-lwc-compiler": "~13.3.x",
+        "lwc": "~8.24.x"
+      }
+    }
   },
   "exports": "./lib/index.js",
   "type": "module",

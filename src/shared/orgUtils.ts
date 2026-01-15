@@ -14,17 +14,7 @@
  * limitations under the License.
  */
 
-import { Connection, Messages, Logger } from '@salesforce/core';
-import {
-  VersionChannel,
-  resolveChannel,
-  getDefaultChannel,
-  getAllChannels,
-  getSupportedVersionsList,
-} from './versionResolver.js';
-
-Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
-const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'shared.utils');
+import { Connection } from '@salesforce/core';
 
 type LightningPreviewMetadataResponse = {
   enableLightningPreviewPref?: string;
@@ -42,8 +32,6 @@ export type AppDefinition = {
  * the local dev server matches with Org API versions, we rely on defining a metadata section in package.json
  */
 export class OrgUtils {
-  private static logger = Logger.childFromRoot('OrgUtils');
-
   /**
    * Given an app name, it queries the AppDefinition table in the org to find
    * the DurableId for the app. To do so, it will first attempt at finding the
@@ -136,50 +124,5 @@ export class OrgUtils {
       return result.id;
     }
     throw new Error('Could not save the app server identity token to the org.');
-  }
-
-  /**
-   * Determines the version channel for the connected org
-   *
-   * @param connection - The connection to the org
-   * @param overrideChannel - Optional manual override from flag or env var
-   * @returns The version channel to use for dependencies
-   * @throws Error if the org version is not supported or invalid override provided
-   */
-  public static getVersionChannel(connection: Connection, overrideChannel?: VersionChannel): VersionChannel {
-    // Priority 1: Explicit override parameter (from --version-channel flag)
-    if (overrideChannel) {
-      return overrideChannel;
-    }
-
-    // Priority 2: Environment variable override
-    const envOverride = process.env.FORCE_VERSION_CHANNEL;
-    if (envOverride) {
-      const validChannels = getAllChannels();
-      if (validChannels.includes(envOverride as VersionChannel)) {
-        return envOverride as VersionChannel;
-      } else {
-        const message =
-          `Invalid FORCE_VERSION_CHANNEL value: "${envOverride}". ` + `Valid values are: ${validChannels.join(', ')}`;
-        this.logger.error(message);
-        throw new Error(message);
-      }
-    }
-
-    // Priority 3: Skip check for testing (legacy compatibility)
-    if (process.env.SKIP_API_VERSION_CHECK === 'true') {
-      return getDefaultChannel();
-    }
-
-    // Priority 4: Automatic detection based on org version
-    const orgVersion = connection.version;
-
-    try {
-      return resolveChannel(orgVersion);
-    } catch (error) {
-      const message = messages.getMessage('error.org.api-unsupported', [orgVersion, getSupportedVersionsList()]);
-      this.logger.error(message);
-      throw new Error(message);
-    }
   }
 }

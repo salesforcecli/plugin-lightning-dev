@@ -15,7 +15,13 @@
  */
 
 import type { Logger } from '@salesforce/core';
-import type { VersionChannel } from './versionResolver.js';
+import packageJsonImport from '../../package.json' with { type: 'json' };
+
+type PackageJson = {
+  apiVersionMetadata: Record<string, unknown>;
+};
+
+const packageJson = packageJsonImport as unknown as PackageJson;
 
 /**
  * Type for dynamically loaded LWC server module
@@ -27,62 +33,75 @@ export type LwcDevServerModule = {
 };
 
 /**
- * Loads the LWC dev server module for the specified channel
+ * Returns a formatted list of all supported API versions
+ */
+function getSupportedVersionsList(): string {
+  return Object.keys(packageJson.apiVersionMetadata).sort().join(', ');
+}
+
+/**
+ * Given an org API version, returns the matched supported version string
+ *
+ * @param orgApiVersion - The API version from the org (e.g., "65.0")
+ * @returns The matched version string (e.g., "65.0")
+ * @throws Error if the API version is not supported
+ */
+function resolveApiVersion(orgApiVersion: string): string {
+  const metadata = packageJson.apiVersionMetadata;
+
+  // Exact match
+  if (metadata[orgApiVersion]) {
+    return orgApiVersion;
+  }
+
+  throw new Error(`Unsupported org API version: ${orgApiVersion}. This plugin supports: ${getSupportedVersionsList()}`);
+}
+
+/**
+ * Internal helper to dynamically load an aliased dependency
+ */
+async function loadDependency<T>(orgApiVersion: string, packagePrefix: string, friendlyName: string): Promise<T> {
+  const version = resolveApiVersion(orgApiVersion);
+  const packageName = `${packagePrefix}${version}`;
+
+  try {
+    return (await import(packageName)) as T;
+  } catch (error) {
+    throw new Error(
+      `Failed to load ${friendlyName} for version '${version}'. ` +
+        `Package '${packageName}' could not be imported. ` +
+        `Error: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+}
+
+/**
+ * Loads the LWC dev server module for the specified org API version
  * Uses dynamic import to load the aliased package at runtime
  *
- * @param channel - The version channel ('latest', 'prerelease', or 'next')
+ * @param orgApiVersion - The API version from the org (e.g., '65.0.1')
  * @returns The loaded module
  */
-export async function loadLwcDevServer(channel: VersionChannel): Promise<LwcDevServerModule> {
-  const packageName = `@lwc/lwc-dev-server-${channel}`;
-
-  try {
-    return (await import(packageName)) as LwcDevServerModule;
-  } catch (error) {
-    throw new Error(
-      `Failed to load LWC dev server for channel '${channel}'. ` +
-        `Package '${packageName}' could not be imported. ` +
-        `Error: ${error instanceof Error ? error.message : String(error)}`,
-    );
-  }
+export async function loadLwcDevServer(orgApiVersion: string): Promise<LwcDevServerModule> {
+  return loadDependency<LwcDevServerModule>(orgApiVersion, '@lwc/lwc-dev-server-', 'LWC dev server');
 }
 
 /**
- * Loads the LWC compiler module for the specified channel
+ * Loads the LWC compiler module for the specified org API version
  *
- * @param channel - The version channel ('latest', 'prerelease', or 'next')
+ * @param orgApiVersion - The API version from the org (e.g., '65.0.1')
  * @returns The loaded compiler module
  */
-export async function loadLwcCompiler(channel: VersionChannel): Promise<unknown> {
-  const packageName = `@lwc/sfdc-lwc-compiler-${channel}`;
-
-  try {
-    return (await import(packageName)) as unknown;
-  } catch (error) {
-    throw new Error(
-      `Failed to load LWC compiler for channel '${channel}'. ` +
-        `Package '${packageName}' could not be imported. ` +
-        `Error: ${error instanceof Error ? error.message : String(error)}`,
-    );
-  }
+export async function loadLwcCompiler(orgApiVersion: string): Promise<unknown> {
+  return loadDependency<unknown>(orgApiVersion, '@lwc/sfdc-lwc-compiler-', 'LWC compiler');
 }
 
 /**
- * Loads the base LWC module for the specified channel
+ * Loads the base LWC module for the specified org API version
  *
- * @param channel - The version channel ('latest', 'prerelease', or 'next')
+ * @param orgApiVersion - The API version from the org (e.g., '65.0.1')
  * @returns The loaded LWC module
  */
-export async function loadLwc(channel: VersionChannel): Promise<unknown> {
-  const packageName = `lwc-${channel}`;
-
-  try {
-    return (await import(packageName)) as unknown;
-  } catch (error) {
-    throw new Error(
-      `Failed to load LWC for channel '${channel}'. ` +
-        `Package '${packageName}' could not be imported. ` +
-        `Error: ${error instanceof Error ? error.message : String(error)}`,
-    );
-  }
+export async function loadLwc(orgApiVersion: string): Promise<unknown> {
+  return loadDependency<unknown>(orgApiVersion, 'lwc-', 'LWC');
 }

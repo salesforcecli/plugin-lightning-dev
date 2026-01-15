@@ -30,7 +30,6 @@ import { startLWCServer } from '../../../lwc-dev-server/index.js';
 import { PreviewUtils } from '../../../shared/previewUtils.js';
 import { PromptUtils } from '../../../shared/promptUtils.js';
 import { MetaUtils } from '../../../shared/metaUtils.js';
-import { VersionChannel } from '../../../shared/versionResolver.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'lightning.dev.app');
@@ -69,12 +68,6 @@ export default class LightningDevApp extends SfCommand<void> {
     'device-id': Flags.string({
       summary: messages.getMessage('flags.device-id.summary'),
       char: 'i',
-    }),
-    'version-channel': Flags.string({
-      summary: messages.getMessage('flags.version-channel.summary'),
-      description: messages.getMessage('flags.version-channel.description'),
-      options: ['latest', 'prerelease', 'next'],
-      required: false,
     }),
   };
 
@@ -118,8 +111,6 @@ export default class LightningDevApp extends SfCommand<void> {
     const ldpServerUrl = PreviewUtils.generateWebSocketUrlForLocalDevServer(platform, serverPorts, logger);
     logger.debug(`Local Dev Server url is ${ldpServerUrl}`);
 
-    const versionChannel = flags['version-channel'] as VersionChannel | undefined;
-
     if (platform === Platform.desktop) {
       await this.desktopPreview(
         targetOrg,
@@ -130,7 +121,6 @@ export default class LightningDevApp extends SfCommand<void> {
         ldpServerUrl,
         appId,
         logger,
-        versionChannel
       );
     } else {
       await this.mobilePreview(
@@ -145,7 +135,6 @@ export default class LightningDevApp extends SfCommand<void> {
         appId,
         deviceId,
         logger,
-        versionChannel
       );
     }
   }
@@ -159,7 +148,6 @@ export default class LightningDevApp extends SfCommand<void> {
     ldpServerUrl: string,
     appId: string | undefined,
     logger: Logger,
-    versionChannelOverride?: VersionChannel
   ): Promise<void> {
     if (!appId) {
       logger.debug('No Lightning Experience application name provided.... using the default app instead.');
@@ -175,7 +163,7 @@ export default class LightningDevApp extends SfCommand<void> {
       ldpServerUrl,
       ldpServerId,
       appId,
-      targetOrgArg
+      targetOrgArg,
     );
 
     // Start the LWC Dev Server
@@ -188,7 +176,6 @@ export default class LightningDevApp extends SfCommand<void> {
       serverPorts,
       undefined,
       undefined,
-      versionChannelOverride
     );
 
     // Open the browser and navigate to the right page
@@ -207,7 +194,6 @@ export default class LightningDevApp extends SfCommand<void> {
     appId: string | undefined,
     deviceId: string | undefined,
     logger: Logger,
-    versionChannelOverride?: VersionChannel
   ): Promise<void> {
     try {
       // Verify that user environment is set up for mobile (i.e. has right tooling)
@@ -278,7 +264,7 @@ export default class LightningDevApp extends SfCommand<void> {
           platform,
           logger,
           this.spinner,
-          this.progress
+          this.progress,
         );
 
         // on iOS the bundle comes as a ZIP archive so we need to extract it first
@@ -307,7 +293,6 @@ export default class LightningDevApp extends SfCommand<void> {
         serverPorts,
         certData,
         undefined,
-        versionChannelOverride
       );
 
       // Launch the native app for previewing (launchMobileApp will show its own spinner)
@@ -316,7 +301,7 @@ export default class LightningDevApp extends SfCommand<void> {
         ldpServerUrl,
         ldpServerId,
         appName,
-        appId
+        appId,
       );
       const targetActivity = (appConfig as AndroidAppPreviewConfig)?.activity;
       const targetApp = targetActivity ? `${appConfig.id}/${targetActivity}` : appConfig.id;

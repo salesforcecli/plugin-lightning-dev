@@ -20,8 +20,6 @@ import { Connection, Lifecycle, Logger, SfProject } from '@salesforce/core';
 import { SSLCertificateData } from '@salesforce/lwc-dev-mobile-core';
 import { glob } from 'glob';
 import { loadLwcDevServer } from '../shared/dependencyLoader.js';
-import { OrgUtils } from '../shared/orgUtils.js';
-import { VersionChannel } from '../shared/versionResolver.js';
 import {
   ConfigUtils,
   LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT,
@@ -85,12 +83,11 @@ export async function startLWCServer(
   serverPorts?: { httpPort: number; httpsPort: number },
   certData?: SSLCertificateData,
   workspace?: Workspace,
-  versionChannelOverride?: VersionChannel,
 ): Promise<LWCServer> {
-  const channel = OrgUtils.getVersionChannel(connection, versionChannelOverride);
-  logger.trace(`Using version channel: ${channel}`);
+  const orgApiVersion = connection.version;
+  logger.trace(`Starting LWC server for org API version: ${orgApiVersion}`);
 
-  const lwcDevServerModule = await loadLwcDevServer(channel);
+  const lwcDevServerModule = await loadLwcDevServer(orgApiVersion);
 
   const config = await createLWCServerConfig(rootDir, token, clientType, serverPorts, certData, workspace);
 
