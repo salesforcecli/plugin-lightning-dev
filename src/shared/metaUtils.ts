@@ -245,7 +245,10 @@ export class MetaUtils {
 
       if (enableLocalDev) {
         await this.setLightningPreviewEnabled(connection, true);
-        await this.ensureFirstPartyCookiesNotRequired(connection);
+        // Cookies changes are only needed for VSCode
+        if (autoEnableLocalDev) {
+          await this.ensureFirstPartyCookiesNotRequired(connection);
+        }
         return true;
       } else {
         throw new Error(sharedMessages.getMessage('error.localdev.not.enabled'));

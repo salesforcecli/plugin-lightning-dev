@@ -150,7 +150,11 @@ describe('lightning dev component', () => {
     it('enables local dev when AUTO_ENABLE_LOCAL_DEV is "true"', async () => {
       process.env.AUTO_ENABLE_LOCAL_DEV = 'true';
       process.env.OPEN_BROWSER = 'false';
-      const handleLocalDevStub = stubHandleLocalDevEnablement(true);
+      restoreHandleLocalDevEnablement();
+      // Stub internal methods to verify ensureFirstPartyCookiesNotRequired is called
+      $$.SANDBOX.stub(MetaUtils, 'isLightningPreviewEnabled').resolves(false);
+      $$.SANDBOX.stub(MetaUtils, 'setLightningPreviewEnabled').resolves();
+      const ensureCookiesStub = $$.SANDBOX.stub(MetaUtils, 'ensureFirstPartyCookiesNotRequired').resolves(true);
       $$.SANDBOX.stub(ComponentUtils, 'getNamespacePaths').resolves(['/test/namespace']);
       $$.SANDBOX.stub(ComponentUtils, 'getAllComponentPaths').resolves(['/test/namespace/component1']);
       $$.SANDBOX.stub(ComponentUtils, 'getComponentMetadata').resolves({
@@ -167,7 +171,7 @@ describe('lightning dev component', () => {
 
       await MockedLightningDevComponent.run(['-o', testOrgData.username]);
 
-      expect(handleLocalDevStub.calledOnce).to.be.true;
+      expect(ensureCookiesStub.calledOnce).to.be.true;
       expect(logStub.calledWith(sharedMessages.getMessage('localdev.enabled'))).to.be.true;
       delete process.env.OPEN_BROWSER;
     });
@@ -208,7 +212,23 @@ describe('lightning dev component', () => {
     it('prompts user and enables when AUTO_ENABLE_LOCAL_DEV is undefined and user accepts', async () => {
       delete process.env.AUTO_ENABLE_LOCAL_DEV;
       process.env.OPEN_BROWSER = 'false';
-      const handleLocalDevStub = stubHandleLocalDevEnablement(true);
+      restoreHandleLocalDevEnablement();
+      // Restore promptUserToEnableLocalDev if it was stubbed in beforeEach
+      try {
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        const existingPromptStub = PromptUtils.promptUserToEnableLocalDev as unknown as sinon.SinonStub;
+        if (existingPromptStub && typeof existingPromptStub.restore === 'function') {
+          // eslint-disable-next-line @typescript-eslint/unbound-method
+          existingPromptStub.restore();
+        }
+      } catch {
+        // Not stubbed, continue
+      }
+      // Stub internal methods to verify ensureFirstPartyCookiesNotRequired is NOT called when AUTO_ENABLE_LOCAL_DEV is undefined
+      $$.SANDBOX.stub(MetaUtils, 'isLightningPreviewEnabled').resolves(false);
+      $$.SANDBOX.stub(MetaUtils, 'setLightningPreviewEnabled').resolves();
+      const ensureCookiesStub = $$.SANDBOX.stub(MetaUtils, 'ensureFirstPartyCookiesNotRequired').resolves(true);
+      $$.SANDBOX.stub(PromptUtils, 'promptUserToEnableLocalDev').resolves(true);
       $$.SANDBOX.stub(ComponentUtils, 'getNamespacePaths').resolves(['/test/namespace']);
       $$.SANDBOX.stub(ComponentUtils, 'getAllComponentPaths').resolves(['/test/namespace/component1']);
       $$.SANDBOX.stub(ComponentUtils, 'getComponentMetadata').resolves({
@@ -225,7 +245,8 @@ describe('lightning dev component', () => {
 
       await MockedLightningDevComponent.run(['-o', testOrgData.username]);
 
-      expect(handleLocalDevStub.calledOnce).to.be.true;
+      // ensureFirstPartyCookiesNotRequired should NOT be called when AUTO_ENABLE_LOCAL_DEV is undefined
+      expect(ensureCookiesStub.called).to.be.false;
       expect(logStub.calledWith(sharedMessages.getMessage('localdev.enabled'))).to.be.true;
       delete process.env.OPEN_BROWSER;
     });

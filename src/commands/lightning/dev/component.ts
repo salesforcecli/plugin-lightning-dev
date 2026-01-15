@@ -75,7 +75,7 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
     const targetOrg = flags['target-org'];
     const apiVersion = flags['api-version'];
 
-    if (await MetaUtils.handleLocalDevEnablement(targetOrg.getConnection(undefined))) {
+    if (await MetaUtils.handleLocalDevEnablement(targetOrg.getConnection(apiVersion))) {
       this.log(sharedMessages.getMessage('localdev.enabled'));
     }
 
