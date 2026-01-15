@@ -1,3 +1,9 @@
+## [6.0.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.0.1...6.0.2) (2026-01-15)
+
+### Bug Fixes
+
+- **deps:** bump undici from 6.21.2 to 6.23.0 ([#598](https://github.com/salesforcecli/plugin-lightning-dev/issues/598)) ([d08a87d](https://github.com/salesforcecli/plugin-lightning-dev/commit/d08a87daad7f516c70398fdb50a8fb27b34aa75c))
+
 ## [6.0.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.0.0...6.0.1) (2026-01-10)
 
 ### Bug Fixes
