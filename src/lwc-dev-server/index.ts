@@ -15,11 +15,11 @@
  */
 
 import process from 'node:process';
-import type { LWCServer, ServerConfig, Workspace } from '@lwc/lwc-dev-server';
+import type { LWCServer, ServerConfig, Workspace } from '@lwc/sfdx-local-dev-dist';
 import { Connection, Lifecycle, Logger, SfProject } from '@salesforce/core';
 import { SSLCertificateData } from '@salesforce/lwc-dev-mobile-core';
 import { glob } from 'glob';
-import { loadLwcDevServer } from '../shared/dependencyLoader.js';
+import { loadLwcModule } from '../shared/dependencyLoader.js';
 import {
   ConfigUtils,
   LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT,
@@ -50,25 +50,30 @@ async function createLWCServerConfig(
       httpsPort: LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT + 1,
     };
 
+  const resolvedWorkspace: Workspace = (workspace ??
+    (await ConfigUtils.getLocalDevServerWorkspace()) ??
+    LOCAL_DEV_SERVER_DEFAULT_WORKSPACE) as Workspace;
+
   const serverConfig: ServerConfig = {
     rootDir,
     // use custom port if any is provided, or fetch from config file (if any), otherwise use the default port
     port: ports.httpPort,
     paths: namespacePaths,
     // use custom workspace if any is provided, or fetch from config file (if any), otherwise use the default workspace
-    workspace: workspace ?? (await ConfigUtils.getLocalDevServerWorkspace()) ?? LOCAL_DEV_SERVER_DEFAULT_WORKSPACE,
+    workspace: resolvedWorkspace,
     identityToken: token,
-    lifecycle: Lifecycle.getInstance(),
+    lifecycle: Lifecycle.getInstance() as unknown as ServerConfig['lifecycle'],
     clientType,
     namespace: typeof namespace === 'string' && namespace.trim().length > 0 ? namespace.trim() : undefined,
   };
 
   if (certData?.pemCertificate && certData.pemPrivateKey) {
-    serverConfig.https = {
+    const httpsConfig: ServerConfig['https'] = {
       cert: certData.pemCertificate,
       key: certData.pemPrivateKey,
       port: ports.httpsPort,
     };
+    serverConfig.https = httpsConfig;
   }
 
   return serverConfig;
@@ -87,18 +92,25 @@ export async function startLWCServer(
   const orgApiVersion = connection.version;
   logger.trace(`Starting LWC server for org API version: ${orgApiVersion}`);
 
-  const lwcDevServerModule = await loadLwcDevServer(orgApiVersion);
+  const lwcDevServerModule = await loadLwcModule(orgApiVersion);
 
-  const config = await createLWCServerConfig(rootDir, token, clientType, serverPorts, certData, workspace);
+  const config: ServerConfig = await createLWCServerConfig(
+    rootDir,
+    token,
+    clientType,
+    serverPorts,
+    certData,
+    workspace,
+  );
 
   logger.trace(`Starting LWC Dev Server with config: ${JSON.stringify(config)}`);
-  let lwcDevServer = (await lwcDevServerModule.startLwcDevServer(config, logger)) as LWCServer | null;
+  const lwcDevServerResult = await lwcDevServerModule.startLwcDevServer(config, logger);
+  const lwcDevServer = lwcDevServerResult as LWCServer;
 
   const cleanup = (): void => {
     if (lwcDevServer) {
       logger.trace('Stopping LWC Dev Server');
       lwcDevServer.stopServer();
-      lwcDevServer = null;
     }
   };
 
@@ -108,5 +120,5 @@ export async function startLWCServer(
     'SIGTERM', // when a user kills the process
   ].forEach((signal) => process.on(signal, cleanup));
 
-  return lwcDevServer as LWCServer;
+  return lwcDevServer;
 }

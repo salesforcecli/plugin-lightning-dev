@@ -14,38 +14,16 @@
  * limitations under the License.
  */
 
-declare module '@lwc/lwc-dev-server-65.0' {
-  export * from '@lwc/lwc-dev-server';
+// Type declarations for @lwc/sfdx-local-dev-dist aliases
+// The main package @lwc/sfdx-local-dev-dist provides its own type definitions
+declare module '@lwc/sfdx-local-dev-dist-65.0' {
+  export * from '@lwc/sfdx-local-dev-dist';
 }
 
-declare module '@lwc/lwc-dev-server-66.0' {
-  export * from '@lwc/lwc-dev-server';
+declare module '@lwc/sfdx-local-dev-dist-66.0' {
+  export * from '@lwc/sfdx-local-dev-dist';
 }
 
-declare module '@lwc/lwc-dev-server-67.0' {
-  export * from '@lwc/lwc-dev-server';
-}
-
-declare module '@lwc/sfdc-lwc-compiler-65.0' {
-  export * from '@lwc/sfdc-lwc-compiler';
-}
-
-declare module '@lwc/sfdc-lwc-compiler-66.0' {
-  export * from '@lwc/sfdc-lwc-compiler';
-}
-
-declare module '@lwc/sfdc-lwc-compiler-67.0' {
-  export * from '@lwc/sfdc-lwc-compiler';
-}
-
-declare module 'lwc-65.0' {
-  export * from 'lwc';
-}
-
-declare module 'lwc-66.0' {
-  export * from 'lwc';
-}
-
-declare module 'lwc-67.0' {
-  export * from 'lwc';
+declare module '@lwc/sfdx-local-dev-dist-67.0' {
+  export * from '@lwc/sfdx-local-dev-dist';
 }

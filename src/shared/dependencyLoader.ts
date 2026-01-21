@@ -24,9 +24,10 @@ type PackageJson = {
 const packageJson = packageJsonImport as unknown as PackageJson;
 
 /**
- * Type for dynamically loaded LWC server module
+ * Type for dynamically loaded LWC module from @lwc/sfdx-local-dev-dist
  */
-export type LwcDevServerModule = {
+export type LwcModule = {
+  [key: string]: unknown;
   startLwcDevServer: (config: unknown, logger: Logger) => Promise<unknown>;
   LWCServer: unknown;
   Workspace: unknown;
@@ -58,50 +59,23 @@ function resolveApiVersion(orgApiVersion: string): string {
 }
 
 /**
- * Internal helper to dynamically load an aliased dependency
+ * Loads the LWC module for the specified org API version
+ * Uses dynamic import to load the aliased package at runtime
+ *
+ * @param orgApiVersion - The API version from the org (e.g., '65.0.1')
+ * @returns The loaded module from @lwc/sfdx-local-dev-dist
  */
-async function loadDependency<T>(orgApiVersion: string, packagePrefix: string, friendlyName: string): Promise<T> {
+export async function loadLwcModule(orgApiVersion: string): Promise<LwcModule> {
   const version = resolveApiVersion(orgApiVersion);
-  const packageName = `${packagePrefix}${version}`;
+  const packageName = `@lwc/sfdx-local-dev-dist-${version}`;
 
   try {
-    return (await import(packageName)) as T;
+    return (await import(packageName)) as LwcModule;
   } catch (error) {
     throw new Error(
-      `Failed to load ${friendlyName} for version '${version}'. ` +
+      `Failed to load LWC module for version '${version}'. ` +
         `Package '${packageName}' could not be imported. ` +
         `Error: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
-}
-
-/**
- * Loads the LWC dev server module for the specified org API version
- * Uses dynamic import to load the aliased package at runtime
- *
- * @param orgApiVersion - The API version from the org (e.g., '65.0.1')
- * @returns The loaded module
- */
-export async function loadLwcDevServer(orgApiVersion: string): Promise<LwcDevServerModule> {
-  return loadDependency<LwcDevServerModule>(orgApiVersion, '@lwc/lwc-dev-server-', 'LWC dev server');
-}
-
-/**
- * Loads the LWC compiler module for the specified org API version
- *
- * @param orgApiVersion - The API version from the org (e.g., '65.0.1')
- * @returns The loaded compiler module
- */
-export async function loadLwcCompiler(orgApiVersion: string): Promise<unknown> {
-  return loadDependency<unknown>(orgApiVersion, '@lwc/sfdc-lwc-compiler-', 'LWC compiler');
-}
-
-/**
- * Loads the base LWC module for the specified org API version
- *
- * @param orgApiVersion - The API version from the org (e.g., '65.0.1')
- * @returns The loaded LWC module
- */
-export async function loadLwc(orgApiVersion: string): Promise<unknown> {
-  return loadDependency<unknown>(orgApiVersion, 'lwc-', 'LWC');
 }

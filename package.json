@@ -7,14 +7,10 @@
   "dependencies": {
     "@inquirer/prompts": "^5.3.8",
     "@inquirer/select": "^2.4.7",
-    "@lwc/lwc-dev-server": "~13.3.8",
-    "@lwc/lwc-dev-server-65.0": "npm:@lwc/lwc-dev-server@~13.2.x",
-    "@lwc/lwc-dev-server-66.0": "npm:@lwc/lwc-dev-server@~13.3.x",
-    "@lwc/lwc-dev-server-67.0": "npm:@lwc/lwc-dev-server@~13.3.x",
-    "@lwc/sfdc-lwc-compiler": "~13.3.8",
-    "@lwc/sfdc-lwc-compiler-65.0": "npm:@lwc/sfdc-lwc-compiler@~13.2.x",
-    "@lwc/sfdc-lwc-compiler-66.0": "npm:@lwc/sfdc-lwc-compiler@~13.3.x",
-    "@lwc/sfdc-lwc-compiler-67.0": "npm:@lwc/sfdc-lwc-compiler@~13.3.x",
+    "@lwc/sfdx-local-dev-dist": "13.3.11-alpha.0+3edb66b",
+    "@lwc/sfdx-local-dev-dist-65.0": "npm:@lwc/sfdx-local-dev-dist@13.3.11-alpha.0+3edb66b",
+    "@lwc/sfdx-local-dev-dist-66.0": "npm:@lwc/sfdx-local-dev-dist@13.3.11-alpha.0+3edb66b",
+    "@lwc/sfdx-local-dev-dist-67.0": "npm:@lwc/sfdx-local-dev-dist@13.3.11-alpha.0+3edb66b",
     "@lwrjs/api": "0.18.3",
     "@oclif/core": "^4.5.6",
     "@salesforce/core": "^8.24.0",
@@ -23,10 +19,6 @@
     "@salesforce/sf-plugins-core": "^11.2.4",
     "axios": "^1.13.2",
     "glob": "^13.0.0",
-    "lwc": "~8.27.0",
-    "lwc-65.0": "npm:lwc@~8.23.x",
-    "lwc-66.0": "npm:lwc@~8.24.x",
-    "lwc-67.0": "npm:lwc@~8.24.x",
     "node-fetch": "^3.3.2",
     "open": "^10.2.0",
     "xml2js": "^0.6.2"
@@ -243,23 +235,17 @@
   "apiVersionMetadata": {
     "65.0": {
       "dependencies": {
-        "@lwc/lwc-dev-server": "~13.2.x",
-        "@lwc/sfdc-lwc-compiler": "~13.2.x",
-        "lwc": "~8.23.x"
+        "@lwc/sfdx-local-dev-dist": "13.3.11-alpha.0+3edb66b"
       }
     },
     "66.0": {
       "dependencies": {
-        "@lwc/lwc-dev-server": "~13.3.x",
-        "@lwc/sfdc-lwc-compiler": "~13.3.x",
-        "lwc": "~8.24.x"
+        "@lwc/sfdx-local-dev-dist": "13.3.11-alpha.0+3edb66b"
       }
     },
     "67.0": {
       "dependencies": {
-        "@lwc/lwc-dev-server": "~13.3.x",
-        "@lwc/sfdc-lwc-compiler": "~13.3.x",
-        "lwc": "~8.24.x"
+        "@lwc/sfdx-local-dev-dist": "13.3.11-alpha.0+3edb66b"
       }
     }
   },
