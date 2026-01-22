@@ -90,14 +90,13 @@ export default class LightningDevApp extends SfCommand<void> {
 
     logger.debug('Initalizing preview connection and configuring local web server identity');
 
-    if (await MetaUtils.handleLocalDevEnablement(targetOrg.getConnection(apiVersion))) {
+    const connection = targetOrg.getConnection(apiVersion);
+
+    if (await MetaUtils.handleLocalDevEnablement(connection)) {
       this.log(sharedMessages.getMessage('localdev.enabled'));
     }
 
-    const { connection, ldpServerId, ldpServerToken } = await PreviewUtils.initializePreviewConnection(
-      targetOrg,
-      apiVersion
-    );
+    const { ldpServerId, ldpServerToken } = await PreviewUtils.initializePreviewConnection(connection);
 
     const platform = flags['device-type'] ?? (await PromptUtils.promptUserToSelectPlatform());
 

@@ -75,11 +75,13 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
     const targetOrg = flags['target-org'];
     const apiVersion = flags['api-version'];
 
-    if (await MetaUtils.handleLocalDevEnablement(targetOrg.getConnection(apiVersion))) {
+    const connection = targetOrg.getConnection(apiVersion);
+
+    if (await MetaUtils.handleLocalDevEnablement(connection)) {
       this.log(sharedMessages.getMessage('localdev.enabled'));
     }
 
-    const { ldpServerId, ldpServerToken } = await PreviewUtils.initializePreviewConnection(targetOrg, apiVersion);
+    const { ldpServerId, ldpServerToken } = await PreviewUtils.initializePreviewConnection(connection);
 
     logger.debug('Determining the next available port for Local Dev Server');
     const serverPorts = await PreviewUtils.getNextAvailablePorts();
@@ -164,9 +166,6 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
       componentName,
       targetOrgArg
     );
-
-    // Construct and log the full URL that will be opened
-    const connection = targetOrg.getConnection(apiVersion);
 
     // strip trailing slashes
     const instanceUrl = connection.instanceUrl.replace(/\/$/, '');

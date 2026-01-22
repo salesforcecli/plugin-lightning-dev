@@ -22,7 +22,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { Connection, Logger, Messages, Org } from '@salesforce/core';
+import { Connection, Logger, Messages } from '@salesforce/core';
 import {
   AndroidDeviceManager,
   AppleDeviceManager,
@@ -426,8 +426,7 @@ export class PreviewUtils {
     });
   }
 
-  public static async initializePreviewConnection(targetOrg: Org, apiVersion?: string): Promise<PreviewConnection> {
-    const connection = targetOrg.getConnection(apiVersion);
+  public static async initializePreviewConnection(connection: Connection): Promise<PreviewConnection> {
     const username = connection.getUsername();
     if (!username) {
       return Promise.reject(new Error(sharedMessages.getMessage('error.username')));
