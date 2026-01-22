@@ -40,4 +40,4 @@ Which Lightning Web Component would you like to preview (Use arrow keys)
 
 # component.enable-local-dev
 
-Local dev isn't enabled for this org. Enable it?
+Local Dev isn't enabled for this org. Enable it?

@@ -232,23 +232,22 @@ export class MetaUtils {
    */
   public static async handleLocalDevEnablement(connection: Connection): Promise<boolean | undefined> {
     const isLightningPreviewEnabled = await this.isLightningPreviewEnabled(connection);
+    const isAutoEnableLocalDevDefined = process.env.AUTO_ENABLE_LOCAL_DEV !== undefined;
+    const autoEnableLocalDev = process.env.AUTO_ENABLE_LOCAL_DEV === 'true';
 
+    // Cookies changes are only needed for VSCode
+    if (autoEnableLocalDev) {
+      await this.ensureFirstPartyCookiesNotRequired(connection);
+    }
     if (!isLightningPreviewEnabled) {
-      const autoEnableLocalDev = process.env.AUTO_ENABLE_LOCAL_DEV;
-
       // If executed via VSCode command, autoEnableLocalDev will contain the users choice, provided via UI.
       // Else, prompt the user on the command line.
-      const enableLocalDev =
-        autoEnableLocalDev !== undefined
-          ? autoEnableLocalDev === 'true'
-          : await PromptUtils.promptUserToEnableLocalDev();
+      const enableLocalDev = isAutoEnableLocalDevDefined
+        ? autoEnableLocalDev
+        : await PromptUtils.promptUserToEnableLocalDev();
 
       if (enableLocalDev) {
         await this.setLightningPreviewEnabled(connection, true);
-        // Cookies changes are only needed for VSCode
-        if (autoEnableLocalDev) {
-          await this.ensureFirstPartyCookiesNotRequired(connection);
-        }
         return true;
       } else {
         throw new Error(sharedMessages.getMessage('error.localdev.not.enabled'));
