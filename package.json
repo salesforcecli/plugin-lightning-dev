@@ -7,10 +7,9 @@
   "dependencies": {
     "@inquirer/prompts": "^5.3.8",
     "@inquirer/select": "^2.4.7",
-    "@lwc/sfdx-local-dev-dist": "13.3.11-alpha.0+3edb66b",
-    "@lwc/sfdx-local-dev-dist-65.0": "npm:@lwc/sfdx-local-dev-dist@13.3.11-alpha.0+3edb66b",
-    "@lwc/sfdx-local-dev-dist-66.0": "npm:@lwc/sfdx-local-dev-dist@13.3.11-alpha.0+3edb66b",
-    "@lwc/sfdx-local-dev-dist-67.0": "npm:@lwc/sfdx-local-dev-dist@13.3.11-alpha.0+3edb66b",
+    "@lwc/sfdx-local-dev-dist": "~13.3.12",
+    "@lwc/sfdx-local-dev-dist-66.0": "npm:@lwc/sfdx-local-dev-dist@~13.2.22",
+    "@lwc/sfdx-local-dev-dist-67.0": "npm:@lwc/sfdx-local-dev-dist@~13.3.12",
     "@lwrjs/api": "0.18.3",
     "@oclif/core": "^4.5.6",
     "@salesforce/core": "^8.24.0",
@@ -233,19 +232,14 @@
     }
   },
   "apiVersionMetadata": {
-    "65.0": {
-      "dependencies": {
-        "@lwc/sfdx-local-dev-dist": "13.3.11-alpha.0+3edb66b"
-      }
-    },
     "66.0": {
       "dependencies": {
-        "@lwc/sfdx-local-dev-dist": "13.3.11-alpha.0+3edb66b"
+        "@lwc/sfdx-local-dev-dist": "~13.2.22"
       }
     },
     "67.0": {
       "dependencies": {
-        "@lwc/sfdx-local-dev-dist": "13.3.11-alpha.0+3edb66b"
+        "@lwc/sfdx-local-dev-dist": "~13.3.11"
       }
     }
   },
