@@ -1,3 +1,9 @@
+## [6.0.6](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.0.5...6.0.6) (2026-01-23)
+
+### Bug Fixes
+
+- **deps:** bump lodash from 4.17.21 to 4.17.23 ([#603](https://github.com/salesforcecli/plugin-lightning-dev/issues/603)) ([8c249f3](https://github.com/salesforcecli/plugin-lightning-dev/commit/8c249f3cb0de287b7d87d330e60441cf8089be5c))
+
 ## [6.0.5](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.0.4...6.0.5) (2026-01-18)
 
 ### Bug Fixes
