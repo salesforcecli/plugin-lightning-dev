@@ -1,3 +1,9 @@
+## [6.0.7](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.0.6...6.0.7) (2026-01-25)
+
+### Bug Fixes
+
+- **deps:** bump @lwrjs/api from 0.21.4 to 0.21.5 ([#606](https://github.com/salesforcecli/plugin-lightning-dev/issues/606)) ([02237da](https://github.com/salesforcecli/plugin-lightning-dev/commit/02237da03567c9ebc59517d8bdcf4d822fafd207))
+
 ## [6.0.6](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.0.5...6.0.6) (2026-01-23)
 
 ### Bug Fixes
