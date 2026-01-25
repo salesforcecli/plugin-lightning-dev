@@ -1,3 +1,9 @@
+## [6.0.9](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.0.8...6.0.9) (2026-01-25)
+
+### Bug Fixes
+
+- **deps:** bump the lwc-packages group with 3 updates ([#604](https://github.com/salesforcecli/plugin-lightning-dev/issues/604)) ([00ec369](https://github.com/salesforcecli/plugin-lightning-dev/commit/00ec369fb1cf4fa9f73637e28dc44e3584b12c15))
+
 ## [6.0.8](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.0.7...6.0.8) (2026-01-25)
 
 ### Bug Fixes
