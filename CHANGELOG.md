@@ -1,3 +1,9 @@
+## [6.0.8](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.0.7...6.0.8) (2026-01-25)
+
+### Bug Fixes
+
+- **deps:** bump @salesforce/core from 8.24.3 to 8.25.0 ([#605](https://github.com/salesforcecli/plugin-lightning-dev/issues/605)) ([d02eaeb](https://github.com/salesforcecli/plugin-lightning-dev/commit/d02eaebc189366302a78dc36d06ddf78d3efa1fd))
+
 ## [6.0.7](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.0.6...6.0.7) (2026-01-25)
 
 ### Bug Fixes
