@@ -181,16 +181,7 @@ export default class LightningDevSite extends SfCommand<void> {
     this.log(`Local Dev Server url is ${ldpServerUrl}`);
 
     const logger = await Logger.child(this.ctor.name);
-    await startLWCServer(
-      logger,
-      connection,
-      sfdxProjectRootPath,
-      ldpServerToken,
-      Platform.desktop,
-      serverPorts,
-      undefined,
-      undefined,
-    );
+    await startLWCServer(logger, connection, sfdxProjectRootPath, ldpServerToken, Platform.desktop, serverPorts);
     const url = new URL(previewUrl);
     url.searchParams.set('aura.ldpServerUrl', ldpServerUrl);
     url.searchParams.set('aura.ldpServerId', ldpServerId);

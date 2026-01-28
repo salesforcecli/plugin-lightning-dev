@@ -159,16 +159,7 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
 
     const conn = targetOrg.getConnection(apiVersion);
 
-    await startLWCServer(
-      logger,
-      conn,
-      sfdxProjectRootPath,
-      ldpServerToken,
-      Platform.desktop,
-      serverPorts,
-      undefined,
-      undefined,
-    );
+    await startLWCServer(logger, conn, sfdxProjectRootPath, ldpServerToken, Platform.desktop, serverPorts);
 
     const targetOrgArg = PreviewUtils.getTargetOrgFromArguments(this.argv);
     const launchArguments = PreviewUtils.generateComponentPreviewLaunchArguments(

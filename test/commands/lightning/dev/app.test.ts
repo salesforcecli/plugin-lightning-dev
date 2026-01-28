@@ -139,7 +139,6 @@ describe('lightning dev app', () => {
     $$.SANDBOX.stub(Connection.prototype, 'getUsername').returns(testUsername);
     $$.SANDBOX.stub(PreviewUtils, 'getOrCreateAppServerIdentity').resolves(testIdentityData);
     $$.SANDBOX.stub(OrgUtils, 'isLocalDevEnabled').resolves(true);
-    $$.SANDBOX.stub(OrgUtils, 'ensureMatchingAPIVersion').returns();
     $$.SANDBOX.stub(MetaUtils, 'handleLocalDevEnablement').resolves(undefined);
     // Stub prompt function as safety net to prevent hanging if handleLocalDevEnablement stub is removed
     $$.SANDBOX.stub(PromptUtils, 'promptUserToEnableLocalDev').resolves(true);

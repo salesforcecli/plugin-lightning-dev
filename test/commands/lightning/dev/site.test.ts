@@ -21,7 +21,6 @@ import { expect } from 'chai';
 import esmock from 'esmock';
 import sinon from 'sinon';
 import LightningDevSite from '../../../../src/commands/lightning/dev/site.js';
-import { OrgUtils } from '../../../../src/shared/orgUtils.js';
 import { ExperienceSite } from '../../../../src/shared/experience/expSite.js';
 import { MetaUtils } from '../../../../src/shared/metaUtils.js';
 import { PreviewUtils } from '../../../../src/shared/previewUtils.js';
@@ -83,7 +82,6 @@ describe('lightning dev site', () => {
     $$.SANDBOX.stub(SfConfig.prototype, 'set');
     $$.SANDBOX.stub(SfConfig.prototype, 'write').resolves();
     $$.SANDBOX.stub(Connection.prototype, 'getUsername').returns(testUsername);
-    $$.SANDBOX.stub(OrgUtils, 'ensureMatchingAPIVersion').returns();
     $$.SANDBOX.stub(ExperienceSite, 'getAllExpSites').resolves(['TestSite']);
     $$.SANDBOX.stub(ExperienceSite.prototype, 'getPreviewUrl').resolves('https://test.salesforce.com/sites/TestSite');
     $$.SANDBOX.stub(ExperienceSite.prototype, 'isSiteSetup').resolves(true);

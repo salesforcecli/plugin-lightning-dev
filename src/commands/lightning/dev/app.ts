@@ -173,8 +173,6 @@ export default class LightningDevApp extends SfCommand<void> {
       ldpServerToken,
       Platform.desktop,
       serverPorts,
-      undefined,
-      undefined,
     );
 
     // Open the browser and navigate to the right page
@@ -291,7 +289,6 @@ export default class LightningDevApp extends SfCommand<void> {
         platform,
         serverPorts,
         certData,
-        undefined,
       );
 
       // Launch the native app for previewing (launchMobileApp will show its own spinner)

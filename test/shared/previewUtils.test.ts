@@ -371,7 +371,6 @@ describe('previewUtils', () => {
       getUsername: () => testUsername,
     } as unknown as Connection;
 
-    $$.SANDBOX.stub(OrgUtils, 'ensureMatchingAPIVersion').returns();
     $$.SANDBOX.stub(PreviewUtils, 'getOrCreateAppServerIdentity').rejects(
       new Error(sharedMessages.getMessage('error.localdev.not.enabled')),
     );

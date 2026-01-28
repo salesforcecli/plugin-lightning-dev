@@ -431,9 +431,6 @@ export class PreviewUtils {
       return Promise.reject(new Error(sharedMessages.getMessage('error.username')));
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- OrgUtils.ensureMatchingAPIVersion is typed in orgUtils
-    OrgUtils.ensureMatchingAPIVersion(connection);
-
     const appServerIdentity = await PreviewUtils.getOrCreateAppServerIdentity(connection);
     const ldpServerToken = appServerIdentity.identityToken;
     const ldpServerId = appServerIdentity.usernameToServerEntityIdMap[username];

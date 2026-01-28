@@ -14,15 +14,7 @@
  * limitations under the License.
  */
 
-import { Connection, Messages } from '@salesforce/core';
-import packageJsonImport from '../../package.json' with { type: 'json' };
-
-Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
-const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'shared.utils');
-
-type PackageJsonWithApiVersionMetadata = {
-  apiVersionMetadata?: Record<string, unknown>;
-};
+import { Connection } from '@salesforce/core';
 
 type LightningPreviewMetadataResponse = {
   enableLightningPreviewPref?: string;
@@ -132,28 +124,5 @@ export class OrgUtils {
       return result.id;
     }
     throw new Error('Could not save the app server identity token to the org.');
-  }
-
-  /**
-   * Ensures the org's API version is supported by this plugin (per apiVersionMetadata in package.json).
-   *
-   * @param connection the connection to the org
-   */
-  public static ensureMatchingAPIVersion(connection: Connection): void {
-    if (process.env.SKIP_API_VERSION_CHECK === 'true') {
-      return;
-    }
-    const pkg = packageJsonImport as unknown as PackageJsonWithApiVersionMetadata;
-    const metadata = pkg.apiVersionMetadata;
-    if (!metadata) {
-      return;
-    }
-    const supportedVersions = Object.keys(metadata).sort();
-    const orgVersion = String(connection.version ?? '');
-    if (!orgVersion || supportedVersions.includes(orgVersion)) {
-      return;
-    }
-    const supportedList = supportedVersions.join(', ');
-    throw new Error(messages.getMessage('error.org.api-unsupported', [orgVersion, supportedList]));
   }
 }
