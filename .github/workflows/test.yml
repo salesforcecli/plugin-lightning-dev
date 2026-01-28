@@ -14,7 +14,7 @@ jobs:
     needs: yarn-lockfile-check
     uses: salesforcecli/github-workflows/.github/workflows/unitTestsLinux.yml@main
     with:
-      skipTsDepCheck: true
+      skipTsDepCheck: false
   windows-unit-tests:
     needs: linux-unit-tests
     uses: salesforcecli/github-workflows/.github/workflows/unitTestsWindows.yml@main
