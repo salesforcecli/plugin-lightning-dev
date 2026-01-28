@@ -8,7 +8,7 @@
     "@inquirer/prompts": "^5.3.8",
     "@inquirer/select": "^2.4.7",
     "@lwc/sfdx-local-dev-dist": "~13.3.16-alpha.0",
-    "@lwc/sfdx-local-dev-dist-66.0": "npm:@lwc/sfdx-local-dev-dist@~13.2.22",
+    "@lwc/sfdx-local-dev-dist-66.0": "npm:@lwc/sfdx-local-dev-dist@~13.2.23-alpha.0",
     "@lwc/sfdx-local-dev-dist-67.0": "npm:@lwc/sfdx-local-dev-dist@~13.3.16-alpha.0",
     "@lwrjs/api": "0.18.3",
     "@oclif/core": "^4.5.6",
