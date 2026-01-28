@@ -1,9 +1,14 @@
 import fs from 'node:fs';
 import semver from 'semver';
 
+const SFDX_LOCAL_DEV_DIST_BASE = '@lwc/sfdx-local-dev-dist';
+const SFDX_LOCAL_DEV_DIST_PATTERN = /^@lwc\/sfdx-local-dev-dist-([\d.]+)$/;
+
 /**
  * This script ensures that the aliased dependencies in package.json stay in sync
  * with the versions defined in apiVersionMetadata.
+ * It also ensures @lwc/sfdx-local-dev-dist matches the version of the highest-numbered
+ * @lwc/sfdx-local-dev-dist-<number> alias.
  */
 
 // Read package.json
@@ -16,6 +21,34 @@ if (!apiVersionMetadata) {
 }
 
 let hasError = false;
+
+// Check that @lwc/sfdx-local-dev-dist version matches the highest-numbered alias
+const baseVersion = packageJson.dependencies[SFDX_LOCAL_DEV_DIST_BASE];
+if (baseVersion) {
+  const aliasedDeps = Object.keys(packageJson.dependencies).filter((key) => SFDX_LOCAL_DEV_DIST_PATTERN.test(key));
+  if (aliasedDeps.length > 0) {
+    const highestAlias = aliasedDeps
+      .map((key) => {
+        const m = key.match(SFDX_LOCAL_DEV_DIST_PATTERN);
+        return { key, number: m ? parseFloat(m[1]) : -1 };
+      })
+      .sort((a, b) => b.number - a.number)[0];
+
+    const highestAliasValue = packageJson.dependencies[highestAlias.key];
+    const highestMatch = highestAliasValue?.match(/@([^@]+)$/);
+    const highestRange = highestMatch ? highestMatch[1] : null;
+
+    if (!highestRange) {
+      console.error(`Error: Could not parse version range from '${highestAlias.key}': ${highestAliasValue}`);
+      hasError = true;
+    } else if (baseVersion !== highestRange) {
+      console.error(
+        `Error: Version of '${SFDX_LOCAL_DEV_DIST_BASE}' (${baseVersion}) must be the same as the version of the highest-numbered alias '${highestAlias.key}' (${highestRange}).`,
+      );
+      hasError = true;
+    }
+  }
+}
 
 // Iterate through each API version defined in metadata
 for (const [apiVersion, metadata] of Object.entries(apiVersionMetadata)) {
