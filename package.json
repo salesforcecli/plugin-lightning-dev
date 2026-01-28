@@ -241,7 +241,7 @@
     },
     "66.0": {
       "dependencies": {
-        "@lwc/sfdx-local-dev-dist": "~13.2.22"
+        "@lwc/sfdx-local-dev-dist": "~13.2.23"
       }
     },
     "67.0": {
