@@ -69,6 +69,7 @@ export default class LightningDevApp extends SfCommand<void> {
       summary: messages.getMessage('flags.device-id.summary'),
       char: 'i',
     }),
+    'api-version': Flags.orgApiVersion(),
   };
 
   public async run(): Promise<void> {
@@ -78,16 +79,7 @@ export default class LightningDevApp extends SfCommand<void> {
     const targetOrg = flags['target-org'];
     const appName = flags['name'];
     const deviceId = flags['device-id'];
-
-    // Auto enable local dev
-    if (process.env.AUTO_ENABLE_LOCAL_DEV === 'true') {
-      try {
-        await MetaUtils.ensureLightningPreviewEnabled(targetOrg.getConnection(undefined));
-        await MetaUtils.ensureFirstPartyCookiesNotRequired(targetOrg.getConnection(undefined));
-      } catch (error) {
-        this.log('Error autoenabling local dev', error);
-      }
-    }
+    const apiVersion = flags['api-version'];
 
     let sfdxProjectRootPath = '';
     try {
@@ -97,7 +89,14 @@ export default class LightningDevApp extends SfCommand<void> {
     }
 
     logger.debug('Initalizing preview connection and configuring local web server identity');
-    const { connection, ldpServerId, ldpServerToken } = await PreviewUtils.initializePreviewConnection(targetOrg);
+
+    const connection = targetOrg.getConnection(apiVersion);
+
+    if (await MetaUtils.handleLocalDevEnablement(connection)) {
+      this.log(sharedMessages.getMessage('localdev.enabled'));
+    }
+
+    const { ldpServerId, ldpServerToken } = await PreviewUtils.initializePreviewConnection(connection);
 
     const platform = flags['device-type'] ?? (await PromptUtils.promptUserToSelectPlatform());
 

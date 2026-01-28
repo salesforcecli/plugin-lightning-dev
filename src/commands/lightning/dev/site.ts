@@ -19,7 +19,6 @@ import { Connection, Logger, Messages, SfProject } from '@salesforce/core';
 import { Platform } from '@salesforce/lwc-dev-mobile-core';
 import { expDev, SitesLocalDevOptions, setupDev } from '@lwrjs/api';
 import open from 'open';
-import { OrgUtils } from '../../../shared/orgUtils.js';
 import { PromptUtils } from '../../../shared/promptUtils.js';
 import { ExperienceSite } from '../../../shared/experience/expSite.js';
 import { PreviewUtils } from '../../../shared/previewUtils.js';
@@ -54,6 +53,7 @@ export default class LightningDevSite extends SfCommand<void> {
       summary: messages.getMessage('flags.ssr.summary'),
       default: false,
     }),
+    'api-version': Flags.orgApiVersion(),
   };
 
   public async run(): Promise<void> {
@@ -62,25 +62,15 @@ export default class LightningDevSite extends SfCommand<void> {
     try {
       const org = flags['target-org'];
       const getLatest = flags['get-latest'];
+      const apiVersion = flags['api-version'];
       const guest = flags.guest;
       const ssr = flags.ssr;
       let siteName = flags.name;
 
-      const connection = org.getConnection(undefined);
+      const connection = org.getConnection(apiVersion);
 
-      // Auto enable local dev
-      if (process.env.AUTO_ENABLE_LOCAL_DEV === 'true') {
-        try {
-          await MetaUtils.ensureLightningPreviewEnabled(connection);
-          await MetaUtils.ensureFirstPartyCookiesNotRequired(connection);
-        } catch (error) {
-          this.log('Error autoenabling local dev', error);
-        }
-      }
-
-      const localDevEnabled = await OrgUtils.isLocalDevEnabled(connection);
-      if (!localDevEnabled) {
-        throw new Error(sharedMessages.getMessage('error.localdev.not.enabled'));
+      if (await MetaUtils.handleLocalDevEnablement(connection)) {
+        this.log(sharedMessages.getMessage('localdev.enabled'));
       }
 
       // If user doesn't specify a site, prompt the user for one

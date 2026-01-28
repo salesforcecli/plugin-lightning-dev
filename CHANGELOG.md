@@ -1,3 +1,57 @@
+# [6.1.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.0.9...6.1.0) (2026-01-28)
+
+### Features
+
+- prompt to enable local dev @W-20406426 [#595](https://github.com/salesforcecli/plugin-lightning-dev/issues/595) ([#597](https://github.com/salesforcecli/plugin-lightning-dev/issues/597)) ([a653742](https://github.com/salesforcecli/plugin-lightning-dev/commit/a653742c8864fa3cfe73dff1cdc39de594163684))
+
+## [6.0.9](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.0.8...6.0.9) (2026-01-25)
+
+### Bug Fixes
+
+- **deps:** bump the lwc-packages group with 3 updates ([#604](https://github.com/salesforcecli/plugin-lightning-dev/issues/604)) ([00ec369](https://github.com/salesforcecli/plugin-lightning-dev/commit/00ec369fb1cf4fa9f73637e28dc44e3584b12c15))
+
+## [6.0.8](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.0.7...6.0.8) (2026-01-25)
+
+### Bug Fixes
+
+- **deps:** bump @salesforce/core from 8.24.3 to 8.25.0 ([#605](https://github.com/salesforcecli/plugin-lightning-dev/issues/605)) ([d02eaeb](https://github.com/salesforcecli/plugin-lightning-dev/commit/d02eaebc189366302a78dc36d06ddf78d3efa1fd))
+
+## [6.0.7](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.0.6...6.0.7) (2026-01-25)
+
+### Bug Fixes
+
+- **deps:** bump @lwrjs/api from 0.21.4 to 0.21.5 ([#606](https://github.com/salesforcecli/plugin-lightning-dev/issues/606)) ([02237da](https://github.com/salesforcecli/plugin-lightning-dev/commit/02237da03567c9ebc59517d8bdcf4d822fafd207))
+
+## [6.0.6](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.0.5...6.0.6) (2026-01-23)
+
+### Bug Fixes
+
+- **deps:** bump lodash from 4.17.21 to 4.17.23 ([#603](https://github.com/salesforcecli/plugin-lightning-dev/issues/603)) ([8c249f3](https://github.com/salesforcecli/plugin-lightning-dev/commit/8c249f3cb0de287b7d87d330e60441cf8089be5c))
+
+## [6.0.5](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.0.4...6.0.5) (2026-01-18)
+
+### Bug Fixes
+
+- **deps:** bump the lwc-packages group with 3 updates ([#599](https://github.com/salesforcecli/plugin-lightning-dev/issues/599)) ([93715b9](https://github.com/salesforcecli/plugin-lightning-dev/commit/93715b9b927f7cec07094e725bd1f75c5421a9a4))
+
+## [6.0.4](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.0.3...6.0.4) (2026-01-18)
+
+### Bug Fixes
+
+- **deps:** bump @lwrjs/api from 0.18.3 to 0.21.4 ([#600](https://github.com/salesforcecli/plugin-lightning-dev/issues/600)) ([e355c75](https://github.com/salesforcecli/plugin-lightning-dev/commit/e355c751681f35f2d1e9ecae8c555ed0d61d5f63))
+
+## [6.0.3](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.0.2...6.0.3) (2026-01-18)
+
+### Bug Fixes
+
+- **deps:** bump @salesforce/core from 8.24.0 to 8.24.3 ([#601](https://github.com/salesforcecli/plugin-lightning-dev/issues/601)) ([ee11b80](https://github.com/salesforcecli/plugin-lightning-dev/commit/ee11b8060e760850be260e829825664373bd08ae))
+
+## [6.0.2](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.0.1...6.0.2) (2026-01-15)
+
+### Bug Fixes
+
+- **deps:** bump undici from 6.21.2 to 6.23.0 ([#598](https://github.com/salesforcecli/plugin-lightning-dev/issues/598)) ([d08a87d](https://github.com/salesforcecli/plugin-lightning-dev/commit/d08a87daad7f516c70398fdb50a8fb27b34aa75c))
+
 ## [6.0.1](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.0.0...6.0.1) (2026-01-10)
 
 ### Bug Fixes

@@ -37,3 +37,7 @@ Unable to enumerate a list of available devices.
 # component.select
 
 Which Lightning Web Component would you like to preview (Use arrow keys)
+
+# component.enable-local-dev
+
+Local Dev isn't enabled for this org. Enable it?

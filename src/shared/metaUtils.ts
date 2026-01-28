@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { Connection, Logger } from '@salesforce/core';
+import { Connection, Logger, Messages } from '@salesforce/core';
+import { PromptUtils } from './promptUtils.js';
 
 type LightningExperienceSettingsMetadata = {
   [key: string]: unknown;
@@ -34,6 +35,8 @@ type MetadataUpdateResult = {
   errors?: Array<{ message: string }>;
 };
 
+const sharedMessages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'shared.utils');
+
 /**
  * Utility class for managing Salesforce metadata settings related to Lightning Development.
  */
@@ -48,7 +51,7 @@ export class MetaUtils {
    * @throws Error if unable to retrieve the metadata
    */
   public static async getLightningExperienceSettings(
-    connection: Connection
+    connection: Connection,
   ): Promise<LightningExperienceSettingsMetadata> {
     this.logger.debug('Retrieving Lightning Experience Settings metadata');
 
@@ -173,7 +176,7 @@ export class MetaUtils {
    */
   public static async setMyDomainFirstPartyCookieRequirement(
     connection: Connection,
-    requireFirstPartyCookies: boolean
+    requireFirstPartyCookies: boolean,
   ): Promise<void> {
     this.logger.debug(`Setting first-party cookie requirement to: ${requireFirstPartyCookies}`);
 
@@ -200,25 +203,6 @@ export class MetaUtils {
   }
 
   /**
-   * Ensures Lightning Preview is enabled for the org. If it's not enabled, this method will enable it.
-   *
-   * @param connection the connection to the org
-   * @returns boolean indicating whether Lightning Preview was already enabled (true) or had to be enabled (false)
-   */
-  public static async ensureLightningPreviewEnabled(connection: Connection): Promise<boolean> {
-    const isEnabled = await this.isLightningPreviewEnabled(connection);
-
-    if (!isEnabled) {
-      this.logger.info('Lightning Preview is not enabled. Enabling it now...');
-      await this.setLightningPreviewEnabled(connection, true);
-      return false;
-    }
-
-    this.logger.debug('Lightning Preview is already enabled');
-    return true;
-  }
-
-  /**
    * Ensures first-party cookies are not required for the org. If they are required, this method will disable the requirement.
    *
    * @param connection the connection to the org
@@ -235,5 +219,39 @@ export class MetaUtils {
 
     this.logger.debug('First-party cookies are not required');
     return true;
+  }
+
+  /**
+   * Enables local dev if required and permitted. If executed via VSCode command
+   * the user's response is already assigned to AUTO_ENABLE_LOCAL_DEV and it will be used.
+   * If executed via command line, this method will prompt the user.
+   *
+   * @param connection the connection to the org
+   * @returns true if enabled
+   * @throws local dev not enabled error if not enabled
+   */
+  public static async handleLocalDevEnablement(connection: Connection): Promise<boolean | undefined> {
+    const isLightningPreviewEnabled = await this.isLightningPreviewEnabled(connection);
+    const isAutoEnableLocalDevDefined = process.env.AUTO_ENABLE_LOCAL_DEV !== undefined;
+    const autoEnableLocalDev = process.env.AUTO_ENABLE_LOCAL_DEV === 'true';
+
+    // Cookies changes are only needed for VSCode
+    if (autoEnableLocalDev) {
+      await this.ensureFirstPartyCookiesNotRequired(connection);
+    }
+    if (!isLightningPreviewEnabled) {
+      // If executed via VSCode command, autoEnableLocalDev will contain the users choice, provided via UI.
+      // Else, prompt the user on the command line.
+      const enableLocalDev = isAutoEnableLocalDevDefined
+        ? autoEnableLocalDev
+        : await PromptUtils.promptUserToEnableLocalDev();
+
+      if (enableLocalDev) {
+        await this.setLightningPreviewEnabled(connection, true);
+        return true;
+      } else {
+        throw new Error(sharedMessages.getMessage('error.localdev.not.enabled'));
+      }
+    }
   }
 }

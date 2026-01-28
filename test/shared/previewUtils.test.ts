@@ -31,7 +31,7 @@ import {
   SSLCertificateData,
   Version,
 } from '@salesforce/lwc-dev-mobile-core';
-import { AuthInfo, Connection, Org } from '@salesforce/core';
+import { AuthInfo, Connection, Messages } from '@salesforce/core';
 import { PreviewUtils as LwcDevMobileCorePreviewUtils } from '@salesforce/lwc-dev-mobile-core';
 import {
   ConfigUtils,
@@ -40,6 +40,9 @@ import {
 } from '../../src/shared/configUtils.js';
 import { PreviewUtils } from '../../src/shared/previewUtils.js';
 import { OrgUtils } from '../../src/shared/orgUtils.js';
+
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const sharedMessages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'shared.utils');
 
 describe('previewUtils', () => {
   const $$ = new TestContext();
@@ -335,32 +338,28 @@ describe('previewUtils', () => {
     expect(generateWebSocketUrlStub.calledOnceWith(platform, ports, {} as any)).to.be.true;
   });
 
-  it('initializePreviewConnection succeeds with valid org', async () => {
-    const mockOrg = {
-      getConnection: () => ({
-        getUsername: () => testUsername,
-      }),
-    } as Org;
+  it('initializePreviewConnection succeeds with valid connection', async () => {
+    const mockConnection = {
+      getUsername: () => testUsername,
+    } as unknown as Connection;
 
     $$.SANDBOX.stub(OrgUtils, 'isLocalDevEnabled').resolves(true);
     $$.SANDBOX.stub(PreviewUtils, 'getOrCreateAppServerIdentity').resolves(testIdentityData);
 
-    const result = await PreviewUtils.initializePreviewConnection(mockOrg);
+    const result = await PreviewUtils.initializePreviewConnection(mockConnection);
 
     expect(result.ldpServerId).to.equal(testLdpServerId);
     expect(result.ldpServerToken).to.equal(testLdpServerToken);
-    expect(result.connection).to.exist;
+    expect(result.connection).to.equal(mockConnection);
   });
 
   it('initializePreviewConnection rejects when username is not found', async () => {
-    const mockOrg = {
-      getConnection: () => ({
-        getUsername: () => undefined,
-      }),
-    } as Org;
+    const mockConnection = {
+      getUsername: () => undefined,
+    } as unknown as Connection;
 
     try {
-      await PreviewUtils.initializePreviewConnection(mockOrg);
+      await PreviewUtils.initializePreviewConnection(mockConnection);
       expect.fail('Should have thrown an error');
     } catch (error) {
       expect((error as Error).message).to.include('Org must have a valid user');
@@ -368,16 +367,17 @@ describe('previewUtils', () => {
   });
 
   it('initializePreviewConnection rejects when local dev is not enabled', async () => {
-    const mockOrg = {
-      getConnection: () => ({
-        getUsername: () => testUsername,
-      }),
-    } as Org;
+    const mockConnection = {
+      getUsername: () => testUsername,
+    } as unknown as Connection;
 
-    $$.SANDBOX.stub(OrgUtils, 'isLocalDevEnabled').resolves(false);
+    $$.SANDBOX.stub(OrgUtils, 'ensureMatchingAPIVersion').returns();
+    $$.SANDBOX.stub(PreviewUtils, 'getOrCreateAppServerIdentity').rejects(
+      new Error(sharedMessages.getMessage('error.localdev.not.enabled')),
+    );
 
     try {
-      await PreviewUtils.initializePreviewConnection(mockOrg);
+      await PreviewUtils.initializePreviewConnection(mockConnection);
       expect.fail('Should have thrown an error');
     } catch (error) {
       expect((error as Error).message).to.include('Local Dev is not enabled');
@@ -385,11 +385,9 @@ describe('previewUtils', () => {
   });
 
   it('initializePreviewConnection rejects when ldpServerId is not found', async () => {
-    const mockOrg = {
-      getConnection: () => ({
-        getUsername: () => testUsername,
-      }),
-    } as Org;
+    const mockConnection = {
+      getUsername: () => testUsername,
+    } as unknown as Connection;
 
     const identityDataWithoutEntityId = {
       identityToken: testLdpServerToken,
@@ -400,7 +398,7 @@ describe('previewUtils', () => {
     $$.SANDBOX.stub(PreviewUtils, 'getOrCreateAppServerIdentity').resolves(identityDataWithoutEntityId);
 
     try {
-      await PreviewUtils.initializePreviewConnection(mockOrg);
+      await PreviewUtils.initializePreviewConnection(mockConnection);
       expect.fail('Should have thrown an error');
     } catch (error) {
       expect((error as Error).message).to.include('entity ID');

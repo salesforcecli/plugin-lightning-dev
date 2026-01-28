@@ -75,7 +75,7 @@ export class PromptUtils {
 
   public static async promptUserToSelectMobileDevice(
     platform: Platform.ios | Platform.android,
-    logger?: Logger
+    logger?: Logger,
   ): Promise<BaseDevice> {
     const availableDevices =
       platform === Platform.ios
@@ -112,6 +112,13 @@ export class PromptUtils {
     });
 
     return response;
+  }
+
+  public static async promptUserToEnableLocalDev(): Promise<boolean> {
+    return confirm({
+      message: messages.getMessage('component.enable-local-dev'),
+      default: true,
+    });
   }
 
   // returns the shorthand version of a Version object (eg. 17.0.0 => 17, 17.4.0 => 17.4, 17.4.1 => 17.4.1)

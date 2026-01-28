@@ -22,7 +22,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { Connection, Logger, Messages, Org } from '@salesforce/core';
+import { Connection, Logger, Messages } from '@salesforce/core';
 import {
   AndroidDeviceManager,
   AppleDeviceManager,
@@ -425,17 +425,14 @@ export class PreviewUtils {
     });
   }
 
-  public static async initializePreviewConnection(targetOrg: Org): Promise<PreviewConnection> {
-    const connection = targetOrg.getConnection(undefined);
+  public static async initializePreviewConnection(connection: Connection): Promise<PreviewConnection> {
     const username = connection.getUsername();
     if (!username) {
       return Promise.reject(new Error(sharedMessages.getMessage('error.username')));
     }
 
-    const localDevEnabled = await OrgUtils.isLocalDevEnabled(connection);
-    if (!localDevEnabled) {
-      return Promise.reject(new Error(sharedMessages.getMessage('error.localdev.not.enabled')));
-    }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- OrgUtils.ensureMatchingAPIVersion is typed in orgUtils
+    OrgUtils.ensureMatchingAPIVersion(connection);
 
     const appServerIdentity = await PreviewUtils.getOrCreateAppServerIdentity(connection);
     const ldpServerToken = appServerIdentity.identityToken;
