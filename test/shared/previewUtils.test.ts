@@ -73,12 +73,7 @@ describe('previewUtils', () => {
   };
   testIdentityData.usernameToServerEntityIdMap[testUsername] = testLdpServerId;
 
-  beforeEach(() => {
-    process.env.SKIP_API_VERSION_CHECK = 'true';
-  });
-
   afterEach(() => {
-    delete process.env.SKIP_API_VERSION_CHECK;
     $$.restore();
   });
 

@@ -22,6 +22,19 @@ describe('DependencyLoader', () => {
     expect(typeof loadLwcModule).to.equal('function');
   });
 
+  it('throws when loading aliased package for unsupported API version (alias does not exist)', async () => {
+    const unsupportedVersion = '99.0';
+    try {
+      await loadLwcModule(unsupportedVersion);
+      expect.fail('Should have thrown for unsupported API version');
+    } catch (error) {
+      const err = error as Error;
+      expect(err).to.be.an('Error');
+      expect(err.message).to.include(unsupportedVersion);
+      expect(err.message).to.include('supports only');
+    }
+  });
+
   it('loads the aliased package (real import call)', async () => {
     // This will actually try to call import() which should work since we ran yarn install.
     // However, loading LWC modules in Node might still trigger ReferenceErrors if browser globals are missing.

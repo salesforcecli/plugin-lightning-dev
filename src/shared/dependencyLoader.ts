@@ -15,7 +15,11 @@
  */
 
 import type { Logger } from '@salesforce/core';
+import { Messages } from '@salesforce/core';
 import packageJsonImport from '../../package.json' with { type: 'json' };
+
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const sharedMessages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'shared.utils');
 
 type PackageJson = {
   apiVersionMetadata: Record<string, unknown>;
@@ -55,7 +59,7 @@ function resolveApiVersion(orgApiVersion: string): string {
     return orgApiVersion;
   }
 
-  throw new Error(`Unsupported org API version: ${orgApiVersion}. This plugin supports: ${getSupportedVersionsList()}`);
+  throw new Error(sharedMessages.getMessage('error.org.api-unsupported', [orgApiVersion, getSupportedVersionsList()]));
 }
 
 /**
