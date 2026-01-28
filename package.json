@@ -1,7 +1,7 @@
 {
   "name": "@salesforce/plugin-lightning-dev",
   "description": "Lightning development tools for LEX, Mobile, and Experience Sites",
-  "version": "6.0.9",
+  "version": "6.1.0",
   "author": "Salesforce",
   "bugs": "https://github.com/forcedotcom/cli/issues",
   "dependencies": {

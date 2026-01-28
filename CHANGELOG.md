@@ -1,3 +1,9 @@
+# [6.1.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.0.9...6.1.0) (2026-01-28)
+
+### Features
+
+- prompt to enable local dev @W-20406426 [#595](https://github.com/salesforcecli/plugin-lightning-dev/issues/595) ([#597](https://github.com/salesforcecli/plugin-lightning-dev/issues/597)) ([a653742](https://github.com/salesforcecli/plugin-lightning-dev/commit/a653742c8864fa3cfe73dff1cdc39de594163684))
+
 ## [6.0.9](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.0.8...6.0.9) (2026-01-25)
 
 ### Bug Fixes
