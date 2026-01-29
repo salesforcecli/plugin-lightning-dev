@@ -15,7 +15,7 @@
  */
 
 import path from 'node:path';
-import { Logger, Messages, SfProject, Org } from '@salesforce/core';
+import { Connection, Logger, Messages, SfProject } from '@salesforce/core';
 import {
   AndroidAppPreviewConfig,
   AndroidDevice,
@@ -112,7 +112,7 @@ export default class LightningDevApp extends SfCommand<void> {
 
     if (platform === Platform.desktop) {
       await this.desktopPreview(
-        targetOrg,
+        connection,
         sfdxProjectRootPath,
         serverPorts,
         ldpServerToken,
@@ -123,7 +123,7 @@ export default class LightningDevApp extends SfCommand<void> {
       );
     } else {
       await this.mobilePreview(
-        targetOrg,
+        connection,
         platform,
         sfdxProjectRootPath,
         serverPorts,
@@ -139,7 +139,7 @@ export default class LightningDevApp extends SfCommand<void> {
   }
 
   private async desktopPreview(
-    org: Org,
+    connection: Connection,
     sfdxProjectRootPath: string,
     serverPorts: { httpPort: number; httpsPort: number },
     ldpServerToken: string,
@@ -166,21 +166,14 @@ export default class LightningDevApp extends SfCommand<void> {
     );
 
     // Start the LWC Dev Server
-    await startLWCServer(
-      logger,
-      org.getConnection(undefined),
-      sfdxProjectRootPath,
-      ldpServerToken,
-      Platform.desktop,
-      serverPorts,
-    );
+    await startLWCServer(logger, connection, sfdxProjectRootPath, ldpServerToken, Platform.desktop, serverPorts);
 
     // Open the browser and navigate to the right page
     await this.config.runCommand('org:open', launchArguments);
   }
 
   private async mobilePreview(
-    org: Org,
+    connection: Connection,
     platform: Platform.ios | Platform.android,
     sfdxProjectRootPath: string,
     serverPorts: { httpPort: number; httpsPort: number },
@@ -281,15 +274,7 @@ export default class LightningDevApp extends SfCommand<void> {
       }
 
       // Start the LWC Dev Server
-      await startLWCServer(
-        logger,
-        org.getConnection(undefined),
-        sfdxProjectRootPath,
-        ldpServerToken,
-        platform,
-        serverPorts,
-        certData,
-      );
+      await startLWCServer(logger, connection, sfdxProjectRootPath, ldpServerToken, platform, serverPorts, certData);
 
       // Launch the native app for previewing (launchMobileApp will show its own spinner)
       // eslint-disable-next-line camelcase
