@@ -9,7 +9,7 @@
     "@inquirer/select": "^2.4.7",
     "@lwc/sfdx-local-dev-dist": "~13.3.18",
     "@lwc/sfdx-local-dev-dist-65.0": "npm:@lwc/sfdx-local-dev-dist@~13.1.7",
-    "@lwc/sfdx-local-dev-dist-66.0": "npm:@lwc/sfdx-local-dev-dist@~13.2.22",
+    "@lwc/sfdx-local-dev-dist-66.0": "npm:@lwc/sfdx-local-dev-dist@~13.2.23",
     "@lwc/sfdx-local-dev-dist-67.0": "npm:@lwc/sfdx-local-dev-dist@~13.3.18",
     "@lwrjs/api": "0.21.5",
     "@oclif/core": "^4.5.6",
