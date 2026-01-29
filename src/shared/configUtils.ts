@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Workspace } from '@lwc/lwc-dev-server';
+import { Workspace } from '@lwc/sfdx-local-dev-dist';
 import { SSLCertificateData } from '@salesforce/lwc-dev-mobile-core';
 import { Config, ConfigAggregator } from '@salesforce/core';
 import configMeta, { ConfigVars, SerializedSSLCertificateData } from './../configMeta.js';

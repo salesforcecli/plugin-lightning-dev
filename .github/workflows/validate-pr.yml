@@ -9,5 +9,15 @@ on:
       - '2*-patch'
 
 jobs:
+  check-versions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+      - run: yarn install --frozen-lockfile
+      - run: node .husky/check-versions.js
   pr-validation:
     uses: salesforcecli/github-workflows/.github/workflows/validatePR.yml@main

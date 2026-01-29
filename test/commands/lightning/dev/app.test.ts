@@ -97,7 +97,7 @@ describe('lightning dev app', () => {
     'iPhone 15 Pro Max',
     DeviceType.mobile,
     AppleOSType.iOS,
-    new Version(17, 5, 0)
+    new Version(17, 5, 0),
   );
   const testAndroidDevice = new AndroidDevice(
     'Pixel_5_API_34',
@@ -105,7 +105,7 @@ describe('lightning dev app', () => {
     DeviceType.mobile,
     AndroidOSType.googleAPIs,
     new Version(34, 0, 0),
-    false
+    false,
   );
   const certData: SSLCertificateData = {
     derCertificate: Buffer.from('A', 'utf-8'),
@@ -139,7 +139,6 @@ describe('lightning dev app', () => {
     $$.SANDBOX.stub(Connection.prototype, 'getUsername').returns(testUsername);
     $$.SANDBOX.stub(PreviewUtils, 'getOrCreateAppServerIdentity').resolves(testIdentityData);
     $$.SANDBOX.stub(OrgUtils, 'isLocalDevEnabled').resolves(true);
-    $$.SANDBOX.stub(OrgUtils, 'ensureMatchingAPIVersion').returns();
     $$.SANDBOX.stub(MetaUtils, 'handleLocalDevEnablement').resolves(undefined);
     // Stub prompt function as safety net to prevent hanging if handleLocalDevEnablement stub is removed
     $$.SANDBOX.stub(PromptUtils, 'promptUserToEnableLocalDev').resolves(true);
@@ -163,7 +162,7 @@ describe('lightning dev app', () => {
       $$.SANDBOX.stub(MetaUtils, 'handleLocalDevEnablement').resolves(undefined);
       $$.SANDBOX.stub(PromptUtils, 'promptUserToEnableLocalDev').resolves(true);
       $$.SANDBOX.stub(PreviewUtils, 'initializePreviewConnection').rejects(
-        new Error(sharedMessages.getMessage('error.localdev.not.enabled'))
+        new Error(sharedMessages.getMessage('error.localdev.not.enabled')),
       );
       await MockedLightningPreviewApp.run(['--name', 'blah', '-o', testOrgData.username, '-t', Platform.desktop]);
     } catch (err) {
@@ -190,7 +189,7 @@ describe('lightning dev app', () => {
       $$.SANDBOX.stub(MetaUtils, 'handleLocalDevEnablement').resolves(undefined);
       $$.SANDBOX.stub(PromptUtils, 'promptUserToEnableLocalDev').resolves(true);
       $$.SANDBOX.stub(PreviewUtils, 'initializePreviewConnection').rejects(
-        new Error(sharedMessages.getMessage('error.username'))
+        new Error(sharedMessages.getMessage('error.username')),
       );
       await MockedLightningPreviewApp.run(['--name', 'blah', '-o', testOrgData.username, '-t', Platform.desktop]);
     } catch (err) {
@@ -203,7 +202,7 @@ describe('lightning dev app', () => {
       stubHandleLocalDevEnablement(undefined);
       $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').throws(
-        new Error('Cannot determine LDP url.')
+        new Error('Cannot determine LDP url.'),
       );
       await MockedLightningPreviewApp.run(['--name', 'Sales', '-o', testOrgData.username, '-t', Platform.desktop]);
     } catch (err) {
@@ -251,7 +250,7 @@ describe('lightning dev app', () => {
       process.env.AUTO_ENABLE_LOCAL_DEV = 'false';
       restoreHandleLocalDevEnablement();
       const handleLocalDevStub = $$.SANDBOX.stub(MetaUtils, 'handleLocalDevEnablement').rejects(
-        new Error(sharedMessages.getMessage('error.localdev.not.enabled'))
+        new Error(sharedMessages.getMessage('error.localdev.not.enabled')),
       );
       $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
@@ -307,7 +306,7 @@ describe('lightning dev app', () => {
     it('handles error when enabling local dev fails', async () => {
       restoreHandleLocalDevEnablement();
       const handleLocalDevStub = $$.SANDBOX.stub(MetaUtils, 'handleLocalDevEnablement').rejects(
-        new Error('Enable failed')
+        new Error('Enable failed'),
       );
       $$.SANDBOX.stub(OrgUtils, 'getAppDefinitionDurableId').resolves(testAppDefinition.DurableId);
       $$.SANDBOX.stub(PreviewUtils, 'generateWebSocketUrlForLocalDevServer').returns(testServerUrl);
@@ -339,7 +338,7 @@ describe('lightning dev app', () => {
 
     it('prompts user to select lightning app when not provided', async () => {
       const promptStub = $$.SANDBOX.stub(PromptUtils, 'promptUserToSelectLightningExperienceApp').resolves(
-        testAppDefinition
+        testAppDefinition,
       );
       await verifyOrgOpen(`lightning/app/${testAppDefinition.DurableId}`, Platform.desktop);
       expect(promptStub.calledOnce);
@@ -412,7 +411,7 @@ describe('lightning dev app', () => {
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'run').resolves();
 
       $$.SANDBOX.stub(PreviewUtils, 'getMobileDevice').callsFake((platform) =>
-        Promise.resolve(platform === Platform.ios ? testIOSDevice : testAndroidDevice)
+        Promise.resolve(platform === Platform.ios ? testIOSDevice : testAndroidDevice),
       );
 
       await verifyMobileThrowsWhenDeviceFailsToBoot(Platform.ios);
@@ -428,7 +427,7 @@ describe('lightning dev app', () => {
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'run').resolves();
 
       $$.SANDBOX.stub(PreviewUtils, 'getMobileDevice').callsFake((platform) =>
-        Promise.resolve(platform === Platform.ios ? testIOSDevice : testAndroidDevice)
+        Promise.resolve(platform === Platform.ios ? testIOSDevice : testAndroidDevice),
       );
 
       $$.SANDBOX.stub(AppleDevice.prototype, 'boot').resolves();
@@ -449,7 +448,7 @@ describe('lightning dev app', () => {
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'run').resolves();
 
       $$.SANDBOX.stub(PreviewUtils, 'getMobileDevice').callsFake((platform) =>
-        Promise.resolve(platform === Platform.ios ? testIOSDevice : testAndroidDevice)
+        Promise.resolve(platform === Platform.ios ? testIOSDevice : testAndroidDevice),
       );
 
       $$.SANDBOX.stub(PreviewUtils, 'generateSelfSignedCert').resolves(certData);
@@ -486,7 +485,7 @@ describe('lightning dev app', () => {
       $$.SANDBOX.stub(LwcDevMobileCoreSetup.prototype, 'run').resolves();
 
       $$.SANDBOX.stub(PreviewUtils, 'getMobileDevice').callsFake((platform) =>
-        Promise.resolve(platform === Platform.ios ? testIOSDevice : testAndroidDevice)
+        Promise.resolve(platform === Platform.ios ? testIOSDevice : testAndroidDevice),
       );
 
       $$.SANDBOX.stub(PreviewUtils, 'generateSelfSignedCert').resolves(certData);
@@ -593,11 +592,11 @@ describe('lightning dev app', () => {
         expectedLdpServerUrl,
         testLdpServerId,
         'Sales',
-        testAppDefinition.DurableId
+        testAppDefinition.DurableId,
       );
 
       const downloadStub = $$.SANDBOX.stub(PreviewUtils, 'downloadSalesforceMobileAppBundle').resolves(
-        testBundleArchive
+        testBundleArchive,
       );
       const extractStub = $$.SANDBOX.stub(CommonUtils, 'extractZIPArchive').resolves();
       const installStub =

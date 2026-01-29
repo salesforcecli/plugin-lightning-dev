@@ -113,7 +113,7 @@ describe('lightning dev component', () => {
         '../../../../src/lwc-dev-server/index.js': {
           startLWCServer: () => Promise.resolve(mockServer),
         },
-      }
+      },
     );
   });
 
@@ -181,7 +181,7 @@ describe('lightning dev component', () => {
       process.env.OPEN_BROWSER = 'false';
       restoreHandleLocalDevEnablement();
       const handleLocalDevStub = $$.SANDBOX.stub(MetaUtils, 'handleLocalDevEnablement').rejects(
-        new Error(sharedMessages.getMessage('error.localdev.not.enabled'))
+        new Error(sharedMessages.getMessage('error.localdev.not.enabled')),
       );
       $$.SANDBOX.stub(ComponentUtils, 'getNamespacePaths').resolves(['/test/namespace']);
       $$.SANDBOX.stub(ComponentUtils, 'getAllComponentPaths').resolves(['/test/namespace/component1']);
@@ -255,7 +255,7 @@ describe('lightning dev component', () => {
       process.env.OPEN_BROWSER = 'false';
       restoreHandleLocalDevEnablement();
       const handleLocalDevStub = $$.SANDBOX.stub(MetaUtils, 'handleLocalDevEnablement').rejects(
-        new Error('Enable failed')
+        new Error('Enable failed'),
       );
       $$.SANDBOX.stub(ComponentUtils, 'getNamespacePaths').resolves(['/test/namespace']);
       $$.SANDBOX.stub(ComponentUtils, 'getAllComponentPaths').resolves(['/test/namespace/component1']);
