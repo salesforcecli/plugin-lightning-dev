@@ -1,3 +1,9 @@
+# [6.2.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.1.0...6.2.0) (2026-01-30)
+
+### Features
+
+- use the right LWC/Dev server version for the org @W-20405334@ ([#596](https://github.com/salesforcecli/plugin-lightning-dev/issues/596)) ([14f2f35](https://github.com/salesforcecli/plugin-lightning-dev/commit/14f2f35f85cd498efe31bbdd227efdbd36641495))
+
 # [6.1.0](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.0.9...6.1.0) (2026-01-28)
 
 ### Features
