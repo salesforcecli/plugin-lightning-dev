@@ -51,7 +51,7 @@ export class MetaUtils {
    * @throws Error if unable to retrieve the metadata
    */
   public static async getLightningExperienceSettings(
-    connection: Connection
+    connection: Connection,
   ): Promise<LightningExperienceSettingsMetadata> {
     this.logger.debug('Retrieving Lightning Experience Settings metadata');
 
@@ -176,7 +176,7 @@ export class MetaUtils {
    */
   public static async setMyDomainFirstPartyCookieRequirement(
     connection: Connection,
-    requireFirstPartyCookies: boolean
+    requireFirstPartyCookies: boolean,
   ): Promise<void> {
     this.logger.debug(`Setting first-party cookie requirement to: ${requireFirstPartyCookies}`);
 

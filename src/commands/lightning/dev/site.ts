@@ -19,7 +19,6 @@ import { Connection, Logger, Messages, SfProject } from '@salesforce/core';
 import { Platform } from '@salesforce/lwc-dev-mobile-core';
 import { expDev, SitesLocalDevOptions, setupDev } from '@lwrjs/api';
 import open from 'open';
-import { OrgUtils } from '../../../shared/orgUtils.js';
 import { PromptUtils } from '../../../shared/promptUtils.js';
 import { ExperienceSite } from '../../../shared/experience/expSite.js';
 import { PreviewUtils } from '../../../shared/previewUtils.js';
@@ -74,8 +73,6 @@ export default class LightningDevSite extends SfCommand<void> {
         this.log(sharedMessages.getMessage('localdev.enabled'));
       }
 
-      OrgUtils.ensureMatchingAPIVersion(connection);
-
       // If user doesn't specify a site, prompt the user for one
       if (!siteName) {
         const allSites = await ExperienceSite.getAllExpSites(org);
@@ -98,7 +95,7 @@ export default class LightningDevSite extends SfCommand<void> {
     selectedSite: ExperienceSite,
     getLatest: boolean,
     siteName: string,
-    guest: boolean
+    guest: boolean,
   ): Promise<void> {
     let siteZip: string | undefined;
 
@@ -184,7 +181,7 @@ export default class LightningDevSite extends SfCommand<void> {
     this.log(`Local Dev Server url is ${ldpServerUrl}`);
 
     const logger = await Logger.child(this.ctor.name);
-    await startLWCServer(logger, sfdxProjectRootPath, ldpServerToken, Platform.desktop, serverPorts);
+    await startLWCServer(logger, connection, sfdxProjectRootPath, ldpServerToken, Platform.desktop, serverPorts);
     const url = new URL(previewUrl);
     url.searchParams.set('aura.ldpServerUrl', ldpServerUrl);
     url.searchParams.set('aura.ldpServerId', ldpServerId);

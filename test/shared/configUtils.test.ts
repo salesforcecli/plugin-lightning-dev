@@ -15,7 +15,7 @@
  */
 
 import { expect } from 'chai';
-import { Workspace } from '@lwc/lwc-dev-server';
+import { Workspace } from '@lwc/sfdx-local-dev-dist';
 import { Config, ConfigAggregator } from '@salesforce/core';
 import { TestContext } from '@salesforce/core/testSetup';
 import { ConfigUtils, LocalWebServerIdentityData } from '../../src/shared/configUtils.js';
@@ -58,7 +58,7 @@ describe('configUtils', () => {
     $$.SANDBOX.stub(Config, 'addAllowedProperties').withArgs($$.SANDBOX.match.any);
     $$.SANDBOX.stub(Config.prototype, 'set').withArgs(
       ConfigVars.LOCAL_WEB_SERVER_IDENTITY_DATA,
-      $$.SANDBOX.match.string
+      $$.SANDBOX.match.string,
     );
     $$.SANDBOX.stub(Config.prototype, 'write').resolves();
     const identityData: LocalWebServerIdentityData = {

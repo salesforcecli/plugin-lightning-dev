@@ -55,7 +55,7 @@ export class PreviewUtils {
   public static generateWebSocketUrlForLocalDevServer(
     platform: string,
     ports: { httpPort: number; httpsPort: number },
-    logger?: Logger
+    logger?: Logger,
   ): string {
     return LwcDevMobileCorePreviewUtils.generateWebSocketUrlForLocalDevServer(platform, ports, logger);
   }
@@ -98,7 +98,7 @@ export class PreviewUtils {
   public static async getMobileDevice(
     platform: Platform.ios | Platform.android,
     deviceId?: string,
-    logger?: Logger
+    logger?: Logger,
   ): Promise<BaseDevice | undefined> {
     let device: BaseDevice | undefined;
 
@@ -133,7 +133,7 @@ export class PreviewUtils {
   public static async getLightningExperienceAppId(
     connection: Connection,
     appName?: string,
-    logger?: Logger
+    logger?: Logger,
   ): Promise<string> {
     if (appName) {
       logger?.debug(`Determining App Id for ${appName}`);
@@ -201,7 +201,7 @@ export class PreviewUtils {
     ldpServerId: string,
     appId?: string,
     targetOrg?: string,
-    auraMode = DevPreviewAuraMode
+    auraMode = DevPreviewAuraMode,
   ): string[] {
     // appPath will resolve to one of the following:
     //
@@ -236,7 +236,7 @@ export class PreviewUtils {
     ldpServerUrl: string,
     ldpServerId: string,
     componentName?: string,
-    targetOrg?: string
+    targetOrg?: string,
   ): string[] {
     let appPath = `lwr/application/e/devpreview/ai/localdev-preview?ldpServerUrl=${ldpServerUrl}&ldpServerId=${ldpServerId}`;
     if (componentName) {
@@ -267,7 +267,7 @@ export class PreviewUtils {
     instanceUrl: string,
     ldpServerUrl: string,
     ldpServerId: string,
-    componentName?: string
+    componentName?: string,
   ): string {
     let url = `${instanceUrl}/lwr/application/e/devpreview/ai/localdev-preview?ldpServerUrl=${ldpServerUrl}&ldpServerId=${ldpServerId}`;
     if (componentName) {
@@ -285,7 +285,7 @@ export class PreviewUtils {
    * @param ldpServerId Record ID for the identity token
    * @param appName An optional app name for a targeted LEX app
    * @param appId An optional app id for a targeted LEX app
-   * @param auraMode An optional Aura Mode (defaults to DEVPREVIEW)
+   * @param auraMode An Aura Mode (defaults to DEVPREVIEW)
    * @returns Array of arguments to be used as custom launch arguments when launching a mobile app.
    */
   public static generateMobileAppPreviewLaunchArguments(
@@ -293,7 +293,7 @@ export class PreviewUtils {
     ldpServerId: string,
     appName?: string,
     appId?: string,
-    auraMode = DevPreviewAuraMode
+    auraMode = DevPreviewAuraMode,
   ): LaunchArgument[] {
     const launchArguments: LaunchArgument[] = [];
 
@@ -336,7 +336,7 @@ export class PreviewUtils {
    *
    * @param platform A mobile platform (iOS or Android)
    * @param logger An optional logger to be used for logging
-   * @param progress An optional spinner indicator for reporting messages
+   * @param spinner An optional spinner indicator for reporting messages
    * @param progress An optional progress indicator for reporting progress
    * @returns The path to downloaded file.
    */
@@ -344,7 +344,7 @@ export class PreviewUtils {
     platform: Platform.ios | Platform.android,
     logger?: Logger,
     spinner?: Spinner,
-    progress?: Progress
+    progress?: Progress,
   ): Promise<string> {
     const sfdcUrl =
       platform === Platform.ios
@@ -396,8 +396,7 @@ export class PreviewUtils {
 
     return new Promise((resolve, reject) => {
       if (progress && totalSize) {
-        response.body?.on('data', (chunk) => {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        response.body?.on('data', (chunk: string) => {
           downloadedSize += chunk.length;
           const percentage = parseFloat(Math.min((downloadedSize / totalSize) * 100, 100).toFixed(1));
           progress.update(percentage);
@@ -431,8 +430,6 @@ export class PreviewUtils {
     if (!username) {
       return Promise.reject(new Error(sharedMessages.getMessage('error.username')));
     }
-
-    OrgUtils.ensureMatchingAPIVersion(connection);
 
     const appServerIdentity = await PreviewUtils.getOrCreateAppServerIdentity(connection);
     const ldpServerToken = appServerIdentity.identityToken;

@@ -75,7 +75,7 @@ export class PromptUtils {
 
   public static async promptUserToSelectMobileDevice(
     platform: Platform.ios | Platform.android,
-    logger?: Logger
+    logger?: Logger,
   ): Promise<BaseDevice> {
     const availableDevices =
       platform === Platform.ios

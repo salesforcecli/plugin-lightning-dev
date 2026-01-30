@@ -15,7 +15,8 @@
  */
 
 import { expect } from 'chai';
-import { LWCServer, Workspace } from '@lwc/lwc-dev-server';
+import type { LWCServer } from '@lwc/sfdx-local-dev-dist';
+import { Workspace } from '@lwc/sfdx-local-dev-dist';
 import esmock from 'esmock';
 import { TestContext } from '@salesforce/core/testSetup';
 import * as devServer from '../../src/lwc-dev-server/index.js';
@@ -30,7 +31,7 @@ describe('lwc-dev-server', () => {
 
   before(async () => {
     lwcDevServer = await esmock<typeof devServer>('../../src/lwc-dev-server/index.js', {
-      '@lwc/lwc-dev-server': {
+      '@lwc/sfdx-local-dev-dist': {
         startLwcDevServer: async () => server,
       },
     });

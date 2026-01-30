@@ -66,7 +66,7 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
       sfdxProjectRootPath = await SfProject.resolveProjectPath();
     } catch (error) {
       return Promise.reject(
-        new Error(sharedMessages.getMessage('error.no-project', [(error as Error)?.message ?? '']))
+        new Error(sharedMessages.getMessage('error.no-project', [(error as Error)?.message ?? ''])),
       );
     }
 
@@ -95,7 +95,7 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
       logger.debug('In Code Builder Mode - using proxy URI');
       ldpServerUrl = process.env.VSCODE_PROXY_URI.replace('https://', 'ws://').replace(
         '{{port}}',
-        `${serverPorts.httpPort}`
+        `${serverPorts.httpPort}`,
       );
     } else {
       // Default behavior
@@ -134,14 +134,14 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
               label: xml.LightningComponentBundle.masterLabel ?? label,
               description: xml.LightningComponentBundle.description ?? '',
             };
-          })
+          }),
         )
       ).filter((component) => !!component);
 
       if (componentName) {
         // validate that the component exists before launching the server
         const match = components.find(
-          (component) => componentName === component.name || componentName === component.label
+          (component) => componentName === component.name || componentName === component.label,
         );
         if (!match) {
           throw new Error(messages.getMessage('error.component-not-found', [componentName]));
@@ -157,14 +157,14 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
       }
     }
 
-    await startLWCServer(logger, sfdxProjectRootPath, ldpServerToken, Platform.desktop, serverPorts);
+    await startLWCServer(logger, connection, sfdxProjectRootPath, ldpServerToken, Platform.desktop, serverPorts);
 
     const targetOrgArg = PreviewUtils.getTargetOrgFromArguments(this.argv);
     const launchArguments = PreviewUtils.generateComponentPreviewLaunchArguments(
       ldpServerUrl,
       ldpServerId,
       componentName,
-      targetOrgArg
+      targetOrgArg,
     );
 
     // strip trailing slashes

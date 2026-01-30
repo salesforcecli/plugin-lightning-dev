@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Workspace } from '@lwc/lwc-dev-server';
+import { Workspace } from '@lwc/sfdx-local-dev-dist';
 import { ConfigPropertyMeta, ConfigValue, Messages } from '@salesforce/core';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);

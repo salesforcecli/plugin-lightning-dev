@@ -21,7 +21,6 @@ import { expect } from 'chai';
 import esmock from 'esmock';
 import sinon from 'sinon';
 import LightningDevSite from '../../../../src/commands/lightning/dev/site.js';
-import { OrgUtils } from '../../../../src/shared/orgUtils.js';
 import { ExperienceSite } from '../../../../src/shared/experience/expSite.js';
 import { MetaUtils } from '../../../../src/shared/metaUtils.js';
 import { PreviewUtils } from '../../../../src/shared/previewUtils.js';
@@ -83,7 +82,6 @@ describe('lightning dev site', () => {
     $$.SANDBOX.stub(SfConfig.prototype, 'set');
     $$.SANDBOX.stub(SfConfig.prototype, 'write').resolves();
     $$.SANDBOX.stub(Connection.prototype, 'getUsername').returns(testUsername);
-    $$.SANDBOX.stub(OrgUtils, 'ensureMatchingAPIVersion').returns();
     $$.SANDBOX.stub(ExperienceSite, 'getAllExpSites').resolves(['TestSite']);
     $$.SANDBOX.stub(ExperienceSite.prototype, 'getPreviewUrl').resolves('https://test.salesforce.com/sites/TestSite');
     $$.SANDBOX.stub(ExperienceSite.prototype, 'isSiteSetup').resolves(true);
@@ -143,7 +141,7 @@ describe('lightning dev site', () => {
       process.env.AUTO_ENABLE_LOCAL_DEV = 'false';
       restoreHandleLocalDevEnablement();
       const handleLocalDevStub = $$.SANDBOX.stub(MetaUtils, 'handleLocalDevEnablement').rejects(
-        new Error(sharedMessages.getMessage('error.localdev.not.enabled'))
+        new Error(sharedMessages.getMessage('error.localdev.not.enabled')),
       );
 
       const logStub = $$.SANDBOX.stub(MockedLightningDevSite.prototype, 'log');
@@ -188,7 +186,7 @@ describe('lightning dev site', () => {
     it('handles error when enabling local dev fails', async () => {
       restoreHandleLocalDevEnablement();
       const handleLocalDevStub = $$.SANDBOX.stub(MetaUtils, 'handleLocalDevEnablement').rejects(
-        new Error('Enable failed')
+        new Error('Enable failed'),
       );
 
       const logStub = $$.SANDBOX.stub(MockedLightningDevSite.prototype, 'log');
