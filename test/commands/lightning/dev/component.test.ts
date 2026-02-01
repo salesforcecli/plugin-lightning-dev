@@ -297,6 +297,48 @@ describe('lightning dev component', () => {
       delete process.env.AUTO_ENABLE_LOCAL_DEV;
     });
 
+    it('resolves lightning type json path to component name', async () => {
+      process.env.OPEN_BROWSER = 'false';
+      stubHandleLocalDevEnablement(undefined);
+      const lightningTypePath = '/force-app/main/default/lightningTypes/ExampleType/exampleBundle/renderer.json';
+      const resolveStub = $$.SANDBOX.stub(ComponentUtils, 'getComponentNameFromLightningTypeJson').resolves(
+        'component1',
+      );
+      $$.SANDBOX.stub(ComponentUtils, 'getNamespacePaths').resolves(['/test/namespace']);
+      $$.SANDBOX.stub(ComponentUtils, 'getAllComponentPaths').resolves(['/test/namespace/component1']);
+      $$.SANDBOX.stub(ComponentUtils, 'getComponentMetadata').resolves({
+        LightningComponentBundle: {
+          masterLabel: 'Test Component',
+          description: 'Test description',
+        },
+      });
+      $$.SANDBOX.stub(ComponentUtils, 'componentNameToTitleCase').returns('Component1');
+      $$.SANDBOX.stub(OclifConfig.prototype, 'runCommand').resolves();
+
+      await MockedLightningDevComponent.run(['-n', lightningTypePath, '-o', testOrgData.username]);
+
+      expect(resolveStub.calledOnceWith(lightningTypePath)).to.be.true;
+      delete process.env.OPEN_BROWSER;
+    });
+
+    it('skips preview when lightning type json has no override', async () => {
+      process.env.OPEN_BROWSER = 'false';
+      stubHandleLocalDevEnablement(undefined);
+      const lightningTypePath = '/force-app/main/default/lightningTypes/ExampleType/exampleBundle/editor.json';
+      $$.SANDBOX.stub(ComponentUtils, 'getComponentNameFromLightningTypeJson').resolves(null);
+
+      const result = await MockedLightningDevComponent.run(['-n', lightningTypePath, '-o', testOrgData.username]);
+
+      expect(result).to.include({
+        ldpServerUrl: '',
+        ldpServerId: '',
+        componentName: '',
+        previewUrl: '',
+      });
+      expect(result.instanceUrl).to.match(/^https?:\/\//);
+      delete process.env.OPEN_BROWSER;
+    });
+
     it('prompts user to select component when name is not provided', async () => {
       process.env.OPEN_BROWSER = 'false';
       // Ensure handleLocalDevEnablement is stubbed (already stubbed in beforeEach, but ensure it's still active)

@@ -61,3 +61,7 @@ Your org is on API Version %s. This version of the plugin supports only versions
 # error.no-project
 
 This command is required to run from within a Salesforce project directory. %s
+
+# info.lightningtype.no-override
+
+No componentOverrides.$.definition found for Lightning Type JSON file: %s. Skipping preview.

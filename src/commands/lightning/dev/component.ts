@@ -77,6 +77,26 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
 
     const connection = targetOrg.getConnection(apiVersion);
 
+    if (componentName) {
+      const lightningTypeComponentName = await ComponentUtils.getComponentNameFromLightningTypeJson(componentName);
+      if (lightningTypeComponentName === null) {
+        const infoMessage = sharedMessages.getMessage('info.lightningtype.no-override', [componentName]);
+        this.log(infoMessage);
+        logger.info(infoMessage);
+        const instanceUrl = connection.instanceUrl.replace(/\/$/, '');
+        return {
+          instanceUrl,
+          ldpServerUrl: '',
+          ldpServerId: '',
+          componentName: '',
+          previewUrl: '',
+        };
+      }
+      if (lightningTypeComponentName) {
+        componentName = lightningTypeComponentName;
+      }
+    }
+
     if (await MetaUtils.handleLocalDevEnablement(connection)) {
       this.log(sharedMessages.getMessage('localdev.enabled'));
     }

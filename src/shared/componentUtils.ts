@@ -27,6 +27,9 @@ export type LwcMetadata = {
 };
 
 export class ComponentUtils {
+  private static readonly lightningTypeJsonFileNames = new Set(['renderer.json', 'editor.json']);
+  private static readonly lightningTypeDefinitionSeparator = /[/:]/;
+
   public static componentNameToTitleCase(componentName: string): string {
     if (!componentName) {
       return '';
@@ -68,18 +71,80 @@ export class ComponentUtils {
 
     if (parsedData.LightningComponentBundle) {
       parsedData.LightningComponentBundle.masterLabel = this.normalizeMetaProperty(
-        parsedData.LightningComponentBundle.masterLabel
+        parsedData.LightningComponentBundle.masterLabel,
       );
       parsedData.LightningComponentBundle.description = this.normalizeMetaProperty(
-        parsedData.LightningComponentBundle.description
+        parsedData.LightningComponentBundle.description,
       );
     }
 
     return parsedData;
   }
 
+  public static isLightningTypeJsonFile(filePath: string): boolean {
+    if (!filePath) {
+      return false;
+    }
+
+    const normalizedPath = path.normalize(filePath).toLowerCase();
+    const fileName = path.basename(normalizedPath);
+
+    return (
+      ComponentUtils.lightningTypeJsonFileNames.has(fileName) &&
+      normalizedPath.includes(`${path.sep}lightningtypes${path.sep}`)
+    );
+  }
+
+  public static async getComponentNameFromLightningTypeJson(filePath: string): Promise<string | null | undefined> {
+    if (!ComponentUtils.isLightningTypeJsonFile(filePath)) {
+      return undefined;
+    }
+
+    try {
+      const fileContent = await fs.promises.readFile(filePath, 'utf8');
+      const json = JSON.parse(fileContent) as {
+        componentOverrides?: { $?: { definition?: string } };
+        renderer?: { componentOverrides?: { $?: { definition?: string } } };
+        editor?: { componentOverrides?: { $?: { definition?: string } } };
+      };
+
+      const definition =
+        json?.componentOverrides?.$?.definition ??
+        json?.renderer?.componentOverrides?.$?.definition ??
+        json?.editor?.componentOverrides?.$?.definition;
+
+      if (typeof definition !== 'string') {
+        return null;
+      }
+
+      return ComponentUtils.parseLightningTypeDefinition(definition) ?? null;
+    } catch {
+      return null;
+    }
+  }
+
   private static isLwcMetadata(obj: unknown): obj is LwcMetadata {
     return (obj && typeof obj === 'object' && 'LightningComponentBundle' in obj) === true;
+  }
+
+  private static parseLightningTypeDefinition(definition: string): string | undefined {
+    const normalizedDefinition = definition.trim();
+    if (!normalizedDefinition) {
+      return undefined;
+    }
+
+    const separatorMatch = normalizedDefinition.match(ComponentUtils.lightningTypeDefinitionSeparator);
+    if (!separatorMatch) {
+      return undefined;
+    }
+
+    const separator = separatorMatch[0];
+    const [namespace, name, ...rest] = normalizedDefinition.split(separator);
+    if (!namespace || !name || rest.length > 0) {
+      return undefined;
+    }
+
+    return namespace === 'c' ? name : undefined;
   }
 
   private static normalizeMetaProperty(prop: string[] | string | undefined): string | undefined {

@@ -14,12 +14,85 @@
  * limitations under the License.
  */
 
+import fs from 'node:fs';
+import sinon from 'sinon';
 import { expect } from 'chai';
 import { ComponentUtils } from '../../src/shared/componentUtils.js';
 
 describe('componentUtils', () => {
+  const sandbox = sinon.createSandbox();
+
+  afterEach(() => {
+    sandbox.restore();
+  });
+
   it('converts camel case component name to title case', () => {
     expect(ComponentUtils.componentNameToTitleCase('myButton')).to.equal('My Button');
     expect(ComponentUtils.componentNameToTitleCase('myButtonGroup')).to.equal('My Button Group');
+  });
+
+  it('detects lightning type json file paths', () => {
+    expect(
+      ComponentUtils.isLightningTypeJsonFile(
+        '/force-app/main/default/lightningTypes/ExampleType/exampleBundle/renderer.json',
+      ),
+    ).to.equal(true);
+    expect(
+      ComponentUtils.isLightningTypeJsonFile(
+        '/force-app/main/default/lightningTypes/ExampleType/exampleBundle/editor.json',
+      ),
+    ).to.equal(true);
+    expect(ComponentUtils.isLightningTypeJsonFile('/force-app/main/default/lwc/example/example.js')).to.equal(false);
+  });
+
+  it('extracts component name from lightning type json', async () => {
+    sandbox.stub(fs.promises, 'readFile').resolves(
+      JSON.stringify({
+        renderer: {
+          componentOverrides: {
+            $: {
+              definition: 'c/exampleRenderer',
+            },
+          },
+        },
+      }),
+    );
+
+    const result = await ComponentUtils.getComponentNameFromLightningTypeJson(
+      '/force-app/main/default/lightningTypes/ExampleType/exampleBundle/renderer.json',
+    );
+
+    expect(result).to.equal('exampleRenderer');
+  });
+
+  it('returns null for empty definition in lightning type json', async () => {
+    sandbox.stub(fs.promises, 'readFile').resolves(
+      JSON.stringify({
+        editor: {
+          componentOverrides: {
+            $: {
+              definition: '',
+            },
+          },
+        },
+      }),
+    );
+
+    const result = await ComponentUtils.getComponentNameFromLightningTypeJson(
+      '/force-app/main/default/lightningTypes/ExampleType/exampleBundle/editor.json',
+    );
+
+    expect(result).to.equal(null);
+  });
+
+  it('returns undefined for non-lightning type paths', async () => {
+    const readStub = sandbox.stub(fs.promises, 'readFile').resolves('');
+
+    const result = await ComponentUtils.getComponentNameFromLightningTypeJson(
+      '/force-app/main/default/lwc/example/example.js',
+    );
+
+    expect(result).to.equal(undefined);
+    expect(readStub.called).to.equal(false);
   });
 });
