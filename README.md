@@ -211,14 +211,16 @@ _See code: [src/commands/lightning/dev/app.ts](https://github.com/salesforcecli/
 
 ```
 USAGE
-  $ sf lightning dev component -o <value> [--json] [--flags-dir <value>] [-n <value>] [--api-version <value>] [-c]
+  $ sf lightning dev component -o <value> [--json] [--flags-dir <value>] [-n <value>] [--lightning-type-path <value>] [--api-version <value>] [--lightning-type-override <value>] [-c]
 
 FLAGS
-  -c, --client-select        Launch component preview without selecting a component
-  -n, --name=<value>         Name of a component to preview.
-  -o, --target-org=<value>   (required) Username or alias of the target org. Not required if the `target-org`
-                             configuration variable is already set.
-      --api-version=<value>  Override the api version used for api requests made by this command
+  -c, --client-select                 Launch component preview without selecting a component
+      --lightning-type-path=<value>   Path to a Lightning Type JSON file (renderer.json or editor.json) to preview.
+      --lightning-type-override=<value>  Override key to use when a Lightning Type JSON file contains multiple overrides.
+  -n, --name=<value>                 Name of a component to preview.
+  -o, --target-org=<value>            (required) Username or alias of the target org. Not required if the `target-org`
+                                      configuration variable is already set.
+      --api-version=<value>           Override the api version used for api requests made by this command
 
 GLOBAL FLAGS
   --flags-dir=<value>  Import flag values from a directory.
@@ -249,6 +251,10 @@ EXAMPLES
   Launch component preview for "myComponent":
 
     $ sf lightning dev component --name myComponent
+
+  Preview a Lightning Type override explicitly:
+
+    $ sf lightning dev component --lightning-type-path path/to/renderer.json --lightning-type-override collection.renderer
 ```
 
 _See code: [src/commands/lightning/dev/component.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/6.2.2/src/commands/lightning/dev/component.ts)_

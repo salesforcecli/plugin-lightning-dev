@@ -47,6 +47,14 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
       char: 'n',
       requiredOrDefaulted: false,
     }),
+    'lightning-type-path': Flags.string({
+      summary: messages.getMessage('flags.lightning-type-path.summary'),
+      requiredOrDefaulted: false,
+    }),
+    'lightning-type-override': Flags.string({
+      summary: messages.getMessage('flags.lightning-type-override.summary'),
+      requiredOrDefaulted: false,
+    }),
     'api-version': Flags.orgApiVersion(),
     'client-select': Flags.boolean({
       summary: messages.getMessage('flags.client-select.summary'),
@@ -71,30 +79,51 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
     }
 
     let componentName = flags['name'];
+    let lightningTypePath = flags['lightning-type-path'];
     const clientSelect = flags['client-select'];
+    const lightningTypeOverride = flags['lightning-type-override'];
     const targetOrg = flags['target-org'];
     const apiVersion = flags['api-version'];
 
     const connection = targetOrg.getConnection(apiVersion);
 
-    if (componentName) {
-      const lightningTypeComponentName = await ComponentUtils.getComponentNameFromLightningTypeJson(componentName);
-      if (lightningTypeComponentName === null) {
-        const infoMessage = sharedMessages.getMessage('info.lightningtype.no-override', [componentName]);
-        this.log(infoMessage);
-        logger.info(infoMessage);
-        const instanceUrl = connection.instanceUrl.replace(/\/$/, '');
-        return {
-          instanceUrl,
-          ldpServerUrl: '',
-          ldpServerId: '',
-          componentName: '',
-          previewUrl: '',
-        };
+    if (componentName && lightningTypePath) {
+      throw new Error(messages.getMessage('error.lightning-type-conflict'));
+    }
+
+    const selectLightningTypeOverride = async (): Promise<string> => {
+      if (!lightningTypePath) {
+        throw new Error(messages.getMessage('error.lightning-type-invalid'));
       }
-      if (lightningTypeComponentName) {
-        componentName = lightningTypeComponentName;
+      const lightningTypeOverrides = await ComponentUtils.getLightningTypeOverrideOptions(lightningTypePath);
+      if (lightningTypeOverrides === undefined) {
+        throw new Error(messages.getMessage('error.lightning-type-path-invalid', [lightningTypePath]));
       }
+      if (lightningTypeOverrides.length === 0) {
+        throw new Error(messages.getMessage('error.lightning-type-no-override', [lightningTypePath]));
+      }
+
+      let selectedOverride = lightningTypeOverrides[0];
+      if (lightningTypeOverride) {
+        const matchedOverride = lightningTypeOverrides.find((override) => override.id === lightningTypeOverride);
+        if (!matchedOverride) {
+          throw new Error(
+            messages.getMessage('error.lightning-type-override', [
+              lightningTypeOverride,
+              lightningTypeOverrides.map((override) => override.id).join(', '),
+            ]),
+          );
+        }
+        selectedOverride = matchedOverride;
+      } else if (lightningTypeOverrides.length > 1) {
+        selectedOverride = await PromptUtils.promptUserToSelectLightningTypeOverride(lightningTypeOverrides);
+      }
+
+      return selectedOverride.componentName;
+    };
+
+    if (lightningTypePath) {
+      componentName = await selectLightningTypeOverride();
     }
 
     if (await MetaUtils.handleLocalDevEnablement(connection)) {
@@ -163,11 +192,31 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
         const match = components.find(
           (component) => componentName === component.name || componentName === component.label,
         );
-        if (!match) {
+        if (match) {
+          componentName = match.name;
+        } else if (!lightningTypePath) {
+          const lightningTypePaths = await ComponentUtils.getLightningTypeJsonPathsByName(
+            sfdxProjectRootPath,
+            componentName,
+          );
+          if (lightningTypePaths.length === 0) {
+            throw new Error(messages.getMessage('error.component-not-found', [componentName]));
+          }
+
+          if (lightningTypePaths.length > 1) {
+            throw new Error(
+              messages.getMessage('error.lightning-type-multiple', [
+                componentName,
+                lightningTypePaths.map((filePath) => path.relative(sfdxProjectRootPath, filePath)).join(', '),
+              ]),
+            );
+          }
+
+          lightningTypePath = lightningTypePaths[0];
+          componentName = await selectLightningTypeOverride();
+        } else {
           throw new Error(messages.getMessage('error.component-not-found', [componentName]));
         }
-
-        componentName = match.name;
       } else {
         // prompt the user for a name if one was not provided
         componentName = await PromptUtils.promptUserToSelectComponent(components);

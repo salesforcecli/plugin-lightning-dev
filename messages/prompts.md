@@ -41,3 +41,7 @@ Which Lightning Web Component would you like to preview (Use arrow keys)
 # component.enable-local-dev
 
 Local Dev isn't enabled for this org. Enable it?
+
+# lightning-type.override.select
+
+Multiple Lightning Type overrides were found. Which override should be used for preview?

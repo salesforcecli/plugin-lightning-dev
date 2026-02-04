@@ -26,9 +26,17 @@ export type LwcMetadata = {
   };
 };
 
+export type LightningTypeOverrideOption = {
+  id: string;
+  label: string;
+  definition: string;
+  componentName: string;
+};
+
 export class ComponentUtils {
   private static readonly lightningTypeJsonFileNames = new Set(['renderer.json', 'editor.json']);
   private static readonly lightningTypeDefinitionSeparator = /[/:]/;
+  private static readonly lightningTypeGlobFileNames = '{renderer,editor}.json';
 
   public static componentNameToTitleCase(componentName: string): string {
     if (!componentName) {
@@ -95,7 +103,25 @@ export class ComponentUtils {
     );
   }
 
-  public static async getComponentNameFromLightningTypeJson(filePath: string): Promise<string | null | undefined> {
+  public static async getLightningTypeJsonPathsByName(projectRoot: string, typeName: string): Promise<string[]> {
+    if (!projectRoot || !typeName) {
+      return [];
+    }
+
+    const normalizedTypeName = typeName.trim();
+    if (!normalizedTypeName || normalizedTypeName.includes('/') || normalizedTypeName.includes('\\')) {
+      return [];
+    }
+
+    const projectRootForGlob = projectRoot.split(path.sep).join(path.posix.sep);
+    const pattern = `${projectRootForGlob}/**/lightningTypes/**/${normalizedTypeName}/**/${ComponentUtils.lightningTypeGlobFileNames}`;
+
+    return glob(pattern, { absolute: true });
+  }
+
+  public static async getLightningTypeOverrideOptions(
+    filePath: string,
+  ): Promise<LightningTypeOverrideOption[] | undefined> {
     if (!ComponentUtils.isLightningTypeJsonFile(filePath)) {
       return undefined;
     }
@@ -103,28 +129,78 @@ export class ComponentUtils {
     try {
       const fileContent = await fs.promises.readFile(filePath, 'utf8');
       const json = JSON.parse(fileContent) as {
-        componentOverrides?: { $?: { definition?: string } };
-        renderer?: { componentOverrides?: { $?: { definition?: string } } };
-        editor?: { componentOverrides?: { $?: { definition?: string } } };
+        componentOverrides?: Record<string, { definition?: string }>;
+        renderer?: { componentOverrides?: Record<string, { definition?: string }> };
+        editor?: { componentOverrides?: Record<string, { definition?: string }> };
+        collection?: {
+          renderer?: { componentOverrides?: Record<string, { definition?: string }> };
+          editor?: { componentOverrides?: Record<string, { definition?: string }> };
+        };
       };
 
-      const definition =
-        json?.componentOverrides?.$?.definition ??
-        json?.renderer?.componentOverrides?.$?.definition ??
-        json?.editor?.componentOverrides?.$?.definition;
+      const options: LightningTypeOverrideOption[] = [];
 
-      if (typeof definition !== 'string') {
-        return null;
-      }
+      ComponentUtils.collectLightningTypeOverrides(options, json?.componentOverrides, 'componentOverrides');
+      ComponentUtils.collectLightningTypeOverrides(options, json?.renderer?.componentOverrides, 'renderer');
+      ComponentUtils.collectLightningTypeOverrides(options, json?.editor?.componentOverrides, 'editor');
+      ComponentUtils.collectLightningTypeOverrides(
+        options,
+        json?.collection?.renderer?.componentOverrides,
+        'collection.renderer',
+      );
+      ComponentUtils.collectLightningTypeOverrides(
+        options,
+        json?.collection?.editor?.componentOverrides,
+        'collection.editor',
+      );
 
-      return ComponentUtils.parseLightningTypeDefinition(definition) ?? null;
+      return options;
     } catch {
-      return null;
+      return [];
     }
   }
 
   private static isLwcMetadata(obj: unknown): obj is LwcMetadata {
     return (obj && typeof obj === 'object' && 'LightningComponentBundle' in obj) === true;
+  }
+
+  private static collectLightningTypeOverrides(
+    options: LightningTypeOverrideOption[],
+    overrides: Record<string, { definition?: string }> | undefined,
+    prefix: string,
+  ): void {
+    if (!overrides) {
+      return;
+    }
+
+    const entries = Object.entries(overrides).sort(([keyA], [keyB]) => {
+      if (keyA === '$' && keyB !== '$') {
+        return -1;
+      }
+      if (keyA !== '$' && keyB === '$') {
+        return 1;
+      }
+      return keyA.localeCompare(keyB);
+    });
+
+    for (const [key, override] of entries) {
+      if (typeof override?.definition !== 'string') {
+        continue;
+      }
+
+      const componentName = ComponentUtils.parseLightningTypeDefinition(override.definition);
+      if (!componentName) {
+        continue;
+      }
+
+      const id = key === '$' ? prefix : `${prefix}:${key}`;
+      options.push({
+        id,
+        label: id,
+        definition: override.definition,
+        componentName,
+      });
+    }
   }
 
   private static parseLightningTypeDefinition(definition: string): string | undefined {

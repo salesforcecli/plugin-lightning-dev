@@ -12,7 +12,16 @@
     "command": "lightning:dev:component",
     "flagAliases": [],
     "flagChars": ["c", "n", "o"],
-    "flags": ["api-version", "client-select", "flags-dir", "json", "name", "target-org"],
+    "flags": [
+      "api-version",
+      "client-select",
+      "flags-dir",
+      "json",
+      "lightning-type-override",
+      "lightning-type-path",
+      "name",
+      "target-org"
+    ],
     "plugin": "@salesforce/plugin-lightning-dev"
   },
   {

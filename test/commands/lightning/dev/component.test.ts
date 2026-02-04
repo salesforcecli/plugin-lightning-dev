@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import path from 'node:path';
 import { Config as OclifConfig } from '@oclif/core';
 import { Config as SfConfig, Messages, Connection, SfProject } from '@salesforce/core';
 import { MockTestOrgData, TestContext } from '@salesforce/core/testSetup';
@@ -301,9 +302,14 @@ describe('lightning dev component', () => {
       process.env.OPEN_BROWSER = 'false';
       stubHandleLocalDevEnablement(undefined);
       const lightningTypePath = '/force-app/main/default/lightningTypes/ExampleType/exampleBundle/renderer.json';
-      const resolveStub = $$.SANDBOX.stub(ComponentUtils, 'getComponentNameFromLightningTypeJson').resolves(
-        'component1',
-      );
+      const resolveStub = $$.SANDBOX.stub(ComponentUtils, 'getLightningTypeOverrideOptions').resolves([
+        {
+          id: 'renderer',
+          label: 'renderer',
+          definition: 'c/component1',
+          componentName: 'component1',
+        },
+      ]);
       $$.SANDBOX.stub(ComponentUtils, 'getNamespacePaths').resolves(['/test/namespace']);
       $$.SANDBOX.stub(ComponentUtils, 'getAllComponentPaths').resolves(['/test/namespace/component1']);
       $$.SANDBOX.stub(ComponentUtils, 'getComponentMetadata').resolves({
@@ -315,7 +321,7 @@ describe('lightning dev component', () => {
       $$.SANDBOX.stub(ComponentUtils, 'componentNameToTitleCase').returns('Component1');
       $$.SANDBOX.stub(OclifConfig.prototype, 'runCommand').resolves();
 
-      await MockedLightningDevComponent.run(['-n', lightningTypePath, '-o', testOrgData.username]);
+      await MockedLightningDevComponent.run(['--lightning-type-path', lightningTypePath, '-o', testOrgData.username]);
 
       expect(resolveStub.calledOnceWith(lightningTypePath)).to.be.true;
       delete process.env.OPEN_BROWSER;
@@ -325,17 +331,230 @@ describe('lightning dev component', () => {
       process.env.OPEN_BROWSER = 'false';
       stubHandleLocalDevEnablement(undefined);
       const lightningTypePath = '/force-app/main/default/lightningTypes/ExampleType/exampleBundle/editor.json';
-      $$.SANDBOX.stub(ComponentUtils, 'getComponentNameFromLightningTypeJson').resolves(null);
+      $$.SANDBOX.stub(ComponentUtils, 'getLightningTypeOverrideOptions').resolves([]);
 
-      const result = await MockedLightningDevComponent.run(['-n', lightningTypePath, '-o', testOrgData.username]);
+      try {
+        await MockedLightningDevComponent.run(['--lightning-type-path', lightningTypePath, '-o', testOrgData.username]);
+        expect.fail('Should have thrown an error');
+      } catch (err) {
+        expect(err)
+          .to.be.an('error')
+          .with.property('message', messages.getMessage('error.lightning-type-no-override', [lightningTypePath]));
+      }
+      delete process.env.OPEN_BROWSER;
+    });
 
-      expect(result).to.include({
-        ldpServerUrl: '',
-        ldpServerId: '',
-        componentName: '',
-        previewUrl: '',
+    it('prompts user when multiple lightning type overrides are present', async () => {
+      process.env.OPEN_BROWSER = 'false';
+      stubHandleLocalDevEnablement(undefined);
+      const lightningTypePath = '/force-app/main/default/lightningTypes/ExampleType/exampleBundle/renderer.json';
+      $$.SANDBOX.stub(ComponentUtils, 'getLightningTypeOverrideOptions').resolves([
+        {
+          id: 'renderer',
+          label: 'renderer',
+          definition: 'c/component1',
+          componentName: 'component1',
+        },
+        {
+          id: 'collection.renderer',
+          label: 'collection.renderer',
+          definition: 'c/component2',
+          componentName: 'component2',
+        },
+      ]);
+      const promptStub = $$.SANDBOX.stub(PromptUtils, 'promptUserToSelectLightningTypeOverride').resolves({
+        id: 'collection.renderer',
+        label: 'collection.renderer',
+        definition: 'c/component2',
+        componentName: 'component2',
       });
-      expect(result.instanceUrl).to.match(/^https?:\/\//);
+      $$.SANDBOX.stub(ComponentUtils, 'getNamespacePaths').resolves(['/test/namespace']);
+      $$.SANDBOX.stub(ComponentUtils, 'getAllComponentPaths').resolves(['/test/namespace/component2']);
+      $$.SANDBOX.stub(ComponentUtils, 'getComponentMetadata').resolves({
+        LightningComponentBundle: {
+          masterLabel: 'Test Component',
+          description: 'Test description',
+        },
+      });
+      $$.SANDBOX.stub(ComponentUtils, 'componentNameToTitleCase').returns('Component2');
+      $$.SANDBOX.stub(OclifConfig.prototype, 'runCommand').resolves();
+
+      await MockedLightningDevComponent.run(['--lightning-type-path', lightningTypePath, '-o', testOrgData.username]);
+
+      expect(promptStub.calledOnce).to.be.true;
+      delete process.env.OPEN_BROWSER;
+    });
+
+    it('uses lightning type override flag when provided', async () => {
+      process.env.OPEN_BROWSER = 'false';
+      stubHandleLocalDevEnablement(undefined);
+      const lightningTypePath = '/force-app/main/default/lightningTypes/ExampleType/exampleBundle/renderer.json';
+      $$.SANDBOX.stub(ComponentUtils, 'getLightningTypeOverrideOptions').resolves([
+        {
+          id: 'renderer',
+          label: 'renderer',
+          definition: 'c/component1',
+          componentName: 'component1',
+        },
+        {
+          id: 'collection.renderer',
+          label: 'collection.renderer',
+          definition: 'c/component2',
+          componentName: 'component2',
+        },
+      ]);
+      $$.SANDBOX.stub(ComponentUtils, 'getNamespacePaths').resolves(['/test/namespace']);
+      $$.SANDBOX.stub(ComponentUtils, 'getAllComponentPaths').resolves(['/test/namespace/component2']);
+      $$.SANDBOX.stub(ComponentUtils, 'getComponentMetadata').resolves({
+        LightningComponentBundle: {
+          masterLabel: 'Test Component',
+          description: 'Test description',
+        },
+      });
+      $$.SANDBOX.stub(ComponentUtils, 'componentNameToTitleCase').returns('Component2');
+      $$.SANDBOX.stub(OclifConfig.prototype, 'runCommand').resolves();
+
+      await MockedLightningDevComponent.run([
+        '--lightning-type-path',
+        lightningTypePath,
+        '--lightning-type-override',
+        'collection.renderer',
+        '-o',
+        testOrgData.username,
+      ]);
+
+      delete process.env.OPEN_BROWSER;
+    });
+
+    it('throws when lightning type override flag is invalid', async () => {
+      process.env.OPEN_BROWSER = 'false';
+      stubHandleLocalDevEnablement(undefined);
+      const lightningTypePath = '/force-app/main/default/lightningTypes/ExampleType/exampleBundle/renderer.json';
+      $$.SANDBOX.stub(ComponentUtils, 'getLightningTypeOverrideOptions').resolves([
+        {
+          id: 'renderer',
+          label: 'renderer',
+          definition: 'c/component1',
+          componentName: 'component1',
+        },
+      ]);
+
+      try {
+        await MockedLightningDevComponent.run([
+          '--lightning-type-path',
+          lightningTypePath,
+          '--lightning-type-override',
+          'collection.renderer',
+          '-o',
+          testOrgData.username,
+        ]);
+        expect.fail('Should have thrown an error');
+      } catch (err) {
+        expect(err)
+          .to.be.an('error')
+          .with.property(
+            'message',
+            messages.getMessage('error.lightning-type-override', ['collection.renderer', 'renderer']),
+          );
+      }
+
+      delete process.env.OPEN_BROWSER;
+    });
+
+    it('resolves lightning type name when component is not found', async () => {
+      process.env.OPEN_BROWSER = 'false';
+      stubHandleLocalDevEnablement(undefined);
+      const lightningTypeName = 'ExampleType';
+      const lightningTypePath = '/force-app/main/default/lightningTypes/ExampleType/exampleBundle/renderer.json';
+      $$.SANDBOX.stub(ComponentUtils, 'getLightningTypeJsonPathsByName').resolves([lightningTypePath]);
+      $$.SANDBOX.stub(ComponentUtils, 'getLightningTypeOverrideOptions').resolves([
+        {
+          id: 'renderer',
+          label: 'renderer',
+          definition: 'c/component1',
+          componentName: 'component1',
+        },
+      ]);
+      $$.SANDBOX.stub(ComponentUtils, 'getNamespacePaths').resolves(['/test/namespace']);
+      $$.SANDBOX.stub(ComponentUtils, 'getAllComponentPaths').resolves(['/test/namespace/component1']);
+      $$.SANDBOX.stub(ComponentUtils, 'getComponentMetadata').resolves({
+        LightningComponentBundle: {
+          masterLabel: 'Test Component',
+          description: 'Test description',
+        },
+      });
+      $$.SANDBOX.stub(ComponentUtils, 'componentNameToTitleCase').returns('Component1');
+      $$.SANDBOX.stub(OclifConfig.prototype, 'runCommand').resolves();
+
+      await MockedLightningDevComponent.run(['--name', lightningTypeName, '-o', testOrgData.username]);
+
+      delete process.env.OPEN_BROWSER;
+    });
+
+    it('throws when both name and lightning type path are provided', async () => {
+      process.env.OPEN_BROWSER = 'false';
+      stubHandleLocalDevEnablement(undefined);
+      const lightningTypePath = '/force-app/main/default/lightningTypes/ExampleType/exampleBundle/renderer.json';
+
+      try {
+        await MockedLightningDevComponent.run([
+          '--name',
+          'component1',
+          '--lightning-type-path',
+          lightningTypePath,
+          '-o',
+          testOrgData.username,
+        ]);
+        expect.fail('Should have thrown an error');
+      } catch (err) {
+        expect(err).to.be.an('error').with.property('message', messages.getMessage('error.lightning-type-conflict'));
+      }
+
+      delete process.env.OPEN_BROWSER;
+    });
+
+    it('throws when lightning type name matches multiple files', async () => {
+      process.env.OPEN_BROWSER = 'false';
+      stubHandleLocalDevEnablement(undefined);
+      const lightningTypeName = 'ExampleType';
+      const matchingFiles = [
+        '/force-app/main/default/lightningTypes/ExampleType/a/renderer.json',
+        '/force-app/main/default/lightningTypes/ExampleType/b/renderer.json',
+      ];
+      $$.SANDBOX.stub(ComponentUtils, 'getLightningTypeJsonPathsByName').resolves(matchingFiles);
+      $$.SANDBOX.stub(ComponentUtils, 'getLightningTypeOverrideOptions').resolves([
+        {
+          id: 'renderer',
+          label: 'renderer',
+          definition: 'c/component1',
+          componentName: 'component1',
+        },
+      ]);
+      $$.SANDBOX.stub(ComponentUtils, 'getNamespacePaths').resolves(['/test/namespace']);
+      $$.SANDBOX.stub(ComponentUtils, 'getAllComponentPaths').resolves(['/test/namespace/component1']);
+      $$.SANDBOX.stub(ComponentUtils, 'getComponentMetadata').resolves({
+        LightningComponentBundle: {
+          masterLabel: 'Test Component',
+          description: 'Test description',
+        },
+      });
+      $$.SANDBOX.stub(ComponentUtils, 'componentNameToTitleCase').returns('Component1');
+      $$.SANDBOX.stub(OclifConfig.prototype, 'runCommand').resolves();
+
+      try {
+        await MockedLightningDevComponent.run(['--name', lightningTypeName, '-o', testOrgData.username]);
+        expect.fail('Should have thrown an error');
+      } catch (err) {
+        const projectRoot = await SfProject.resolveProjectPath();
+        const expectedPaths = matchingFiles.map((filePath) => path.relative(projectRoot, filePath)).join(', ');
+        expect(err)
+          .to.be.an('error')
+          .with.property(
+            'message',
+            messages.getMessage('error.lightning-type-multiple', [lightningTypeName, expectedPaths]),
+          );
+      }
+
       delete process.env.OPEN_BROWSER;
     });
 
@@ -376,7 +595,7 @@ describe('lightning dev component', () => {
       $$.SANDBOX.stub(ComponentUtils, 'componentNameToTitleCase').returns('Component1');
       $$.SANDBOX.stub(OclifConfig.prototype, 'runCommand').resolves();
 
-      await MockedLightningDevComponent.run(['-n', 'component1', '-o', testOrgData.username]);
+      await MockedLightningDevComponent.run(['--name', 'component1', '-o', testOrgData.username]);
       delete process.env.OPEN_BROWSER;
     });
 
@@ -393,7 +612,7 @@ describe('lightning dev component', () => {
       $$.SANDBOX.stub(ComponentUtils, 'componentNameToTitleCase').returns('Component1');
 
       try {
-        await MockedLightningDevComponent.run(['-n', 'nonexistent', '-o', testOrgData.username]);
+        await MockedLightningDevComponent.run(['--name', 'nonexistent', '-o', testOrgData.username]);
         expect.fail('Should have thrown an error');
       } catch (err) {
         expect(err)

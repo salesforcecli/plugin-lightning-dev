@@ -24,6 +24,7 @@ import {
   Version,
 } from '@salesforce/lwc-dev-mobile-core';
 import { AppDefinition, OrgUtils } from './orgUtils.js';
+import { LightningTypeOverrideOption } from './componentUtils.js';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
 const messages = Messages.loadMessages('@salesforce/plugin-lightning-dev', 'prompts');
@@ -108,6 +109,23 @@ export class PromptUtils {
 
     const response = await select({
       message: messages.getMessage('component.select'),
+      choices,
+    });
+
+    return response;
+  }
+
+  public static async promptUserToSelectLightningTypeOverride(
+    options: LightningTypeOverrideOption[],
+  ): Promise<LightningTypeOverrideOption> {
+    const choices = options.map((option) => ({
+      name: option.label,
+      value: option,
+      description: option.componentName,
+    }));
+
+    const response = await select({
+      message: messages.getMessage('lightning-type.override.select'),
       choices,
     });
 
