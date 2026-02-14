@@ -1,3 +1,9 @@
+## [6.2.6](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.5...6.2.6) (2026-02-14)
+
+### Bug Fixes
+
+- **deps:** bump markdown-it from 14.1.0 to 14.1.1 ([#619](https://github.com/salesforcecli/plugin-lightning-dev/issues/619)) ([ffb0d72](https://github.com/salesforcecli/plugin-lightning-dev/commit/ffb0d72441e330d1151d3ac38b9197b44f0c3f63))
+
 ## [6.2.5](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.4...6.2.5) (2026-02-12)
 
 ### Bug Fixes
