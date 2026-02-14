@@ -1,3 +1,9 @@
+## [6.2.7](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.6...6.2.7) (2026-02-14)
+
+### Bug Fixes
+
+- **deps:** bump glob from 13.0.2 to 13.0.3 ([#618](https://github.com/salesforcecli/plugin-lightning-dev/issues/618)) ([51f125d](https://github.com/salesforcecli/plugin-lightning-dev/commit/51f125de7cb6f9b067201aa33ab78078040312c3))
+
 ## [6.2.6](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.5...6.2.6) (2026-02-14)
 
 ### Bug Fixes
