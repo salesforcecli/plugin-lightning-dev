@@ -27,7 +27,7 @@
     "@oclif/plugin-command-snapshot": "^5.3.8",
     "@salesforce/cli-plugins-testkit": "^5.3.41",
     "@salesforce/dev-scripts": "^11.0.4",
-    "@salesforce/plugin-command-reference": "^3.1.79",
+    "@salesforce/plugin-command-reference": "^3.1.80",
     "@types/node-fetch": "^2.6.13",
     "@types/xml2js": "^0.4.14",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
