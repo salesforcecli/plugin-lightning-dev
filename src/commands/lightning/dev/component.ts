@@ -93,9 +93,9 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
     // In Code Builder, we cannot go to localhost - we need to use a proxy URI to get to the ldpServer
     if (process.env.SF_CONTAINER_MODE && process.env.CODE_BUILDER_FRAMEWORK_PROXY_URI) {
       logger.debug('In Code Builder Mode - using proxy URI');
-      ldpServerUrl = process.env.CODE_BUILDER_FRAMEWORK_PROXY_URI.replace('https://', 'wss://').replace(
+      ldpServerUrl = process.env.CODE_BUILDER_FRAMEWORK_PROXY_URI.replace('https://', 'ws://').replace(
         '{{port}}',
-        `${serverPorts.httpsPort}`,
+        `${serverPorts.httpPort}`,
       );
     } else {
       // Default behavior
