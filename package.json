@@ -41,6 +41,7 @@
     "esmock": "^2.7.3",
     "oclif": "^4.22.77",
     "playwright": "^1.49.0",
+    "@playwright/test": "^1.49.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   },

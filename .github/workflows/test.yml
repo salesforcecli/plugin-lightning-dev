@@ -29,12 +29,16 @@ jobs:
     needs: linux-unit-tests
     uses: salesforcecli/github-workflows/.github/workflows/unitTestsWindows.yml@main
   nuts:
-    needs: linux-unit-tests
-    uses: salesforcecli/github-workflows/.github/workflows/nut.yml@main
-    secrets: inherit
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-      fail-fast: false
-    with:
-      os: ${{ matrix.os }}
+    steps:
+      - name: Install Playwright Browsers
+        run: yarn playwright install --with-deps
+      - name: Run nuts tests
+        needs: linux-unit-tests
+        uses: salesforcecli/github-workflows/.github/workflows/nut.yml@main
+        secrets: inherit
+        strategy:
+          matrix:
+            os: [ubuntu-latest, windows-latest]
+          fail-fast: false
+        with:
+          os: ${{ matrix.os }}
