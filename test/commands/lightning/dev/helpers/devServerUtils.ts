@@ -118,6 +118,7 @@ export function startLightningDevServer(
   const spawnEnv = {
     ...process.env,
     ...env,
+    OPEN_BROWSER: 'false',
     LIGHTNING_DEV_PRINT_PREVIEW_URL: 'true',
   };
   const args = [runJs, 'lightning', 'dev', 'component', '-o', username];
