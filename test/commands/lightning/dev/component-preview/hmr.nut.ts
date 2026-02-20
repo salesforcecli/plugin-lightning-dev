@@ -100,7 +100,9 @@ describe('lightning preview hot module reload', () => {
 
   it('should re-render component and hot reload .css changes', async () => {
     // Assert initial color
-    const greeting = page.locator('.greeting');
+    // Assert initial HTML
+    const greeting = page.getByText(INITIAL_GREETING);
+    expect(await greeting.textContent()).to.equal(INITIAL_GREETING);
     const initialGreetingColor = await greeting.evaluate((e) => window.getComputedStyle(e).color);
     expect(initialGreetingColor).to.equal(BLUE);
 
