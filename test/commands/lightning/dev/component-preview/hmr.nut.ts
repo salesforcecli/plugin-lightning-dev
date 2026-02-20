@@ -77,27 +77,6 @@ describe('lightning preview hot module reload', () => {
     await fs.promises.writeFile(componentJsPath, originalJsContent, 'utf8');
   });
 
-  it('should re-render component and hot reload .html changes', async () => {
-    // Assert initial HTML
-    const greetingLocator = page.getByText(INITIAL_GREETING);
-    expect(await greetingLocator.textContent()).to.equal(INITIAL_GREETING);
-
-    // Update HTML template
-    const componentHtmlPath = path.join(getComponentPath(session, COMPONENT_NAME), `${COMPONENT_NAME}.html`);
-    const originalHtmlContent = await fs.promises.readFile(componentHtmlPath, 'utf8');
-    const modifiedHtmlContent = originalHtmlContent.replace(
-      '<div class="greeting">{greeting}</div>',
-      `<div class="greeting">{greeting}<span>${HMR_GREETING}</span></div>`,
-    );
-    await fs.promises.writeFile(componentHtmlPath, modifiedHtmlContent, 'utf8');
-
-    // Assert updated HTML
-    const hmrMarkerLocator = page.getByText(HMR_GREETING);
-    expect(await hmrMarkerLocator.textContent()).to.equal(HMR_GREETING);
-
-    await fs.promises.writeFile(componentHtmlPath, originalHtmlContent, 'utf8');
-  });
-
   it('should re-render component and hot reload .css changes', async () => {
     // Assert initial color
     // Assert initial HTML
@@ -125,5 +104,26 @@ describe('lightning preview hot module reload', () => {
     }
     expect(greetingColor).to.equal(RED);
     await fs.promises.writeFile(componentCssPath, originalCssContent, 'utf8');
+  });
+
+  it('should re-render component and hot reload .html changes', async () => {
+    // Assert initial HTML
+    const greetingLocator = page.getByText(INITIAL_GREETING);
+    expect(await greetingLocator.textContent()).to.equal(INITIAL_GREETING);
+
+    // Update HTML template
+    const componentHtmlPath = path.join(getComponentPath(session, COMPONENT_NAME), `${COMPONENT_NAME}.html`);
+    const originalHtmlContent = await fs.promises.readFile(componentHtmlPath, 'utf8');
+    const modifiedHtmlContent = originalHtmlContent.replace(
+      '<div class="greeting">{greeting}</div>',
+      `<div class="greeting">{greeting}<span>${HMR_GREETING}</span></div>`,
+    );
+    await fs.promises.writeFile(componentHtmlPath, modifiedHtmlContent, 'utf8');
+
+    // Assert updated HTML
+    const hmrMarkerLocator = page.getByText(HMR_GREETING);
+    expect(await hmrMarkerLocator.textContent()).to.equal(HMR_GREETING);
+
+    await fs.promises.writeFile(componentHtmlPath, originalHtmlContent, 'utf8');
   });
 });
