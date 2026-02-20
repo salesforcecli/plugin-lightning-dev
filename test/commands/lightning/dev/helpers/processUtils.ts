@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
-const CURRENT_FILE_PATH = fileURLToPath(import.meta.url);
-const CURRENT_DIR_PATH = path.dirname(CURRENT_FILE_PATH);
+import { type ChildProcess } from 'node:child_process';
 
-export const PLUGIN_ROOT_PATH = path.resolve(CURRENT_DIR_PATH, '../../../../..');
-export const PROJECT_PATH = path.resolve(PLUGIN_ROOT_PATH, 'test/projects/component-preview-project');
-
-export function toKebabCase(str: string): string {
-  return str
-    .replace(/([a-z0-9])([A-Z])/g, '$1-$2') // insert dash between camelCase boundaries
-    .toLowerCase();
+/**
+ * Clean up a server process and all its child processes. Uses tree-kill so
+ * descendant node processes (e.g. LWR workers) are terminated.
+ */
+export function killServerProcess(serverProcess: ChildProcess | undefined): void {
+  // Clean up
+  try {
+    if (serverProcess?.pid && process.kill(serverProcess.pid, 0)) {
+      process.kill(serverProcess.pid, 'SIGTERM');
+    }
+  } catch (error) {
+    const err = error as NodeJS.ErrnoException;
+    if (err.code !== 'ESRCH') throw error;
+  }
 }

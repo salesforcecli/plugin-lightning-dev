@@ -5,6 +5,7 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "module": "nodenext",
-    "moduleResolution": "nodenext"
+    "moduleResolution": "nodenext",
+    "lib": ["dom", "es2017"]
   }
 }
