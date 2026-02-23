@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { TestSession } from '@salesforce/cli-plugins-testkit';
+import { PROJECT_PATH } from './utils.js';
 
-const CURRENT_FILE_PATH = fileURLToPath(import.meta.url);
-const CURRENT_DIR_PATH = path.dirname(CURRENT_FILE_PATH);
+let cachedSession: TestSession;
 
-export const PLUGIN_ROOT_PATH = path.resolve(CURRENT_DIR_PATH, '../../../../..');
-export const PROJECT_PATH = path.resolve(PLUGIN_ROOT_PATH, 'test/projects/component-preview-project');
+export async function getSession(): Promise<TestSession> {
+  if (!cachedSession) {
+    cachedSession = await TestSession.create({
+      devhubAuthStrategy: 'AUTO',
+      project: { sourceDir: PROJECT_PATH },
+    });
+  }
+  return new Promise((r) => r(cachedSession));
+}
 
-export function toKebabCase(str: string): string {
-  return str
-    .replace(/([a-z0-9])([A-Z])/g, '$1-$2') // insert dash between camelCase boundaries
-    .toLowerCase();
+export function getComponentPath(session: TestSession, componentName: string) {
+  return path.join(session.project?.dir, 'force-app', 'main', 'default', 'lwc', componentName);
 }

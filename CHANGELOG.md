@@ -1,3 +1,27 @@
+## [6.2.12](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.11...6.2.12) (2026-02-22)
+
+### Bug Fixes
+
+- **deps:** bump @lwrjs/api from 0.21.5 to 0.21.8 ([#630](https://github.com/salesforcecli/plugin-lightning-dev/issues/630)) ([bd46490](https://github.com/salesforcecli/plugin-lightning-dev/commit/bd46490bb724bee54b235b0474abe824aaf6935e))
+
+## [6.2.11](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.10...6.2.11) (2026-02-22)
+
+### Bug Fixes
+
+- **deps:** bump @salesforce/core from 8.25.1 to 8.26.2 ([#632](https://github.com/salesforcecli/plugin-lightning-dev/issues/632)) ([da0b067](https://github.com/salesforcecli/plugin-lightning-dev/commit/da0b0678f3d924c354dab9d8e88c443cbff2003a))
+
+## [6.2.10](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.9...6.2.10) (2026-02-21)
+
+### Bug Fixes
+
+- **deps:** bump glob from 13.0.5 to 13.0.6 ([#628](https://github.com/salesforcecli/plugin-lightning-dev/issues/628)) ([8af0831](https://github.com/salesforcecli/plugin-lightning-dev/commit/8af0831e3aa2152e84dbe8b6f5581a2845495923))
+
+## [6.2.9](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.8...6.2.9) (2026-02-18)
+
+### Bug Fixes
+
+- **deps:** bump glob from 13.0.4 to 13.0.5 ([#625](https://github.com/salesforcecli/plugin-lightning-dev/issues/625)) ([7a3c708](https://github.com/salesforcecli/plugin-lightning-dev/commit/7a3c7088ce925c6d4b68ee1e9a1d9e440bf6ee81))
+
 ## [6.2.8](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.7...6.2.8) (2026-02-18)
 
 ### Bug Fixes
