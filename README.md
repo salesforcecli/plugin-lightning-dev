@@ -135,6 +135,15 @@ yarn && yarn build
 yarn update-snapshots
 ```
 
+## e2e Org configuration (for NUTs)
+
+If a new org is required for NUTs tests, these are the steps to create and configure one.
+
+1. Create a new STM org in [Org Farm](https://orgfarm.salesforce.com/farms)
+2. [Create a Connected App](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_connected_app.htm)
+3. Enable JWT authentication and [test it](https://developer.salesforce.com/docs/atlas.en-us.260.0.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_org_commands_unified.htm#cli_reference_org_login_jwt_unified)
+4. Use the credentials as values for the respective NUTS environment variables.
+
 ## Running NUTs (integration tests) locally
 
 NUTs (integration tests) run the plugin against a real org and, for component-preview tests, a real browser (Playwright). To run them locally:
