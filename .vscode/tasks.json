@@ -4,21 +4,18 @@
   "tasks": [
     {
       "label": "Build CLI Plugin",
-      "group": { "kind": "build", "isDefault": true },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
       "command": "yarn",
       "type": "shell",
-      "presentation": { "focus": false, "panel": "dedicated" },
+      "presentation": {
+        "focus": false,
+        "panel": "dedicated"
+      },
       "args": ["build"],
       "isBackground": false
-    },
-    {
-      "label": "Compile plugin only",
-      "command": "yarn",
-      "type": "shell",
-      "presentation": { "focus": false, "panel": "shared" },
-      "args": ["compile"],
-      "isBackground": false,
-      "problemMatcher": "$tsc"
     }
   ]
 }
