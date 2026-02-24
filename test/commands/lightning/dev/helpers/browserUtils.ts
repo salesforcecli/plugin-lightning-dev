@@ -16,6 +16,14 @@
 
 import { chromium, type Browser, type Page } from 'playwright';
 
+/**
+ * Launches a headless (or headed, if HEADED env is set) browser, navigates to the component preview URL,
+ * and optionally sets the session cookie for authenticated preview.
+ *
+ * @param previewUrl - Full URL of the LWC component preview (e.g. from getPreviewURL).
+ * @param accessToken - Optional org access token; if set, adds a 'sid' cookie so the preview page is authenticated.
+ * @returns Promise resolving to the Playwright browser and page; caller must close them when done.
+ */
 export async function getPreview(
   previewUrl: string,
   accessToken: string | undefined,

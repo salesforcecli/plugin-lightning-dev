@@ -16,13 +16,23 @@
 import { spawn, ChildProcessByStdio, ChildProcessWithoutNullStreams } from 'node:child_process';
 import { Readable } from 'node:stream';
 import type { Writable } from 'node:stream';
-import path from 'node:path';
 import { type ChildProcess } from 'node:child_process';
-import { PLUGIN_ROOT_PATH } from './utils.js';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
+const CURRENT_FILE_PATH = fileURLToPath(import.meta.url);
+const CURRENT_DIR_PATH = path.dirname(CURRENT_FILE_PATH);
 const PREVIEW_URL_REGEX = /(https:\/\/[^\s]*\/lwr\/application\/[^\s]+)/;
 const MAX_WAIT_MS = 30_000;
 
+export const PLUGIN_ROOT_PATH = path.resolve(CURRENT_DIR_PATH, '../../../../..');
+
+/**
+ * Extracts the first LWR preview URL from process output.
+ *
+ * @param output - Accumulated stdout/stderr text from the dev server.
+ * @returns The preview URL if found, otherwise null.
+ */
 function parsePreviewUrl(output: string): string | null {
   const match = output.match(PREVIEW_URL_REGEX);
   return match?.[1]?.trim() ?? null;
@@ -32,7 +42,8 @@ function parsePreviewUrl(output: string): string | null {
  * Wait for the preview URL to appear on the given stdout stream (e.g. childProcess.stdout).
  * The preview URL is only ever printed to stdout.
  *
- * @param stdout - Readable stream (e.g. from a spawned process)
+ * @param stdout - Readable stream (e.g. from a spawned process).
+ * @returns Promise that resolves with the preview URL, or rejects after MAX_WAIT_MS if not found.
  */
 export function getPreviewURL(stdout: Readable): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -55,9 +66,9 @@ export function getPreviewURL(stdout: Readable): Promise<string> {
 /**
  * Wait until the given prompt string appears in the process output (stdout or stderr).
  *
- * @param child - Spawned process with piped stdio
- * @param prompt - Substring that indicates the prompt is shown
- * @returns The combined output collected so far, so callers can assert on it
+ * @param child - Spawned process with piped stdio.
+ * @param prompt - Substring that indicates the prompt is shown.
+ * @returns Promise that resolves with the combined output collected so far; rejects after MAX_WAIT_MS if prompt not seen.
  */
 export function waitForPrompt(
   child: ChildProcessByStdio<Writable, Readable, Readable>,
@@ -85,7 +96,10 @@ export function waitForPrompt(
 }
 
 /**
- * Collect stdout and stderr until the process exits. Resolves with exit code, signal, and combined output.
+ * Collect stdout and stderr until the process exits.
+ *
+ * @param child - Spawned process with piped stdio.
+ * @returns Promise that resolves with exit code, signal, stdout, and stderr; rejects after MAX_WAIT_MS if process has not exited.
  */
 export function waitForProcessExit(
   child: ChildProcessByStdio<Writable, Readable, Readable>,
@@ -109,6 +123,16 @@ export function waitForProcessExit(
   });
 }
 
+/**
+ * Spawns the Lightning dev component server (sf lightning dev component) for NUTs.
+ * Sets OPEN_BROWSER=false and LIGHTNING_DEV_PRINT_PREVIEW_URL=true so tests can capture the URL and drive the browser.
+ *
+ * @param projectDir - Path to the project root (e.g. session.project.dir).
+ * @param username - Target org username or alias (passed as -o).
+ * @param env - Optional env vars merged into the process environment.
+ * @param componentName - Optional component name (--name); if omitted, the CLI may prompt.
+ * @returns The spawned child process with piped stdio; use getPreviewURL(stdout) to get the preview URL.
+ */
 export function startLightningDevServer(
   projectDir: string,
   username: string = '',
@@ -133,8 +157,12 @@ export function startLightningDevServer(
   });
 }
 
+/**
+ * Terminates the dev server process and ignores ESRCH (process already exited).
+ *
+ * @param serverProcess - The child process returned from startLightningDevServer, or undefined.
+ */
 export function killServerProcess(serverProcess: ChildProcess | undefined): void {
-  // Clean up
   try {
     if (serverProcess?.pid && process.kill(serverProcess.pid, 0)) {
       process.kill(serverProcess.pid, 'SIGKILL');
