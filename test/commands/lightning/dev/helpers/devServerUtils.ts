@@ -19,6 +19,7 @@ import type { Writable } from 'node:stream';
 import { type ChildProcess } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { TestSession } from '@salesforce/cli-plugins-testkit';
 
 const CURRENT_FILE_PATH = fileURLToPath(import.meta.url);
 const CURRENT_DIR_PATH = path.dirname(CURRENT_FILE_PATH);
@@ -134,11 +135,14 @@ export function waitForProcessExit(
  * @returns The spawned child process with piped stdio; use getPreviewURL(stdout) to get the preview URL.
  */
 export function startLightningDevServer(
-  projectDir: string,
-  username: string = '',
+  session: TestSession,
   env = {},
   componentName?: string,
 ): ChildProcessWithoutNullStreams {
+  const scratchOrg = session.orgs.get('default');
+  const username = scratchOrg?.username ?? '';
+  const projectDir = session.project?.dir ?? '';
+
   const runJs = path.join(PLUGIN_ROOT_PATH, 'bin', 'run.js');
   const spawnEnv = {
     ...process.env,

@@ -45,7 +45,7 @@ describe('lightning preview component prompts', () => {
 
   beforeEach(async () => {
     session = await getSession();
-    const org = await Org.create({ aliasOrUsername: session.hubOrg.username });
+    const org = await Org.create({ aliasOrUsername: session.orgs.get('default')?.username });
     connection = org.getConnection();
     // Unset required org configuration to trigger prompt behavior
     await MetaUtils.setLightningPreviewEnabled(connection, false);
@@ -59,7 +59,7 @@ describe('lightning preview component prompts', () => {
   });
 
   it('should error out when local dev is not enabled and AUTO_ENABLE_LOCAL_DEV is false', async () => {
-    childProcess = startLightningDevServer(session.project?.dir, session.hubOrg.username, {
+    childProcess = startLightningDevServer(session, {
       AUTO_ENABLE_LOCAL_DEV: false,
     });
 
@@ -69,7 +69,7 @@ describe('lightning preview component prompts', () => {
   });
 
   it('should error out when user answers "n" to enable local dev prompt', async () => {
-    childProcess = startLightningDevServer(session.project?.dir, session.hubOrg.username);
+    childProcess = startLightningDevServer(session);
 
     // Wait for enable local dev prompt and answer Y to enable local dev
     await waitForPrompt(childProcess, promptMessages.getMessage('component.enable-local-dev'));
@@ -81,7 +81,7 @@ describe('lightning preview component prompts', () => {
   });
 
   it('should enable local dev and disable first party cookies and render page after selecting component when user answers "Y" to enable local dev', async () => {
-    childProcess = startLightningDevServer(session.project?.dir, session.hubOrg.username);
+    childProcess = startLightningDevServer(session);
 
     // Wait for enable local dev prompt and answer Y to enable local dev
     await waitForPrompt(childProcess, promptMessages.getMessage('component.enable-local-dev'));
@@ -92,7 +92,7 @@ describe('lightning preview component prompts', () => {
     childProcess.stdin?.write('\n');
 
     const previewUrl = await getPreviewURL(childProcess.stdout);
-    ({ browser, page } = await getPreview(previewUrl, session.hubOrg.accessToken));
+    ({ browser, page } = await getPreview(previewUrl, session));
 
     const greetingLocator = page.getByText('Hello World');
     await greetingLocator.waitFor({ state: 'visible' });
@@ -100,15 +100,10 @@ describe('lightning preview component prompts', () => {
   });
 
   it('should render without a prompt and disable first party cookies when AUTO_ENABLE_LOCAL_DEV=true', async () => {
-    childProcess = startLightningDevServer(
-      session.project?.dir,
-      session.hubOrg.username,
-      { AUTO_ENABLE_LOCAL_DEV: 'true' },
-      COMPONENT_NAME,
-    );
+    childProcess = startLightningDevServer(session, { AUTO_ENABLE_LOCAL_DEV: 'true' }, COMPONENT_NAME);
 
     const previewUrl = await getPreviewURL(childProcess.stdout);
-    ({ browser, page } = await getPreview(previewUrl, session.hubOrg.accessToken));
+    ({ browser, page } = await getPreview(previewUrl, session));
 
     const greetingLocator = page.getByText('Hello World');
     await greetingLocator.waitFor({ state: 'visible' });

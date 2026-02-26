@@ -32,6 +32,12 @@ export async function getSession(): Promise<TestSession> {
     cachedSession = await TestSession.create({
       devhubAuthStrategy: 'AUTO',
       project: { sourceDir: PROJECT_PATH },
+      scratchOrgs: [
+        {
+          config: 'config/project-scratch-def.json',
+          setDefault: true,
+        },
+      ],
     });
   }
   return new Promise((r) => r(cachedSession));

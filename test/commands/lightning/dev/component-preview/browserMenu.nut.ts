@@ -35,14 +35,9 @@ describe('lightning preview menu', () => {
 
   beforeEach(async () => {
     session = await getSession();
-    childProcess = startLightningDevServer(
-      session.project?.dir ?? '',
-      session.hubOrg.username,
-      { AUTO_ENABLE_LOCAL_DEV: 'true' },
-      COMPONENT_NAME,
-    );
+    childProcess = startLightningDevServer(session, { AUTO_ENABLE_LOCAL_DEV: 'true' }, COMPONENT_NAME);
     const previewUrl = await getPreviewURL(childProcess.stdout);
-    ({ browser, page } = await getPreview(previewUrl, session.hubOrg.accessToken));
+    ({ browser, page } = await getPreview(previewUrl, session));
   });
 
   afterEach(async () => {
