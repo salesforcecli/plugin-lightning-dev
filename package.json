@@ -78,6 +78,7 @@
     "topics": {
       "lightning": {
         "external": true,
+        "description": "Commands to work with Lightning applications.",
         "subtopics": {
           "dev": {
             "description": "Preview applications and sites locally and in real-time, without deploying them."
