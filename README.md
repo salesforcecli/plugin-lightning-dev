@@ -140,9 +140,12 @@ yarn update-snapshots
 If a new org is required for NUTs tests, these are the steps to create and configure one.
 
 1. Create a new STM org in [Org Farm](https://orgfarm.salesforce.com/farms)
-2. [Create a Connected App](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_connected_app.htm)
-3. Enable JWT authentication and [test it](https://developer.salesforce.com/docs/atlas.en-us.260.0.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_org_commands_unified.htm#cli_reference_org_login_jwt_unified)
-4. Use the credentials as values for the respective NUTS environment variables.
+2. [Enable DevHub for Scratch Org Creation](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_setup_enable_devhub.htm)
+3. Enable the following org perm: CreateConnectedApps
+4. Increase the following org limits to 99: ProvScratchActiveLimit, ProvScratchDailyLimit, ScratchRequestActiveCount, ScratchRequestActiveLimit, ScratchRequestDailyLimit
+5. [Create a Connected App](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_connected_app.htm)
+6. Enable JWT authentication and [test it](https://developer.salesforce.com/docs/atlas.en-us.260.0.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_org_commands_unified.htm#cli_reference_org_login_jwt_unified)
+7. Use the credentials as values for the respective NUTS environment variables.
 
 ## Running NUTs (integration tests) locally
 
@@ -150,9 +153,10 @@ NUTs (integration tests) run the plugin against a real org and, for component-pr
 
 1. **Environment variables**  
    Copy `.env.template` to `.env` and set the values for your Dev Hub org and test setup:
-   - `TESTKIT_JWT_KEY`, `TESTKIT_JWT_CLIENT_ID` – JWT auth for the test org
-   - `TESTKIT_HUB_USERNAME`, `TESTKIT_HUB_INSTANCE` – Dev Hub org
-   - `TESTKIT_EXECUTABLE_PATH` – path to the `sf` CLI (default in template is `./node_modules/.bin/sf`)
+   - `TESTKIT_JWT_KEY` - ./server.key from JWT configuration
+   - `TESTKIT_JWT_CLIENT_ID` – Client id from JWT configuration
+   - `TESTKIT_HUB_USERNAME` - Dev Hub username
+   - `TESTKIT_HUB_INSTANCE` – Dev Hub login URL
 
 2. **Run all NUTs** (loads variables from `.env` via `dotenv/config`):
 
