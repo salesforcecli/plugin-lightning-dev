@@ -40,6 +40,36 @@
       "smartStep": true,
       "internalConsoleOptions": "openOnSessionStart",
       "preLaunchTask": "Compile tests"
+    },
+    {
+      "name": "Run Nuts Test",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "--no-deprecation",
+        "--no-warnings",
+        "-r",
+        "dotenv/config",
+        "--loader",
+        "ts-node/esm",
+        "--loader",
+        "esmock"
+      ],
+      "program": "${workspaceFolder}/node_modules/mocha/lib/cli/cli.js",
+      "args": ["${file}", "--slow", "4500", "--timeout", "600000"],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "NODE_ENV": "development",
+        "SFDX_ENV": "development",
+        "TS_NODE_PROJECT": "test/tsconfig.json"
+      },
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**"],
+      "internalConsoleOptions": "openOnSessionStart",
+      "console": "integratedTerminal",
+      "preLaunchTask": "Compile plugin only"
     }
   ]
 }

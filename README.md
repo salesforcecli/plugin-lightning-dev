@@ -135,6 +135,53 @@ yarn && yarn build
 yarn update-snapshots
 ```
 
+## e2e Org configuration (for NUTs)
+
+If a new org is required for NUTs tests, these are the steps to create and configure one.
+
+1. Create a new STM org in [Org Farm](https://orgfarm.salesforce.com/farms)
+2. [Enable DevHub for Scratch Org Creation](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_setup_enable_devhub.htm)
+3. Enable the following org perm: CreateConnectedApps
+4. Increase the following org limits to 99: ProvScratchActiveLimit, ProvScratchDailyLimit, ScratchRequestActiveCount, ScratchRequestActiveLimit, ScratchRequestDailyLimit
+5. [Create a Connected App](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_connected_app.htm)
+6. Enable JWT authentication and [test it](https://developer.salesforce.com/docs/atlas.en-us.260.0.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_org_commands_unified.htm#cli_reference_org_login_jwt_unified)
+7. Use the credentials as values for the respective NUTS environment variables.
+
+## Running NUTs (integration tests) locally
+
+NUTs (e2e integration tests) run the plugin against a real org and, for component-preview tests, a real browser (Playwright). To run them locally:
+
+1. **Environment variables**  
+   Copy `.env.template` to `.env` and set the values for your Dev Hub org and test setup:
+   - `TESTKIT_JWT_KEY` - ./server.key from JWT configuration
+   - `TESTKIT_JWT_CLIENT_ID` – Client id from JWT configuration
+   - `TESTKIT_HUB_USERNAME` - Dev Hub username
+   - `TESTKIT_HUB_INSTANCE` – Dev Hub login URL
+
+2. **Run all NUTs** (loads variables from `.env` via `dotenv/config`):
+
+   ```bash
+   yarn test:nuts:local
+   ```
+
+3. **Run a single NUT file** (e.g. one test file):
+
+   ```bash
+   yarn test:nut:local path/to/file.nut.ts
+   ```
+
+4. **Run with a visible browser** (headed mode) for debugging:
+
+   ```bash
+   HEADED=true yarn test:nuts:local
+   ```
+
+   or, for a single file:
+
+   ```bash
+   HEADED=true yarn test:nut:local path/to/file.nut.ts
+   ```
+
 ## Commands
 
 <!-- commands -->

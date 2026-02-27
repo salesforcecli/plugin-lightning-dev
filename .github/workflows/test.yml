@@ -31,10 +31,12 @@ jobs:
   nuts:
     needs: linux-unit-tests
     uses: salesforcecli/github-workflows/.github/workflows/nut.yml@main
-    secrets: inherit
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
       fail-fast: false
     with:
       os: ${{ matrix.os }}
+      command: yarn test:nuts
+      retries: 5
+    secrets: inherit
