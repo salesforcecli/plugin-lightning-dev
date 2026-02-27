@@ -203,7 +203,7 @@ EXAMPLES
     $ sf lightning dev app --target-org myOrg --device-type ios --device-id "iPhone 15 Pro Max"
 ```
 
-_See code: [src/commands/lightning/dev/app.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/6.2.12/src/commands/lightning/dev/app.ts)_
+_See code: [src/commands/lightning/dev/app.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/6.2.13/src/commands/lightning/dev/app.ts)_
 
 ## `sf lightning dev component`
 
@@ -251,7 +251,7 @@ EXAMPLES
     $ sf lightning dev component --name myComponent
 ```
 
-_See code: [src/commands/lightning/dev/component.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/6.2.12/src/commands/lightning/dev/component.ts)_
+_See code: [src/commands/lightning/dev/component.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/6.2.13/src/commands/lightning/dev/component.ts)_
 
 ## `sf lightning dev site`
 
@@ -259,18 +259,14 @@ _See code: [src/commands/lightning/dev/component.ts](https://github.com/salesfor
 
 ```
 USAGE
-  $ sf lightning dev site -o <value> [--flags-dir <value>] [-n <value>] [-l] [--guest] [--ssr] [--api-version <value>]
+  $ sf lightning dev site -o <value> [--flags-dir <value>] [-n <value>] [--api-version <value>]
 
 FLAGS
-  -l, --get-latest           Download the latest version of the specified site from your org, instead of using any local
-                             cache.
   -n, --name=<value>         Name of the Experience Builder site to preview. It has to match a site name from the
                              current org.
   -o, --target-org=<value>   (required) Username or alias of the target org. Not required if the `target-org`
                              configuration variable is already set.
       --api-version=<value>  Override the api version used for api requests made by this command
-      --guest                Preview the site as a guest user (rather than an authenticated user).
-      --ssr                  Preview the SSR bundle
 
 GLOBAL FLAGS
   --flags-dir=<value>  Import flag values from a directory.
@@ -302,12 +298,8 @@ EXAMPLES
   Preview the site "Partner Central" from the org "myOrg":
 
     $ sf lightning dev site --name "Partner Central" --target-org myOrg
-
-  Get and preview the latest version of the "Partner Central" site from the org "myOrg"
-
-    $ sf lightning dev site --name "Partner Central" --target-org myOrg --get-latest
 ```
 
-_See code: [src/commands/lightning/dev/site.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/6.2.12/src/commands/lightning/dev/site.ts)_
+_See code: [src/commands/lightning/dev/site.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/6.2.13/src/commands/lightning/dev/site.ts)_
 
 <!-- commandsstop -->

@@ -45,7 +45,7 @@ jobs:
     uses: salesforcecli/github-workflows/.github/workflows/npmPublish.yml@main
     needs: [getDistTag, getMajorVersion]
     with:
-      #ctc: true
+      ctc: true
       sign: true
       # At CLCO, the new patch branch's version will be released as 'prerelease'. After R2b, delete the logic below for 'latest' and update 'prerelease' candidate to 'latest'
       tag: ${{ needs.getDistTag.outputs.tag || (needs.getMajorVersion.outputs.major == '4' && 'latest') || (needs.getMajorVersion.outputs.major == '5' && 'prerelease') || 'next' }}

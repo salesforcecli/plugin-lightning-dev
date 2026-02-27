@@ -1,3 +1,5 @@
+## [6.2.13](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.12...6.2.13) (2026-02-27)
+
 ## [6.2.12](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.11...6.2.12) (2026-02-22)
 
 ### Bug Fixes

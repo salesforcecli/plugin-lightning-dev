@@ -23,25 +23,10 @@ For more considerations and limitations, see the Lightning Web Components Develo
 
 Name of the Experience Builder site to preview. It must match a site name from the current org.
 
-# flags.get-latest.summary
-
-Download the latest version of the specified site from your org, instead of using any local cache.
-
-# flags.guest.summary
-
-Preview the site as a guest user (rather than an authenticated user).
-
-# flags.ssr.summary
-
-Preview the server-side rendering (SSR) bundle.
-
 # examples
 
-- Select a site to preview from the org "myOrg":
+- Select a site to preview from the org with alias "myOrg":
   <%= config.bin %> <%= command.id %> --target-org myOrg
 
 - Preview the site "Partner Central" from your default org:
-  <%= config.bin %> <%= command.id %> --name "Partner Central"
-
-- Get and preview the latest version of the "Partner Central" site from the org "myOrg"
-  <%= config.bin %> <%= command.id %> --name "Partner Central" --target-org myOrg --get-latest
+  <%= config.bin %> <%= command.id %> --name "Partner Central" 
