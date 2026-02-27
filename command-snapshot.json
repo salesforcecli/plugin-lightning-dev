@@ -19,8 +19,8 @@
     "alias": [],
     "command": "lightning:dev:site",
     "flagAliases": [],
-    "flagChars": ["l", "n", "o"],
-    "flags": ["api-version", "flags-dir", "get-latest", "guest", "name", "ssr", "target-org"],
+    "flagChars": ["n", "o"],
+    "flags": ["api-version", "flags-dir", "name", "target-org"],
     "plugin": "@salesforce/plugin-lightning-dev"
   }
 ]

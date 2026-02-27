@@ -88,7 +88,7 @@ export default class LightningDevApp extends SfCommand<void> {
       throw new Error(sharedMessages.getMessage('error.no-project', [(error as Error)?.message ?? '']));
     }
 
-    logger.debug('Initalizing preview connection and configuring local web server identity');
+    logger.debug('Initializing preview connection and configuring local web server identity');
 
     const connection = targetOrg.getConnection(apiVersion);
 
