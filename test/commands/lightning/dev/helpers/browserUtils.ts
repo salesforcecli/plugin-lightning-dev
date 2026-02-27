@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-import { spawnSync } from 'node:child_process';
 import { chromium, type Browser, type Page } from 'playwright';
-import { TestSession } from '@salesforce/cli-plugins-testkit';
+import { execCmd, TestSession } from '@salesforce/cli-plugins-testkit';
+
+type OrgDisplayUserResult = { accessToken?: string };
 
 /**
  * Returns the access token for frontdoor sid authentication. Required for
- * Playwright testing.
+ * Playwright testing. Uses testkit execCmd so the correct CLI executable is
+ * used on all platforms (e.g. sf on Unix, sf.cmd on Windows).
  *
  * @param session - TestSession with a default scratch org.
  * @returns The session ID string.
@@ -32,23 +34,16 @@ export function getAccessToken(session: TestSession): string {
   if (!username || !projectDir) {
     throw new Error('Session has no default scratch org username or project dir');
   }
-  const result = spawnSync('sf', ['org', 'display', 'user', '-o', username, '--json'], {
+  const result = execCmd<OrgDisplayUserResult>(`org display user -o ${username} --json`, {
     cwd: projectDir,
-    encoding: 'utf8',
-    maxBuffer: 10 * 1024,
+    cli: 'sf',
+    ensureExitCode: 0,
   });
-  if (result.status !== 0) {
-    throw new Error(`sf org display user failed: ${result.stderr ?? result.error?.message ?? 'unknown'}`);
-  }
-  let displayUser: { result?: { accessToken?: string } };
-  try {
-    displayUser = JSON.parse(result.stdout ?? '{}') as { result?: { accessToken?: string } };
-  } catch {
-    throw new Error('sf org display user did not return valid JSON');
-  }
-  const accessToken = displayUser.result?.accessToken ?? '';
+  const accessToken = result.jsonOutput?.result?.accessToken ?? '';
   if (!accessToken) {
-    throw new Error('sf org display user result missing accessToken');
+    throw new Error(
+      `sf org display user result missing accessToken: ${result.shellOutput.stdout} ${result.shellOutput.stderr ?? ''}`,
+    );
   }
   return accessToken;
 }

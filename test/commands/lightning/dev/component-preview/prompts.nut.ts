@@ -45,8 +45,9 @@ describe('lightning preview component prompts', () => {
 
   beforeEach(async () => {
     session = await getSession();
-    const org = await Org.create({ aliasOrUsername: session.orgs.get('default')?.username });
-    connection = org.getConnection();
+    const username = session.orgs.get('default')?.username;
+    const orgController = await Org.create({ aliasOrUsername: username });
+    connection = orgController.getConnection();
     // Unset required org configuration to trigger prompt behavior
     await MetaUtils.setLightningPreviewEnabled(connection, false);
     await MetaUtils.setMyDomainFirstPartyCookieRequirement(connection, true);
