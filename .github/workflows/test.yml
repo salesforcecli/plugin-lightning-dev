@@ -30,76 +30,13 @@ jobs:
     uses: salesforcecli/github-workflows/.github/workflows/unitTestsWindows.yml@main
   nuts:
     needs: linux-unit-tests
-    name: nuts (${{ matrix.os }}) / yarn test:nuts
-    runs-on: ${{ matrix.os }}
+    uses: salesforcecli/github-workflows/.github/workflows/nut.yml@main
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
       fail-fast: false
-    steps:
-      - name: Configure git longpaths if on Windows
-        if: runner.os == 'Windows'
-        run: git config --system core.longpaths true
-
-      - uses: actions/checkout@v4
-
-      - uses: google/wireit@setup-github-actions-caching/v2
-        continue-on-error: true
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-          cache: yarn
-
-      - name: Cache node modules
-        id: cache-nodemodules
-        uses: actions/cache@v4
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
-
-      - name: add CLI as global dependency
-        uses: salesforcecli/github-workflows/.github/actions/retry@main
-        with:
-          max_attempts: 3
-          command: npm install @salesforce/cli@nightly -g
-
-      - uses: salesforcecli/github-workflows/.github/actions/yarnInstallWithRetries@main
-        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
-
-      - name: Install wireit
-        run: yarn add wireit@^0.14.12
-
-      - run: yarn compile
-
-      - name: Install Playwright browsers
-        run: yarn playwright install --with-deps
-
-      - name: Check that oclif config exists
-        id: is-oclif-plugin
-        run: echo "bool=$(jq 'if .oclif then true else false end' package.json)" >> "$GITHUB_OUTPUT"
-
-      - run: yarn oclif manifest
-        if: steps.is-oclif-plugin.outputs.bool == 'true'
-
-      - name: NUTs with 5 attempts
-        uses: salesforcecli/github-workflows/.github/actions/retry@main
-        with:
-          max_attempts: 5
-          command: yarn test:nuts
-          retry_on: error
-        env:
-          TESTKIT_AUTH_URL: ${{ secrets.TESTKIT_AUTH_URL }}
-          TESTKIT_HUB_USERNAME: ${{ secrets.TESTKIT_HUB_USERNAME }}
-          TESTKIT_JWT_CLIENT_ID: ${{ secrets.TESTKIT_JWT_CLIENT_ID }}
-          TESTKIT_JWT_KEY: ${{ secrets.TESTKIT_JWT_KEY }}
-          TESTKIT_HUB_INSTANCE: ${{ secrets.TESTKIT_HUB_INSTANCE }}
-          ONEGP_TESTKIT_AUTH_URL: ${{ secrets.ONEGP_TESTKIT_AUTH_URL }}
-          SF_CHANGE_CASE_SFDX_AUTH_URL: ${{ secrets.SF_CHANGE_CASE_SFDX_AUTH_URL }}
-          SF_CHANGE_CASE_TEMPLATE_ID: ${{ secrets.SF_CHANGE_CASE_TEMPLATE_ID }}
-          SF_CHANGE_CASE_CONFIGURATION_ITEM: ${{ secrets.SF_CHANGE_CASE_CONFIGURATION_ITEM }}
-          TESTKIT_SETUP_RETRIES: 2
-          SF_DISABLE_TELEMETRY: true
-          DEBUG: ${{ vars.DEBUG }}
+    with:
+      os: ${{ matrix.os }}
+      command: yarn test:nuts
+      retries: 5
+    secrets: inherit
