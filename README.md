@@ -149,7 +149,7 @@ If a new org is required for NUTs tests, these are the steps to create and confi
 
 ## Running NUTs (integration tests) locally
 
-NUTs (integration tests) run the plugin against a real org and, for component-preview tests, a real browser (Playwright). To run them locally:
+NUTs (e2e integration tests) run the plugin against a real org and, for component-preview tests, a real browser (Playwright). To run them locally:
 
 1. **Environment variables**  
    Copy `.env.template` to `.env` and set the values for your Dev Hub org and test setup:
