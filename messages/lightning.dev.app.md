@@ -19,7 +19,7 @@ When you make changes directly in your org (like saving new component properties
 
 If you run the command without flags, it displays a list of devices for you to choose from. Then it lists the apps that it found in your local DX project for you to choose. Use the --device or --name flags to bypass the questions. The command also asks if you want to enable Local Dev in your org if it isn't already.
 
-To learn more about Local Dev enablement, considerations, and limitations, see the Lightning Web Components Developer Guide (https://developer.salesforce.com/docs/platform/lwc/guide/get-started-introduction.html).
+To learn more about Local Dev enablement, considerations, and limitations, see the Lightning Web Components Developer Guide (https://developer.salesforce.com/docs/platform/lwc/guide/get-started-test-components.html).
 
 # flags.name.summary
 
