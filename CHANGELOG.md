@@ -1,3 +1,15 @@
+## [6.2.15](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.14...6.2.15) (2026-02-28)
+
+### Bug Fixes
+
+- **deps:** bump rollup from 2.79.2 to 2.80.0 ([#636](https://github.com/salesforcecli/plugin-lightning-dev/issues/636)) ([78b37f8](https://github.com/salesforcecli/plugin-lightning-dev/commit/78b37f81e4986a7c04ad550f235fbcdacdb1d92b))
+
+## [6.2.14](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.13...6.2.14) (2026-02-28)
+
+### Bug Fixes
+
+- **deps:** bump koa from 3.1.1 to 3.1.2 ([#637](https://github.com/salesforcecli/plugin-lightning-dev/issues/637)) ([ebba750](https://github.com/salesforcecli/plugin-lightning-dev/commit/ebba750873a919da18f52185d22b5c84f3905f05))
+
 ## [6.2.13](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.12...6.2.13) (2026-02-27)
 
 ## [6.2.12](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.11...6.2.12) (2026-02-22)

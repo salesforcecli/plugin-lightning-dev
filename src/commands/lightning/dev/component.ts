@@ -186,6 +186,11 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
       await this.config.runCommand('org:open', launchArguments);
     }
 
+    // Emit preview URL for tests (e.g. NUTs that drive Playwright against the preview page)
+    if (process.env.LIGHTNING_DEV_PRINT_PREVIEW_URL === 'true') {
+      this.log(previewUrl);
+    }
+
     return result;
   }
 }
