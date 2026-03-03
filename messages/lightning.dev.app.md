@@ -4,7 +4,7 @@ Preview a Lightning Experience app locally and in real-time, without deploying i
 
 # description
 
-Use Local Dev (Beta) to see local changes to your app in a real-time preview that you don't have to deploy or manually refresh. To let you quickly iterate on your Lightning web components (LWCs) and pages, your app preview automatically refreshes when Local Dev detects source code changes.
+Use Local Dev to see local changes to your app in a real-time preview that you don't have to deploy or manually refresh. To let you quickly iterate on your Lightning web components (LWCs) and pages, your app preview automatically refreshes when Local Dev detects source code changes.
 
 When you edit these local files with Local Dev enabled, your org automatically reflects these changes.
 
@@ -17,7 +17,9 @@ To apply any other local changes not listed above, you must deploy them to your 
 
 When you make changes directly in your org (like saving new component properties), they're automatically deployed to your live app. To update your local version of the app with those changes, you must retrieve them from your org using the `sf project retrieve start` command.
 
-To learn more about Local Dev enablement, considerations, and limitations, see the Lightning Web Components Developer Guide.
+If you run the command without flags, it displays a list of devices for you to choose from. Then it lists the apps that it found in your local DX project for you to choose. Use the --device or --name flags to bypass the questions. The command also asks if you want to enable Local Dev in your org if it isn't already.
+
+To learn more about Local Dev enablement, considerations, and limitations, see the Lightning Web Components Developer Guide (https://developer.salesforce.com/docs/platform/lwc/guide/get-started-test-components.html).
 
 # flags.name.summary
 
@@ -33,15 +35,15 @@ ID of the mobile device to display the preview if device type is set to `ios` or
 
 # error.fetching.app-id
 
-Unable to determine App Id for %s
+Unable to determine App Id for %s.
 
 # error.device.notfound
 
-Unable to find device %s
+Unable to find device %s.
 
 # error.device.google.play
 
-Google Play devices are not supported. %s is a Google Play device. Please use a Google APIs device instead.
+Google Play devices aren't supported. %s is a Google Play device. Use a Google APIs device instead.
 
 # spinner.device.boot
 
@@ -87,7 +89,9 @@ Note: Your desktop browser requires additional configuration to trust the local 
 
 - Preview the default app for the target org "myOrg" in a desktop environment:
   <%= config.bin %> <%= command.id %> --target-org myOrg
+
 - Preview the app "myApp" for the target org "myOrg" in a desktop environment:
   <%= config.bin %> <%= command.id %> --name MyApp --target-org myOrg --device-type desktop
+
 - Preview the default app for target org "myOrg" on an iOS device:
   <%= config.bin %> <%= command.id %> --target-org myOrg --device-type ios --device-id "iPhone 15 Pro Max"
