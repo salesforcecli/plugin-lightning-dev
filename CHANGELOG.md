@@ -1,3 +1,9 @@
+## [6.2.16](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.15...6.2.16) (2026-03-12)
+
+### Bug Fixes
+
+- use CODE_BUILDER_PROXY_URI since it's already authenticated ([f71e77e](https://github.com/salesforcecli/plugin-lightning-dev/commit/f71e77ebd602dabb31211dfa5afde6059589d3a9))
+
 ## [6.2.15](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.14...6.2.15) (2026-02-28)
 
 ### Bug Fixes

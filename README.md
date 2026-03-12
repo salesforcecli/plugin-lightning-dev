@@ -215,7 +215,7 @@ GLOBAL FLAGS
 DESCRIPTION
   Preview a Lightning Experience app locally and in real-time, without deploying it.
 
-  Use Local Dev (Beta) to see local changes to your app in a real-time preview that you don't have to deploy or manually
+  Use Local Dev to see local changes to your app in a real-time preview that you don't have to deploy or manually
   refresh. To let you quickly iterate on your Lightning web components (LWCs) and pages, your app preview automatically
   refreshes when Local Dev detects source code changes.
 
@@ -233,8 +233,12 @@ DESCRIPTION
   your live app. To update your local version of the app with those changes, you must retrieve them from your org using
   the `sf project retrieve start` command.
 
+  If you run the command without flags, it displays a list of devices for you to choose from. Then it lists the apps
+  that it found in your local DX project for you to choose. Use the --device or --name flags to bypass the questions.
+  The command also asks if you want to enable Local Dev in your org if it isn't already.
+
   To learn more about Local Dev enablement, considerations, and limitations, see the Lightning Web Components Developer
-  Guide.
+  Guide (https://developer.salesforce.com/docs/platform/lwc/guide/get-started-test-components.html).
 
 EXAMPLES
   Preview the default app for the target org "myOrg" in a desktop environment:
@@ -250,18 +254,18 @@ EXAMPLES
     $ sf lightning dev app --target-org myOrg --device-type ios --device-id "iPhone 15 Pro Max"
 ```
 
-_See code: [src/commands/lightning/dev/app.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/6.2.15/src/commands/lightning/dev/app.ts)_
+_See code: [src/commands/lightning/dev/app.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/6.2.16/src/commands/lightning/dev/app.ts)_
 
 ## `sf lightning dev component`
 
-[Beta] Preview LWC components in isolation.
+Preview LWC components in isolation.
 
 ```
 USAGE
   $ sf lightning dev component -o <value> [--json] [--flags-dir <value>] [-n <value>] [--api-version <value>] [-c]
 
 FLAGS
-  -c, --client-select        Launch component preview without selecting a component
+  -c, --client-select        Launch component preview without selecting a component.
   -n, --name=<value>         Name of a component to preview.
   -o, --target-org=<value>   (required) Username or alias of the target org. Not required if the `target-org`
                              configuration variable is already set.
@@ -272,7 +276,7 @@ GLOBAL FLAGS
   --json               Format output as json.
 
 DESCRIPTION
-  [Beta] Preview LWC components in isolation.
+  Preview LWC components in isolation.
 
   Component preview launches an isolated development environment for Lightning Web Components, enabling rapid iteration
   without needing to deploy changes. The server provides real-time previews of your components through hot module
@@ -286,31 +290,36 @@ DESCRIPTION
   - Adding or updating internal component dependencies
   - Modifying static resources used by the component
 
-  See the LWC Development Guide for more information about component development best practices and limitations.
+  If you run the command without flags, it displays a list of components that it found in your local DX project for you
+  to choose to preview. Use the --name flag to bypass the question. The command also asks if you want to enable Local
+  Dev in your org if it isn't already.
+
+  See the LWC Developer Guide for more information about component development best practices and limitations
+  (https://developer.salesforce.com/docs/platform/lwc/guide/get-started-best-practices.html).
 
 EXAMPLES
-  Select a component and launch the component preview:
+  Select a component interactively and launch the component preview; use your default org:
 
     $ sf lightning dev component
 
-  Launch component preview for "myComponent":
+  Launch component preview for "myComponent"; use the org with alias "myscratch":
 
-    $ sf lightning dev component --name myComponent
+    $ sf lightning dev component --name myComponent --target-org myscratch
 ```
 
-_See code: [src/commands/lightning/dev/component.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/6.2.15/src/commands/lightning/dev/component.ts)_
+_See code: [src/commands/lightning/dev/component.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/6.2.16/src/commands/lightning/dev/component.ts)_
 
 ## `sf lightning dev site`
 
-[Beta] Preview an Experience Builder site locally and in real-time, without deploying it.
+Preview an Experience Builder site locally and in real-time, without deploying it.
 
 ```
 USAGE
   $ sf lightning dev site -o <value> [--flags-dir <value>] [-n <value>] [--api-version <value>]
 
 FLAGS
-  -n, --name=<value>         Name of the Experience Builder site to preview. It has to match a site name from the
-                             current org.
+  -n, --name=<value>         Name of the Experience Builder site to preview. It must match a site name from the current
+                             org.
   -o, --target-org=<value>   (required) Username or alias of the target org. Not required if the `target-org`
                              configuration variable is already set.
       --api-version=<value>  Override the api version used for api requests made by this command
@@ -319,7 +328,7 @@ GLOBAL FLAGS
   --flags-dir=<value>  Import flag values from a directory.
 
 DESCRIPTION
-  [Beta] Preview an Experience Builder site locally and in real-time, without deploying it.
+  Preview an Experience Builder site locally and in real-time, without deploying it.
 
   Enable Local Dev to see local changes to your site in a real-time preview that you don't have to deploy or manually
   refresh. To let you quickly iterate on your Lightning web components (LWCs) and pages, your site preview automatically
@@ -335,18 +344,22 @@ DESCRIPTION
   To apply any other local changes not listed above, you must deploy them to your org using the `sf project deploy
   start` command. Then republish your site and restart the server for the Local Dev experience.
 
+  If you run the command without flags, it displays a list of Experience Builder sites that it found in your local DX
+  project for you to choose from. Use the --name flag to bypass the question. The command also asks if you want to
+  enable Local Dev in your org if it isn't already.
+
   For more considerations and limitations, see the Lightning Web Components Developer Guide.
 
 EXAMPLES
-  Select a site to preview from the org "myOrg":
+  Select a site to preview from the org with alias "myOrg":
 
     $ sf lightning dev site --target-org myOrg
 
-  Preview the site "Partner Central" from the org "myOrg":
+  Preview the site "Partner Central" from your default org:
 
-    $ sf lightning dev site --name "Partner Central" --target-org myOrg
+    $ sf lightning dev site --name "Partner Central"
 ```
 
-_See code: [src/commands/lightning/dev/site.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/6.2.15/src/commands/lightning/dev/site.ts)_
+_See code: [src/commands/lightning/dev/site.ts](https://github.com/salesforcecli/plugin-lightning-dev/blob/6.2.16/src/commands/lightning/dev/site.ts)_
 
 <!-- commandsstop -->
