@@ -149,7 +149,13 @@ If a new org is required for NUTs tests, these are the steps to create and confi
 
 ## Running NUTs (integration tests) locally
 
-NUTs (e2e integration tests) run the plugin against a real org and, for component-preview tests, a real browser (Playwright). To run them locally:
+NUTs (e2e integration tests) run the plugin against a real org and, for component-preview tests, a real browser (Playwright). Playwright browsers are installed automatically on CI but must be installed manually for local runs:
+
+```bash
+npx playwright install --with-deps
+```
+
+To run NUTs locally:
 
 1. **Environment variables**  
    Copy `.env.template` to `.env` and set the values for your Dev Hub org and test setup:
