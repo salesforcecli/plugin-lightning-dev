@@ -37,6 +37,6 @@ jobs:
       fail-fast: false
     with:
       os: ${{ matrix.os }}
-      command: npx playwright install --with-deps && yarn test:nuts
+      command: yarn test:nuts
       retries: 5
     secrets: inherit
