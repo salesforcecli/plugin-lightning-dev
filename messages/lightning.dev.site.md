@@ -1,6 +1,6 @@
 # summary
 
-[Beta] Preview an Experience Builder site locally and in real-time, without deploying it.
+Preview an Experience Builder site locally and in real-time, without deploying it.
 
 # description
 
@@ -15,15 +15,18 @@ When you edit these local files with Local Dev enabled, your org automatically r
 
 To apply any other local changes not listed above, you must deploy them to your org using the `sf project deploy start` command. Then republish your site and restart the server for the Local Dev experience.
 
+If you run the command without flags, it displays a list of Experience Builder sites that it found in your local DX project for you to choose from. Use the --name flag to bypass the question. The command also asks if you want to enable Local Dev in your org if it isn't already.
+
 For more considerations and limitations, see the Lightning Web Components Developer Guide.
 
 # flags.name.summary
 
-Name of the Experience Builder site to preview. It has to match a site name from the current org.
+Name of the Experience Builder site to preview. It must match a site name from the current org.
 
 # examples
 
-- Select a site to preview from the org "myOrg":
+- Select a site to preview from the org with alias "myOrg":
   <%= config.bin %> <%= command.id %> --target-org myOrg
-- Preview the site "Partner Central" from the org "myOrg":
-  <%= config.bin %> <%= command.id %> --name "Partner Central" --target-org myOrg
+
+- Preview the site "Partner Central" from your default org:
+  <%= config.bin %> <%= command.id %> --name "Partner Central" 
