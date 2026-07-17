@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$ref": "#/definitions/ComponentPreviewResult",
+  "definitions": {
+    "ComponentPreviewResult": {
+      "type": "object",
+      "properties": {
+        "instanceUrl": {
+          "type": "string"
+        },
+        "ldpServerUrl": {
+          "type": "string"
+        },
+        "ldpServerId": {
+          "type": "string"
+        },
+        "componentName": {
+          "type": "string"
+        },
+        "previewUrl": {
+          "type": "string"
+        }
+      },
+      "required": ["instanceUrl", "ldpServerUrl", "ldpServerId", "componentName", "previewUrl"],
+      "additionalProperties": false
+    }
+  }
+}
