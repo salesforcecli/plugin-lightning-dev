@@ -15,35 +15,29 @@
  */
 
 import { chromium, type Browser, type Page } from 'playwright';
-import { execCmd, TestSession } from '@salesforce/cli-plugins-testkit';
-
-type OrgDisplayUserResult = { accessToken?: string };
+import { TestSession } from '@salesforce/cli-plugins-testkit';
+import { Org } from '@salesforce/core';
 
 /**
  * Returns the access token for frontdoor sid authentication. Required for
- * Playwright testing. Uses testkit execCmd so the correct CLI executable is
- * used on all platforms (e.g. sf on Unix, sf.cmd on Windows).
+ * Playwright testing. Reads the token directly from the org connection via the
+ * core Org API rather than shelling out to `sf org display user --json`, which
+ * now redacts secrets by default (returning a "[REDACTED] ..." placeholder
+ * instead of the real token, which would make frontdoor auth fail with a 401).
  *
  * @param session - TestSession with a default scratch org.
  * @returns The session ID string.
  */
-export function getAccessToken(session: TestSession): string {
+export async function getAccessToken(session: TestSession): Promise<string> {
   const scratchOrg = session.orgs.get('default');
   const username = scratchOrg?.username ?? '';
-  const projectDir = session.project?.dir ?? '';
-  if (!username || !projectDir) {
-    throw new Error('Session has no default scratch org username or project dir');
+  if (!username) {
+    throw new Error('Session has no default scratch org username');
   }
-  const result = execCmd<OrgDisplayUserResult>(`org display user -o ${username} --json`, {
-    cwd: projectDir,
-    cli: 'sf',
-    ensureExitCode: 0,
-  });
-  const accessToken = result.jsonOutput?.result?.accessToken ?? '';
+  const org = await Org.create({ aliasOrUsername: username });
+  const accessToken = org.getConnection().accessToken ?? '';
   if (!accessToken) {
-    throw new Error(
-      `sf org display user result missing accessToken: ${result.shellOutput.stdout} ${result.shellOutput.stderr ?? ''}`,
-    );
+    throw new Error(`Could not resolve an access token for org '${username}'`);
   }
   return accessToken;
 }
@@ -72,7 +66,7 @@ async function establishSessionViaFrontDoor(page: Page, previewOrigin: string, a
  * @returns Promise resolving to the Playwright browser and page; caller must close them when done.
  */
 export async function getPreview(previewUrl: string, session: TestSession): Promise<{ browser: Browser; page: Page }> {
-  const accessToken = getAccessToken(session);
+  const accessToken = await getAccessToken(session);
   const previewOrigin = new URL(previewUrl).origin;
   const headed = process.env.HEADED === 'true' || process.env.HEADED === '1';
   const browser = await chromium.launch({ headless: !headed });

@@ -22,6 +22,30 @@ let cachedSession: TestSession;
 
 const PROJECT_PATH = path.resolve(PLUGIN_ROOT_PATH, 'test/projects/component-preview-project');
 
+// Number of times TestSession will retry scratch org creation before failing. Scratch org
+// signup is intermittently flaky (RemoteOrgSignupFailed / C-9999); retrying avoids spurious
+// failures in the post-release pipeline. Overridable via TESTKIT_SETUP_RETRIES.
+const SETUP_RETRIES = Number.parseInt(process.env.TESTKIT_SETUP_RETRIES ?? '', 10) || 3;
+
+/**
+ * Restores process.cwd() if it is currently a leaked sinon stub.
+ *
+ * TestSession's constructor stubs process.cwd() *before* it creates scratch orgs. If org
+ * creation then throws, TestSession.create() rejects without ever returning the instance,
+ * so the sandbox is never restored and the stub leaks. The next file's TestSession.create()
+ * then throws a misleading "Attempted to wrap cwd which is already wrapped", masking the real
+ * error across every subsequent file. Restoring the stub here lets the true failure surface
+ * in the one file that actually failed.
+ */
+function restoreLeakedCwdStub(): void {
+  // A sinon stub is self-bound, so calling restore() off the proxy is safe here.
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const cwd = process.cwd as typeof process.cwd & { isSinonProxy?: boolean; restore?: () => void };
+  if (cwd.isSinonProxy) {
+    cwd.restore?.();
+  }
+}
+
 /**
  * Returns a shared TestSession for NUTs, created once and reused (same project and Dev Hub).
  *
@@ -29,16 +53,23 @@ const PROJECT_PATH = path.resolve(PLUGIN_ROOT_PATH, 'test/projects/component-pre
  */
 export async function getSession(): Promise<TestSession> {
   if (!cachedSession) {
-    cachedSession = await TestSession.create({
-      devhubAuthStrategy: 'AUTO',
-      project: { sourceDir: PROJECT_PATH },
-      scratchOrgs: [
-        {
-          config: 'config/project-scratch-def.json',
-          setDefault: true,
-        },
-      ],
-    });
+    try {
+      cachedSession = await TestSession.create({
+        devhubAuthStrategy: 'AUTO',
+        project: { sourceDir: PROJECT_PATH },
+        retries: SETUP_RETRIES,
+        scratchOrgs: [
+          {
+            config: 'config/project-scratch-def.json',
+            setDefault: true,
+          },
+        ],
+      });
+    } catch (err) {
+      // Prevent a single setup failure from cascading into misleading errors in later files.
+      restoreLeakedCwdStub();
+      throw err;
+    }
   }
   return new Promise((r) => r(cachedSession));
 }
