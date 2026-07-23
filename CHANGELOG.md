@@ -1,3 +1,9 @@
+## [6.2.18](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.17...6.2.18) (2026-07-23)
+
+### Bug Fixes
+
+- repair post-release dev-preview NUTs (W-23400737) ([#676](https://github.com/salesforcecli/plugin-lightning-dev/issues/676)) ([a7e69e6](https://github.com/salesforcecli/plugin-lightning-dev/commit/a7e69e6c3e562d61eb659b56a18db8b6c3e8fb65)), closes [#626](https://github.com/salesforcecli/plugin-lightning-dev/issues/626)
+
 ## [6.2.17](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.16...6.2.17) (2026-03-27)
 
 ## [6.2.16](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.15...6.2.16) (2026-03-12)
