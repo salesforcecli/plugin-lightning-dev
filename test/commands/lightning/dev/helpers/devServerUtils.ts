@@ -17,6 +17,7 @@ import { spawn, ChildProcessByStdio, ChildProcessWithoutNullStreams } from 'node
 import { Readable } from 'node:stream';
 import type { Writable } from 'node:stream';
 import { type ChildProcess } from 'node:child_process';
+import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { TestSession } from '@salesforce/cli-plugins-testkit';
@@ -27,6 +28,26 @@ const PREVIEW_URL_REGEX = /(https:\/\/[^\s]*\/lwr\/application\/[^\s]+)/;
 const MAX_WAIT_MS = 30_000;
 
 export const PLUGIN_ROOT_PATH = path.resolve(CURRENT_DIR_PATH, '../../../../..');
+
+/**
+ * Returns the highest org API version the plugin ships a dev server for, read from
+ * package.json's `apiVersionMetadata`. Scratch orgs are provisioned on whatever API
+ * version the platform currently defaults to, which drifts ahead of the plugin; the
+ * dev server rejects unsupported versions and exits before printing a preview URL.
+ * Pinning the preview to this version keeps the e2e tests decoupled from that drift
+ * and auto-tracks new versions as they are added to package.json.
+ *
+ * @returns The max supported API version string (e.g. '67.0').
+ */
+export function getMaxSupportedApiVersion(): string {
+  const pkgPath = path.join(PLUGIN_ROOT_PATH, 'package.json');
+  const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8')) as { apiVersionMetadata?: Record<string, unknown> };
+  const versions = Object.keys(pkg.apiVersionMetadata ?? {});
+  if (versions.length === 0) {
+    throw new Error(`No apiVersionMetadata found in ${pkgPath}`);
+  }
+  return versions.sort((a, b) => parseFloat(b) - parseFloat(a))[0];
+}
 
 /**
  * Extracts the first LWR preview URL from process output.
@@ -150,7 +171,11 @@ export function startLightningDevServer(
     OPEN_BROWSER: 'false',
     LIGHTNING_DEV_PRINT_PREVIEW_URL: 'true',
   };
-  const args = [runJs, 'lightning', 'dev', 'component', '-o', username];
+  // Pin the preview to the plugin's max supported API version. Scratch orgs are
+  // created on the platform's current default API version, which can be newer than
+  // any version the plugin bundles a dev server for; without this the dev server
+  // exits with an "unsupported API version" error and never prints a preview URL.
+  const args = [runJs, 'lightning', 'dev', 'component', '-o', username, '--api-version', getMaxSupportedApiVersion()];
   if (componentName) {
     args.push('--name', componentName);
   }
