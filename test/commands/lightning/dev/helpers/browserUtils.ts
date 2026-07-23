@@ -28,7 +28,7 @@ import { Org } from '@salesforce/core';
  * @param session - TestSession with a default scratch org.
  * @returns The session ID string.
  */
-export async function getAccessToken(session: TestSession): Promise<string> {
+async function getAccessToken(session: TestSession): Promise<string> {
   const scratchOrg = session.orgs.get('default');
   const username = scratchOrg?.username ?? '';
   if (!username) {
