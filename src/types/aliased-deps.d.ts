@@ -27,3 +27,7 @@ declare module '@lwc/sfdx-local-dev-dist-66.0' {
 declare module '@lwc/sfdx-local-dev-dist-67.0' {
   export * from '@lwc/sfdx-local-dev-dist';
 }
+
+declare module '@lwc/sfdx-local-dev-dist-68.0' {
+  export * from '@lwc/sfdx-local-dev-dist';
+}
