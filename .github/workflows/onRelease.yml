@@ -48,5 +48,5 @@ jobs:
       ctc: true
       sign: true
       githubTag: ${{ github.event.release.tag_name || inputs.tag }}
-
+      nodeVersion: ${{ vars.NODE_VERSION_OVERRIDE }}
     secrets: inherit
