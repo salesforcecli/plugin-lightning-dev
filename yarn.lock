@@ -2987,7 +2987,7 @@
     "@lwc/sfdc-lwc-compiler" "13.3.19"
     "@lwc/template-compiler" "8.27.0"
 
-"@lwc/sfdx-local-dev-dist-68.0@npm:@lwc/sfdx-local-dev-dist@~15.0.2-alpha.0":
+"@lwc/sfdx-local-dev-dist-68.0@npm:@lwc/sfdx-local-dev-dist@~15.0.7":
   version "15.0.7"
   resolved "https://registry.yarnpkg.com/@lwc/sfdx-local-dev-dist/-/sfdx-local-dev-dist-15.0.7.tgz#40dbc702e6b2c922bc11ba7aebbc301cce0dc50c"
   integrity sha512-ZM4l6mwd3A/fpcTvYfSVBOJUv52cg1zh3j3h2DLLsGvALQUSFmy9FOmDpEL9hDH/4Gv8SY1D+dlfuIymtrnQLg==
@@ -2998,7 +2998,7 @@
     "@lwc/sfdc-lwc-compiler" "15.0.7"
     "@lwc/template-compiler" "9.1.1"
 
-"@lwc/sfdx-local-dev-dist@~15.0.2-alpha.0":
+"@lwc/sfdx-local-dev-dist@~15.0.7":
   version "15.0.7"
   resolved "https://registry.yarnpkg.com/@lwc/sfdx-local-dev-dist/-/sfdx-local-dev-dist-15.0.7.tgz#40dbc702e6b2c922bc11ba7aebbc301cce0dc50c"
   integrity sha512-ZM4l6mwd3A/fpcTvYfSVBOJUv52cg1zh3j3h2DLLsGvALQUSFmy9FOmDpEL9hDH/4Gv8SY1D+dlfuIymtrnQLg==
