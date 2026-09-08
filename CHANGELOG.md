@@ -1,3 +1,9 @@
+## [6.2.19](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.18...6.2.19) (2026-09-08)
+
+### Bug Fixes
+
+- add API version 68.0 support for live preview @W-24061445 ([#684](https://github.com/salesforcecli/plugin-lightning-dev/issues/684)) ([7ba91f4](https://github.com/salesforcecli/plugin-lightning-dev/commit/7ba91f4f7de07574caef91d66be3ac49d2176bc0)), closes [#682](https://github.com/salesforcecli/plugin-lightning-dev/issues/682)
+
 ## [6.2.18](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.17...6.2.18) (2026-07-23)
 
 ### Bug Fixes
