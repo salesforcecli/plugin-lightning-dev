@@ -25,7 +25,7 @@ const PROJECT_PATH = path.resolve(PLUGIN_ROOT_PATH, 'test/projects/component-pre
 // Number of times TestSession will retry scratch org creation before failing. Scratch org
 // signup is intermittently flaky (RemoteOrgSignupFailed / C-9999); retrying avoids spurious
 // failures in the post-release pipeline. Overridable via TESTKIT_SETUP_RETRIES.
-const SETUP_RETRIES = Number.parseInt(process.env.TESTKIT_SETUP_RETRIES ?? '', 10) || 3;
+const SETUP_RETRIES = parseInt(process.env.TESTKIT_SETUP_RETRIES ?? '', 10) || 3;
 
 /**
  * Restores process.cwd() if it is currently a leaked sinon stub.
