@@ -146,7 +146,7 @@ export class ExperienceSite {
     let siteJson;
     if (fs.existsSync(siteJsonPath)) {
       try {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+         
         siteJson = JSON.parse(fs.readFileSync(siteJsonPath, 'utf-8')) as SiteMetadata;
         this.metadataCache.localMetadata = siteJson;
       } catch (error) {
