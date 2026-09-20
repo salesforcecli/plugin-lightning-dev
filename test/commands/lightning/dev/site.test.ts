@@ -36,7 +36,7 @@ describe('lightning dev site', () => {
   let MockedLightningDevSite: typeof LightningDevSite;
 
   // Helper function to safely stub handleLocalDevEnablement (restores if already stubbed)
-  const stubHandleLocalDevEnablement = (returnValue?: boolean | undefined): sinon.SinonStub => {
+  const stubHandleLocalDevEnablement = (returnValue?: boolean  ): sinon.SinonStub => {
     // Restore if already stubbed - use try/catch to handle case where it's not stubbed
     /* eslint-disable @typescript-eslint/unbound-method */
     try {
@@ -162,7 +162,7 @@ describe('lightning dev site', () => {
         // eslint-disable-next-line @typescript-eslint/unbound-method
         const existingPromptStub = PromptUtils.promptUserToEnableLocalDev as unknown as sinon.SinonStub;
         if (existingPromptStub && typeof existingPromptStub.restore === 'function') {
-          // eslint-disable-next-line @typescript-eslint/unbound-method
+           
           existingPromptStub.restore();
         }
       } catch {
