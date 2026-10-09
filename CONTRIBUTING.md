@@ -58,3 +58,39 @@ R2b Release
 | 296-patch   | spring32     | 84          | 23             |
 | 298-patch   | summer32     | 85          | 24             |
 | 300-patch   | winter33     | 86          | 25             |
+
+## API version support
+
+Each supported API version ships its own `@lwc/sfdx-local-dev-dist-<version>` bundle (aliased in `package.json`, listed in `apiVersionMetadata`). Bundles can't be shared across versions because each one includes that release's LWC compiler. Every bundle adds significant install size, so plan version removals as well as additions.
+
+### How users select a version
+
+The bundle is picked from the org connection's API version, not the org's release:
+
+- `lightning dev app|component|site --api-version <version>`, otherwise
+- the `org-api-version` config value, otherwise
+- the Dev Hub's API version.
+
+So an R2b rollout shifts the default but never drops a version's usage to zero. Users and projects can pin an older version, and orgs don't all upgrade at the same moment. Expect usage to taper off after rollout.
+
+### Removing a version
+
+Removing a version is a breaking change, so it follows the [Salesforce CLI deprecation policy](https://developer.salesforce.com/docs/platform/salesforce-cli-reference/guide/cli_reference_deprecation.html): 4 months' notice, which is roughly one release.
+
+1. Deprecate the version at release N R2b.
+2. Check usage telemetry before removing it (see below).
+3. Remove it at release N+1 R2b.
+
+The new version is added at the start of the N+1 rollout, but the old one can't be removed until R2b. So the plugin briefly ships one extra bundle.
+
+### Usage telemetry
+
+Command executions by API version are in the CLI's Azure Application Insights. To get access, follow [DX Telemetry - Azure Application Insights Access](https://docs.google.com/document/d/1mHWon34OUj67CnKUdGGB7nrpTtDBx_9OcUhl79tVF-A/edit?tab=t.0).
+
+The telemetry doesn't show whether a version was picked by default or set explicitly. Judge removal on the trend over a set window after release, not a single snapshot.
+
+### Decision log
+
+| Date       | Decision                                                                                                                                                                              | Source                                                                                                                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-10-09 | Keep API 66.0 through the 264 rollout. Deprecate it at 264 R2b and remove it at 266 R2b. 180-day usage: 66.0: 8,514 executions / 1,503 orgs; 67.0: 17,273 / 1,974; 68.0: 2,688 / 362. | [#platform-cli](https://salesforce-internal.slack.com/archives/C01LKDT1P6J/p1791556792551479), [original request](https://salesforce-internal.slack.com/archives/C05P1MZ2DN2/p1790887576398399) |
