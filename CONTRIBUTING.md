@@ -77,7 +77,11 @@ So an R2b rollout shifts the default but never drops a version's usage to zero. 
 
 Removing a version is a breaking change, so it follows the [Salesforce CLI deprecation policy](https://developer.salesforce.com/docs/platform/salesforce-cli-reference/guide/cli_reference_deprecation.html): 4 months' notice, which is roughly one release.
 
-1. Deprecate the version at release N R2b.
+1. Deprecate the version at release N R2b. The plugin doesn't have a deprecation mechanism yet. The intended approach:
+   - Add a `deprecated` field to the version's `apiVersionMetadata` entry.
+   - When a command selects that version, print a warning with `this.warn()`.
+   - Don't use `Lifecycle.emitWarning()`: `SfCommand` only prints those when the command exits, and `lightning dev` commands are long-running.
+   - Also announce the deprecation in the release notes.
 2. Check usage telemetry before removing it (see below).
 3. Remove it at release N+1 R2b.
 
