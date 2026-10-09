@@ -17,6 +17,8 @@ jobs:
           cache: 'yarn'
       - run: yarn install --frozen-lockfile
       - run: node .husky/check-versions.js
+      # yarn nests a copy of each duplicate version per dependent, bloating the published shrinkwrap.
+      - run: npx yarn-deduplicate@6.0.2 --list --fail --exclude typescript yarn.lock
   yarn-lockfile-check:
     uses: salesforcecli/github-workflows/.github/workflows/lockFileCheck.yml@main
   # Since the Windows unit tests take much longer, we run the linux unit tests first and then run the windows unit tests in parallel with NUTs
