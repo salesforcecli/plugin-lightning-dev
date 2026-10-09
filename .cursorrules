@@ -134,9 +134,8 @@ This plugin provides three main commands:
 
 ### API Version Management
 
-- Supports multiple Salesforce API versions (62.0-65.0)
-- Has version mappings in `apiVersionMetadata` in package.json
-- Different tags target different org versions
+- Supported versions are the keys of `apiVersionMetadata` in package.json, each backed by an `@lwc/sfdx-local-dev-dist-<version>` alias
+- Support/deprecation policy and decision log: see "API version support" in CONTRIBUTING.md
 
 ## File Structure Understanding
 
