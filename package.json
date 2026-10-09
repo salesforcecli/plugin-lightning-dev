@@ -43,7 +43,8 @@
     "lwc": "~8.28.2",
     "oclif": "^4.22.80",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "yarn-deduplicate": "^6.0.2"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -96,6 +97,8 @@
     "clean": "sf-clean",
     "clean-all": "sf-clean all",
     "compile": "wireit",
+    "dedupe-lockfile": "yarn-deduplicate yarn.lock --exclude typescript",
+    "dedupe-lockfile:check": "yarn-deduplicate yarn.lock --list --fail --exclude typescript",
     "docs": "sf-docs",
     "fix-license": "eslint src test --fix --rule \"header/header: [2]\"",
     "format": "wireit",
