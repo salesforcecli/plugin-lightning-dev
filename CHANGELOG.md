@@ -1,3 +1,9 @@
+## [6.2.20](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.19...6.2.20) (2026-10-09)
+
+### Bug Fixes
+
+- **deps:** remove unused @lwrjs/api and move lwc to devDependencies @W-24460137@ ([#691](https://github.com/salesforcecli/plugin-lightning-dev/issues/691)) ([eaf5483](https://github.com/salesforcecli/plugin-lightning-dev/commit/eaf5483f08b9e2a48e11075647ee6605dc156e3a))
+
 ## [6.2.19](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.18...6.2.19) (2026-09-08)
 
 ### Bug Fixes
