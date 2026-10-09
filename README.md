@@ -88,17 +88,12 @@ sf org login web --alias dev --instance-url ${orgfarmUrl}
 
 4. Follow the [Build the plugin locally](#build) instructions
 
-5. [optional] Linking / Debugging LWR Source
+5. [optional] Debugging
 
 ```bash
-# build and link lwr source
-cd lwr
-yarn && yarn link-lwr
-
-# build and link plugin-lightning-dev source
+# build plugin-lightning-dev source
 cd plugin-lightning-dev
 yarn && yarn build
-yarn link-lwr
 
 # SFDX Project
 cd sfdx-project
@@ -106,15 +101,13 @@ cd sfdx-project
 # Login to your org
 sf org login web --alias dev --instance-url https://login.test1.pc-rnd.salesforce.com/ (orgfarm needs instance url)
 
-# run/debug the sf cli command (attach to the CLI from the LWR repo in VS Code)
+# run/debug the sf cli command
 NODE_OPTIONS="--inspect-brk" sf lightning dev site --target-org dev
 ```
 
 Now you can Remote Attach to the CLI from the vscode debugger:
 
-- Use the "Attach" launch configuration
-- Run launch config from LWR repo if you want to debug LWR source
-- Run launch config from plugin-lightning-dev source if you want to debug the SFDX plugin source specifically
+- Use the "Attach" launch configuration from plugin-lightning-dev source
 
 If this doesn't work for whatever reason, you can always alias the build output directly like so:
 
