@@ -1,3 +1,9 @@
+## [6.2.21](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.20...6.2.21) (2026-10-12)
+
+### Bug Fixes
+
+- **deps:** dedupe yarn.lock to shrink installed size @W-24460137@ ([#693](https://github.com/salesforcecli/plugin-lightning-dev/issues/693)) ([46e2f32](https://github.com/salesforcecli/plugin-lightning-dev/commit/46e2f32fef81d4d10c911f5de33676e3e579fbd6))
+
 ## [6.2.20](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.19...6.2.20) (2026-10-09)
 
 ### Bug Fixes
