@@ -1,0 +1,46 @@
+name: dependabot-dedupe
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    paths:
+      - yarn.lock
+
+jobs:
+  dedupe:
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      # pull_request_target has secrets: only run code from the base branch, treat the PR checkout as data.
+      - uses: actions/checkout@v4
+        with:
+          path: base
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          path: pr
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.SVC_CLI_BOT_GITHUB_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: yarn
+          cache-dependency-path: base/yarn.lock
+      - run: yarn install --frozen-lockfile --ignore-scripts
+        working-directory: base
+      - run: base/node_modules/.bin/yarn-deduplicate pr/yarn.lock --exclude typescript
+      - name: Get Github user info
+        id: github-user-info
+        uses: salesforcecli/github-workflows/.github/actions/getGithubUserInfo@main
+        with:
+          SVC_CLI_BOT_GITHUB_TOKEN: ${{ secrets.SVC_CLI_BOT_GITHUB_TOKEN }}
+      - name: Push deduped yarn.lock
+        working-directory: pr
+        env:
+          GIT_AUTHOR_NAME: ${{ steps.github-user-info.outputs.username }}
+          GIT_AUTHOR_EMAIL: ${{ steps.github-user-info.outputs.email }}
+          GIT_COMMITTER_NAME: ${{ steps.github-user-info.outputs.username }}
+          GIT_COMMITTER_EMAIL: ${{ steps.github-user-info.outputs.email }}
+        run: |
+          git diff --quiet yarn.lock && exit 0
+          git commit --no-verify -m "chore(dev-deps): dedupe yarn.lock" yarn.lock
+          git push --no-verify
