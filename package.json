@@ -108,7 +108,7 @@
     "prepack": "sf-prepack",
     "prepare": "sf-install",
     "test": "wireit",
-    "test:nuts": "npx playwright install --with-deps && mocha \"**/*.nut.ts\" --slow 30000 --timeout 600000 --parallel=false",
+    "test:nuts": "yarn compile && npx playwright install --with-deps && mocha \"**/*.nut.ts\" --slow 30000 --timeout 600000 --parallel=false",
     "test:nuts:local": "npx playwright install --with-deps && node -r dotenv/config ./node_modules/.bin/nyc mocha \"**/*.nut.ts\" --slow 30000 --timeout 600000 --parallel=false",
     "test:nut:local": "npx playwright install --with-deps && node -r dotenv/config ./node_modules/.bin/nyc mocha --slow 30000 --timeout 600000",
     "test:only": "wireit",
