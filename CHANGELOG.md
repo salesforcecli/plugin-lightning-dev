@@ -1,3 +1,9 @@
+## [6.2.22](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.21...6.2.22) (2026-10-15)
+
+### Bug Fixes
+
+- add compile step to test:nuts to fix CI JIT pipeline-@W-24507967@ ([#695](https://github.com/salesforcecli/plugin-lightning-dev/issues/695)) ([640776d](https://github.com/salesforcecli/plugin-lightning-dev/commit/640776da3debd549a208bf6f9078af5c141519c0))
+
 ## [6.2.21](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.20...6.2.21) (2026-10-12)
 
 ### Bug Fixes
