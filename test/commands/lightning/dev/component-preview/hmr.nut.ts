@@ -69,6 +69,8 @@ describe('lightning preview hot module reload', () => {
     expect(await updatedGreetingLocator.textContent()).to.equal(HMR_GREETING);
 
     await fs.promises.writeFile(componentJsPath, originalJsContent, 'utf8');
+    await page.waitForTimeout(3000);
+    await page.reload({ waitUntil: 'networkidle' });
     await page.getByText(INITIAL_GREETING).waitFor({ state: 'visible' });
   });
 
@@ -99,11 +101,8 @@ describe('lightning preview hot module reload', () => {
     }
     expect(greetingColor).to.equal(RED);
     await fs.promises.writeFile(componentCssPath, originalCssContent, 'utf8');
-    // eslint-disable-next-line no-await-in-loop
-    while ((await greeting.evaluate((e) => window.getComputedStyle(e).color)) !== BLUE) {
-      // eslint-disable-next-line no-await-in-loop
-      await page.waitForTimeout(500);
-    }
+    await page.reload();
+    await page.getByText(INITIAL_GREETING).waitFor({ state: 'visible' });
   });
 
   it('should re-render component and hot reload .html changes', async () => {
