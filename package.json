@@ -120,6 +120,7 @@
   },
   "resolutions": {
     "cliui": "7.0.4",
+    "mocha": "^11.8.0",
     "prettier": "^3.7.4",
     "pretty-quick": "^4.2.2"
   },
