@@ -1,3 +1,9 @@
+## [6.2.23](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.22...6.2.23) (2026-11-11)
+
+### Bug Fixes
+
+- enable npm trusted publishing @W-24703038@ ([#701](https://github.com/salesforcecli/plugin-lightning-dev/issues/701)) ([db2e0a4](https://github.com/salesforcecli/plugin-lightning-dev/commit/db2e0a4db50aa010deaa0c0fe9288e904919c999))
+
 ## [6.2.22](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.21...6.2.22) (2026-10-15)
 
 ### Bug Fixes

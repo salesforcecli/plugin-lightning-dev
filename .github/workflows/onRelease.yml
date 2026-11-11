@@ -42,9 +42,13 @@ jobs:
           INPUTS_MAJOR_VERSION: ${{ steps.parsedVersion.outputs.major }}
 
   npm:
+    permissions:
+      id-token: write
+      contents: read
     uses: salesforcecli/github-workflows/.github/workflows/npmPublish.yml@main
     needs: [getDistTag, getMajorVersion]
     with:
+      trustedPublishing: true
       ctc: true
       sign: true
       githubTag: ${{ github.event.release.tag_name || inputs.tag }}
