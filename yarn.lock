@@ -2176,10 +2176,10 @@
   dependencies:
     magic-string "~0.30.21"
 
-"@lwc/dev-server-plugin-lex@15.0.7":
-  version "15.0.7"
-  resolved "https://registry.yarnpkg.com/@lwc/dev-server-plugin-lex/-/dev-server-plugin-lex-15.0.7.tgz#3211cc110faa11f9ab6acd669a11b20c5b312717"
-  integrity sha512-px547Ji4OWTpeFwY8sJIpE5C5h+YyMOJXa6sp4tI08RcYj0jck0BCQ+LVTmtce+gqPnhaie/TcAJFS0MiQ/Esg==
+"@lwc/dev-server-plugin-lex@15.0.11":
+  version "15.0.11"
+  resolved "https://registry.yarnpkg.com/@lwc/dev-server-plugin-lex/-/dev-server-plugin-lex-15.0.11.tgz#802732a1c5826282540bfda5d3772e8dff928da7"
+  integrity sha512-nAzJnoVTZBKJW7H9ci51oFT/L7EO86Ov4MIwerU7SHj09SMu2i/x/8LaHfSk5Azf8qqbqLjjEYe9+5QkwYoB+w==
   dependencies:
     magic-string "~0.30.21"
 
@@ -2264,10 +2264,10 @@
   resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server-types/-/lwc-dev-server-types-13.3.19.tgz#873e1c9e46124f99a02d595a47e3e38c126f9f62"
   integrity sha512-a/jdnywF3c1qWLiEULow3WlWN1ybiEoV2eYPqAKl8az9gWssh2je2cx8ArEEh6xOManZM1ZZ7Wl+LpSzRHsAZQ==
 
-"@lwc/lwc-dev-server-types@15.0.7":
-  version "15.0.7"
-  resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server-types/-/lwc-dev-server-types-15.0.7.tgz#3598d8bb7204d8ad2601976606e84dd765a3732a"
-  integrity sha512-l8HI/9lNZIBk6kgzNIPBBeZUCJW69lv0Hvm+vdfT+M8RTHY4+hfxHxZG3JG+hdBFL7k8ZPFeVuc1El8H5nF1yw==
+"@lwc/lwc-dev-server-types@15.0.11":
+  version "15.0.11"
+  resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server-types/-/lwc-dev-server-types-15.0.11.tgz#639bb38523c0fc2bfca19180920edb0d3eb97ef5"
+  integrity sha512-rY7ie1Pr0Ayr+IhebEuhdNIJ9QsNimXd+fuUa4mz9ONn264SjJHPpqY/bfekX2cyr6nY5Prm/uSglWoHsmTMjg==
 
 "@lwc/lwc-dev-server@13.2.24-alpha.0+62759db":
   version "13.2.24-alpha.0"
@@ -2297,13 +2297,13 @@
     glob "^11.0.3"
     ws "^8.18.3"
 
-"@lwc/lwc-dev-server@15.0.7":
-  version "15.0.7"
-  resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server/-/lwc-dev-server-15.0.7.tgz#5ad069c465562f00b548e564073febb85600d18f"
-  integrity sha512-WiyvGN3AqJaqTxNwFcFNweK0dB4w01vSpwLkAKeHlG4xglbjNVhB57wMW4yccwvZ5ULowQjcOpUc5DRKlBpp0g==
+"@lwc/lwc-dev-server@15.0.11":
+  version "15.0.11"
+  resolved "https://registry.yarnpkg.com/@lwc/lwc-dev-server/-/lwc-dev-server-15.0.11.tgz#6f51ae64917f284b0fa1c70f9cb383155683c79c"
+  integrity sha512-TsArpaArhNoA5fTK98VElz5abDJWcSdb2b2VIDzeurUotp8yDHTL4Zz/3M4BMEw4k6Vz+467TEKaBuD51VH3yQ==
   dependencies:
-    "@lwc/lwc-dev-server-types" "15.0.7"
-    "@lwc/sfdc-lwc-compiler" "15.0.7"
+    "@lwc/lwc-dev-server-types" "15.0.11"
+    "@lwc/sfdc-lwc-compiler" "15.0.11"
     chalk "~5.6.2"
     chokidar "~3.6.0"
     commander "~14.0.3"
@@ -2337,15 +2337,15 @@
     postcss-selector-parser "~7.1.0"
     postcss-value-parser "~4.2.0"
 
-"@lwc/metadata@15.0.7":
-  version "15.0.7"
-  resolved "https://registry.yarnpkg.com/@lwc/metadata/-/metadata-15.0.7.tgz#09009eb2d03b82a6f19637871aabef94691ea8d3"
-  integrity sha512-unya6520x2J7VXc6XkJH99lYiyQTogQBk7WElaTzNoo2wiH1k5nW1d4LVYyUgp9OrKVoajRYEPvRTw3SVdMx/g==
+"@lwc/metadata@15.0.11":
+  version "15.0.11"
+  resolved "https://registry.yarnpkg.com/@lwc/metadata/-/metadata-15.0.11.tgz#5cac1c943a3ffbafdfe61cc7115416b102cf7950"
+  integrity sha512-7Gj3LuVP7ULs9B/+jvBkEwBkJhHsTRKTv6CYv/rYX+1h3OlNwmwHtyrDTYq9Ofp/PU0YzmBKPu2CHdbrrg0xrw==
   dependencies:
     "@babel/parser" "~7.29.0"
     "@babel/traverse" "~7.29.0"
     "@babel/types" "~7.29.0"
-    "@lwc/sfdc-compiler-utils" "15.0.7"
+    "@lwc/sfdc-compiler-utils" "15.0.11"
     postcss "~8.5.6"
     postcss-selector-parser "~7.1.1"
     postcss-value-parser "~4.2.0"
@@ -2377,10 +2377,10 @@
   resolved "https://registry.yarnpkg.com/@lwc/sfdc-compiler-utils/-/sfdc-compiler-utils-13.3.19.tgz#05cf8d087f0888e6ea0d0a3ef6a516794d60e09c"
   integrity sha512-uZrQeBnAU8s8hoJjN7FYVswebSYx2SLYWiOcJMfjaTZ8sBbLIh00ITN4IqX9XDlaBPhVCn1AHFK6cbrtlntOEg==
 
-"@lwc/sfdc-compiler-utils@15.0.7":
-  version "15.0.7"
-  resolved "https://registry.yarnpkg.com/@lwc/sfdc-compiler-utils/-/sfdc-compiler-utils-15.0.7.tgz#d64a2395f26a1ef596e15306be1654522c5e4718"
-  integrity sha512-VQ/dJjDiJkoGJX8xK4lYyz2GqxLfMDLaxi8N24FZ6HG5OBSWiC+6svtuvEr2txnn9XtoByu8cqUxCDJ+z27gxA==
+"@lwc/sfdc-compiler-utils@15.0.11":
+  version "15.0.11"
+  resolved "https://registry.yarnpkg.com/@lwc/sfdc-compiler-utils/-/sfdc-compiler-utils-15.0.11.tgz#6c50645aa6d1793b23fe46aa11e99605b12f76fd"
+  integrity sha512-7DlPevT49J4kAFxUk34Aegn4md3gPguRg/vYMtEsXVGodlD2U4jk3l2K+8f0dNOp9mo50TfyanGcepUnbrKK7A==
 
 "@lwc/sfdc-lwc-compiler@13.2.24-alpha.0+62759db":
   version "13.2.24-alpha.0"
@@ -2455,10 +2455,10 @@
     postcss-selector-parser "~7.1.0"
     terser "~5.44.0"
 
-"@lwc/sfdc-lwc-compiler@15.0.7":
-  version "15.0.7"
-  resolved "https://registry.yarnpkg.com/@lwc/sfdc-lwc-compiler/-/sfdc-lwc-compiler-15.0.7.tgz#929391e349731f683f2e6f91daf9e2d81a0a78f7"
-  integrity sha512-Pm/rKL2cWSgXkRnvrO1AeaZEyWVPdnd0avEjAFWY8W5timHllP8oVRrCztWBPNDkeWzxsfIeVjPxYNGrNPYaEw==
+"@lwc/sfdc-lwc-compiler@15.0.11":
+  version "15.0.11"
+  resolved "https://registry.yarnpkg.com/@lwc/sfdc-lwc-compiler/-/sfdc-lwc-compiler-15.0.11.tgz#e425995e86a777469d5e2be762c914a29ceab986"
+  integrity sha512-LNEhH7INhRXLfEYz4kEyRE1kBND24PqD7t6pAZgCqSWFPVFv3nMVfNekxMgBOejASGAyH24eT2xzX2vMECH7Ww==
   dependencies:
     "@babel/core" "7.29.0"
     "@babel/parser" "7.29.0"
@@ -2467,11 +2467,11 @@
     "@babel/traverse" "7.29.0"
     "@babel/types" "7.29.0"
     "@komaci/esm-generator" "264.5.0"
-    "@lwc/dev-server-plugin-lex" "15.0.7"
+    "@lwc/dev-server-plugin-lex" "15.0.11"
     "@lwc/eslint-plugin-lwc" "3.5.0"
     "@lwc/eslint-plugin-lwc-platform" "6.3.0"
-    "@lwc/metadata" "15.0.7"
-    "@lwc/sfdc-compiler-utils" "15.0.7"
+    "@lwc/metadata" "15.0.11"
+    "@lwc/sfdc-compiler-utils" "15.0.11"
     "@rollup/plugin-babel" "^6.1.0"
     "@rollup/plugin-replace" "^6.0.3"
     "@rollup/wasm-node" "4.52.5"
@@ -2486,7 +2486,7 @@
     gray-matter "~4.0.3"
     line-column "~1.0.2"
     magic-string "~0.30.21"
-    markdown-it "~14.1.1"
+    markdown-it "~14.3.0"
     meriyah "^7.1.0"
     parse5-sax-parser "~8.0.0"
     postcss "~8.5.6"
@@ -2516,26 +2516,26 @@
     "@lwc/sfdc-lwc-compiler" "13.3.19"
     "@lwc/template-compiler" "8.27.0"
 
-"@lwc/sfdx-local-dev-dist-68.0@npm:@lwc/sfdx-local-dev-dist@~15.0.7":
-  version "15.0.7"
-  resolved "https://registry.yarnpkg.com/@lwc/sfdx-local-dev-dist/-/sfdx-local-dev-dist-15.0.7.tgz#40dbc702e6b2c922bc11ba7aebbc301cce0dc50c"
-  integrity sha512-ZM4l6mwd3A/fpcTvYfSVBOJUv52cg1zh3j3h2DLLsGvALQUSFmy9FOmDpEL9hDH/4Gv8SY1D+dlfuIymtrnQLg==
+"@lwc/sfdx-local-dev-dist-68.0@npm:@lwc/sfdx-local-dev-dist@~15.0.11":
+  version "15.0.11"
+  resolved "https://registry.yarnpkg.com/@lwc/sfdx-local-dev-dist/-/sfdx-local-dev-dist-15.0.11.tgz#eeaa0bdece21b5503f1b60b44d5566c9864711ea"
+  integrity sha512-ioY1QClcw/3EIJY4iYyQf1VZ3BknYXB0KfBd9T2V8UMioH1qwaz5wJJJxpvUubz4f+JYerrRdoMTAUXCJ8BjjA==
   dependencies:
     "@lwc/compiler" "9.1.1"
     "@lwc/errors" "9.1.1"
-    "@lwc/lwc-dev-server" "15.0.7"
-    "@lwc/sfdc-lwc-compiler" "15.0.7"
+    "@lwc/lwc-dev-server" "15.0.11"
+    "@lwc/sfdc-lwc-compiler" "15.0.11"
     "@lwc/template-compiler" "9.1.1"
 
-"@lwc/sfdx-local-dev-dist@~15.0.7":
-  version "15.0.7"
-  resolved "https://registry.yarnpkg.com/@lwc/sfdx-local-dev-dist/-/sfdx-local-dev-dist-15.0.7.tgz#40dbc702e6b2c922bc11ba7aebbc301cce0dc50c"
-  integrity sha512-ZM4l6mwd3A/fpcTvYfSVBOJUv52cg1zh3j3h2DLLsGvALQUSFmy9FOmDpEL9hDH/4Gv8SY1D+dlfuIymtrnQLg==
+"@lwc/sfdx-local-dev-dist@~15.0.11":
+  version "15.0.11"
+  resolved "https://registry.yarnpkg.com/@lwc/sfdx-local-dev-dist/-/sfdx-local-dev-dist-15.0.11.tgz#eeaa0bdece21b5503f1b60b44d5566c9864711ea"
+  integrity sha512-ioY1QClcw/3EIJY4iYyQf1VZ3BknYXB0KfBd9T2V8UMioH1qwaz5wJJJxpvUubz4f+JYerrRdoMTAUXCJ8BjjA==
   dependencies:
     "@lwc/compiler" "9.1.1"
     "@lwc/errors" "9.1.1"
-    "@lwc/lwc-dev-server" "15.0.7"
-    "@lwc/sfdc-lwc-compiler" "15.0.7"
+    "@lwc/lwc-dev-server" "15.0.11"
+    "@lwc/sfdc-lwc-compiler" "15.0.11"
     "@lwc/template-compiler" "9.1.1"
 
 "@lwc/shared@8.25.1":
@@ -7384,10 +7384,10 @@ lines-and-columns@^1.1.6:
   resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.2.4.tgz#eca284f75d2965079309dc0ad9255abb2ebc1632"
   integrity sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==
 
-linkify-it@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/linkify-it/-/linkify-it-5.0.0.tgz#9ef238bfa6dc70bd8e7f9572b52d369af569b421"
-  integrity sha512-5aHCbzQRADcdP+ATqnDuhhJ/MRIqDkZX5pyjFHRRysS8vZ5AbqGEoFIb6pYHPZ+L/OC2Lc+xT8uHVVR5CAK/wQ==
+linkify-it@^5.0.0, linkify-it@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/linkify-it/-/linkify-it-5.0.2.tgz#d3be0a693af3da9df3883f1e346a0e97461a8c19"
+  integrity sha512-ONTm2jCMAVZjgQa/Fy1kScXsuOoF5NPTsoFBdE1KVIZ2vAh/r9+Bqo+0jINCBYnavTPQZz38QzFTme79ENoN3Q==
   dependencies:
     uc.micro "^2.0.0"
 
@@ -7672,7 +7672,19 @@ map-obj@^4.0.0:
   resolved "https://registry.yarnpkg.com/map-obj/-/map-obj-4.3.0.tgz#9304f906e93faae70880da102a9f1df0ea8bb05a"
   integrity sha512-hdN1wVrZbb29eBGiGjJbeP8JbKjq1urkHJ/LIP/NY48MZ1QVXUsQBV1G1zvYFHn1XE06cwjBsOI2K3Ulnj1YXQ==
 
-markdown-it@^14.1.0, markdown-it@~14.1.0, markdown-it@~14.1.1:
+markdown-it@^14.1.0, markdown-it@~14.3.0:
+  version "14.3.3"
+  resolved "https://registry.yarnpkg.com/markdown-it/-/markdown-it-14.3.3.tgz#15e6e145d20b1499a7b323bb14e21062690132d8"
+  integrity sha512-L//tDAkjTjJCU6pBUSBTgs3Kg4InVaZuUZog/b6V12UKhcDQ7S78877ibbCanRExwPuYP1CZD7Gd2dxSy1GXRg==
+  dependencies:
+    argparse "^2.0.1"
+    entities "^4.5.0"
+    linkify-it "^5.0.2"
+    mdurl "^2.0.0"
+    punycode.js "^2.3.1"
+    uc.micro "^2.1.0"
+
+markdown-it@~14.1.0:
   version "14.1.1"
   resolved "https://registry.yarnpkg.com/markdown-it/-/markdown-it-14.1.1.tgz#856f90b66fc39ae70affd25c1b18b581d7deee1f"
   integrity sha512-BuU2qnTti9YKgK5N+IeMubp14ZUKUUw7yeJbkjtosvHiP0AZ5c8IAgEMk79D0eC8F23r4Ac/q8cAIFdm2FtyoA==
