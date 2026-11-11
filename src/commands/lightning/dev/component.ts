@@ -61,7 +61,7 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
     const logger = await Logger.child(this.ctor.name);
     const project = await SfProject.resolve();
 
-    let sfdxProjectRootPath = '';
+    let sfdxProjectRootPath: string;
     try {
       sfdxProjectRootPath = await SfProject.resolveProjectPath();
     } catch (error) {
@@ -117,7 +117,7 @@ export default class LightningDevComponent extends SfCommand<ComponentPreviewRes
 
             try {
               xml = await ComponentUtils.getComponentMetadata(componentPath);
-            } catch (err) {
+            } catch {
               this.warn(messages.getMessage('error.component-metadata', [componentPath]));
             }
 

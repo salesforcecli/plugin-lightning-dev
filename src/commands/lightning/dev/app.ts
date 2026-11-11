@@ -81,11 +81,13 @@ export default class LightningDevApp extends SfCommand<void> {
     const deviceId = flags['device-id'];
     const apiVersion = flags['api-version'];
 
-    let sfdxProjectRootPath = '';
+    let sfdxProjectRootPath: string;
     try {
       sfdxProjectRootPath = await SfProject.resolveProjectPath();
     } catch (error) {
-      throw new Error(sharedMessages.getMessage('error.no-project', [(error as Error)?.message ?? '']));
+      throw new Error(sharedMessages.getMessage('error.no-project', [(error as Error)?.message ?? '']), {
+        cause: error,
+      });
     }
 
     logger.debug('Initializing preview connection and configuring local web server identity');
