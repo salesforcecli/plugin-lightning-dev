@@ -50,9 +50,8 @@ async function createLWCServerConfig(
       httpsPort: LOCAL_DEV_SERVER_DEFAULT_HTTP_PORT + 1,
     };
 
-  const resolvedWorkspace: Workspace = (workspace ??
-    (await ConfigUtils.getLocalDevServerWorkspace()) ??
-    LOCAL_DEV_SERVER_DEFAULT_WORKSPACE) as Workspace;
+  const resolvedWorkspace: Workspace =
+    workspace ?? (await ConfigUtils.getLocalDevServerWorkspace()) ?? LOCAL_DEV_SERVER_DEFAULT_WORKSPACE;
 
   const serverConfig: ServerConfig = {
     rootDir,
@@ -62,7 +61,7 @@ async function createLWCServerConfig(
     // use custom workspace if any is provided, or fetch from config file (if any), otherwise use the default workspace
     workspace: resolvedWorkspace,
     identityToken: token,
-    lifecycle: Lifecycle.getInstance() as unknown as ServerConfig['lifecycle'],
+    lifecycle: Lifecycle.getInstance(),
     clientType,
     namespace: typeof namespace === 'string' && namespace.trim().length > 0 ? namespace.trim() : undefined,
   };
