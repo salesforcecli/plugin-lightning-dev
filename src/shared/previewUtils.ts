@@ -351,7 +351,7 @@ export class PreviewUtils {
         ? 'https://sfdc.co/salesforce-mobile-app-ios-simulator'
         : 'https://sfdc.co/salesforce-mobile-app-android-emulator';
 
-    let fullUrl = '';
+    let fullUrl: string;
     try {
       spinner?.start(messages.getMessage('spinner.download.preparing'));
       logger?.debug(`Attempting to resolve full url from ${sfdcUrl}`);
@@ -405,7 +405,7 @@ export class PreviewUtils {
 
       response.body?.pipe(fileStream);
 
-      response.body?.on('error', (err) => {
+      response.body?.on('error', (err: Error) => {
         // on error, delete the partially downloaded file
         try {
           fs.rmSync(downloadedFilePath);
@@ -484,7 +484,7 @@ export class PreviewUtils {
         } else {
           done = true;
         }
-      } catch (error) {
+      } catch {
         // On some platforms (like mac) if the command doesn't produce
         // any results then that is considered an error but in our case
         // that means the port is not in use and is ready for us to use.

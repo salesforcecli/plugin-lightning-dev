@@ -146,7 +146,6 @@ export class ExperienceSite {
     let siteJson;
     if (fs.existsSync(siteJsonPath)) {
       try {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         siteJson = JSON.parse(fs.readFileSync(siteJsonPath, 'utf-8')) as SiteMetadata;
         this.metadataCache.localMetadata = siteJson;
       } catch (error) {
@@ -159,11 +158,10 @@ export class ExperienceSite {
 
   public async getRemoteMetadata(): Promise<SiteMetadata | undefined> {
     if (this.metadataCache.remoteMetadata) return this.metadataCache.remoteMetadata;
-    const result = await this.org
-      .getConnection()
-      .query<{ Name: string; LastModifiedDate: string }>(
-        `SELECT Name, LastModifiedDate FROM StaticResource WHERE Name LIKE 'MRT_experience_%_${this.siteName}'`
-      );
+    const result = await this.org.getConnection().query<{
+      Name: string;
+      LastModifiedDate: string;
+    }>(`SELECT Name, LastModifiedDate FROM StaticResource WHERE Name LIKE 'MRT_experience_%_${this.siteName}'`);
     if (result.records.length === 0) {
       return undefined;
     }
@@ -247,7 +245,7 @@ export class ExperienceSite {
         if (error.response) {
           // Server responded with non-200 status
           throw new SfError(
-            `Failed to get preview URL: Server responded with status ${error.response.status} - ${error.response.statusText}`
+            `Failed to get preview URL: Server responded with status ${error.response.status} - ${error.response.statusText}`,
           );
         } else if (error.request) {
           // Request was made but no response received
@@ -263,11 +261,12 @@ export class ExperienceSite {
    * @returns path of downloaded site zip
    */
   public async downloadSiteApi(): Promise<string> {
-    const remoteMetadata = await this.org
-      .getConnection()
-      .query<{ Id: string; Name: string; LastModifiedDate: string; MasterLabel: string }>(
-        `Select Id, Name, LastModifiedDate, MasterLabel, UrlPathPrefix, SiteType, Status from Site WHERE Name like '${this.siteName}1'`
-      );
+    const remoteMetadata = await this.org.getConnection().query<{
+      Id: string;
+      Name: string;
+      LastModifiedDate: string;
+      MasterLabel: string;
+    }>(`Select Id, Name, LastModifiedDate, MasterLabel, UrlPathPrefix, SiteType, Status from Site WHERE Name like '${this.siteName}1'`);
     if (!remoteMetadata || remoteMetadata.records.length === 0) {
       throw new SfError(`No published site found for: ${this.siteDisplayName}`);
     }
@@ -319,7 +318,7 @@ export class ExperienceSite {
         if (error.response) {
           // Server responded with non-200 status
           throw new SfError(
-            `Failed to download site: Server responded with status ${error.response.status} - ${error.response.statusText}`
+            `Failed to download site: Server responded with status ${error.response.status} - ${error.response.statusText}`,
           );
         } else if (error.request) {
           // Request was made but no response received
@@ -435,7 +434,7 @@ export class ExperienceSite {
       // eslint-disable-next-line no-console
       console.warn(
         `Warning: could not establish valid auth token for your site '${this.siteDisplayName}'.` +
-          'Local Dev proxied requests to your site may fail or return data from the guest user context.'
+          'Local Dev proxied requests to your site may fail or return data from the guest user context.',
       );
 
       return ''; // Site will be guest user access only
@@ -444,7 +443,7 @@ export class ExperienceSite {
     // Not sure what scenarios we don't have an access token at all, but lets output a separate message here so we can distinguish these edge cases
     // eslint-disable-next-line no-console
     console.warn(
-      'Warning: sf cli org connection missing accessToken. Local Dev proxied requests to your site may fail or return data from the guest user context.'
+      'Warning: sf cli org connection missing accessToken. Local Dev proxied requests to your site may fail or return data from the guest user context.',
     );
     return '';
   }

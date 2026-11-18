@@ -72,11 +72,13 @@ export default class LightningDevSite extends SfCommand<void> {
   }
 
   private async openPreviewUrl(selectedSite: ExperienceSite, connection: Connection): Promise<void> {
-    let sfdxProjectRootPath = '';
+    let sfdxProjectRootPath: string;
     try {
       sfdxProjectRootPath = await SfProject.resolveProjectPath();
     } catch (error) {
-      throw new Error(sharedMessages.getMessage('error.no-project', [(error as Error)?.message ?? '']));
+      throw new Error(sharedMessages.getMessage('error.no-project', [(error as Error)?.message ?? '']), {
+        cause: error,
+      });
     }
     const previewUrl = await selectedSite.getPreviewUrl();
     const username = connection.getUsername();

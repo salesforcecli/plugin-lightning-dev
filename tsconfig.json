@@ -6,8 +6,14 @@
     "outDir": "lib",
     "rootDir": "src",
     "skipLibCheck": true,
-    "baseUrl": ".",
+    "types": ["mocha", "node"],
     "resolveJsonModule": true
   },
-  "include": ["./src/**/*.ts"]
+  "include": ["./src/**/*.ts"],
+  "ts-node": {
+    "compilerOptions": {
+      "module": "ESNext",
+      "moduleResolution": "Bundler"
+    }
+  }
 }

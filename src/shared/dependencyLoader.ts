@@ -80,6 +80,7 @@ export async function loadLwcModule(orgApiVersion: string): Promise<LwcModule> {
       `Failed to load LWC module for version '${version}'. ` +
         `Package '${packageName}' could not be imported. ` +
         `Error: ${error instanceof Error ? error.message : String(error)}`,
+      { cause: error },
     );
   }
 }
