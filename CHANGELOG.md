@@ -1,3 +1,9 @@
+## [6.2.24](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.23...6.2.24) (2026-11-18)
+
+### Bug Fixes
+
+- unblock npm trusted publishing @W-24703038@ ([#702](https://github.com/salesforcecli/plugin-lightning-dev/issues/702)) ([0a86628](https://github.com/salesforcecli/plugin-lightning-dev/commit/0a866285dfb446868aa38d132fed12b9884bef69)), closes [#700](https://github.com/salesforcecli/plugin-lightning-dev/issues/700)
+
 ## [6.2.23](https://github.com/salesforcecli/plugin-lightning-dev/compare/6.2.22...6.2.23) (2026-11-11)
 
 ### Bug Fixes
